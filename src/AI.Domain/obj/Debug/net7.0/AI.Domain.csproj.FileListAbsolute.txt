@@ -1,0 +1,12 @@
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\obj\Debug\net7.0\AI.Domain.csproj.AssemblyReference.cache
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\obj\Debug\net7.0\AI.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\obj\Debug\net7.0\AI.Domain.AssemblyInfoInputs.cache
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\obj\Debug\net7.0\AI.Domain.AssemblyInfo.cs
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\obj\Debug\net7.0\AI.Domain.csproj.CoreCompileInputs.cache
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\bin\Debug\net7.0\AI.Domain.deps.json
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\bin\Debug\net7.0\AI.Domain.dll
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\bin\Debug\net7.0\AI.Domain.pdb
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\obj\Debug\net7.0\AI.Domain.dll
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\obj\Debug\net7.0\refint\AI.Domain.dll
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\obj\Debug\net7.0\AI.Domain.pdb
+C:\projects\AI\AI-OpenAI-Playground\src\AI.Domain\obj\Debug\net7.0\ref\AI.Domain.dll
