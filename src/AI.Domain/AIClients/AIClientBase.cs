@@ -116,7 +116,7 @@ public abstract class AIClientBase
         // Further authentication-header used for Azure openAI service
         HttpClient.DefaultRequestHeaders.Add("api-key", options.ApiKey);
         HttpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-        HttpClient.DefaultRequestHeaders.Add("OpenAI-Organization", options.OrganisationKey);
+        //HttpClient.DefaultRequestHeaders.Add("OpenAI-Organization", options.OrganisationKey);
     }
 
 

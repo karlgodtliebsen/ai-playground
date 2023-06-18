@@ -1,5 +1,6 @@
 ﻿using AI.Domain.Configuration;
 using AI.Domain.Utils;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +30,7 @@ public class HostApplicationFactory
             builder.AddJsonFile($"appsettings.{env}.json", optional: true);
         }
         builder.AddEnvironmentVariables();
+        builder.AddUserSecrets<HostApplicationFactory>();
 
         IConfigurationRoot configuration = builder.Build();
         IServiceCollection serviceCollection = new ServiceCollection();
