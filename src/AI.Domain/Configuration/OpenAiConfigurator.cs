@@ -1,4 +1,5 @@
 ﻿using AI.Domain.AIClients;
+using AI.Domain.AIClients.Implementation;
 using AI.Domain.HttpUtils;
 
 using Microsoft.Extensions.Configuration;

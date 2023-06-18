@@ -1,6 +1,7 @@
 ﻿using AI.Domain.AIClients;
 using AI.Domain.Configuration;
 using AI.Domain.Models;
+using AI.Domain.Models.Requests;
 using AI.Domain.Tests.Utils;
 
 using FluentAssertions;
@@ -41,7 +42,7 @@ public class TestOfOpenAIClients
 
 
     [Fact]
-    public async Task VerifyInitialAccessToTextCompletionModelForClient()
+    public async Task VerifyTextCompletionModelClient()
     {
         var aiClient = factory.Services.GetRequiredService<ICompletionAIClient>();
 
@@ -71,6 +72,7 @@ public class TestOfOpenAIClients
 
         var completionsResponse = await aiClient.GetCompletionsAsync(payload, CancellationToken.None);
         completionsResponse.Should().NotBeNull();
+        completionsResponse!.Success.Should().BeTrue();
 
         string completion = completionsResponse!.Value.Choices[0].Text.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
@@ -79,7 +81,7 @@ public class TestOfOpenAIClients
     }
 
     [Fact]
-    public async Task VerifyInitialAccessToTextChatCompletionModelForClient()
+    public async Task VerifyChatCompletionModelClient()
     {
         //https://platform.openai.com/docs/models/overview
         var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
@@ -99,6 +101,7 @@ public class TestOfOpenAIClients
 
         var charCompletionsResponse = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
         charCompletionsResponse.Should().NotBeNull();
+        charCompletionsResponse!.Success.Should().BeTrue();
 
         string completion = charCompletionsResponse!.Value.Choices[0].Message.Content.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
@@ -109,7 +112,7 @@ public class TestOfOpenAIClients
 
 
     [Fact]
-    public async Task VerifyInitialAccessToEditModelForClient()
+    public async Task VerifyEditModelClient()
     {
         //https://platform.openai.com/docs/models/overview
         var aiClient = factory.Services.GetRequiredService<IEditsAIClient>();
@@ -124,6 +127,7 @@ public class TestOfOpenAIClients
 
         var editResponse = await aiClient.GetEditsAsync(payload, CancellationToken.None);
         editResponse.Should().NotBeNull();
+        editResponse!.Success.Should().BeTrue();
 
         string completion = editResponse!.Value.Choices[0].Text.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
@@ -133,7 +137,7 @@ public class TestOfOpenAIClients
 
 
     [Fact]
-    public async Task VerifyInitialAccessToEmbeddingsModelForClient()
+    public async Task VerifyEmbeddingsModelClient()
     {
         //https://platform.openai.com/docs/models/overview
         var aiClient = factory.Services.GetRequiredService<IEmbeddingsAIClient>();
@@ -153,6 +157,8 @@ public class TestOfOpenAIClients
 
         var embeddingsResponse = await aiClient.GetEmbeddingsAsync(payload, CancellationToken.None);
         embeddingsResponse.Should().NotBeNull();
+        embeddingsResponse!.Success.Should().BeTrue();
+
         embeddingsResponse!.Value.Data.Count.Should().Be(1);
         var data = embeddingsResponse!.Value.Data[0];
         data.Embedding.Length.Should().Be(1536);
@@ -160,7 +166,7 @@ public class TestOfOpenAIClients
     }
 
     [Fact]
-    public async Task VerifyFileuploadForClient()
+    public async Task VerifyFileuploadClient()
     {
         //https://platform.openai.com/docs/models/overview
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
@@ -173,29 +179,31 @@ public class TestOfOpenAIClients
         File.Exists(payload.FullFilename).Should().BeTrue();
         var response = await aiClient.UploadFilesAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
-
+        response!.Success.Should().BeTrue();
         response!.Value.Bytes.Should().Be(5514);
         response!.Value.Filename.Should().Be("fine-tuning-data.jsonl");
     }
 
     [Fact]
-    public async Task VerifyListFilesForClient()
+    public async Task VerifyListFilesClient()
     {
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         //https://platform.openai.com/docs/models/overview
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
         response!.Value.FileData.Length.Should().BeGreaterThan(0);
     }
 
     [Fact]
-    public async Task VerifyDeleteAllFilesForClient()
+    public async Task VerifyDeleteAllFilesClient()
     {
-        await VerifyFileuploadForClient();
+        await VerifyFileuploadClient();
 
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
 
         await Task.Delay(TimeSpan.FromSeconds(10));
 
@@ -203,30 +211,34 @@ public class TestOfOpenAIClients
         {
             var responseDelete = await aiClient.DeleteFileAsync(fileData.Id, CancellationToken.None);
             responseDelete.Should().NotBeNull();
+            responseDelete!.Success.Should().BeTrue();
             responseDelete!.Value.Deleted.Should().BeTrue();
         }
         response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
         response!.Value.FileData.Length.Should().Be(0);
     }
 
 
     [Fact]
-    public async Task VerifyRetrieveFileInfoForClient()
+    public async Task VerifyRetrieveFileInfoClient()
     {
-        await VerifyDeleteAllFilesForClient();
-        await VerifyFileuploadForClient();
+        await VerifyDeleteAllFilesClient();
+        await VerifyFileuploadClient();
         await Task.Delay(TimeSpan.FromSeconds(10));
 
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
         response!.Value.FileData.Length.Should().Be(1);
 
         foreach (var fileData in response!.Value.FileData)
         {
             var responseFileInfo = await aiClient.RetrieveFileAsync(fileData.Id, CancellationToken.None);
             responseFileInfo.Should().NotBeNull();
+            responseFileInfo!.Success.Should().BeTrue();
             responseFileInfo!.Value.Bytes.Should().Be(5514);
             responseFileInfo!.Value.Filename.Should().Be("fine-tuning-data.jsonl");
         }
@@ -234,33 +246,36 @@ public class TestOfOpenAIClients
     }
 
     [Fact]
-    public async Task VerifyRetrieveFileContentForClient()
+    public async Task VerifyRetrieveFileContentClient()
     {
-        await VerifyDeleteAllFilesForClient();
-        await VerifyFileuploadForClient();
+        await VerifyDeleteAllFilesClient();
+        await VerifyFileuploadClient();
         await Task.Delay(TimeSpan.FromSeconds(10));
 
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
         response!.Value.FileData.Length.Should().Be(1);
 
         foreach (var fileData in response!.Value.FileData)
         {
             var responseFileContent = await aiClient.RetrieveFileContentAsync(fileData.Id, CancellationToken.None);
             responseFileContent.Should().NotBeNull();
+            responseFileContent!.Success.Should().BeTrue();
             responseFileContent!.Value.Length.Should().Be(5514);
         }
     }
 
 
     [Fact]
-    public async Task VerifyAccessToModels()
+    public async Task VerifyDownloadModelsClient()
     {
 
         var aiClient = factory.Services.GetRequiredService<IModelsAIClient>();
         var response = await aiClient.GetModelsAsync(CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
         response!.Value.ModelData.Length.Should().BeGreaterThan(0);
 
         foreach (var model in response!.Value.ModelData)
@@ -268,19 +283,19 @@ public class TestOfOpenAIClients
             output.WriteLine(model.ModelID);
             var modelResponse = await aiClient.GetModelAsync(model.ModelID, CancellationToken.None);
             modelResponse.Should().NotBeNull();
+            modelResponse!.Success.Should().BeTrue();
             output.WriteLine(modelResponse.Value.ModelID);
         }
     }
 
 
     [Fact]
-    public async Task VerifyCreateImage()
+    public async Task VerifyCreateImageClient()
     {
         var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
 
         var payload = new ImageGenerationRequest
         {
-            //Prompt = "A cute Filipino pair walking with umbrella, seen from the back while they walk against the sunset",
             Prompt = "A cute baby sea otter",
             NumberOfImagesToGenerate = 2,
             ImageSize = ImageSize.Size1024
@@ -288,6 +303,7 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.CreateImageAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
         response!.Value.Data.Length.Should().Be(2);
 
         foreach (var model in response!.Value.Data)
@@ -298,7 +314,7 @@ public class TestOfOpenAIClients
         }
     }
     [Fact]
-    public async Task VerifyCreateImageWithBSonReturn()
+    public async Task VerifyCreateImageWithBSonReturnClient()
     {
         var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
 
@@ -312,6 +328,7 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.CreateImageAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
         response!.Value.Data.Length.Should().Be(1);
 
         foreach (var model in response!.Value.Data)
@@ -323,7 +340,7 @@ public class TestOfOpenAIClients
     }
 
     [Fact(Skip = "WIP")]
-    public async Task VerifyEditImage()
+    public async Task VerifyEditImageClient()
     {
         var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
         string name = "img-rHHYCWOZmShIIIBNAco4l6WE.png";
@@ -342,6 +359,7 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.CreateImageEditsAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
         response!.Value.Data.Length.Should().Be(2);
 
         foreach (var model in response!.Value.Data)
@@ -353,7 +371,7 @@ public class TestOfOpenAIClients
     }
 
     [Fact]
-    public async Task VerifyVariationsImage()
+    public async Task VerifyVariationsImageClient()
     {
         var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
         string name = "img-rHHYCWOZmShIIIBNAco4l6WE.png";
@@ -370,6 +388,7 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.CreateImageVariationsAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
+        response!.Success.Should().BeTrue();
         response!.Value.Data.Length.Should().Be(2);
 
         foreach (var model in response!.Value.Data)

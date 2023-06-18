@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DB818156
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.Domain.Tests", "Tests\AI.Domain.Tests\AI.Domain.Tests.csproj", "{141A87B8-5D5B-465C-81B1-79E0C316CAA4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.ConsoleApp", "AI.ConsoleApp\AI.ConsoleApp.csproj", "{AC4FCD8C-19B2-4BA3-AD6C-DF8C07A310A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{141A87B8-5D5B-465C-81B1-79E0C316CAA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{141A87B8-5D5B-465C-81B1-79E0C316CAA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{141A87B8-5D5B-465C-81B1-79E0C316CAA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC4FCD8C-19B2-4BA3-AD6C-DF8C07A310A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC4FCD8C-19B2-4BA3-AD6C-DF8C07A310A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC4FCD8C-19B2-4BA3-AD6C-DF8C07A310A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC4FCD8C-19B2-4BA3-AD6C-DF8C07A310A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
