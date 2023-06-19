@@ -1,8 +1,7 @@
-﻿using AI.Domain.Configuration;
-
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenAI.Client.Configuration;
 
 namespace AI.ConsoleApp.Configuration;
 

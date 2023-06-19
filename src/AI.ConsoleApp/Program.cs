@@ -1,25 +1,26 @@
 ﻿using AI.ConsoleApp.Configuration;
-using AI.Domain.AIClients;
-using AI.Domain.Configuration;
-using AI.Domain.Models;
-using AI.Domain.Models.Requests;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
+using OpenAI.Client.AIClients;
+using OpenAI.Client.Configuration;
+using OpenAI.Client.Models;
+using OpenAI.Client.Models.Requests;
+
 using System.Diagnostics;
 
 const string applicationName = "AI-playground";
 
-ObservabilityConfigurator.StartLogging(applicationName);
+Observability.StartLogging(applicationName);
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.AddHostLogging();
 builder.AddSecrets<Program>();
 builder.Services.AddAppConfiguration(builder.Configuration);
 
-ObservabilityConfigurator.LogFinalizedConfiguration(applicationName);
+Observability.LogFinalizedConfiguration(applicationName);
 
 IHost host = builder.Build();
 using (host)
@@ -35,7 +36,7 @@ using (host)
     var messages = new[]
     {
         new ChatCompletionMessage {Role = "system", Content = "You are a helpful assistant.!" },
-        new ChatCompletionMessage { Role = "user", Content = "How long until we reach mars?" }
+        new ChatCompletionMessage { Role = "user", Content = "How long until Humanity reach mars?" }
     };
     var payload = new ChatCompletionRequest
     {
@@ -48,14 +49,18 @@ using (host)
     Debug.Assert(charCompletionsResponse is not null);
     Debug.Assert(charCompletionsResponse.Success);
     Debug.Assert(charCompletionsResponse!.Value is not null);
+    foreach (var choice in charCompletionsResponse!.Value!.Choices)
+    {
+        string completion = choice.Message.Content.Trim();
+        Console.WriteLine(completion);
+    }
 
-    string completion = charCompletionsResponse!.Value!.Choices[0].Message.Content.Trim();
-    Console.WriteLine(completion);
+
     Console.ReadLine();
 }
 
 
-ObservabilityConfigurator.StopLogging(applicationName);
+Observability.StopLogging(applicationName);
 
 
 /// <summary>

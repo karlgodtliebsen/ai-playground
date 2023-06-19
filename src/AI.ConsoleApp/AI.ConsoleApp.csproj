@@ -8,9 +8,6 @@
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <None Remove="appsettings.json" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Include="appsettings.json">
@@ -49,7 +46,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AI.Domain\AI.Domain.csproj" />
+		<ProjectReference Include="..\OpenAI.Client\OpenAI.Client.csproj" />
 	</ItemGroup>
 
 </Project>
