@@ -3,7 +3,7 @@ using OpenAI.Client.Domain;
 
 namespace OpenAI.Client.Models.Requests;
 
-public class EmbeddingsRequest : IModelRequest
+public class ExtendedEmbeddingsRequest : IModelRequest
 {
     [JsonPropertyName("model")]
     public string Model { get; set; } = "";
@@ -16,8 +16,7 @@ public class EmbeddingsRequest : IModelRequest
     ///Input text to embed, encoded as a string or array of tokens.
     /// To embed multiple inputs in a single request, pass an array of strings or array of token arrays.
     /// Each input must not exceed the max input tokens for the model (8191 tokens for text-embedding-ada-002).
-    /// Example Python code for counting tokens.
-    public string Input { get; init; } = "";
+    public string[] Input { get; init; }
 
 
     /// <summary>
@@ -26,6 +25,3 @@ public class EmbeddingsRequest : IModelRequest
     [JsonPropertyName("user")]
     public string? User { get; init; } = default!;
 }
-
-//TODO: Add support for the following request
-//https://platform.openai.com/docs/api-reference/embeddings

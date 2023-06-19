@@ -4,9 +4,10 @@ namespace OpenAI.Client.Models.Requests;
 
 public class ChatCompletionRequest : BaseRequest
 {
-    [JsonPropertyName("model")]
-    public string Model { get; init; }
-
+    public ChatCompletionRequest()
+    {
+        base.RequestUri = "chat/completions";
+    }
 
     [JsonPropertyName("messages")]
     public ChatCompletionMessage[] Messages { get; init; }

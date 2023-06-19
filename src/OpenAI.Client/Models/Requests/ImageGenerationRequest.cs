@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using OpenAI.Client.Domain;
 
 namespace OpenAI.Client.Models.Requests;
 
@@ -7,8 +8,18 @@ namespace OpenAI.Client.Models.Requests;
 /// </summary>
 /// <param name="request">Request to be send</param>
 /// <returns>Asynchronously returns the image result. Look in its <see cref="Data.Url"/> </returns>
-public class ImageGenerationRequest
+public class ImageGenerationRequest : IRequest
 {
+
+    public ImageGenerationRequest()
+    {
+        RequestUri = "images/generations";
+    }
+
+    [JsonIgnore]
+    public string RequestUri { get; set; }
+
+
     /// <summary>
     /// A text description of the desired image(s). The maximum length is 1000 characters.
     /// </summary>

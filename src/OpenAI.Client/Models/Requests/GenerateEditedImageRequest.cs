@@ -1,10 +1,26 @@
-﻿using System.Text.Json.Serialization;
+﻿using OpenAI.Client.Domain;
+
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Client.Models.Requests;
 
-public class GenerateEditedImageRequest
+public class GenerateEditedImageRequest : IRequest
 {
+    public GenerateEditedImageRequest()
+    {
+        RequestUri = "images/edits";
+    }
+
+    [JsonPropertyName("model")]
+    public string Model { get; set; }
+
     [JsonIgnore]
+    public string RequestUri { get; set; }
+
+    [JsonIgnore]
+    /// <summary>
+    /// Contain the image to create variations of.
+    /// </summary>
     public Stream ImageStream { get; init; }
 
     /// <summary>

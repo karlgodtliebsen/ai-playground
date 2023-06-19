@@ -7,10 +7,10 @@ using OpenAI.Client.Models.Responses;
 
 namespace OpenAI.Client.AIClients.Implementation;
 
-public class EmbeddingsAIClient : AIClientBase, IEmbeddingsAIClient
+public class ModerationAIClient : AIClientBase, IModerationAIClient
 {
 
-    public EmbeddingsAIClient(
+    public ModerationAIClient(
         IHttpClientFactory httpClientFactory,
         HttpClient httpClient,
         IOptions<OpenAIOptions> options,
@@ -18,10 +18,9 @@ public class EmbeddingsAIClient : AIClientBase, IEmbeddingsAIClient
     {
     }
 
-
-    public async Task<Response<Embeddings>?> GetEmbeddingsAsync(EmbeddingsRequest request, CancellationToken cancellationToken)
+    public async Task<Response<ModerationResponse>?> GetModerationAsync(ModerationRequest request, CancellationToken cancellationToken)
     {
-        var result = await PostAsync<EmbeddingsRequest, Embeddings>(request.RequestUri, request, cancellationToken);
-        return new Response<Embeddings>(result!);
+        var result = await PostAsync<ModerationRequest, ModerationResponse>(request.RequestUri, request, cancellationToken);
+        return new Response<ModerationResponse>(result!);
     }
 }

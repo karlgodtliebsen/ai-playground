@@ -1,10 +1,13 @@
-﻿using System.Net.Http.Json;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Models;
 using OpenAI.Client.Models.Requests;
 using OpenAI.Client.Models.Responses;
+
 using SerilogTimings.Extensions;
+
+using System.Net.Http.Json;
 
 namespace OpenAI.Client.AIClients.Implementation;
 
@@ -46,6 +49,7 @@ public class FilesAIClient : AIClientBase, IFilesAIClient
 
     public async Task<Response<Files>?> GetFilesAsync(CancellationToken cancellationToken)
     {
+        //request.RequestUri
         var result = await GetAsync<Files>("files", cancellationToken);
         return new Response<Files>(result!);
     }

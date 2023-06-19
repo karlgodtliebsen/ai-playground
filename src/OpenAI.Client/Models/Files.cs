@@ -2,7 +2,6 @@
 
 namespace OpenAI.Client.Models;
 
-
 public class Files
 {
     /// <summary> Id for completion response. </summary>

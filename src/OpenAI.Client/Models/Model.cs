@@ -11,19 +11,19 @@ public class Model
     /// The id/name of the model
     /// </summary>
     [JsonPropertyName("id")]
-    public string ModelID { get; set; }
+    public string Id { get; init; } = default!;
 
     /// <summary>
     /// The owner of this model.  Generally "openai" is a generic OpenAI model, or the organization if a custom or finetuned model.
     /// </summary>
     [JsonPropertyName("owned_by")]
-    public string OwnedBy { get; set; }
+    public string OwnedBy { get; init; } = default!;
 
     /// <summary>
     /// The type of object. Should always be 'model'.
     /// </summary>
     [JsonPropertyName("object")]
-    public string Object { get; set; }
+    public string Object { get; init; } = default!;
 
     /// The time when the model was created
     public DateTime? CreatedAt => Created.HasValue ? (DateTime?)(DateTimeOffset.FromUnixTimeSeconds(Created.Value).DateTime) : null;
@@ -32,7 +32,7 @@ public class Model
     /// The time when the model was created in unix epoch format
     /// </summary>
     [JsonPropertyName("created")]
-    public long? Created { get; set; }
+    public long? Created { get; init; } = default!;
 
     /// <summary>
     /// Permissions for use of the model
@@ -40,6 +40,15 @@ public class Model
     [JsonPropertyName("permission")]
     public List<Permissions> Permission { get; set; } = new List<Permissions>();
 
+    public Model(string name)
+    {
+        this.Id = name;
+    }
 
-
+    /// <summary>
+    /// Represents a generic Model/model
+    /// </summary>
+    public Model()
+    {
+    }
 }

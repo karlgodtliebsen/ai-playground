@@ -1,21 +1,28 @@
-﻿using System.Text.Json.Serialization;
+﻿using OpenAI.Client.Domain;
+
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Client.Models.Requests;
 
-public class FineTuneRequest
+public class FineTuneRequest : IModelRequest
 {
+
     /// <summary>
-    /// TrainingFile.
+    /// Which model was used to generate this result.
     /// </summary>
+    [JsonPropertyName("model")]
+    public string Model { get; set; }
+
+    [JsonIgnore]
+    public string RequestUri { get; set; } = "fine-tunes";
+
+
     [JsonPropertyName("training_file")]
     public string TrainingFile { get; set; }
 
 
     [JsonPropertyName("validation_file")]
     public string? ValidationFile { get; set; } = default!;
-
-    [JsonPropertyName("model")]
-    public string? Model { get; set; } = default!;
 
 
     [JsonPropertyName("n_epochs")]

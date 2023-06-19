@@ -15,6 +15,4 @@ public interface IFilesAIClient
     Task<Response<FileData>?> RetrieveFileAsync(string fileId, CancellationToken cancellationToken);
 
     Task<Response<string>?> RetrieveFileContentAsync(string fileId, CancellationToken cancellationToken);
-
-
 }

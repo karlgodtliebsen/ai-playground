@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 
 using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
+using OpenAI.Client.Domain;
 using OpenAI.Client.Models;
 using OpenAI.Client.Models.Requests;
 using OpenAI.Tests.Utils;
@@ -23,6 +24,7 @@ public class TestOfOpenAIClients
     private readonly HostApplicationFactory factory;
     private readonly OpenAIOptions options;
     private string path;
+    private IModelRequestFactory requestFactory;
     public TestOfOpenAIClients(ITestOutputHelper output)
     {
         this.output = output;
@@ -38,6 +40,7 @@ public class TestOfOpenAIClients
         logger = factory.Services.GetRequiredService<ILogger>();
         options = factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         this.path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
+        requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();
     }
 
 
@@ -53,7 +56,7 @@ public class TestOfOpenAIClients
 
         foreach (var model in response!.Value.ModelData)
         {
-            output.WriteLine(model.ModelID);
+            output.WriteLine(model.Id);
             //var modelResponse = await aiClient.GetModelAsync(model.ModelID, CancellationToken.None);
             //modelResponse.Should().NotBeNull();
             //modelResponse!.Success.Should().BeTrue();
@@ -66,7 +69,6 @@ public class TestOfOpenAIClients
     {
         var aiClient = factory.Services.GetRequiredService<ICompletionAIClient>();
 
-
         //https://platform.openai.com/docs/models/overview
         //text-davinci-003
         //Can do any language task with better quality, longer output, and consistent instruction-following
@@ -76,19 +78,19 @@ public class TestOfOpenAIClients
         string prompt = "Say this is a test";
         output.WriteLine($"Input: {prompt}");
 
-
-        var payload = new CompletionRequest
-        {
-            Model = deploymentName,
-            Prompt = prompt,
-            MaxTokens = 7,
-            Temperature = 0.0f,
-            TopP = 1.0f,
-            NumChoicesPerPrompt = 1,
-            Stream = false,
-            Logprobs = null,
-            //Stop = "\n"
-        };
+        var payload = requestFactory.CreateRequest<CompletionRequest>(() =>
+            new CompletionRequest
+            {
+                Model = deploymentName,
+                Prompt = prompt,
+                MaxTokens = 7,
+                Temperature = 0.0f,
+                TopP = 1.0f,
+                NumChoicesPerPrompt = 1,
+                Stream = false,
+                Logprobs = null,
+                //Stop = "\n"
+            });
 
         var completionsResponse = await aiClient.GetCompletionsAsync(payload, CancellationToken.None);
         completionsResponse.Should().NotBeNull();
@@ -100,10 +102,13 @@ public class TestOfOpenAIClients
         output.WriteLine(completion);
     }
 
+
     [Fact]
     public async Task VerifyChatCompletionModelClient()
     {
         //https://platform.openai.com/docs/models/overview
+        //https://platform.openai.com/docs/api-reference/chat/create
+
         var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
 
         string deploymentName = "gpt-3.5-turbo";
@@ -113,21 +118,47 @@ public class TestOfOpenAIClients
             new ChatCompletionMessage { Role = "user", Content = "Hello!" }
         };
 
-        var payload = new ChatCompletionRequest
-        {
-            Model = deploymentName,
-            Messages = messages
-        };
+        var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
+            new ChatCompletionRequest
+            {
+                Model = deploymentName,
+                Messages = messages
+            });
 
         var charCompletionsResponse = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
         charCompletionsResponse.Should().NotBeNull();
         charCompletionsResponse!.Success.Should().BeTrue();
+        charCompletionsResponse!.Value.Should().NotBeNull();
 
-        string completion = charCompletionsResponse!.Value.Choices[0].Message.Content.Trim();
+
+        string completion = charCompletionsResponse!.Value!.Choices[0]!.Message!.Content.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
         completion.Should().Contain("Hello");
         completion.Should().Contain("I assist you today?");
         output.WriteLine(completion);
+    }
+    [Fact]
+    public async Task VerifyModerationModelClient()
+    {
+        //https://platform.openai.com/docs/models/overview
+        //https://platform.openai.com/docs/api-reference/moderations/create
+
+        var aiClient = factory.Services.GetRequiredService<IModerationAIClient>();
+
+        string deploymentName = "text-moderation-latest";
+
+        var payload = requestFactory.CreateRequest<ModerationRequest>(() =>
+            new ModerationRequest
+            {
+                Model = deploymentName,
+                Input = "This is a Test. Please apply negative moderation"// I do not want to send a bad sentence to the API
+            });
+
+        var moderationResponse = await aiClient.GetModerationAsync(payload, CancellationToken.None);
+        moderationResponse.Should().NotBeNull();
+        moderationResponse!.Success.Should().BeTrue();
+        moderationResponse!.Value.Should().NotBeNull();
+        moderationResponse!.Value.Results.Should().NotBeNull();//Shallow check
     }
 
 
@@ -137,13 +168,14 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/models/overview
         var aiClient = factory.Services.GetRequiredService<IEditsAIClient>();
 
-        var payload = new EditsRequest
-        {
-            //ID of the model to use. You can use the text-davinci-edit-001 or code-davinci-edit-001 model with this endpoint.
-            Model = "text-davinci-edit-001",
-            Input = "What day of the wek is it?",
-            Instruction = "Fix the spelling mistakes",
-        };
+        var payload = requestFactory.CreateRequest<EditsRequest>(() =>
+            new EditsRequest
+            {
+                //ID of the model to use. You can use the text-davinci-edit-001 or code-davinci-edit-001 model with this endpoint.
+                Model = "text-davinci-edit-001",
+                Input = "What day of the wek is it?",
+                Instruction = "Fix the spelling mistakes",
+            });
 
         var editResponse = await aiClient.GetEditsAsync(payload, CancellationToken.None);
         editResponse.Should().NotBeNull();
@@ -162,12 +194,13 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/models/overview
         var aiClient = factory.Services.GetRequiredService<IEmbeddingsAIClient>();
 
-        var payload = new EmbeddingsRequest
-        {
-            Model = "text-embedding-ada-002",
-            Input = "The food was delicious and the waiter...",
-            User = "the user",
-        };
+        var payload = requestFactory.CreateRequest<EmbeddingsRequest>(() =>
+            new EmbeddingsRequest
+            {
+                Model = "text-embedding-ada-002",
+                Input = "The food was delicious and the waiter...",
+                User = "the user",
+            });
         var serializerOptions = new JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
@@ -191,11 +224,13 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/models/overview
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
 
-        var payload = new UploadFileRequest
-        {
-            FullFilename = Path.Combine(path, "fine-tuning-data.jsonl"),
-            Purpose = "fine-tune",
-        };
+        var payload =
+            new UploadFileRequest
+            {
+                FullFilename = Path.Combine(path, "fine-tuning-data.jsonl"),
+                Purpose = "fine-tune",
+            };
+
         File.Exists(payload.FullFilename).Should().BeTrue();
         var response = await aiClient.UploadFilesAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
@@ -295,12 +330,14 @@ public class TestOfOpenAIClients
     {
         var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
 
-        var payload = new ImageGenerationRequest
-        {
-            Prompt = "A cute baby sea otter",
-            NumberOfImagesToGenerate = 2,
-            ImageSize = ImageSize.Size1024
-        };
+        var payload =
+
+            new ImageGenerationRequest
+            {
+                Prompt = "A cute baby sea otter",
+                NumberOfImagesToGenerate = 2,
+                ImageSize = ImageSize.Size1024
+            };
 
         var response = await aiClient.CreateImageAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();

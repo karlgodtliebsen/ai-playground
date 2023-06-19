@@ -1,10 +1,13 @@
-﻿using System.Net.Http.Json;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Models;
 using OpenAI.Client.Models.Requests;
 using OpenAI.Client.Models.Responses;
+
 using SerilogTimings.Extensions;
+
+using System.Net.Http.Json;
 
 namespace OpenAI.Client.AIClients.Implementation;
 
@@ -73,18 +76,18 @@ public class ImagesAIClient : AIClientBase, IImagesAIClient
     }
     public async Task<Response<GeneratedImage>?> CreateImageAsync(ImageGenerationRequest request, CancellationToken cancellationToken)
     {
-        var result = await PostAsync<ImageGenerationRequest, GeneratedImage>("images/generations", request, cancellationToken);
+        var result = await PostAsync<ImageGenerationRequest, GeneratedImage>(request.RequestUri, request, cancellationToken);
         return new Response<GeneratedImage>(result!);
     }
 
     public async Task<Response<GeneratedImage>?> CreateImageEditsAsync(GenerateEditedImageRequest request, CancellationToken cancellationToken)
     {
-        var result = await UploadImage("images/edits", request, cancellationToken);
+        var result = await UploadImage(request.RequestUri, request, cancellationToken);
         return new Response<GeneratedImage>(result!);
     }
     public async Task<Response<GeneratedImage>?> CreateImageVariationsAsync(GenerateVariationsOfImageRequest request, CancellationToken cancellationToken)
     {
-        var result = await UploadImage("images/variations", request, cancellationToken);
+        var result = await UploadImage(request.RequestUri, request, cancellationToken);
         return new Response<GeneratedImage>(result!);
     }
 }

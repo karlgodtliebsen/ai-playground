@@ -1,4 +1,6 @@
 ﻿
+using OpenAI.Client.Models.Requests;
+
 using System.Text.Json.Serialization;
 
 namespace OpenAI.Client.Models;
@@ -17,6 +19,6 @@ public class FineTunes
 
     [JsonPropertyName("data")]
 
-    public FineTune[] FineTuneData { get; set; }
+    public FineTuneRequest[] Data { get; set; }
 
 }

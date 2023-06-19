@@ -1,9 +1,17 @@
 ﻿using System.Text.Json.Serialization;
+using OpenAI.Client.Domain;
 
 namespace OpenAI.Client.Models.Requests;
 
-public class BaseRequest
+public class BaseRequest : IModelRequest
 {
+    [JsonPropertyName("model")]
+    public string Model { get; set; }
+
+    [JsonIgnore]
+    public string RequestUri { get; set; }
+
+
     [JsonPropertyName("max_tokens")]
     public int? MaxTokens { get; init; } = 16;
 

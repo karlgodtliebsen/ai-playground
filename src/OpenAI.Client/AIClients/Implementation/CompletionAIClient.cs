@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Models;
 using OpenAI.Client.Models.Requests;
@@ -19,12 +20,7 @@ public class CompletionAIClient : AIClientBase, ICompletionAIClient
 
     public async Task<Response<Completions>?> GetCompletionsAsync(CompletionRequest request, CancellationToken cancellationToken)
     {
-        var result = await PostAsync<CompletionRequest, Completions>("completions", request, cancellationToken);
+        var result = await PostAsync<CompletionRequest, Completions>(request.RequestUri, request, cancellationToken);
         return new Response<Completions>(result!);
     }
-
-
-
-
-
 }

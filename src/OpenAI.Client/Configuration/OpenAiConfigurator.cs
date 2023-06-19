@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using OpenAI.Client.AIClients;
 using OpenAI.Client.AIClients.Implementation;
+using OpenAI.Client.Domain;
 using OpenAI.Client.HttpUtils;
 
 using Serilog;
@@ -13,6 +15,9 @@ public static class OpenAiConfigurator
 {
     public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, OpenAIOptions options)
     {
+        services.AddTransient<IModelRequestFactory, ModelRequestFactory>();
+        services.AddSingleton<IOptions<OpenAiModels>>(new OptionsWrapper<OpenAiModels>(new OpenAiModels()));
+
         ArgumentNullException.ThrowIfNull(options);
 
         services.AddHttpClient<ICompletionAIClient, CompletionAIClient>((sp, client) =>
@@ -21,12 +26,27 @@ public static class OpenAiConfigurator
         })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
+
+        services.AddHttpClient<IModerationAIClient, ModerationAIClient>((sp, client) =>
+        {
+            client.BaseAddress = options.GetBaseAddress();
+        })
+            .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
+            .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
+
         services.AddHttpClient<IChatCompletionAIClient, ChatCompletionAIClient>((sp, client) =>
         {
             client.BaseAddress = options.GetBaseAddress();
         })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
+
+        services.AddHttpClient<IAudioFileAIClient, AudioFileAIClient>((sp, client) =>
+                {
+                    client.BaseAddress = options.GetBaseAddress();
+                })
+                    .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
+                    .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
 
         services.AddHttpClient<IEmbeddingsAIClient, EmbeddingsAIClient>((sp, client) =>
         {

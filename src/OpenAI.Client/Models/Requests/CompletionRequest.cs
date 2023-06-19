@@ -4,11 +4,16 @@ namespace OpenAI.Client.Models.Requests;
 
 public class CompletionRequest : BaseRequest
 {
-    [JsonPropertyName("model")]
-    public string Model { get; init; }
+    /// <summary>
+    /// Constructor for Completions Request
+    /// </summary>
+    public CompletionRequest()
+    {
+        base.RequestUri = "completions";
+    }
 
-    [JsonPropertyName("prompt")]
-    public string Prompt { get; init; }
+
+    [JsonPropertyName("prompt")] public string Prompt { get; init; } = "";
 
     /// <summary>
     /// The suffix that comes after a completion of inserted text.  Defaults to null.
