@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 
 using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
+using OpenAI.Client.Domain;
 using OpenAI.Client.Models;
 using OpenAI.Client.Models.Requests;
 
@@ -25,9 +26,9 @@ Observability.LogFinalizedConfiguration(applicationName);
 IHost host = builder.Build();
 using (host)
 {
-
     var aiClient = host.Services.GetRequiredService<IChatCompletionAIClient>()!;
     var options = host.Services.GetRequiredService<IOptions<OpenAIOptions>>()!;
+    var requestFactory = host.Services.GetRequiredService<IModelRequestFactory>();
     Debug.Assert(options is not null);
     Debug.Assert(options.Value is not null);
     Debug.Assert(options.Value.ApiKey != "<openai api key>");
@@ -38,11 +39,13 @@ using (host)
         new ChatCompletionMessage {Role = "system", Content = "You are a helpful assistant.!" },
         new ChatCompletionMessage { Role = "user", Content = "Elaborate on the question: how long until Humanity reach mars?" }
     };
-    var payload = new ChatCompletionRequest
-    {
-        Model = deploymentName,
-        Messages = messages
-    };
+
+    var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
+        new ChatCompletionRequest
+        {
+            Model = deploymentName,
+            Messages = messages
+        });
 
     var charCompletionsResponse = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
 
@@ -55,7 +58,7 @@ using (host)
         Console.WriteLine(completion);
     }
 
-
+    Console.WriteLine("...");
     Console.ReadLine();
 }
 

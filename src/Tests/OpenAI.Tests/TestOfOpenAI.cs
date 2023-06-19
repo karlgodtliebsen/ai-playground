@@ -25,6 +25,7 @@ public class TestOfOpenAIClients
     private readonly OpenAIOptions options;
     private string path;
     private IModelRequestFactory requestFactory;
+
     public TestOfOpenAIClients(ITestOutputHelper output)
     {
         this.output = output;
@@ -201,10 +202,6 @@ public class TestOfOpenAIClients
                 Input = "The food was delicious and the waiter...",
                 User = "the user",
             });
-        var serializerOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
 
         string jsonContent = JsonSerializer.Serialize(payload, new JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
