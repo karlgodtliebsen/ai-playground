@@ -36,7 +36,7 @@ using (host)
     var messages = new[]
     {
         new ChatCompletionMessage {Role = "system", Content = "You are a helpful assistant.!" },
-        new ChatCompletionMessage { Role = "user", Content = "How long until Humanity reach mars?" }
+        new ChatCompletionMessage { Role = "user", Content = "Elaborate on the question: how long until Humanity reach mars?" }
     };
     var payload = new ChatCompletionRequest
     {
@@ -51,7 +51,7 @@ using (host)
     Debug.Assert(charCompletionsResponse!.Value is not null);
     foreach (var choice in charCompletionsResponse!.Value!.Choices)
     {
-        string completion = choice.Message.Content.Trim();
+        string completion = choice.Message!.Content!.Trim();
         Console.WriteLine(completion);
     }
 
