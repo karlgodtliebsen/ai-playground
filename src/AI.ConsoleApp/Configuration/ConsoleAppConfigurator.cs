@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using OpenAI.Client.Configuration;
 
 namespace AI.ConsoleApp.Configuration;
@@ -18,7 +19,7 @@ public static class ConsoleAppConfigurator
 
     public static IServiceCollection AddAppConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        return services.AddAOpenAIConfiguration(configuration);
+        return services.AddOpenAIConfiguration(configuration);
     }
 
 }

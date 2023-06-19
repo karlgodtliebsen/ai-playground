@@ -30,7 +30,7 @@ public class TestOfOpenAIClients
             environment: () => "IntegrationTests",
             serviceContext: (services, configuration) =>
             {
-                services.AddAOpenAIConfiguration(configuration);
+                services.AddOpenAIConfiguration(configuration);
             },
             fixedDateTime: () => DateTimeOffset.UtcNow,
             output: () => output

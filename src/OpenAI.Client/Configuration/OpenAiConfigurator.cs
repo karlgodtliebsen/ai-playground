@@ -1,15 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using OpenAI.Client.AIClients;
 using OpenAI.Client.AIClients.Implementation;
 using OpenAI.Client.HttpUtils;
+
 using Serilog;
 
 namespace OpenAI.Client.Configuration;
 
 public static class OpenAiConfigurator
 {
-    public static IServiceCollection AddAOpenAIConfiguration(this IServiceCollection services, OpenAIOptions options)
+    public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, OpenAIOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
 
@@ -66,14 +68,14 @@ public static class OpenAiConfigurator
         return services;
     }
 
-    public static IServiceCollection AddAOpenAIConfiguration(this IServiceCollection services, Action<OpenAIOptions>? options = null)
+    public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, Action<OpenAIOptions>? options = null)
     {
         var configuredOptions = new OpenAIOptions();
         options?.Invoke(configuredOptions);
-        return services.AddAOpenAIConfiguration(configuredOptions);
+        return services.AddOpenAIConfiguration(configuredOptions);
     }
 
-    public static IServiceCollection AddAOpenAIConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
+    public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
         if (sectionName is null)
         {
@@ -82,23 +84,24 @@ public static class OpenAiConfigurator
         services.Configure<OpenAIOptions>(configuration.GetSection(sectionName));
         var configuredOptions = configuration.GetSection(sectionName).Get<OpenAIOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
-        return services.AddAOpenAIConfiguration(configuredOptions);
+        return services.AddOpenAIConfiguration(configuredOptions);
     }
 
-    public static IServiceCollection AddAzureAOpenAIConfiguration(this IServiceCollection services, IConfiguration configuration)
+
+    public static IServiceCollection AddAzureOpenAIConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
         Log.Logger.Information("Starting Adding Azure OpenAI Configuration to Application");
 
-        //services.Configure<OpenAIOptions>(configuration.GetSection(OpenAIOptions.ConfigSectionName));
-        //services.AddHttpClient<IAIClient, AIClient>((sp, client) =>
-        //    {
-        //        var options = sp.GetRequiredService<IOptions<OpenAIOptions>>().Value;
-        //        client.BaseAddress = options.GetBaseAddress();
-        //    })
-        //    .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
-        //    .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
+        if (sectionName is null)
+        {
+            sectionName = OpenAIOptions.ConfigSectionName;
+        }
+        services.Configure<OpenAIOptions>(configuration.GetSection(sectionName));
+        var configuredOptions = configuration.GetSection(sectionName).Get<OpenAIOptions>()!;
+        ArgumentNullException.ThrowIfNull(configuredOptions);
         Log.Logger.Information("Completed Adding Azure OpenAI Configuration to Application");
-        return services;
+        return services.AddOpenAIConfiguration(configuredOptions);
     }
+
 
 }

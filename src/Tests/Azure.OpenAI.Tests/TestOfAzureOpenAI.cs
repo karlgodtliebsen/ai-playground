@@ -1,8 +1,11 @@
 ﻿using Azure.AI.OpenAI;
 using Azure.OpenAI.Tests.Utils;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using OpenAI.Client.Configuration;
+
 using Xunit.Abstractions;
 
 namespace Azure.OpenAI.Tests;
@@ -24,7 +27,7 @@ public class TestOfAzureOpenAI
             environment: () => "IntegrationTests",
             serviceContext: (services, configuration) =>
             {
-                services.AddAzureAOpenAIConfiguration(configuration);
+                services.AddAzureOpenAIConfiguration(configuration);
             },
             fixedDateTime: () => DateTimeOffset.UtcNow,
             output: () => output
