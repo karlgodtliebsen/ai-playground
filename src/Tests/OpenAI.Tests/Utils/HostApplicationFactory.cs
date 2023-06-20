@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using AI.Library.Configuration;
+using AI.Library.Utils;
 
-using OpenAI.Client.Configuration;
-using OpenAI.Client.Utils;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using Serilog;
 

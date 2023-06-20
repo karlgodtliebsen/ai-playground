@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Client.Utils
+﻿namespace AI.Library.Utils
 {
     /// <summary>
     /// Service for providing the Date Time

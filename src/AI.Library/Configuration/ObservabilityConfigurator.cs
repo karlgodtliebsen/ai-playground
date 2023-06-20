@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 using Serilog;
 
-namespace OpenAI.Client.Configuration;
+namespace AI.Library.Configuration;
 
 public static class ObservabilityConfigurator
 {
@@ -82,16 +82,5 @@ public static class ObservabilityConfigurator
     {
         services.AddHttpLogging(logging => { logging.LoggingFields = HttpLoggingFields.All; });
         return services;
-    }
-
-    /// <summary>
-    /// UseLogging
-    /// </summary>
-    /// <param name="app"></param>
-    /// <returns></returns>
-    public static IApplicationBuilder UseLogging(this IApplicationBuilder app)
-    {
-        app.UseSerilogRequestLogging();
-        return app;
     }
 }
