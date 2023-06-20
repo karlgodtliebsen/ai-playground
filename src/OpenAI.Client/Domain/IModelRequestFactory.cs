@@ -12,4 +12,7 @@ public interface IModelRequestFactory
     /// <remarks>Details at https://platform.openai.com/docs/models/how-we-use-your-data</remarks>
     /// <exception cref="ArgumentException"></exception>
     T CreateRequest<T>(Func<T> create) where T : class, IModelRequest, new();
+
+
+    IList<string> GetModels(string requestUri);
 }

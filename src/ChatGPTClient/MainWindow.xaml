@@ -1,0 +1,76 @@
+﻿<Window x:Class="ChatGPTClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChatGPTClient"
+        mc:Ignorable="d"
+        Title="ChatGPT Client" Width="600" Height="300" d:DataContext="{d:DesignData ViewModel}">
+    <Grid Margin="5">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <Label VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"  Background="LightBlue" Content="ChatGPT "/>
+        </StackPanel>
+
+        <Grid  Grid.Row="1">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="Auto" />
+                <!-- GridSplitter width -->
+                <!-- Sidebar width -->
+                <ColumnDefinition Width="2*" />
+                <!-- Main content width -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar -->
+            <StackPanel Grid.Column="0" Margin="10,0,10,0" >
+                <Label  Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"   Content="API Key"/>
+                <TextBox  VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"  Background="Gray" Text="{Binding ApiKey.ApiKey}"/>
+                <Label Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"   Content="Model"/>
+                <!--<TextBox  VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"  
+                Background="Gray"  Text="{Binding ViewState.SelectedModel.ModelId}"/>-->
+
+                <!--<ListBox ItemsSource="{Binding ViewState.Models}" SelectedItem="{Binding ViewState.SelectedModel}"  
+                         Height="40"
+                         Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"   >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ModelId}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>-->
+
+
+                <ListBox ItemsSource="{Binding Path=ViewState.Models, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding ViewState.SelectedModel}" 
+                         Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                         SelectedValue="{Binding ModelId}" 
+                         SelectedValuePath="ModelId" DisplayMemberPath="ModelId" 
+                >
+                    <!--<ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ModelId}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>-->
+                </ListBox>
+
+            </StackPanel>
+            <GridSplitter Grid.Column="1" Width="5" Background="Gray" HorizontalAlignment="Stretch" />
+
+            <!--<local:ChatGPTControl Grid.Column="2" Margin="10,0,10,0"  DataContext="{Binding ViewState}" />-->
+
+            <TabControl x:Name ="TabControl" Background="Aqua" Grid.Column="2" Margin="10,0,10,0"  DataContext="{Binding ViewState}">
+
+
+            </TabControl>
+
+
+
+        </Grid>
+    </Grid>
+</Window>

@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Client.Domain;
 
-public class OpenAiModels
+public class OpenAiModelsVerification
 {
     public bool Verify(IModelRequest request)
     {

@@ -1,0 +1,34 @@
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+
+using OpenAI.Client.Configuration;
+
+namespace ChatGPTClient.Configuration;
+
+/// <summary>
+/// 
+/// </summary>
+public static class AppConfigurator
+{
+    public static HostApplicationBuilder AddSecrets<T>(this HostApplicationBuilder builder) where T : class
+    {
+        builder.Configuration.AddUserSecrets<T>();
+        return builder;
+    }
+    public static IHostBuilder AddSecrets<T>(this IHostBuilder builder) where T : class
+    {
+        builder.ConfigureAppConfiguration((_, cb) =>
+        {
+            cb.AddUserSecrets<T>();
+        });
+        return builder;
+    }
+    public static IServiceCollection AddAppConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSingleton<IOptions<ViewState>>(new OptionsWrapper<ViewState>(new ViewState()));
+        return services.AddOpenAIConfiguration(configuration);
+    }
+
+}
