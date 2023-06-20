@@ -1,4 +1,7 @@
-﻿using AI.ConsoleApp.Configuration;
+﻿using System.Diagnostics;
+
+using AI.ConsoleApp.Configuration;
+using AI.Library.Configuration;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,8 +12,6 @@ using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
 using OpenAI.Client.Models;
 using OpenAI.Client.Models.Requests;
-
-using System.Diagnostics;
 
 const string applicationName = "AI-playground";
 

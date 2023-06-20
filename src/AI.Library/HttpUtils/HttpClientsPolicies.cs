@@ -2,7 +2,7 @@
 using Polly;
 using Polly.Extensions.Http;
 
-namespace OpenAI.Client.HttpUtils;
+namespace AI.Library.HttpUtils;
 
 public static class HttpClientsPolicies
 {

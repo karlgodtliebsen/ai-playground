@@ -1,11 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AI.Library.HttpUtils;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using OpenAI.Client.AIClients;
 using OpenAI.Client.AIClients.Implementation;
 using OpenAI.Client.Domain;
-using OpenAI.Client.HttpUtils;
 
 using Serilog;
 

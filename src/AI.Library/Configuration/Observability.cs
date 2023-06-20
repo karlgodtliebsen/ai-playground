@@ -1,14 +1,14 @@
-﻿using Destructurama;
+﻿using System.Diagnostics;
+using System.Reflection;
+
+using Destructurama;
 
 using Microsoft.Extensions.Configuration;
 
 using Serilog;
 using Serilog.Events;
 
-using System.Diagnostics;
-using System.Reflection;
-
-namespace OpenAI.Client.Configuration;
+namespace AI.Library.Configuration;
 
 /// <summary>
 /// Configures the Logging used by this application - Serilog - web related logging and telemetry
@@ -51,7 +51,7 @@ public static class Observability
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .Enrich.FromLogContext()
             .WriteTo.Console()
-            .WriteTo.Trace()
+            //.WriteTo.Trace()
             .WriteTo.Debug()
             .Destructure.UsingAttributes();
         return cfg;

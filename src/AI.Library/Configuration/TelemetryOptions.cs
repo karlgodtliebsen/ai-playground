@@ -1,9 +1,12 @@
-﻿namespace OpenAI.Client.Configuration;
+﻿using Destructurama.Attributed;
+
+namespace AI.Library.Configuration;
 
 /// <summary>
-/// Options for setting Serilog up
+/// Options to set up telemetry
+/// Uses masked protections for logging
 /// </summary>
-public class LoggingOptions
+public class TelemetryOptions
 {
     /// <summary>
     /// Configuration ConfigSectionName
@@ -16,12 +19,8 @@ public class LoggingOptions
     public string SectionName { get; set; } = ConfigSectionName;
 
     /// <summary>
-    /// Use Telemetry
+    /// Connection string - with LogMasked attribute
     /// </summary>
-    public bool UseTelemetry { get; set; } = true;
-
-    /// <summary>
-    /// Use Request Response Logging
-    /// </summary>
-    public bool UseRequestResponseLogging { get; set; } = true;
+    [LogMasked]
+    public string? ConnectionString { get; set; }
 }

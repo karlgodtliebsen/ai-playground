@@ -1,7 +1,8 @@
-﻿using FluentAssertions;
+﻿using System.Text.Json.Serialization;
+
+using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
@@ -9,8 +10,6 @@ using OpenAI.Client.Domain;
 using OpenAI.Client.Models;
 using OpenAI.Client.Models.Requests;
 using OpenAI.Tests.Utils;
-
-using System.Text.Json.Serialization;
 
 using Xunit.Abstractions;
 
@@ -22,9 +21,8 @@ public class TestOfOpenAIClients
     private readonly ITestOutputHelper output;
     private readonly ILogger logger;
     private readonly HostApplicationFactory factory;
-    private readonly OpenAIOptions options;
-    private string path;
-    private IModelRequestFactory requestFactory;
+    private readonly string path;
+    private readonly IModelRequestFactory requestFactory;
 
     public TestOfOpenAIClients(ITestOutputHelper output)
     {
@@ -39,8 +37,7 @@ public class TestOfOpenAIClients
             output: () => output
         );
         logger = factory.Services.GetRequiredService<ILogger>();
-        options = factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
-        this.path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
+        path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
         requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();
     }
 
