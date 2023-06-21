@@ -4,16 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ChatGPTClient"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Grid.Column="2" Background="Red"  >
+    <Grid Grid.Column="2"   >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Margin="5" Grid.Column="0" Background="LightCoral" >
+        <StackPanel Margin="5" Grid.Column="0"  >
             <ItemsControl ItemsSource="{Binding Result.Text}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -29,7 +30,10 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" Focusable="True"  Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Text="{Binding Prompt.Text}"/>
-            <Button Grid.Column="1" Margin="10" Content="Go" VerticalAlignment="Center" HorizontalAlignment="Right" Click="ButtonBase_OnClick"/>
+            <Button Grid.Column="1" Margin="10"  VerticalAlignment="Center" HorizontalAlignment="Right" Click="ButtonBase_OnClick" 
+                    Content="{materialDesign:PackIcon SmileyHappy}"
+                    ToolTip="Icon"
+            />
         </Grid>
 
     </Grid>

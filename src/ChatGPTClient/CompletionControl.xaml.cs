@@ -1,8 +1,9 @@
-﻿using System.Threading;
+﻿using System.Collections.ObjectModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
-using Microsoft.Extensions.Options;
+using ChatGPTClient.Models;
 
 using OpenAI.Client.AIClients;
 using OpenAI.Client.Domain;
@@ -22,55 +23,58 @@ namespace ChatGPTClient
 
         private readonly ICompletionAIClient completionClient;
         private readonly IModelRequestFactory requestFactory;
-
+        private Model? selectedModel = default;
         private readonly CompletionViewModel ViewModel = new();
         private readonly ViewState viewState;
 
         public CompletionControl(
             ICompletionAIClient completionClient,
             IModelRequestFactory requestFactory,
-            IOptions<ViewState> viewState
+            ViewState viewState
         )
         {
-            this.viewState = viewState.Value;
+            this.viewState = viewState;
             this.completionClient = completionClient;
             this.requestFactory = requestFactory;
             InitializeComponent();
             DataContext = ViewModel;
+            GotFocus += UserControl_GotFocus;
+            LostFocus += UserControl_LostFocus;
             ViewModel.Prompt.Text = "Translate the following English text to French: 'Hello, how are you?'";
-
-            //this.viewState.Models.Clear();
-            //var models = new ObservableCollection<Model>();
-            //foreach (var model in requestFactory.GetModels("completions"))
-            //{
-            //    this.viewState.Models.Add(new Model() { ModelId = model });
-            //}
-            //// this.viewState.Models = models;
+            SetModels();
         }
 
-        //protected override void OnRender(DrawingContext drawingContext)
-        //{
-        //    this.viewState.Models.Clear();
-        //    var models = new ObservableCollection<Model>();
-        //    foreach (var model in requestFactory.GetModels("completions"))
-        //    {
-        //        this.viewState.Models.Add(new Model() { ModelId = model });
-        //    }
-        //    // this.viewState.Models = models;
-        //    base.OnRender(drawingContext);
-        //}
+        private void UserControl_LostFocus(object sender, RoutedEventArgs e)
+        {
+            selectedModel = this.viewState.SelectedModel;
+        }
+        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
+        {
+            SetModels();
+        }
 
-        //protected override void OnGotFocus(RoutedEventArgs e)
-        //{
-        //    base.OnGotFocus(e);
-        //}
+        private void SetModels()
+        {
+            var models = new ObservableCollection<Model>();
+            foreach (var model in requestFactory.GetModels("completions"))
+            {
+                models.Add(new Model() { ModelId = model });
+            }
+            this.viewState.Models = models;
+            if (selectedModel is null)
+            {
+                selectedModel = models[0];
+            }
+            this.viewState.SelectedModel = selectedModel;
+        }
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
+            selectedModel = this.viewState.SelectedModel;
             var payload = requestFactory.CreateRequest<CompletionRequest>(() =>
                 new CompletionRequest
                 {
-                    Model = viewState.SelectedModel.ModelId,
+                    Model = selectedModel.ModelId,
                     Prompt = ViewModel.Prompt.Text,
                     MaxTokens = 100,
                     Temperature = 0.1f,

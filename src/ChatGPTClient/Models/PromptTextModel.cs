@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 
-public class PromptTextModel : INotifyPropertyChanged
+namespace ChatGPTClient.Models;
+
+public sealed class PromptTextModel : INotifyPropertyChanged
 {
     private string text = "Enter text";
 
@@ -17,9 +19,9 @@ public class PromptTextModel : INotifyPropertyChanged
         }
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged(string propertyName)
+    protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

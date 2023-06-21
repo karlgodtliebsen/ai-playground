@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 
-public class ApiKeyViewModel : INotifyPropertyChanged
+namespace ChatGPTClient.Models;
+
+public sealed class ApiKeyViewModel : INotifyPropertyChanged
 {
     private string apiKey = "";
 
@@ -17,9 +19,9 @@ public class ApiKeyViewModel : INotifyPropertyChanged
         }
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged(string propertyName)
+    protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

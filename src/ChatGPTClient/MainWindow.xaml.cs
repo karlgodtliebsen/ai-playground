@@ -2,11 +2,11 @@
 using System.Windows;
 using System.Windows.Controls;
 
+using ChatGPTClient.Models;
+
 using Microsoft.Extensions.Options;
 
-using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
-using OpenAI.Client.Domain;
 
 namespace ChatGPTClient
 {
@@ -15,27 +15,33 @@ namespace ChatGPTClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IChatCompletionAIClient chatCompletionClient;
-        private readonly ICompletionAIClient completionClient;
-        private readonly IModelRequestFactory requestFactory;
-        private readonly ViewState viewState;
+        //private readonly IChatCompletionAIClient chatCompletionClient;
+        //private readonly ICompletionAIClient completionClient;
+        //private readonly IModelRequestFactory requestFactory;
         private readonly OpenAIOptions options;
 
-        private readonly ViewModel ViewModel = new();
+        private readonly ViewModel ViewModel;
 
         public MainWindow(
-            IChatCompletionAIClient chatCompletionClient,
-            ICompletionAIClient completionClient,
-            IModelRequestFactory requestFactory,
-            IOptions<ViewState> viewState,
+            //IChatCompletionAIClient chatCompletionClient,
+            //ICompletionAIClient completionClient,
+            //IModelRequestFactory requestFactory,
+            ViewState viewState,
             IOptions<OpenAIOptions> options
             )
         {
-            this.chatCompletionClient = chatCompletionClient;
-            this.completionClient = completionClient;
-            this.requestFactory = requestFactory;
-            this.viewState = viewState.Value;
             this.options = options.Value;
+            //this.chatCompletionClient = chatCompletionClient;
+            //this.completionClient = completionClient;
+            //this.requestFactory = requestFactory;
+            //this.viewState = viewState.Value;
+            ViewModel = new ViewModel()
+            {
+                ApiKey = new ApiKeyViewModel() { ApiKey = this.options.ApiKey },
+                ViewState = viewState
+            };
+
+
             InitializeComponent();
             WindowState = WindowState.Maximized;
             DataContext = ViewModel;
@@ -53,9 +59,11 @@ namespace ChatGPTClient
 
         private void AddTabPage(string header, UIElement content)
         {
-            TabItem tabItem = new TabItem();
-            tabItem.Header = header;
-            tabItem.Content = content;
+            var tabItem = new TabItem
+            {
+                Header = header,
+                Content = content
+            };
             TabControl.Items.Add(tabItem);
         }
     }

@@ -5,7 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatGPTClient"
         mc:Ignorable="d"
-        Title="ChatGPT Client" Width="600" Height="300" d:DataContext="{d:DesignData ViewModel}">
+       
+        Title="Ai Playground .Net" 
+
+
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+
+        d:DataContext="{d:DesignData ViewModel}">
+
     <Grid Margin="5">
 
         <Grid.RowDefinitions>
@@ -14,63 +28,36 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0">
-            <Label VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"  Background="LightBlue" Content="ChatGPT "/>
+            <materialDesign:Card >
+                <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}">ChatGPT Client</TextBlock>
+            </materialDesign:Card>
         </StackPanel>
-
         <Grid  Grid.Row="1">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="Auto" />
-                <!-- GridSplitter width -->
-                <!-- Sidebar width -->
                 <ColumnDefinition Width="2*" />
-                <!-- Main content width -->
             </Grid.ColumnDefinitions>
 
-            <!-- Sidebar -->
             <StackPanel Grid.Column="0" Margin="10,0,10,0" >
                 <Label  Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"   Content="API Key"/>
                 <TextBox  VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"  Background="Gray" Text="{Binding ApiKey.ApiKey}"/>
-                <Label Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"   Content="Model"/>
-                <!--<TextBox  VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"  
-                Background="Gray"  Text="{Binding ViewState.SelectedModel.ModelId}"/>-->
-
-                <!--<ListBox ItemsSource="{Binding ViewState.Models}" SelectedItem="{Binding ViewState.SelectedModel}"  
-                         Height="40"
-                         Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"   >
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding ModelId}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>-->
-
-
-                <ListBox ItemsSource="{Binding Path=ViewState.Models, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding ViewState.SelectedModel}" 
-                         Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
-                         SelectedValue="{Binding ModelId}" 
-                         SelectedValuePath="ModelId" DisplayMemberPath="ModelId" 
-                >
-                    <!--<ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding ModelId}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>-->
-                </ListBox>
+                <Label Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"   Content="Select a model"/>
+                <ComboBox 
+                          Style="{DynamicResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="Selected Model"
+                     
+                          ItemsSource="{Binding Path=ViewState.Models, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding ViewState.SelectedModel}" 
+                          Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                          SelectedValue="{Binding ModelId}" 
+                          SelectedValuePath="ModelId" DisplayMemberPath="ModelId" 
+                          >
+                </ComboBox>
 
             </StackPanel>
             <GridSplitter Grid.Column="1" Width="5" Background="Gray" HorizontalAlignment="Stretch" />
-
-            <!--<local:ChatGPTControl Grid.Column="2" Margin="10,0,10,0"  DataContext="{Binding ViewState}" />-->
-
-            <TabControl x:Name ="TabControl" Background="Aqua" Grid.Column="2" Margin="10,0,10,0"  DataContext="{Binding ViewState}">
-
-
+            <TabControl x:Name ="TabControl"  Grid.Column="2" Margin="10,0,10,0"  DataContext="{Binding ViewState}">
             </TabControl>
-
-
-
         </Grid>
     </Grid>
 </Window>

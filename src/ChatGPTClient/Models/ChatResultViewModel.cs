@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 
-public class ChatResultViewModel
+namespace ChatGPTClient.Models;
+
+public sealed class ChatResultViewModel
 {
     public ObservableCollection<string> Text { get; } = new() { };
 }
