@@ -43,17 +43,6 @@
             <StackPanel Grid.Column="0" Margin="10,0,10,0" >
                 <Label  Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"   Content="API Key"/>
                 <TextBox  VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"  Background="Gray" Text="{Binding ApiKey.ApiKey}"/>
-                <Label Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"   Content="Select a model"/>
-                <ComboBox 
-                          Style="{DynamicResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="Selected Model"
-                     
-                          ItemsSource="{Binding Path=ViewState.Models, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding ViewState.SelectedModel}" 
-                          Margin="0,5,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
-                          SelectedValue="{Binding ModelId}" 
-                          SelectedValuePath="ModelId" DisplayMemberPath="ModelId" 
-                          >
-                </ComboBox>
-
             </StackPanel>
             <GridSplitter Grid.Column="1" Width="5" Background="Gray" HorizontalAlignment="Stretch" />
             <TabControl x:Name ="TabControl"  Grid.Column="2" Margin="10,0,10,0"  DataContext="{Binding ViewState}">

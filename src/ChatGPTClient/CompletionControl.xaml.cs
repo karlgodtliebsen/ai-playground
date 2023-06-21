@@ -23,7 +23,6 @@ namespace ChatGPTClient
 
         private readonly ICompletionAIClient completionClient;
         private readonly IModelRequestFactory requestFactory;
-        private Model? selectedModel = default;
         private readonly CompletionViewModel ViewModel = new();
         private readonly ViewState viewState;
 
@@ -38,39 +37,28 @@ namespace ChatGPTClient
             this.requestFactory = requestFactory;
             InitializeComponent();
             DataContext = ViewModel;
-            GotFocus += UserControl_GotFocus;
-            LostFocus += UserControl_LostFocus;
+            ViewModel.ViewState = viewState;
             ViewModel.Prompt.Text = "Translate the following English text to French: 'Hello, how are you?'";
             SetModels();
         }
 
-        private void UserControl_LostFocus(object sender, RoutedEventArgs e)
-        {
-            selectedModel = this.viewState.SelectedModel;
-        }
-        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
-        {
-            SetModels();
-        }
+
 
         private void SetModels()
         {
             var models = new ObservableCollection<Model>();
             foreach (var model in requestFactory.GetModels("completions"))
             {
-                models.Add(new Model() { ModelId = model });
+                models.Add(new Model() { ModelId = model.Trim() });
             }
             this.viewState.Models = models;
-            if (selectedModel is null)
-            {
-                selectedModel = models[0];
-            }
-            this.viewState.SelectedModel = selectedModel;
+
+            this.viewState.SelectedModel = models[0];
         }
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            selectedModel = this.viewState.SelectedModel;
+            var selectedModel = this.viewState.SelectedModel;
             var payload = requestFactory.CreateRequest<CompletionRequest>(() =>
                 new CompletionRequest
                 {
@@ -101,4 +89,5 @@ public class CompletionViewModel
 {
     public ChatResultViewModel Result { get; set; } = new();
     public PromptTextModel Prompt { get; set; } = new();
+    public ViewState ViewState { get; set; }
 }

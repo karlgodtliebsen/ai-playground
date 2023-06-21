@@ -15,30 +15,16 @@ namespace ChatGPTClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        //private readonly IChatCompletionAIClient chatCompletionClient;
-        //private readonly ICompletionAIClient completionClient;
-        //private readonly IModelRequestFactory requestFactory;
         private readonly OpenAIOptions options;
 
         private readonly ViewModel ViewModel;
 
-        public MainWindow(
-            //IChatCompletionAIClient chatCompletionClient,
-            //ICompletionAIClient completionClient,
-            //IModelRequestFactory requestFactory,
-            ViewState viewState,
-            IOptions<OpenAIOptions> options
-            )
+        public MainWindow(IOptions<OpenAIOptions> options)
         {
             this.options = options.Value;
-            //this.chatCompletionClient = chatCompletionClient;
-            //this.completionClient = completionClient;
-            //this.requestFactory = requestFactory;
-            //this.viewState = viewState.Value;
             ViewModel = new ViewModel()
             {
                 ApiKey = new ApiKeyViewModel() { ApiKey = this.options.ApiKey },
-                ViewState = viewState
             };
 
 

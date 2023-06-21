@@ -1,4 +1,5 @@
 ﻿using ChatGPTClient.Models;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,7 +28,7 @@ public static class AppConfigurator
     }
     public static IServiceCollection AddAppConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<ViewState>();
+        services.AddTransient<ViewState>();
         return services.AddOpenAIConfiguration(configuration);
     }
 

@@ -24,7 +24,6 @@ namespace ChatGPTClient
             InitializeComponent();
         }
 
-        private Models.Model? selectedModel = null;
 
         private readonly IChatCompletionAIClient aiClient;
         private readonly IModelRequestFactory requestFactory;
@@ -42,35 +41,28 @@ namespace ChatGPTClient
             this.aiClient = chatCompletionClient;
             this.requestFactory = requestFactory;
             InitializeComponent();
+            ViewModel.ViewState = viewState;
             DataContext = ViewModel;
-            GotFocus += UserControl_GotFocus;
-            LostFocus += UserControl_LostFocus;
             messages.Add(new ChatCompletionMessage { Role = "system", Content = "You are a helpful assistant that provides information." });
+            SetModels();
         }
 
 
-        private void UserControl_LostFocus(object sender, RoutedEventArgs e)
-        {
-            selectedModel = this.viewState.SelectedModel;
-        }
-        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
+
+        private void SetModels()
         {
             var models = new ObservableCollection<Models.Model>();
             foreach (var model in requestFactory.GetModels("chat/completions"))
             {
-                models.Add(new Models.Model() { ModelId = model });
+                models.Add(new Models.Model() { ModelId = model.Trim() });
             }
             this.viewState.Models = models;
-            if (selectedModel is null)
-            {
-                selectedModel = models[0];
-            }
-            this.viewState.SelectedModel = selectedModel;
+            this.viewState.SelectedModel = models[0];
         }
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            selectedModel = this.viewState.SelectedModel;
+            var selectedModel = this.viewState.SelectedModel;
             messages.Add(new ChatCompletionMessage { Role = "user", Content = ViewModel.Prompt.Text });
 
             var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -102,4 +94,5 @@ public class ChatCompletionViewModel
 {
     public ChatResultViewModel Result { get; set; } = new();
     public PromptTextModel Prompt { get; set; } = new();
+    public ViewState ViewState { get; set; }
 }
