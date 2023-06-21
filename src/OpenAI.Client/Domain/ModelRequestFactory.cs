@@ -4,11 +4,11 @@ namespace OpenAI.Client.Domain;
 
 public class ModelRequestFactory : IModelRequestFactory
 {
-    private readonly OpenAiModels modelOptions;
+    private readonly OpenAiModelsVerification modelVerificationOptions;
 
-    public ModelRequestFactory(IOptions<OpenAiModels> modelOptions)
+    public ModelRequestFactory(IOptions<OpenAiModelsVerification> modelOptions)
     {
-        this.modelOptions = modelOptions.Value;
+        this.modelVerificationOptions = modelOptions.Value;
     }
     /// <summary>
     /// Creates a request for the specified model
@@ -21,11 +21,24 @@ public class ModelRequestFactory : IModelRequestFactory
     {
 
         var model = create();
-        if (!modelOptions.Verify(model))
+        if (!modelVerificationOptions.Verify(model))
         {
             throw new ArgumentException($"Model {model.Model} is not supported for {model.RequestUri}");
         }
 
         return model;
     }
+
+    public IList<string> GetModels(string requestUri)
+    {
+        if (OpenAiModeMap.Map.TryGetValue(requestUri, out var models))
+        {
+            return models;
+        }
+        return new List<string>();
+
+    }
+
 }
+
+

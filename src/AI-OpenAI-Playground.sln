@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azure.OpenAI.Tests", "Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.Library", "AI.Library\AI.Library.csproj", "{63270AE1-24D2-4AB3-ABEC-DF0227C611FA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{C7BE4A38-8C61-46C6-805E-D9672515874A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatGPTClient", "ChatGPTClient\ChatGPTClient.csproj", "{E478C370-C847-48F9-8B16-187353E28D4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +45,10 @@ Global
 		{63270AE1-24D2-4AB3-ABEC-DF0227C611FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63270AE1-24D2-4AB3-ABEC-DF0227C611FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63270AE1-24D2-4AB3-ABEC-DF0227C611FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E478C370-C847-48F9-8B16-187353E28D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E478C370-C847-48F9-8B16-187353E28D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E478C370-C847-48F9-8B16-187353E28D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E478C370-C847-48F9-8B16-187353E28D4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +56,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D36D8993-5F90-40BC-BCE3-9ED482874871} = {DB818156-DC6B-41E8-8EE5-D72057993289}
 		{10DD88DB-DE5A-481E-BB88-25D0BD544E12} = {DB818156-DC6B-41E8-8EE5-D72057993289}
+		{E478C370-C847-48F9-8B16-187353E28D4F} = {C7BE4A38-8C61-46C6-805E-D9672515874A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A365742-464F-4F92-BCF0-6F080A5C398C}

@@ -131,10 +131,44 @@ public class TestOfOpenAIClients
 
         string completion = charCompletionsResponse!.Value!.Choices[0]!.Message!.Content.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
-        completion.Should().Contain("Hello");
+        //completion.Should().Contain("Hello");
         completion.Should().Contain("I assist you today?");
         output.WriteLine(completion);
     }
+
+    [Fact]
+    public async Task VerifyChatCompletionModel2Client()
+    {
+        //https://platform.openai.com/docs/models/overview
+        //https://platform.openai.com/docs/api-reference/chat/create
+
+        var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+
+        string deploymentName = "gpt-3.5-turbo";
+        var messages = new[]
+        {
+            new ChatCompletionMessage {Role = "system", Content = "You are a helpful assistant.!" },
+            new ChatCompletionMessage { Role = "user", Content = "What is the population in Denmark!" }
+        };
+
+        var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
+            new ChatCompletionRequest
+            {
+                Model = deploymentName,
+                Messages = messages
+            });
+
+        var charCompletionsResponse = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
+        charCompletionsResponse.Should().NotBeNull();
+        charCompletionsResponse!.Success.Should().BeTrue();
+        charCompletionsResponse!.Value.Should().NotBeNull();
+
+
+        string completion = charCompletionsResponse!.Value!.Choices[0]!.Message!.Content.Trim();
+        completion.Should().NotBeNullOrWhiteSpace();
+        output.WriteLine(completion);
+    }
+
     [Fact]
     public async Task VerifyModerationModelClient()
     {

@@ -17,7 +17,7 @@ public static class OpenAiConfigurator
     public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, OpenAIOptions options)
     {
         services.AddTransient<IModelRequestFactory, ModelRequestFactory>();
-        services.AddSingleton<IOptions<OpenAiModels>>(new OptionsWrapper<OpenAiModels>(new OpenAiModels()));
+        services.AddSingleton<IOptions<OpenAiModelsVerification>>(new OptionsWrapper<OpenAiModelsVerification>(new OpenAiModelsVerification()));
 
         ArgumentNullException.ThrowIfNull(options);
 
