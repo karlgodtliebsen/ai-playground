@@ -1,7 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 using ChatGPTClient.Models;
 
@@ -25,6 +28,7 @@ namespace ChatGPTClient
         private readonly IModelRequestFactory requestFactory;
         private readonly CompletionViewModel ViewModel = new();
         private readonly ViewState viewState;
+        private ObservableCollection<Model> models;
 
         public CompletionControl(
             ICompletionAIClient completionClient,
@@ -46,24 +50,41 @@ namespace ChatGPTClient
 
         private void SetModels()
         {
-            var models = new ObservableCollection<Model>();
+            models = new ObservableCollection<Model>();
             foreach (var model in requestFactory.GetModels("completions"))
             {
                 models.Add(new Model() { ModelId = model.Trim() });
             }
             this.viewState.Models = models;
-
-            this.viewState.SelectedModel = models[0];
+            this.viewState.SelectedModel = models.FirstOrDefault();
+        }
+        private async void Key_OnUp(object sender, RoutedEventArgs e)
+        {
+            var ev = e as KeyEventArgs;
+            if (ev?.Key == Key.Enter)
+            {
+                await Submit();
+            }
         }
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
+            await Submit();
+        }
+
+        private async Task Submit()
+        {
+            if (!models.Any() || this.viewState.SelectedModel is null)
+            {
+                this.viewState.SelectedModel = models.First();
+            }
             var selectedModel = this.viewState.SelectedModel;
+
             var payload = requestFactory.CreateRequest<CompletionRequest>(() =>
                 new CompletionRequest
                 {
                     Model = selectedModel.ModelId,
-                    Prompt = ViewModel.Prompt.Text,
+                    Prompt = ViewModel.Prompt.Text.Trim(),
                     MaxTokens = 100,
                     Temperature = 0.1f,
                     TopP = 1.0f,
@@ -79,7 +100,7 @@ namespace ChatGPTClient
                 var completions = completionsResponse.Value;
                 foreach (var choice in completions.Choices)
                 {
-                    ViewModel.Result.Text.Add(choice.Text);
+                    ViewModel.Result.Text.Add(choice.Text.Trim());
                 }
             }
         }

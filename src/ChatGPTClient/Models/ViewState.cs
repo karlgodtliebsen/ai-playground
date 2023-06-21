@@ -7,7 +7,7 @@ public sealed class ViewState : INotifyPropertyChanged
 {
     private Model? selectedModel = default;
 
-    public Model SelectedModel
+    public Model? SelectedModel
     {
         get { return selectedModel!; }
         set

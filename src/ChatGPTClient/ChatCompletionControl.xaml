@@ -18,7 +18,8 @@
 
         <Grid  VerticalAlignment="Bottom"  Margin="10" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ComboBox 
                 Style="{DynamicResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="Selected Model"
@@ -29,7 +30,8 @@
                 SelectedValuePath="ModelId" DisplayMemberPath="ModelId" 
             >
             </ComboBox>
-
+            <materialDesign:PopupBox Grid.Column="1"  Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" >
+            </materialDesign:PopupBox>
         </Grid>
 
 
@@ -48,7 +50,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Focusable="True"  Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Text="{Binding Prompt.Text}"/>
+            <TextBox Grid.Column="0" Focusable="True"  Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" KeyUp="Key_OnUp" Text="{Binding Prompt.Text}"/>
             <Button Grid.Column="1" Margin="10"  VerticalAlignment="Center" HorizontalAlignment="Right" Click="ButtonBase_OnClick" 
                     Content="{materialDesign:PackIcon SmileyHappy}"
                     ToolTip="Icon"
