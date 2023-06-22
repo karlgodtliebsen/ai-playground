@@ -5,6 +5,7 @@ using System.Windows;
 using AI.Library.Configuration;
 
 using ChatGPTClient.Configuration;
+using ChatGPTClient.TabPages;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,7 +17,6 @@ namespace ChatGPTClient;
 /// </summary>
 public partial class App : Application
 {
-    const string applicationName = "ChatGPT Client ";
 
     private IServiceProvider serviceProvider;
 
@@ -32,6 +32,7 @@ public partial class App : Application
             services.AddSingleton<MainWindow>();
             services.AddSingleton<CompletionControl>();
             services.AddSingleton<ChatCompletionControl>();
+            services.AddSingleton<CreateImageControl>();
         });
 
         IHost host = builder.Build();
@@ -40,7 +41,9 @@ public partial class App : Application
 
         mainWindow.SetChildViews(new Dictionary<string, UIElement>() {
             { "Completion", serviceProvider.GetRequiredService<CompletionControl>() },
-            { "Chat Completion", serviceProvider.GetRequiredService<ChatCompletionControl>() }
+            { "Chat Completion", serviceProvider.GetRequiredService<ChatCompletionControl>() },
+            { "Images", serviceProvider.GetRequiredService<CreateImageControl>() }
+
         });
 
         mainWindow.Show();

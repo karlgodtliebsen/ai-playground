@@ -247,7 +247,7 @@ public class TestOfOpenAIClients
     }
 
     [Fact]
-    public async Task VerifyFileuploadClient()
+    public async Task VerifyFileUploadClient()
     {
         //https://platform.openai.com/docs/models/overview
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
@@ -281,7 +281,7 @@ public class TestOfOpenAIClients
     [Fact]
     public async Task VerifyDeleteAllFilesClient()
     {
-        await VerifyFileuploadClient();
+        await VerifyFileUploadClient();
 
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
@@ -308,7 +308,7 @@ public class TestOfOpenAIClients
     public async Task VerifyRetrieveFileInfoClient()
     {
         await VerifyDeleteAllFilesClient();
-        await VerifyFileuploadClient();
+        await VerifyFileUploadClient();
         await Task.Delay(TimeSpan.FromSeconds(10));
 
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
@@ -332,7 +332,7 @@ public class TestOfOpenAIClients
     public async Task VerifyRetrieveFileContentClient()
     {
         await VerifyDeleteAllFilesClient();
-        await VerifyFileuploadClient();
+        await VerifyFileUploadClient();
         await Task.Delay(TimeSpan.FromSeconds(10));
 
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
@@ -357,7 +357,6 @@ public class TestOfOpenAIClients
     public async Task VerifyCreateImageClient()
     {
         var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
-
         var payload =
 
             new ImageGenerationRequest
@@ -379,6 +378,7 @@ public class TestOfOpenAIClients
             output.WriteLine(model.Url);
         }
     }
+
     [Fact]
     public async Task VerifyCreateImageWithBSonReturnClient()
     {

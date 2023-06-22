@@ -4,9 +4,9 @@ namespace ChatGPTClient.Models;
 
 public sealed class PromptTextModel : INotifyPropertyChanged
 {
-    private string text = "Enter text";
+    private string? text = default!;
 
-    public string Text
+    public string? Text
     {
         get { return text; }
         set
@@ -21,7 +21,7 @@ public sealed class PromptTextModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected void OnPropertyChanged(string propertyName)
+    private void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
