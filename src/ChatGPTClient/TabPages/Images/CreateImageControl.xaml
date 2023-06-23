@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="ChatGPTClient.TabPages.CreateImageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:userControls="clr-namespace:ChatGPTClient.UserControls"
+             xmlns:dialogs="clr-namespace:ChatGPTClient.Dialogs"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+
+    <materialDesign:DialogHost>
+        <materialDesign:DialogHost.DialogContent>
+            <dialogs:GenerateImageUserControl>
+            </dialogs:GenerateImageUserControl>
+        </materialDesign:DialogHost.DialogContent>
+        <Grid    >
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="100*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20*"/>
+            </Grid.RowDefinitions>
+
+
+            <DockPanel Margin="5,5,5,5">
+                <Button  Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right" DockPanel.Dock="Right"  
+                        
+                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Content="{materialDesign:PackIcon ContentSaveCog}" />
+
+                <Button  Margin="10,0,0,0"  VerticalAlignment="Center" HorizontalAlignment="Right" Click="Save_Image"  DockPanel.Dock="Right" 
+                         Content="{materialDesign:PackIcon ContentSave}"
+                         ToolTip="Save Image"></Button>
+            </DockPanel>
+
+            <TabControl x:Name ="TabControl"  Margin="5,5,5,5" Grid.Row="1"  DataContext="{Binding ViewState}">
+            </TabControl>
+
+            <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch"  VerticalAlignment="Center" ResizeBehavior="PreviousAndNext" Background="{DynamicResource PrimaryHueMidBrush}" />
+            <userControls:PromptUserControl  Prompt="{Binding Prompt}" IsReady="{Binding IsReady}" Grid.Row="3" ButtonClicked="ButtonBase_OnClick" KeyUp="Key_OnUp"></userControls:PromptUserControl>
+        </Grid>
+
+    </materialDesign:DialogHost>
+</UserControl>
+
+    

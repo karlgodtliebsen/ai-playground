@@ -50,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="TabPages\ChatCompletionControl.xaml.cs">
+    <Compile Update="TabPages\ChatCompletions\ChatCompletionControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

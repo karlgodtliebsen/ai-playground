@@ -1,28 +1,21 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 
-using MaterialDesignThemes.Wpf;
-
 namespace ChatGPTClient.Converters;
-public class IconKindConverter : IValueConverter
+
+public class KindToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         string x = (string)value;
         if (x == "A")
         {
-            return PackIconKind.QuestionAnswer;
+            return new Visibility();
         }
-        else if (x == "Q")
-        {
-            return PackIconKind.CommentQuestion;
-        }
-        else if (x == "F")
-        {
-            return PackIconKind.EmoticonSad;
-        }
-        return PackIconKind.EmoticonNeutral;
+
+        return null;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

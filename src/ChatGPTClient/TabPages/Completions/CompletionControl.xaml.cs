@@ -1,10 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 using ChatGPTClient.Models;
 
@@ -30,9 +32,9 @@ public partial class CompletionControl : UserControl
 
     private readonly ICompletionAIClient completionClient;
     private readonly IModelRequestFactory requestFactory;
-    private readonly CompletionViewModel ViewModel = new();
+    private readonly CompletionViewModel viewModel = new();
     private readonly ViewState viewState;
-    private ObservableCollection<Model> models;
+    private readonly ObservableCollection<Model> models = new();
 
     public CompletionControl(
         ICompletionAIClient completionClient,
@@ -45,18 +47,20 @@ public partial class CompletionControl : UserControl
         this.completionClient = completionClient;
         this.requestFactory = requestFactory;
         InitializeComponent();
-        DataContext = ViewModel;
-        ViewModel.PopupViewModel.ApiKey = options.Value.ApiKey;
-        ViewModel.ViewState = viewState;
-        ViewModel.Prompt.Text = "Translate the following English text to French: 'Hello, how are you?'";
-        SetModels();
+        viewModel.ViewState = viewState;
+        DataContext = viewModel;
+        viewModel.Prompt.Text = "Translate the following English text to French: 'Hello, how are you?'";
     }
 
-
-
-    private void SetModels()
+    protected override void OnRender(DrawingContext drawingContext)
     {
-        models = new ObservableCollection<Model>();
+        base.OnRender(drawingContext);
+        SetOpenAIModels();
+    }
+
+    private void SetOpenAIModels()
+    {
+        models.Clear();
         foreach (var model in requestFactory.GetModels("completions"))
         {
             models.Add(new Model() { ModelId = model.Trim() });
@@ -64,56 +68,53 @@ public partial class CompletionControl : UserControl
         this.viewState.Models = models;
         this.viewState.SelectedModel = models.FirstOrDefault();
     }
-    private async void Key_OnUp(object sender, RoutedEventArgs e)
+
+    private async void Key_OnUp(object sender, KeyEventArgs ev)
     {
-        var ev = e as KeyEventArgs;
         if (ev?.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.Control)
         {
             await Submit();
         }
     }
 
-    private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    private async void ButtonBase_OnClick(object sender, EventArgs e)
     {
         await Submit();
     }
 
     private async Task Submit()
     {
-        if (!models.Any() || this.viewState.SelectedModel is null)
-        {
-            this.viewState.SelectedModel = models.First();
-        }
         var selectedModel = this.viewState.SelectedModel;
-        var prompt = ViewModel!.Prompt!.Text!.Trim();
+        var prompt = viewModel!.Prompt!.Text!.Trim();
+        var options = viewModel.Options;
         var payload = requestFactory.CreateRequest<CompletionRequest>(() =>
             new CompletionRequest
             {
                 Model = selectedModel.ModelId,
                 Prompt = prompt,
-                MaxTokens = 100,
-                Temperature = 0.1f,
-                TopP = 1.0f,
-                NumChoicesPerPrompt = 1,
-                Stream = false,
-                Logprobs = null,
-                //Stop = "\n"
+                MaxTokens = options.MaxTokens,
+                Temperature = options.Temperature,
+                TopP = options.TopP,
+                NumChoicesPerPrompt = options.NumChoicesPerPrompt,
+                Stream = options.Stream,
+                Logprobs = options.Logprobs,
+                Stop = options.Stop,
             });
 
-        ViewModel.Result.Reply.Add(new RichResultViewModel()
+        viewModel.Result.Reply.Add(new RichResultViewModel()
         {
             Text = prompt,
             Kind = "Q",
             Success = true,
         });
-
+        viewModel.IsReady = false;
         var completionsResponse = await completionClient.GetCompletionsAsync(payload, CancellationToken.None);
         if (completionsResponse!.Success)
         {
             var completions = completionsResponse.Value;
             foreach (var choice in completions.Choices)
             {
-                ViewModel.Result.Reply.Add(new RichResultViewModel()
+                viewModel.Result.Reply.Add(new RichResultViewModel()
                 {
                     Text = choice.Text.Trim(),
                     Kind = "A",
@@ -123,27 +124,21 @@ public partial class CompletionControl : UserControl
         }
         else
         {
-
-            ViewModel.Result.Reply.Add(new RichResultViewModel()
+            viewModel.Result.Reply.Add(new RichResultViewModel()
             {
                 Text = "Error",
                 Kind = "F",
                 Success = false,
             });
         }
+        viewModel.IsReady = true;
+
     }
-}
 
-
-public class CompletionPopupViewModel
-{
-    public string ApiKey { get; set; }
-}
-
-public class CompletionViewModel
-{
-    public CompletionPopupViewModel PopupViewModel { get; } = new CompletionPopupViewModel();
-    public ChatResultViewModel Result { get; set; } = new();
-    public PromptTextModel Prompt { get; set; } = new();
-    public ViewState ViewState { get; set; }
+    private void Copy_OnClick(object sender, RoutedEventArgs e)
+    {
+        var button = sender as Button;
+        var result = button?.Tag as string;
+        Clipboard.SetText(result);
+    }
 }

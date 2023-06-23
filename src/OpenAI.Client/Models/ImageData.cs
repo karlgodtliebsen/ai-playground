@@ -6,11 +6,11 @@ public class ImageData
 {
 
     [JsonPropertyName("url")]
-    public string Url { get; init; }
+    public string? Url { get; init; }
 
 
     [JsonPropertyName("b64_json")]
-    public string Data { get; init; }
+    public string? Data { get; init; }
 
 
 }

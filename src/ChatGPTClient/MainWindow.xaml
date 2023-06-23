@@ -39,13 +39,17 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Margin="10,0,10,0" >
-                    <TextBox 
-                             VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"  Background="Gray" Text="{Binding ApiKey.ApiKey}"
-                             materialDesign:HintAssist.Hint="API Key"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    <Border BorderBrush="White" BorderThickness="1" CornerRadius="10" >
+                        <TextBlock TextWrapping="Wrap"  Margin="10,0,10,0"
+                                 ToolTip="Enter prompt Text"
+                                 materialDesign:HintAssist.Hint="Prompt"
+                                 Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                 Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                                 Text="{Binding ApiKey.ApiKey}"/>
+                    </Border>
                 </StackPanel>
 
-                <GridSplitter Grid.Column="1" Width="5" Background="Gray" HorizontalAlignment="Stretch" />
+                <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"  Background="{DynamicResource PrimaryHueMidBrush}"/>
                 <TabControl x:Name ="TabControl"  Grid.Column="2" Margin="10,0,10,0"  DataContext="{Binding ViewState}">
                 </TabControl>
             </Grid>

@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="ChatGPTClient.Dialogs.ChatCompletionDialogUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ChatGPTClient.Dialogs"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid >
+
+        <Border BorderBrush="White" BorderThickness="1" CornerRadius="10"  Margin="25">
+            <DockPanel >
+
+                <ComboBox 
+                    Margin="10,5,0,0"
+                    DockPanel.Dock="Top"
+                    Style="{DynamicResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="Selected OpenAI Model"
+                    ToolTip="Select a OpenAI Model"     
+                    ItemsSource="{Binding Path=ViewState.Models, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding ViewState.SelectedModel}" 
+                    VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                    SelectedValue="{Binding ModelId}" 
+                    SelectedValuePath="ModelId" DisplayMemberPath="ModelId" 
+                />
+
+                <TextBox    Margin="10,5,0,0"
+                            DockPanel.Dock="Top"
+                            ToolTip="Enter Maximum number of Tokens"
+                            materialDesign:HintAssist.Hint="Maximum number of Tokens"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Text="{Binding Options.MaxTokens}"/>
+
+                <TextBox    Margin="10,5,0,0"
+                            DockPanel.Dock="Top"
+                            ToolTip="Enter Temperature"
+                            materialDesign:HintAssist.Hint="Temperature"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Text="{Binding Options.Temperature}"/>
+                <TextBox   Margin="10,5,0,0"
+                           DockPanel.Dock="Top"
+                           ToolTip="Enter ToP"
+                           materialDesign:HintAssist.Hint="ToP"
+                           Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                           Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                           Text="{Binding Options.TopP}"/>
+                <TextBox    Margin="10,5,0,0"
+                            DockPanel.Dock="Top"
+                            ToolTip="Enter number of Choices per Prompt"
+                            materialDesign:HintAssist.Hint="Number of Choices per Prompt"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Text="{Binding Options.NumChoicesPerPrompt}"/>
+
+                <TextBox    Margin="10,5,0,0"
+                            DockPanel.Dock="Top"
+                            ToolTip="Enter Stop Character"
+                            materialDesign:HintAssist.Hint="Stop Character"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Text="{Binding Options.Stop}"/>
+
+
+                <TextBox    Margin="10,5,0,0"
+                            DockPanel.Dock="Top"
+                            ToolTip="Enter Presence Penalty"
+                            materialDesign:HintAssist.Hint="Presence Penalty"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Text="{Binding Options.PresencePenalty}"/>
+
+
+                <TextBox    Margin="10,5,0,0"
+                            DockPanel.Dock="Top"
+                            ToolTip="Enter Frequency Penalty"
+                            materialDesign:HintAssist.Hint="Frequency Penalty"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Text="{Binding Options.FrequencyPenalty}"/>
+
+
+
+                <Button Margin="10" DockPanel.Dock="Bottom" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="Close"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>
+

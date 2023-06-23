@@ -38,7 +38,7 @@ using (host)
     var messages = new[]
     {
         new ChatCompletionMessage {Role = "system", Content = "You are a helpful assistant.!" },
-        new ChatCompletionMessage { Role = "user", Content = "Elaborate on the question: how long until Humanity reach mars?" }
+        new ChatCompletionMessage { Role = "user", Content = "Elaborate on the question: how long until Humanity reach the Planet Mars?" }
     };
 
     var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
