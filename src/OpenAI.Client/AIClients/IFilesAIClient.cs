@@ -1,4 +1,4 @@
-﻿using OpenAI.Client.Models;
+﻿using OpenAI.Client.Models.Files;
 using OpenAI.Client.Models.Requests;
 using OpenAI.Client.Models.Responses;
 

@@ -1,8 +1,11 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
+
 using Microsoft.Extensions.Options;
+
 using OpenAI.Client.Configuration;
+
 using SerilogTimings.Extensions;
 
 namespace OpenAI.Client.AIClients.Implementation;
@@ -12,7 +15,7 @@ public abstract class AIClientBase
     private const string UserAgent = "ai/openai_api";
     protected readonly HttpClient HttpClient;
     protected JsonSerializerOptions SerializerOptions;
-    protected readonly OpenAIOptions options;
+    protected readonly OpenAIOptions Options;
     protected readonly ILogger logger;
 
     protected AIClientBase(
@@ -23,7 +26,7 @@ public abstract class AIClientBase
     {
         HttpClient = httpClient;
         this.logger = logger;
-        this.options = options.Value;
+        this.Options = options.Value;
         SerializerOptions = new JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
@@ -106,12 +109,12 @@ public abstract class AIClientBase
     protected void PrepareClient()
     {
         HttpClient.DefaultRequestHeaders.Clear();
-        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", options.ApiKey);
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Options.ApiKey);
 
         // Further authentication-header used for Azure openAI service
-        HttpClient.DefaultRequestHeaders.Add("api-key", options.ApiKey);
+        HttpClient.DefaultRequestHeaders.Add("api-key", Options.ApiKey);
         HttpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-        HttpClient.DefaultRequestHeaders.Add("OpenAI-Organization", options.OrganisationKey);
+        HttpClient.DefaultRequestHeaders.Add("OpenAI-Organization", Options.OrganisationKey);
     }
 
 

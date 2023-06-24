@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace OpenAI.Client.Models;
+namespace OpenAI.Client.Models.Images;
 
 /// <summary>
-/// 
+/// base64 encoded image data
 /// </summary>
 public class GeneratedImage
 {
@@ -14,6 +14,9 @@ public class GeneratedImage
     [JsonIgnore]
     public DateTimeOffset CreatedDate => DateTimeOffset.FromUnixTimeSeconds(Created);
 
+    /// <summary>
+    /// Image data in base64 encoding.
+    /// </summary>
     [JsonPropertyName("data")]
     public ImageData[] Data { get; set; }
 

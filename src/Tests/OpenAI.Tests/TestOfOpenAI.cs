@@ -7,7 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
-using OpenAI.Client.Models;
+using OpenAI.Client.Models.ChatCompletion;
+using OpenAI.Client.Models.Images;
 using OpenAI.Client.Models.Requests;
 using OpenAI.Tests.Utils;
 

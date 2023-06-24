@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using OpenAI.Client.Domain;
+using OpenAI.Client.Models.Audio;
 
 namespace OpenAI.Client.Models.Requests;
 

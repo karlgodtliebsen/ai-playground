@@ -8,6 +8,7 @@ public static class OpenAiModeMap
 
     public static Dictionary<string, string[]> Map { get; set; } = new();
 
+    //TODO: should be moved to configuration (appsettings)
     static OpenAiModeMap()
     {
         Map.Add("chat/completions", "gpt-4, gpt-4-0613, gpt-4-32k, gpt-4-32k-0613, gpt-3.5-turbo, gpt-3.5-turbo-0613, gpt-3.5-turbo-16k, gpt-3.5-turbo-16k-0613".Split(','));

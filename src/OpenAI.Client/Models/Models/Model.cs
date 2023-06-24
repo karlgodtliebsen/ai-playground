@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace OpenAI.Client.Models;
+namespace OpenAI.Client.Models.Models;
 
 /// <summary>
 /// Represents a language model
@@ -26,7 +26,7 @@ public class Model
     public string Object { get; init; } = default!;
 
     /// The time when the model was created
-    public DateTime? CreatedAt => Created.HasValue ? (DateTime?)(DateTimeOffset.FromUnixTimeSeconds(Created.Value).DateTime) : null;
+    public DateTime? CreatedAt => Created.HasValue ? DateTimeOffset.FromUnixTimeSeconds(Created.Value).DateTime : null;
 
     /// <summary>
     /// The time when the model was created in unix epoch format
@@ -42,7 +42,7 @@ public class Model
 
     public Model(string name)
     {
-        this.Id = name;
+        Id = name;
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿using OpenAI.Client.Models;
+﻿using OpenAI.Client.Models.Audio;
 using OpenAI.Client.Models.Requests;
 using OpenAI.Client.Models.Responses;
 

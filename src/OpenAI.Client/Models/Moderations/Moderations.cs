@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace OpenAI.Client.Models;
+namespace OpenAI.Client.Models.Moderations;
 
 public class ModerationCategories
 {
@@ -25,32 +25,38 @@ public class ModerationCategories
 public class ModerationCategoryScores
 {
     [JsonPropertyName("hate")]
-    public double Hate { get; set; }
+    public float Hate { get; set; }
     [JsonPropertyName("hate/threatening")]
-    public double HateThreatening { get; set; }
+    public float HateThreatening { get; set; }
     [JsonPropertyName("self-harm")]
-    public double SelfHarm { get; set; }
+    public float SelfHarm { get; set; }
     [JsonPropertyName("sexual")]
-    public double Sexual { get; set; }
+    public float Sexual { get; set; }
     [JsonPropertyName("sexual/minors")]
-    public double SexualMinors { get; set; }
+    public float SexualMinors { get; set; }
     [JsonPropertyName("violence")]
-    public double Violence { get; set; }
+    public float Violence { get; set; }
     [JsonPropertyName("violence/graphic")]
-    public double ViolenceGraphic { get; set; }
+    public float ViolenceGraphic { get; set; }
 }
 
 
 
 public class ModerationResults
 {
+    [JsonPropertyName("id")]
+    public string Id { get; set; }
+
+    [JsonPropertyName("model")]
+    public string Model { get; set; }
+
     [JsonPropertyName("categories")]
     public ModerationCategories Categories { get; set; }
     [JsonPropertyName("category_scores")]
     public ModerationCategoryScores CategoryScores { get; set; }
 
     [JsonPropertyName("flagged")]
-    public ModerationCategoryScores Flagges { get; set; }
+    public ModerationCategoryScores Flagged { get; set; }
 
 }
 

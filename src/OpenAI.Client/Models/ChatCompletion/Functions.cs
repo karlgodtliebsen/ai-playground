@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace OpenAI.Client.Models;
+namespace OpenAI.Client.Models.ChatCompletion;
 
-public  class Functions
+public class Functions
 {
     [JsonPropertyName("name")]
     public string Name { get; init; }
