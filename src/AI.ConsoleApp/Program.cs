@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
-using OpenAI.Client.Models;
+using OpenAI.Client.Models.ChatCompletion;
 using OpenAI.Client.Models.Requests;
 
 const string applicationName = "AI-playground";
@@ -47,13 +47,10 @@ using (host)
             Model = deploymentName,
             Messages = messages
         });
-
     var charCompletionsResponse = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
-
-    Debug.Assert(charCompletionsResponse is not null);
-    Debug.Assert(charCompletionsResponse.Success);
-    Debug.Assert(charCompletionsResponse!.Value is not null);
-    foreach (var choice in charCompletionsResponse!.Value!.Choices)
+    Debug.Assert(charCompletionsResponse.IsT0);
+    Debug.Assert(charCompletionsResponse!.AsT0 is not null);
+    foreach (var choice in charCompletionsResponse!.AsT0!.Choices)
     {
         string completion = choice.Message!.Content!.Trim();
         Console.WriteLine(completion);

@@ -25,10 +25,13 @@ public class ModelRequestFactory : IModelRequestFactory
         {
             throw new ArgumentException($"Model {model.Model} is not supported for {model.RequestUri}");
         }
-
         return model;
     }
-
+    /// <summary>
+    /// Get the set of OpenAI Models for the specified requestUri
+    /// </summary>
+    /// <param name="requestUri"></param>
+    /// <returns></returns>
     public IList<string> GetModels(string requestUri)
     {
         if (OpenAiModeMap.Map.TryGetValue(requestUri, out var models))
@@ -36,9 +39,7 @@ public class ModelRequestFactory : IModelRequestFactory
             return models;
         }
         return new List<string>();
-
     }
-
 }
 
 

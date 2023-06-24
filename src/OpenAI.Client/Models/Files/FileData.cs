@@ -1,31 +1,44 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace OpenAI.Client.Models;
+namespace OpenAI.Client.Models.Files;
 
 
 public class FileData
 {
-    /// <summary> Id for completion response. </summary>
+    /// <summary>
+    /// Id for completion response.
+    /// </summary>
     [JsonPropertyName("id")]
     public string Id { get; set; }
 
-    /// <summary> Object for completion response. </summary>
+    /// <summary>
+    /// Object for completion response.
+    /// </summary>
     [JsonPropertyName("object")]
     public string Object { get; set; } = "list";
 
-    /// <summary> Created time for completion response. </summary>
+    /// <summary>
+    /// Created time for completion response.
+    /// </summary>
     [JsonPropertyName("bytes")]
     public long Bytes { get; set; }
 
-    /// <summary> Created time for completion response. </summary>
+    /// <summary>
+    /// Created time for completion response.
+    /// </summary>
     [JsonPropertyName("created_at")]
     public long Created { get; set; }
     public DateTimeOffset CreatedDate => DateTimeOffset.FromUnixTimeSeconds(Created);
 
-    /// <summary> Model used for completion response. </summary>
+    /// <summary>
+    /// Model used for completion response.
+    /// </summary>
     [JsonPropertyName("filename")]
     public string Filename { get; set; }
 
+    /// <summary>
+    /// The Purpose of the file
+    /// </summary>
     [JsonPropertyName("purpose")]
     public string Purpose { get; set; }
 

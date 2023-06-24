@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 
+using OneOf;
+
 using OpenAI.Client.Configuration;
-using OpenAI.Client.Models;
+using OpenAI.Client.Models.Models;
 using OpenAI.Client.Models.Responses;
 
 namespace OpenAI.Client.AIClients.Implementation;
@@ -18,16 +20,16 @@ public class ModelsAIClient : AIClientBase, IModelsAIClient
     {
     }
 
-    public async Task<Response<Models.Models>> GetModelsAsync(CancellationToken cancellationToken)
+    public async Task<OneOf<Models.Models.Models, ErrorResponse>> GetModelsAsync(CancellationToken cancellationToken)
     {
-        var result = await GetAsync<Models.Models>(uri, cancellationToken);
-        return new Response<Models.Models>(result!);
+        var result = await GetAsync<Models.Models.Models>(uri, cancellationToken);
+        return result;
     }
 
-    public async Task<Response<Model>> GetModelAsync(string modelId, CancellationToken cancellationToken)
+    public async Task<OneOf<Model, ErrorResponse>> GetModelAsync(string modelId, CancellationToken cancellationToken)
     {
         var result = await GetAsync<Model>($"{uri}/{modelId}", cancellationToken);
-        return new Response<Model>(result!);
+        return result;
     }
 
 

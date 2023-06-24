@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace OpenAI.Client.Models;
+namespace OpenAI.Client.Models.Models;
 
 /// <summary>
 /// Permissions for using the model

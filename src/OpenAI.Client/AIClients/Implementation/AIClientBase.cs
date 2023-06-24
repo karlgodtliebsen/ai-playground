@@ -1,8 +1,14 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
+
 using Microsoft.Extensions.Options;
+
+using OneOf;
+
 using OpenAI.Client.Configuration;
+using OpenAI.Client.Models.Responses;
+
 using SerilogTimings.Extensions;
 
 namespace OpenAI.Client.AIClients.Implementation;
@@ -12,7 +18,7 @@ public abstract class AIClientBase
     private const string UserAgent = "ai/openai_api";
     protected readonly HttpClient HttpClient;
     protected JsonSerializerOptions SerializerOptions;
-    protected readonly OpenAIOptions options;
+    protected readonly OpenAIOptions Options;
     protected readonly ILogger logger;
 
     protected AIClientBase(
@@ -23,14 +29,14 @@ public abstract class AIClientBase
     {
         HttpClient = httpClient;
         this.logger = logger;
-        this.options = options.Value;
+        this.Options = options.Value;
         SerializerOptions = new JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
     }
 
-    protected async Task<TR?> PostAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
+    protected async Task<OneOf<TR, ErrorResponse>> PostAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
     {
         using var op = logger.BeginOperation("PostAsync", subUri);
         try
@@ -41,17 +47,16 @@ public abstract class AIClientBase
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<TR>(cancellationToken: cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "PostAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
 
-    protected async Task<TR?> GetAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
+    protected async Task<OneOf<TR, ErrorResponse>> GetAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
     {
         using var op = logger.BeginOperation("GetAsync", subUri);
         try
@@ -59,17 +64,16 @@ public abstract class AIClientBase
             PrepareClient();
             var result = await HttpClient.GetFromJsonAsync<TR>(subUri, cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "GetAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
 
-    protected async Task<string> GetContentAsync(string subUri, CancellationToken cancellationToken)
+    protected async Task<OneOf<string, ErrorResponse>> GetContentAsync(string subUri, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("GetContentAsync", subUri);
         try
@@ -77,16 +81,16 @@ public abstract class AIClientBase
             PrepareClient();
             var result = await HttpClient.GetStringAsync(subUri, cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "GetContentAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
-    protected async Task<TR?> DeleteAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
+
+    protected async Task<OneOf<TR, ErrorResponse>> DeleteAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
     {
         using var op = logger.BeginOperation("DeleteAsync", subUri);
         try
@@ -94,24 +98,24 @@ public abstract class AIClientBase
             PrepareClient();
             var result = await HttpClient.DeleteFromJsonAsync<TR>(subUri, cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "DeleteAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
+
     protected void PrepareClient()
     {
         HttpClient.DefaultRequestHeaders.Clear();
-        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", options.ApiKey);
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Options.ApiKey);
 
         // Further authentication-header used for Azure openAI service
-        HttpClient.DefaultRequestHeaders.Add("api-key", options.ApiKey);
+        HttpClient.DefaultRequestHeaders.Add("api-key", Options.ApiKey);
         HttpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-        HttpClient.DefaultRequestHeaders.Add("OpenAI-Organization", options.OrganisationKey);
+        HttpClient.DefaultRequestHeaders.Add("OpenAI-Organization", Options.OrganisationKey);
     }
 
 

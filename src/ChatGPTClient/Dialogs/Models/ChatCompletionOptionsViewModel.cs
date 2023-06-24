@@ -1,4 +1,4 @@
-﻿using OpenAI.Client.Models;
+﻿using OpenAI.Client.Models.ChatCompletion;
 
 namespace ChatGPTClient.Dialogs.Models;
 
@@ -9,12 +9,18 @@ public class ChatCompletionOptionsViewModel : OptionsViewModelBase
     /// A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
     /// </summary>
     public string? User { get; init; } = default!;
-
+    /// <summary>
+    /// 
+    /// </summary>
     public ChatCompletionMessage[] Messages { get; init; }
-
+    /// <summary>
+    /// 
+    /// </summary>
     public Functions[]? Functions { get; init; } = default!;
 
-
+    /// <summary>
+    /// 
+    /// </summary>
     public object? FunctionCall { get; init; } = default!;
 
 }

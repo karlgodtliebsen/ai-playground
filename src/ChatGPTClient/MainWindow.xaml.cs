@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 using ChatGPTClient.Models;
 
@@ -44,5 +45,11 @@ public partial class MainWindow : Window
             Content = content
         };
         TabControl.Items.Add(tabItem);
+    }
+
+    private void ChangeWindow_OnClick(object sender, RoutedEventArgs e)
+    {
+        var button = sender as ToggleButton;
+        WindowStyle = button!.IsChecked == true ? WindowStyle.ThreeDBorderWindow : WindowStyle.ToolWindow;
     }
 }

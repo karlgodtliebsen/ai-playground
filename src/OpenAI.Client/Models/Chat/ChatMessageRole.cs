@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Client.Models;
+﻿namespace OpenAI.Client.Models.Chat;
 
 
 public enum ChatMessageRole

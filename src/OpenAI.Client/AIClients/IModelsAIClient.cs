@@ -1,11 +1,13 @@
-﻿using OpenAI.Client.Models;
+﻿using OneOf;
+
+using OpenAI.Client.Models.Models;
 using OpenAI.Client.Models.Responses;
 
 namespace OpenAI.Client.AIClients;
 
 public interface IModelsAIClient
 {
-    Task<Response<Models.Models>> GetModelsAsync(CancellationToken cancellationToken);
+    Task<OneOf<Models.Models.Models, ErrorResponse>> GetModelsAsync(CancellationToken cancellationToken);
 
-    Task<Response<Model>> GetModelAsync(string modelId, CancellationToken cancellationToken);
+    Task<OneOf<Model, ErrorResponse>> GetModelAsync(string modelId, CancellationToken cancellationToken);
 }

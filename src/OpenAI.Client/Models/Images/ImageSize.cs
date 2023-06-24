@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Client.Models;
+﻿namespace OpenAI.Client.Models.Images;
 
 /// <summary>
 /// Represents available sizes for image generation endpoints

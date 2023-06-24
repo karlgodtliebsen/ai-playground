@@ -1,5 +1,5 @@
 ﻿using OpenAI.Client.Domain;
-
+using OpenAI.Client.Models.Images;
 using System.Text.Json.Serialization;
 
 namespace OpenAI.Client.Models.Requests;
