@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using OneOf;
 
 using OpenAI.Client.Configuration;
+using OpenAI.Client.Models.ChatCompletion;
 using OpenAI.Client.Models.Responses;
 
 using SerilogTimings.Extensions;
@@ -105,6 +106,62 @@ public abstract class AIClientBase
             logger.Error(ex, "DeleteAsync Failed {uri}", subUri);
             return new ErrorResponse(ex.Message);
         }
+
+    }
+
+
+    protected async Task<OneOf<string, ErrorResponse>> PostAsyncWithStream<T, TR>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
+    {
+        using var op = logger.BeginOperation("PostAsyncWithStream", subUri);
+        try
+        {
+            PrepareClient();
+
+            var response = await HttpClient.PostAsJsonAsync(subUri, payload, SerializerOptions, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken);
+            op.Complete();
+            return result!;
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "PostAsyncWithStream Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// TS:  ResponseStream<TR>
+    /// TR : Request
+    /// T : Request object
+    /// </summary>
+    /// <typeparam name="TS"></typeparam>
+    /// <typeparam name="TR"></typeparam>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="subUri"></param>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<OneOf<TS, ErrorResponse>> GetResponseUsingStreamAsync<TS, TR, T>(string subUri, T request, CancellationToken cancellationToken)
+        where TS : ResponseStream<TR>, new()
+        where TR : class
+    {
+
+        var result = await PostAsyncWithStream<T, TS>(subUri, request, cancellationToken);
+        return result.Match<OneOf<TS, ErrorResponse>>(
+            success =>
+            {
+                var data = success.Split("data:");
+                var resp = new TS();
+                foreach (var v in data.Where(d => !string.IsNullOrEmpty(d) && !d.Contains("[DONE]")))
+                {
+                    var obj = JsonSerializer.Deserialize<TR>(v);
+                    resp.Data.Add(obj!);
+                }
+                return resp;
+            },
+            error => new ErrorResponse(error.Error)
+        );
     }
 
     protected void PrepareClient()

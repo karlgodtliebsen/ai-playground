@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-using FluentAssertions;
+﻿using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -127,11 +125,96 @@ public class TestOfOpenAIClients
         response.IsT0.Should().BeTrue();
         string completion = response!.AsT0.Choices[0]!.Message!.Content.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
-        //completion.Should().Contain("Hello");
         completion.Should().Contain("I assist you today?");
         output.WriteLine(completion);
     }
 
+
+    [Fact]
+    public async Task VerifyChatCompletionModelUsingLongAnswerAndStreamClient()
+    {
+        //https://platform.openai.com/docs/models/overview
+        //https://platform.openai.com/docs/api-reference/chat/create
+
+        var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+
+        string deploymentName = "gpt-3.5-turbo";
+        var messages = new[]
+        {
+            new ChatCompletionMessage {Role = "system", Content = "You are a helpful assistant.!" },
+            new ChatCompletionMessage { Role = "user", Content = "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ..." }
+        };
+
+        var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
+            new ChatCompletionRequest
+            {
+                Model = deploymentName,
+                Messages = messages,
+                Stream = true,
+                MaxTokens = 200,
+            });
+
+        //  string subUri = "chat/completions";
+        var response = await aiClient.GetChatCompletionsUsingStreamAsync(payload, CancellationToken.None);
+        response.Should().NotBeNull();
+        response.IsT0.Should().BeTrue();
+        response.AsT0.Data.Count.Should().Be(202);
+
+        foreach (var v in response!.AsT0.Data)
+        {
+            for (int i = 0; i < v.Choices.Count; i++)
+            {
+                if (v.Choices[i]!.Delta!.Content != null)
+                {
+                    string completion = v.Choices[i]!.Delta!.Content;
+                    output.WriteLine(completion);
+                }
+            }
+        }
+    }
+
+    [Fact]
+    public async Task VerifyChatCompletionModelUsingLongAnswerAndGenericStreamClient()
+    {
+        //https://platform.openai.com/docs/models/overview
+        //https://platform.openai.com/docs/api-reference/chat/create
+
+        var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+
+        string deploymentName = "gpt-3.5-turbo";
+        var messages = new[]
+        {
+            new ChatCompletionMessage {Role = "system", Content = "You are a helpful assistant.!" },
+            new ChatCompletionMessage { Role = "user", Content = "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ..." }
+        };
+
+        var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
+            new ChatCompletionRequest
+            {
+                Model = deploymentName,
+                Messages = messages,
+                Stream = true,
+                MaxTokens = 200,
+            });
+
+        var response =
+            await aiClient.GetChatCompletionsUsingStreamAsync(payload, CancellationToken.None);
+        response.Should().NotBeNull();
+        response.IsT0.Should().BeTrue();
+        response.AsT0.Data.Count.Should().Be(202);
+
+        foreach (var v in response!.AsT0.Data)
+        {
+            for (int i = 0; i < v.Choices.Count; i++)
+            {
+                if (v.Choices[i]!.Delta!.Content != null)
+                {
+                    string completion = v.Choices[i]!.Delta!.Content;
+                    output.WriteLine(completion);
+                }
+            }
+        }
+    }
     [Fact]
     public async Task VerifyChatCompletionModel2Client()
     {
@@ -226,8 +309,7 @@ public class TestOfOpenAIClients
                 User = "the user",
             });
 
-        string jsonContent = JsonSerializer.Serialize(payload, new JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
-
+        //        string jsonContent = JsonSerializer.Serialize(payload, new JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
         var response = await aiClient.GetEmbeddingsAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
         response.IsT0.Should().BeTrue();

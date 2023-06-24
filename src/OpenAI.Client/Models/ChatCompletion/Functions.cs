@@ -5,7 +5,7 @@ namespace OpenAI.Client.Models.ChatCompletion;
 public class Functions
 {
     [JsonPropertyName("name")]
-    public string Name { get; init; }
+    public string Name { get; init; } = default!;
 
     [JsonPropertyName("description")]
     public string? Description { get; init; }

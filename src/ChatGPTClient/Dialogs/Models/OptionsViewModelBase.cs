@@ -32,8 +32,9 @@ public class OptionsViewModelBase : INotifyPropertyChanged
 
     /// <summary>
     /// Echo back the prompt in addition to the completion.  Defaults to false.
+    /// Up to 4 sequences where the API will stop generating further tokens.
     /// </summary>
-    public string? Stop { get; init; } = default!;
+    public string[]? Stop { get; init; } = default!;
 
 
     /// <summary>

@@ -4,6 +4,17 @@ using OpenAI.Client.Models.Chat;
 
 namespace OpenAI.Client.Models.ChatCompletion;
 
+
+
+public class ResponseStream<T>
+{
+    /// <summary>
+    /// Id for completion response.
+    /// </summary>
+    public IList<T> Data { get; set; } = new List<T>();
+
+}
+
 public class ChatCompletions
 {
     /// <summary>
