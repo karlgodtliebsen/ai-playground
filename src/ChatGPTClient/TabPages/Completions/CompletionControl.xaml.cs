@@ -12,10 +12,14 @@ using ChatGPTClient.Models;
 
 using Microsoft.Extensions.Options;
 
+using OneOf;
+
 using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
+using OpenAI.Client.Models.ChatCompletion;
 using OpenAI.Client.Models.Requests;
+using OpenAI.Client.Models.Responses;
 
 namespace ChatGPTClient;
 
@@ -84,8 +88,44 @@ public partial class CompletionControl : UserControl
 
     private async Task Submit()
     {
-        var selectedModel = this.viewState.SelectedModel;
         var prompt = viewModel!.Prompt!.Text!.Trim();
+        var payload = CreatePayload(prompt);
+        UpdateUIStatus(prompt);
+        var completionsResponse = await completionClient.GetCompletionsAsync(payload, CancellationToken.None);
+        ProcessAnswer(completionsResponse);
+    }
+
+    private void ProcessAnswer(OneOf<Completions, ErrorResponse> completionsResponse)
+    {
+        completionsResponse.Switch(
+            completions =>
+            {
+                foreach (var choice in completions.Choices)
+                {
+                    viewModel.Result.Reply.Add(new RichResultViewModel()
+                    {
+                        Text = choice.Text.Trim(),
+                        Kind = "A",
+                        Success = true,
+                    });
+                }
+            },
+            error =>
+            {
+                viewModel.Result.Reply.Add(new RichResultViewModel()
+                {
+                    Text = error.Error,
+                    Role = "error",
+                    Kind = "F",
+                    Success = false,
+                });
+            }
+        );
+    }
+
+    private CompletionRequest CreatePayload(string prompt)
+    {
+        var selectedModel = this.viewState.SelectedModel!;
         var options = viewModel.Options;
         var payload = requestFactory.CreateRequest<CompletionRequest>(() =>
             new CompletionRequest
@@ -100,39 +140,18 @@ public partial class CompletionControl : UserControl
                 Logprobs = options.Logprobs,
                 Stop = options.Stop,
             });
+        return payload;
+    }
 
+    private void UpdateUIStatus(string prompt)
+    {
+        viewModel.IsReady = false;
         viewModel.Result.Reply.Add(new RichResultViewModel()
         {
             Text = prompt,
             Kind = "Q",
             Success = true,
         });
-        viewModel.IsReady = false;
-        var completionsResponse = await completionClient.GetCompletionsAsync(payload, CancellationToken.None);
-        if (completionsResponse!.Success)
-        {
-            var completions = completionsResponse.Value;
-            foreach (var choice in completions.Choices)
-            {
-                viewModel.Result.Reply.Add(new RichResultViewModel()
-                {
-                    Text = choice.Text.Trim(),
-                    Kind = "A",
-                    Success = true,
-                });
-            }
-        }
-        else
-        {
-            viewModel.Result.Reply.Add(new RichResultViewModel()
-            {
-                Text = "Error",
-                Kind = "F",
-                Success = false,
-            });
-        }
-        viewModel.IsReady = true;
-
     }
 
     private void Copy_OnClick(object sender, RoutedEventArgs e)

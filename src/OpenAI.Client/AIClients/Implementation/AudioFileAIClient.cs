@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Net.Http.Json;
+
+using Microsoft.Extensions.Options;
+
+using OneOf;
 
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Models.Audio;
@@ -6,8 +10,6 @@ using OpenAI.Client.Models.Requests;
 using OpenAI.Client.Models.Responses;
 
 using SerilogTimings.Extensions;
-
-using System.Net.Http.Json;
 
 namespace OpenAI.Client.AIClients.Implementation;
 
@@ -22,7 +24,7 @@ public class AudioFileAIClient : AIClientBase, IAudioFileAIClient
     {
     }
 
-    private async Task<Audio?> UploadAudioFileAsync(string subUri, AudioTranscriptionRequest request, CancellationToken cancellationToken)
+    private async Task<OneOf<Audio, ErrorResponse>> UploadAudioFileAsync(string subUri, AudioTranscriptionRequest request, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("UploadAudioFileAsync", subUri);
         try
@@ -42,17 +44,16 @@ public class AudioFileAIClient : AIClientBase, IAudioFileAIClient
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<Audio>(cancellationToken: cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "UploadAudioFileAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
 
-    private async Task<Audio?> UploadAudioFileAsync(string subUri, AudioTranslationRequest request, CancellationToken cancellationToken)
+    private async Task<OneOf<Audio, ErrorResponse>> UploadAudioFileAsync(string subUri, AudioTranslationRequest request, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("UploadAudioFileAsync", subUri);
         try
@@ -70,25 +71,24 @@ public class AudioFileAIClient : AIClientBase, IAudioFileAIClient
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<Audio>(cancellationToken: cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "UploadAudioFileAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
 
-    public async Task<Response<Audio>> CreateTranscriptionsAsync(AudioTranscriptionRequest request, CancellationToken cancellationToken)
+    public async Task<OneOf<Audio, ErrorResponse>> CreateTranscriptionsAsync(AudioTranscriptionRequest request, CancellationToken cancellationToken)
     {
         var result = await UploadAudioFileAsync(request.RequestUri, request, cancellationToken);
-        return new Response<Audio>(result!);
+        return result;
     }
 
-    public async Task<Response<Audio>> CreateTranslationsAsync(AudioTranslationRequest request, CancellationToken cancellationToken)
+    public async Task<OneOf<Audio, ErrorResponse>> CreateTranslationsAsync(AudioTranslationRequest request, CancellationToken cancellationToken)
     {
         var result = await UploadAudioFileAsync(request.RequestUri, request, cancellationToken);
-        return new Response<Audio>(result!);
+        return result;
     }
 }

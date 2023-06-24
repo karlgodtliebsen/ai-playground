@@ -13,11 +13,14 @@ using ChatGPTClient.Models;
 
 using Microsoft.Extensions.Options;
 
+using OneOf;
+
 using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
 using OpenAI.Client.Models.ChatCompletion;
 using OpenAI.Client.Models.Requests;
+using OpenAI.Client.Models.Responses;
 
 using Model = ChatGPTClient.Models.Model;
 
@@ -93,16 +96,50 @@ public partial class ChatCompletionControl : UserControl
 
     private async Task Submit()
     {
-        var selectedModel = this.viewState.SelectedModel;
         var prompt = viewModel!.Prompt!.Text!.Trim();
+
+        var payload = CreatePayload(prompt);
+        UpdateUIStatus(prompt);
+        var response = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
+        ProcessAnswer(response);
+    }
+
+    private void ProcessAnswer(OneOf<ChatCompletions, ErrorResponse> response)
+    {
+        response.Switch(
+            completions =>
+            {
+                foreach (var choice in completions.Choices)
+                {
+                    viewModel.Result.Reply.Add(new RichResultViewModel()
+                    {
+                        Text = choice!.Message!.Content!.Trim(),
+                        Kind = "A",
+                        Role = "assistant",
+                        Success = true,
+                    });
+
+                    messages.Add(new ChatCompletionMessage { Role = "assistant", Content = choice.Message.Content.Trim() });
+                }
+            },
+            error =>
+            {
+                viewModel.Result.Reply.Add(new RichResultViewModel()
+                {
+                    Text = error.Error,
+                    Role = "error",
+                    Kind = "F",
+                    Success = false,
+                });
+            }
+        );
+        viewModel.IsReady = true;
+    }
+
+    private ChatCompletionRequest CreatePayload(string prompt)
+    {
+        var selectedModel = this.viewState.SelectedModel!;
         messages.Add(new ChatCompletionMessage { Role = "user", Content = prompt });
-        viewModel.Result.Reply.Add(new RichResultViewModel()
-        {
-            Text = prompt,
-            Kind = "Q",
-            Role = "user",
-            Success = true,
-        });
 
         var options = viewModel.Options;
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -118,37 +155,19 @@ public partial class ChatCompletionControl : UserControl
                 Logprobs = options.Logprobs,
                 Stop = options.Stop,
             });
+        return payload;
+    }
+
+    private void UpdateUIStatus(string prompt)
+    {
         viewModel.IsReady = false;
-
-        var response = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
-        if (response!.Success)
+        viewModel.Result.Reply.Add(new RichResultViewModel()
         {
-            var completions = response.Value;
-            foreach (var choice in completions.Choices)
-            {
-
-                viewModel.Result.Reply.Add(new RichResultViewModel()
-                {
-                    Text = choice.Message.Content.Trim(),
-                    Kind = "A",
-                    Role = "assistant",
-                    Success = true,
-                });
-
-                messages.Add(new ChatCompletionMessage { Role = "assistant", Content = choice.Message.Content.Trim() });
-            }
-        }
-        else
-        {
-            viewModel.Result.Reply.Add(new RichResultViewModel()
-            {
-                Text = "Error",
-                Kind = "F",
-                Success = false,
-            });
-        }
-        viewModel.IsReady = true;
-
+            Text = prompt,
+            Kind = "Q",
+            Role = "user",
+            Success = true,
+        });
     }
 
 

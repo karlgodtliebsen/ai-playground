@@ -1,4 +1,6 @@
-﻿using OpenAI.Client.Models.Embeddings;
+﻿using OneOf;
+
+using OpenAI.Client.Models.Embeddings;
 using OpenAI.Client.Models.Requests;
 using OpenAI.Client.Models.Responses;
 
@@ -6,5 +8,5 @@ namespace OpenAI.Client.AIClients;
 
 public interface IEmbeddingsAIClient
 {
-    Task<Response<Embeddings>?> GetEmbeddingsAsync(EmbeddingsRequest request, CancellationToken cancellationToken);
+    Task<OneOf<Embeddings, ErrorResponse>> GetEmbeddingsAsync(EmbeddingsRequest request, CancellationToken cancellationToken);
 }

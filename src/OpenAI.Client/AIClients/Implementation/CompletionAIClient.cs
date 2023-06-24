@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 
+using OneOf;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Models.ChatCompletion;
 using OpenAI.Client.Models.Requests;
@@ -9,7 +11,6 @@ namespace OpenAI.Client.AIClients.Implementation;
 
 public class CompletionAIClient : AIClientBase, ICompletionAIClient
 {
-
     public CompletionAIClient(
         IHttpClientFactory httpClientFactory,
         HttpClient httpClient,
@@ -18,9 +19,9 @@ public class CompletionAIClient : AIClientBase, ICompletionAIClient
     {
     }
 
-    public async Task<Response<Completions>?> GetCompletionsAsync(CompletionRequest request, CancellationToken cancellationToken)
+    public async Task<OneOf<Completions, ErrorResponse>> GetCompletionsAsync(CompletionRequest request, CancellationToken cancellationToken)
     {
         var result = await PostAsync<CompletionRequest, Completions>(request.RequestUri, request, cancellationToken);
-        return new Response<Completions>(result!);
+        return result;
     }
 }

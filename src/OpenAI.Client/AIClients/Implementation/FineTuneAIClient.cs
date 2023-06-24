@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 
+using OneOf;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Models.FineTune;
 using OpenAI.Client.Models.Requests;
@@ -18,24 +20,24 @@ public class FineTuneAIClient : AIClientBase, IFineTuneAIClient
     {
     }
 
-    public async Task<Response<FineTuneRequest>?> FineTuneAsync(FineTuneRequest request, CancellationToken cancellationToken)
+    public async Task<OneOf<FineTuneRequest, ErrorResponse>> FineTuneAsync(FineTuneRequest request, CancellationToken cancellationToken)
     {
         var result = await PostAsync<FineTuneRequest, FineTuneRequest>(request.RequestUri, request, cancellationToken);
-        return new Response<FineTuneRequest>(result!);
+        return result;
     }
 
 
-    public async Task<Response<FineTunes>?> GetFineTunesAsync(FineTuneRequest request, CancellationToken cancellationToken)
+    public async Task<OneOf<FineTunes, ErrorResponse>> GetFineTunesAsync(FineTuneRequest request, CancellationToken cancellationToken)
     {
         var result = await PostAsync<FineTuneRequest, FineTunes>(request.RequestUri, request, cancellationToken);
-        return new Response<FineTunes>(result!);
+        return result;
     }
 
 
-    public async Task<Response<FineTuneRequest>?> RetrieveFineTuneAsync(FineTuneRequest request, string fineTuneId, CancellationToken cancellationToken)
+    public async Task<OneOf<FineTuneRequest, ErrorResponse>> RetrieveFineTuneAsync(FineTuneRequest request, string fineTuneId, CancellationToken cancellationToken)
     {
         var result = await GetAsync<FineTuneRequest>($"{request.RequestUri}/{fineTuneId}", cancellationToken);
-        return new Response<FineTuneRequest>(result!);
+        return result;
     }
 
 }

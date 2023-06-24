@@ -11,12 +11,15 @@ using ChatGPTClient.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 
+using OneOf;
+
 using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
 
 using OpenAI.Client.Domain;
 using OpenAI.Client.Models.Images;
 using OpenAI.Client.Models.Requests;
+using OpenAI.Client.Models.Responses;
 
 namespace ChatGPTClient.TabPages;
 
@@ -71,17 +74,60 @@ public partial class CreateImageControl : UserControl
     private async Task Submit()
     {
         var prompt = ViewModel!.Prompt!.Text!.Trim();
-        var options = ViewModel!.Options!;
-        var payload =
 
-            new ImageGenerationRequest
+        var payload = CreatePayload(prompt);
+        UpdateUIStatus(prompt);
+        var response = await imagesClient.CreateImageAsync(payload, CancellationToken.None);
+        ProcessAnswer(response);
+    }
+
+    private void ProcessAnswer(OneOf<GeneratedImage, ErrorResponse> response)
+    {
+        response.Switch(
+            generatedImage =>
             {
-                Prompt = prompt,
-                NumberOfImagesToGenerate = options.NumberOfImagesToGenerate,
-                ImageSize = options.ImageSize,
-                ImageResponseFormat = options.ImageResponseFormat,
-            };
+                var index = 1;
+                foreach (var model in generatedImage.Data)
+                {
+                    var tabItem = new TabItem
+                    {
+                        Header = $"Image {index++}",
+                        Content = CreateImage(model)
+                    };
+                    TabControl.Items.Add(tabItem);
+                    tabItem.Focus();
+                }
+            },
+            error =>
+            {
+                //ViewModel.Result.Reply.Add(new RichResultViewModel()
+                //{
+                //Text = error.Error,
+                //Role = "error",
+                //    Kind = "F",
+                //    Success = false,
+                //});
+            }
+        );
 
+        ViewModel.IsReady = true;
+    }
+
+    private ImageGenerationRequest CreatePayload(string prompt)
+    {
+        var options = ViewModel!.Options!;
+        var payload = new ImageGenerationRequest
+        {
+            Prompt = prompt,
+            NumberOfImagesToGenerate = options.NumberOfImagesToGenerate,
+            ImageSize = options.ImageSize,
+            ImageResponseFormat = options.ImageResponseFormat,
+        };
+        return payload;
+    }
+
+    private void UpdateUIStatus(string prompt)
+    {
         ViewModel.Question.Add(new RichResultViewModel()
         {
             Text = prompt,
@@ -90,30 +136,6 @@ public partial class CreateImageControl : UserControl
         });
         TabControl.Items.Clear();
         ViewModel.IsReady = false;
-        var response = await imagesClient.CreateImageAsync(payload, CancellationToken.None);
-        if (response!.Success)
-        {
-            var index = 1;
-            foreach (var model in response!.Value.Data)
-            {
-                var tabItem = new TabItem
-                {
-                    Header = $"Image {index++}",
-                    Content = CreateImage(model)
-                };
-                TabControl.Items.Add(tabItem);
-            }
-        }
-        else
-        {
-            //ViewModel.Result.Reply.Add(new RichResultViewModel()
-            //{
-            //    Text = "Error",
-            //    Kind = "F",
-            //    Success = false,
-            //});
-        }
-        ViewModel.IsReady = true;
     }
 
     private UIElement? CreateImage(ImageData imageData)

@@ -4,7 +4,10 @@ using System.Text.Json.Serialization;
 
 using Microsoft.Extensions.Options;
 
+using OneOf;
+
 using OpenAI.Client.Configuration;
+using OpenAI.Client.Models.Responses;
 
 using SerilogTimings.Extensions;
 
@@ -33,7 +36,7 @@ public abstract class AIClientBase
         };
     }
 
-    protected async Task<TR?> PostAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
+    protected async Task<OneOf<TR, ErrorResponse>> PostAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
     {
         using var op = logger.BeginOperation("PostAsync", subUri);
         try
@@ -44,17 +47,16 @@ public abstract class AIClientBase
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<TR>(cancellationToken: cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "PostAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
 
-    protected async Task<TR?> GetAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
+    protected async Task<OneOf<TR, ErrorResponse>> GetAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
     {
         using var op = logger.BeginOperation("GetAsync", subUri);
         try
@@ -62,17 +64,16 @@ public abstract class AIClientBase
             PrepareClient();
             var result = await HttpClient.GetFromJsonAsync<TR>(subUri, cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "GetAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
 
-    protected async Task<string> GetContentAsync(string subUri, CancellationToken cancellationToken)
+    protected async Task<OneOf<string, ErrorResponse>> GetContentAsync(string subUri, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("GetContentAsync", subUri);
         try
@@ -80,16 +81,16 @@ public abstract class AIClientBase
             PrepareClient();
             var result = await HttpClient.GetStringAsync(subUri, cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "GetContentAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
-    protected async Task<TR?> DeleteAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
+
+    protected async Task<OneOf<TR, ErrorResponse>> DeleteAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
     {
         using var op = logger.BeginOperation("DeleteAsync", subUri);
         try
@@ -97,15 +98,15 @@ public abstract class AIClientBase
             PrepareClient();
             var result = await HttpClient.DeleteFromJsonAsync<TR>(subUri, cancellationToken);
             op.Complete();
-            return result;
+            return result!;
         }
         catch (Exception ex)
         {
             logger.Error(ex, "DeleteAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
         }
-
-        return default;
     }
+
     protected void PrepareClient()
     {
         HttpClient.DefaultRequestHeaders.Clear();

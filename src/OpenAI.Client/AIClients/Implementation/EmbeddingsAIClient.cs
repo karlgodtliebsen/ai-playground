@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 
+using OneOf;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Models.Embeddings;
 using OpenAI.Client.Models.Requests;
@@ -19,9 +21,9 @@ public class EmbeddingsAIClient : AIClientBase, IEmbeddingsAIClient
     }
 
 
-    public async Task<Response<Embeddings>?> GetEmbeddingsAsync(EmbeddingsRequest request, CancellationToken cancellationToken)
+    public async Task<OneOf<Embeddings, ErrorResponse>> GetEmbeddingsAsync(EmbeddingsRequest request, CancellationToken cancellationToken)
     {
         var result = await PostAsync<EmbeddingsRequest, Embeddings>(request.RequestUri, request, cancellationToken);
-        return new Response<Embeddings>(result!);
+        return result;
     }
 }

@@ -50,10 +50,9 @@ public class TestOfOpenAIClients
         var aiClient = factory.Services.GetRequiredService<IModelsAIClient>();
         var response = await aiClient.GetModelsAsync(CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.ModelData.Length.Should().BeGreaterThan(0);
-
-        foreach (var model in response!.Value.ModelData)
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.ModelData.Length.Should().BeGreaterThan(0);
+        foreach (var model in response!.AsT0.ModelData)
         {
             output.WriteLine(model.Id);
             //var modelResponse = await aiClient.GetModelAsync(model.ModelID, CancellationToken.None);
@@ -91,11 +90,10 @@ public class TestOfOpenAIClients
                 //Stop = "\n"
             });
 
-        var completionsResponse = await aiClient.GetCompletionsAsync(payload, CancellationToken.None);
-        completionsResponse.Should().NotBeNull();
-        completionsResponse!.Success.Should().BeTrue();
-
-        string completion = completionsResponse!.Value.Choices[0].Text.Trim();
+        var response = await aiClient.GetCompletionsAsync(payload, CancellationToken.None);
+        response.Should().NotBeNull();
+        response.IsT0.Should().BeTrue();
+        string completion = response!.AsT0.Choices[0].Text.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
         completion.Should().Be("This is indeed a test");
         output.WriteLine(completion);
@@ -124,13 +122,10 @@ public class TestOfOpenAIClients
                 Messages = messages
             });
 
-        var charCompletionsResponse = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
-        charCompletionsResponse.Should().NotBeNull();
-        charCompletionsResponse!.Success.Should().BeTrue();
-        charCompletionsResponse!.Value.Should().NotBeNull();
-
-
-        string completion = charCompletionsResponse!.Value!.Choices[0]!.Message!.Content.Trim();
+        var response = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
+        response.Should().NotBeNull();
+        response.IsT0.Should().BeTrue();
+        string completion = response!.AsT0.Choices[0]!.Message!.Content.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
         //completion.Should().Contain("Hello");
         completion.Should().Contain("I assist you today?");
@@ -159,13 +154,11 @@ public class TestOfOpenAIClients
                 Messages = messages
             });
 
-        var charCompletionsResponse = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
-        charCompletionsResponse.Should().NotBeNull();
-        charCompletionsResponse!.Success.Should().BeTrue();
-        charCompletionsResponse!.Value.Should().NotBeNull();
-
-
-        string completion = charCompletionsResponse!.Value!.Choices[0]!.Message!.Content.Trim();
+        var response = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
+        response.Should().NotBeNull();
+        response.IsT0.Should().BeTrue();
+        response!.Value.Should().NotBeNull();
+        string completion = response!.AsT0!.Choices[0]!.Message!.Content.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
         output.WriteLine(completion);
     }
@@ -187,11 +180,10 @@ public class TestOfOpenAIClients
                 Input = "This is a Test. Please apply negative moderation"// I do not want to send a bad sentence to the API
             });
 
-        var moderationResponse = await aiClient.GetModerationAsync(payload, CancellationToken.None);
-        moderationResponse.Should().NotBeNull();
-        moderationResponse!.Success.Should().BeTrue();
-        moderationResponse!.Value.Should().NotBeNull();
-        moderationResponse!.Value.Results.Should().NotBeNull();//Shallow check
+        var response = await aiClient.GetModerationAsync(payload, CancellationToken.None);
+        response.Should().NotBeNull();
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.Results.Should().NotBeNull();//Shallow check
     }
 
 
@@ -210,11 +202,10 @@ public class TestOfOpenAIClients
                 Instruction = "Fix the spelling mistakes",
             });
 
-        var editResponse = await aiClient.GetEditsAsync(payload, CancellationToken.None);
-        editResponse.Should().NotBeNull();
-        editResponse!.Success.Should().BeTrue();
-
-        string completion = editResponse!.Value.Choices[0].Text.Trim();
+        var response = await aiClient.GetEditsAsync(payload, CancellationToken.None);
+        response.Should().NotBeNull();
+        response.IsT0.Should().BeTrue();
+        string completion = response!.AsT0.Choices[0].Text.Trim();
         completion.Should().NotBeNullOrWhiteSpace();
         completion.Should().Contain("What day of the week is it");
         output.WriteLine(completion);
@@ -237,12 +228,11 @@ public class TestOfOpenAIClients
 
         string jsonContent = JsonSerializer.Serialize(payload, new JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
-        var embeddingsResponse = await aiClient.GetEmbeddingsAsync(payload, CancellationToken.None);
-        embeddingsResponse.Should().NotBeNull();
-        embeddingsResponse!.Success.Should().BeTrue();
-
-        embeddingsResponse!.Value.Data.Count.Should().Be(1);
-        var data = embeddingsResponse!.Value.Data[0];
+        var response = await aiClient.GetEmbeddingsAsync(payload, CancellationToken.None);
+        response.Should().NotBeNull();
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.Data.Count.Should().Be(1);
+        var data = response!.AsT0.Data[0];
         data.Embedding.Length.Should().Be(1536);
         output.WriteLine(data.Embedding.Length.ToString());
     }
@@ -263,9 +253,10 @@ public class TestOfOpenAIClients
         File.Exists(payload.FullFilename).Should().BeTrue();
         var response = await aiClient.UploadFilesAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.Bytes.Should().Be(5514);
-        response!.Value.Filename.Should().Be("fine-tuning-data.jsonl");
+        response.IsT0.Should().BeTrue();
+
+        response!.AsT0.Bytes.Should().Be(5514);
+        response!.AsT0.Filename.Should().Be("fine-tuning-data.jsonl");
     }
 
     [Fact]
@@ -275,8 +266,8 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/models/overview
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.FileData.Length.Should().BeGreaterThan(0);
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.FileData.Length.Should().BeGreaterThan(0);
     }
 
     [Fact]
@@ -287,21 +278,21 @@ public class TestOfOpenAIClients
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-
+        response.IsT0.Should().BeTrue();
         await Task.Delay(TimeSpan.FromSeconds(10));
 
-        foreach (var fileData in response!.Value.FileData)
+        foreach (var fileData in response!.AsT0.FileData)
         {
             var responseDelete = await aiClient.DeleteFileAsync(fileData.Id, CancellationToken.None);
             responseDelete.Should().NotBeNull();
-            responseDelete!.Success.Should().BeTrue();
-            responseDelete!.Value.Deleted.Should().BeTrue();
+            responseDelete.IsT0.Should().BeTrue();
+            responseDelete!.AsT0.Deleted.Should().BeTrue();
         }
         response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.FileData.Length.Should().Be(0);
+        response.Should().NotBeNull();
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.FileData.Length.Should().Be(0);
     }
 
 
@@ -315,16 +306,16 @@ public class TestOfOpenAIClients
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.FileData.Length.Should().Be(1);
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.FileData.Length.Should().Be(1);
 
-        foreach (var fileData in response!.Value.FileData)
+        foreach (var fileData in response!.AsT0.FileData)
         {
             var responseFileInfo = await aiClient.RetrieveFileAsync(fileData.Id, CancellationToken.None);
             responseFileInfo.Should().NotBeNull();
-            responseFileInfo!.Success.Should().BeTrue();
-            responseFileInfo!.Value.Bytes.Should().Be(5514);
-            responseFileInfo!.Value.Filename.Should().Be("fine-tuning-data.jsonl");
+            responseFileInfo.IsT0.Should().BeTrue();
+            responseFileInfo!.AsT0.Bytes.Should().Be(5514);
+            responseFileInfo!.AsT0.Filename.Should().Be("fine-tuning-data.jsonl");
         }
 
     }
@@ -339,15 +330,15 @@ public class TestOfOpenAIClients
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.FileData.Length.Should().Be(1);
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.FileData.Length.Should().Be(1);
 
-        foreach (var fileData in response!.Value.FileData)
+        foreach (var fileData in response!.AsT0.FileData)
         {
             var responseFileContent = await aiClient.RetrieveFileContentAsync(fileData.Id, CancellationToken.None);
             responseFileContent.Should().NotBeNull();
-            responseFileContent!.Success.Should().BeTrue();
-            responseFileContent!.Value.Length.Should().Be(5514);
+            responseFileContent.IsT0.Should().BeTrue();
+            responseFileContent!.AsT0.Length.Should().Be(5514);
         }
     }
 
@@ -369,10 +360,10 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.CreateImageAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.Data.Length.Should().Be(2);
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.Data.Length.Should().Be(2);
 
-        foreach (var model in response!.Value.Data)
+        foreach (var model in response!.AsT0.Data)
         {
             model.Url.Should().NotBeNullOrEmpty();
             model.Data.Should().BeNull();
@@ -395,10 +386,10 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.CreateImageAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.Data.Length.Should().Be(1);
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.Data.Length.Should().Be(1);
 
-        foreach (var model in response!.Value.Data)
+        foreach (var model in response!.AsT0.Data)
         {
             model.Url.Should().BeNull();
             model.Data.Should().NotBeNull();
@@ -426,10 +417,9 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.CreateImageEditsAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.Data.Length.Should().Be(2);
-
-        foreach (var model in response!.Value.Data)
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.Data.Length.Should().Be(1);
+        foreach (var model in response!.AsT0.Data)
         {
             model.Url.Should().NotBeNullOrEmpty();
             model.Data.Should().BeNull();
@@ -455,10 +445,9 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.CreateImageVariationsAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
-        response!.Success.Should().BeTrue();
-        response!.Value.Data.Length.Should().Be(2);
-
-        foreach (var model in response!.Value.Data)
+        response.IsT0.Should().BeTrue();
+        response!.AsT0.Data.Length.Should().Be(2);
+        foreach (var model in response!.AsT0.Data)
         {
             model.Url.Should().NotBeNullOrEmpty();
             model.Data.Should().BeNull();
