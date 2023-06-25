@@ -44,5 +44,10 @@ namespace ChatGPTClient.UserControls
         {
             KeyUp?.Invoke(sender, e);
         }
+
+        private void Clear_OnClick(object sender, RoutedEventArgs e)
+        {
+            Prompt.Text = "";
+        }
     }
 }

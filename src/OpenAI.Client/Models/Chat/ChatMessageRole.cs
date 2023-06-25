@@ -5,5 +5,6 @@ public enum ChatMessageRole
 {
     System,
     User,
-    Assistent
+    Assistent,
+    Function,
 }

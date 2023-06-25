@@ -14,18 +14,31 @@
         </Grid.ColumnDefinitions>
 
         <Border BorderBrush="White" BorderThickness="1" CornerRadius="10" >
-            <TextBox MaxLines="20" AcceptsReturn="True"   TextWrapping="Wrap"  Margin="10"
-                     ToolTip="Enter prompt Text"
-                     materialDesign:HintAssist.Hint="Prompt"
-                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                     Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" KeyUp="Key_OnUp"
-                     Text="{Binding Prompt.Text}"/>
+            <Grid>
+                <TextBox MaxLines="20" AcceptsReturn="True"   TextWrapping="Wrap"  Margin="10"
+                         ToolTip="Enter prompt Text"
+                         materialDesign:HintAssist.Hint="Prompt"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                     
+                         Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" KeyUp="Key_OnUp"
+                         Text="{Binding Prompt.Text}"/>
+
+                <Border  Width="35" Height="35"  CornerRadius="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0" >
+                    <Button 
+                        ToolTip="Clear prompt Text"
+                            Content="{materialDesign:PackIcon Delete}"
+                            Click="Clear_OnClick" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                            Style="{StaticResource MaterialDesignToolButton}">
+                    </Button>
+                </Border>
+            </Grid>
         </Border>
 
         <Button Grid.Column="1" Margin="10"  VerticalAlignment="Center" HorizontalAlignment="Right" Click="ButtonBase_OnClick" 
                 IsEnabled="{Binding IsReady}"
-                Content="{materialDesign:PackIcon SmileyHappy}"
+                Content="{materialDesign:PackIcon CallToAction}"
                 ToolTip="Icon"
+
         />
 
     </Grid>

@@ -13,10 +13,7 @@ public interface IChatCompletionAIClient
 
     Task<OneOf<ResponseStream<ChatCompletions>, ErrorResponse>> GetChatCompletionsUsingStreamAsync(ChatCompletionRequest request, CancellationToken cancellationToken);
 
-    //Task<OneOf<ChatCompletionsStream, ErrorResponse>> GetChatCompletionsUsingStreamAsync(ChatCompletionRequest request, CancellationToken cancellationToken);
+    IAsyncEnumerable<OneOf<ChatCompletions, ErrorResponse>> GetChatCompletionsStreamAsync(ChatCompletionRequest request, CancellationToken cancellationToken);
 
-    //    Task<OneOf<TS, ErrorResponse>> GetResponseUsingStreamAsync<TS, TR, T>(T request, CancellationToken cancellationToken)
-    //        where TS : ResponseStream<TR>, new()
-    //        where TR : class;
 }
 

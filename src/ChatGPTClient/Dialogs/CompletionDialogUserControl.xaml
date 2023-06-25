@@ -79,6 +79,14 @@
                             Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
                             Text="{Binding Options.FrequencyPenalty}"/>
 
+                <CheckBox   Margin="10,5,0,0"
+                            DockPanel.Dock="Top"
+                            ToolTip="Use Streaming Response"
+                            materialDesign:HintAssist.Hint="Use Streaming Response"
+                            Style="{StaticResource MaterialDesignCheckBox}"
+                            Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Content="Use Streaming Response"
+                            IsChecked="{Binding Options.Stream}"/>
 
 
                 <Button Margin="10" DockPanel.Dock="Bottom" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="Close"/>

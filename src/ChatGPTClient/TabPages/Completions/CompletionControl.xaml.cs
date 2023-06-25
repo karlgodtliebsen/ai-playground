@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -34,21 +35,21 @@ public partial class CompletionControl : UserControl
         InitializeComponent();
     }
 
-    private readonly ICompletionAIClient completionClient;
+    private readonly ICompletionAIClient aiClient;
     private readonly IModelRequestFactory requestFactory;
     private readonly CompletionViewModel viewModel = new();
     private readonly ViewState viewState;
     private readonly ObservableCollection<Model> models = new();
 
     public CompletionControl(
-        ICompletionAIClient completionClient,
+        ICompletionAIClient aiClient,
         IModelRequestFactory requestFactory,
         IOptions<OpenAIOptions> options,
         ViewState viewState
     )
     {
         this.viewState = viewState;
-        this.completionClient = completionClient;
+        this.aiClient = aiClient;
         this.requestFactory = requestFactory;
         InitializeComponent();
         viewModel.ViewState = viewState;
@@ -91,8 +92,17 @@ public partial class CompletionControl : UserControl
         var prompt = viewModel!.Prompt!.Text!.Trim();
         var payload = CreatePayload(prompt);
         UpdateUIStatus(prompt);
-        var completionsResponse = await completionClient.GetCompletionsAsync(payload, CancellationToken.None);
-        ProcessAnswer(completionsResponse);
+        if (!payload.Stream)
+        {
+            var response = await aiClient.GetCompletionsAsync(payload, CancellationToken.None);
+            ProcessAnswer(response);
+        }
+        else
+        {
+            var responseCollection = aiClient.GetCompletionsStreamAsync(payload, CancellationToken.None);
+            await ProcessStreamedAnswer(responseCollection);
+        }
+        viewModel.IsReady = true;
     }
 
     private void ProcessAnswer(OneOf<Completions, ErrorResponse> completionsResponse)
@@ -122,7 +132,36 @@ public partial class CompletionControl : UserControl
             }
         );
     }
-
+    private async Task ProcessStreamedAnswer(IAsyncEnumerable<OneOf<Completions, ErrorResponse>> responseCollection)
+    {
+        await foreach (var response in responseCollection)
+        {
+            response.Switch(
+                completions =>
+                {
+                    foreach (var choice in completions.Choices)
+                    {
+                        viewModel.Result.Reply.Add(new RichResultViewModel()
+                        {
+                            Text = choice.Text.Trim(),
+                            Kind = "A",
+                            Success = true,
+                        });
+                    }
+                },
+                error =>
+                {
+                    viewModel.Result.Reply.Add(new RichResultViewModel()
+                    {
+                        Text = error.Error,
+                        Role = "error",
+                        Kind = "F",
+                        Success = false,
+                    });
+                }
+            );
+        }
+    }
     private CompletionRequest CreatePayload(string prompt)
     {
         var selectedModel = this.viewState.SelectedModel!;
@@ -159,5 +198,10 @@ public partial class CompletionControl : UserControl
         var button = sender as Button;
         var result = button?.Tag as string;
         Clipboard.SetText(result);
+    }
+
+    private void Clear_OnClick(object sender, RoutedEventArgs e)
+    {
+        viewModel.Result.Reply.Clear();
     }
 }

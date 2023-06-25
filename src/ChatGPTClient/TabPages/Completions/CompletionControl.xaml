@@ -33,7 +33,7 @@
                 <RowDefinition Height="20*"/>
             </Grid.RowDefinitions>
 
-            <Grid  VerticalAlignment="Center"  Margin="10" >
+            <Grid Grid.Row="0"  VerticalAlignment="Center"  Margin="10" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200" />
                     <ColumnDefinition Width="*" />
@@ -43,41 +43,54 @@
                             materialDesign:HintAssist.Hint="Selected Model"
                             Margin="0,5,0,0" 
                             Text="{Binding ViewState.SelectedModel.ModelId}"  VerticalAlignment="Center" HorizontalAlignment="Stretch"  >
-
                 </TextBlock>
-
 
                 <Button  Grid.Column="1"  Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right" 
                          Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Content="{materialDesign:PackIcon ContentSaveCog}" />
             </Grid>
+            <ScrollViewer  Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" >
+                <StackPanel Margin="5" >
 
+                    <ItemsControl ItemsSource="{Binding Result.Reply}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate >
+                                <Grid HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="0,0,0,10" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="30" />
+                                    </Grid.ColumnDefinitions>
+                                    <materialDesign:PackIcon  Kind="{Binding Kind, Converter={StaticResource IconKindConverter}}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Margin="5,0,0,0"  Text="{Binding Text}"  VerticalAlignment="Center"  MinWidth="100"/>
+                                    <Border Grid.Column="2"  Margin="5"  Width="35" Height="35"  CornerRadius="10" Visibility="{Binding Visibility}">
+                                        <Button 
+                                            VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" 
+                                            ToolTip="Copy Text" Click="Copy_OnClick"  Visibility="{Binding Visibility}"
+                                            Tag="{Binding Text}"
+                                            Style="{StaticResource MaterialDesignToolButton}"
+                                            Content="{materialDesign:PackIcon ContentCopy}"
+                                        />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
-            <StackPanel Margin="5"  Grid.Row="1">
-                <ItemsControl ItemsSource="{Binding Result.Reply}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate >
-                            <Grid HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="0,0,0,10" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="30" />
-                                </Grid.ColumnDefinitions>
-                                <materialDesign:PackIcon  Kind="{Binding Kind, Converter={StaticResource IconKindConverter}}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Margin="5,0,0,0"  Text="{Binding Text}"  VerticalAlignment="Center"/>
+                </StackPanel>
+            </ScrollViewer>
+            <Grid Grid.Row="1">
+                <Border  Width="35" Height="35"  CornerRadius="10" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0" >
+                    <Button 
+                        ToolTip="Clear prompt Text"
+                        Content="{materialDesign:PackIcon Delete}"
+                        Click="Clear_OnClick" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                        Style="{StaticResource MaterialDesignToolButton}">
+                    </Button>
+                </Border>
+            </Grid>
 
-                                <Button ToolTip="Copy Text" Tag="{Binding Text}"  Click="Copy_OnClick" Visibility="{Binding Visibility}"
-                                        materialDesign:HintAssist.Hint="Copy Text"
-                                        Margin="5,0,0,0" Grid.Column="2"   VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Stretch" 
-                                        Content="{materialDesign:PackIcon ContentCopy}"
-                                       
-                                />
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
             <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch"  VerticalAlignment="Center" ResizeBehavior="PreviousAndNext" Background="{DynamicResource PrimaryHueMidBrush}" />
-            <userControls:PromptUserControl  Prompt="{Binding Prompt}" Grid.Row="3" ButtonClicked="ButtonBase_OnClick" KeyUp="Key_OnUp"></userControls:PromptUserControl>
+            <userControls:PromptUserControl Grid.Row="3"  Prompt="{Binding Prompt}" ButtonClicked="ButtonBase_OnClick" KeyUp="Key_OnUp"></userControls:PromptUserControl>
         </Grid>
     </materialDesign:DialogHost>
 </UserControl>

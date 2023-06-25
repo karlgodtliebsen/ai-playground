@@ -1,7 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-using OpenAI.Client.Models.Chat;
-
 namespace OpenAI.Client.Models.ChatCompletion;
 
 

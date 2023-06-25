@@ -47,7 +47,7 @@ public class BaseRequest : IModelRequest
     /// Tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a data
     /// </summary>
     [JsonPropertyName("stream")]
-    public bool? Stream { get; init; } = default!;
+    public bool Stream { get; init; }
 
 
     /// <summary>

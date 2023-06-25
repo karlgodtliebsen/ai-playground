@@ -154,7 +154,6 @@ public class TestOfOpenAIClients
                 MaxTokens = 200,
             });
 
-        //  string subUri = "chat/completions";
         var response = await aiClient.GetChatCompletionsUsingStreamAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
         response.IsT0.Should().BeTrue();
@@ -162,11 +161,11 @@ public class TestOfOpenAIClients
 
         foreach (var v in response!.AsT0.Data)
         {
-            for (int i = 0; i < v.Choices.Count; i++)
+            foreach (var t in v.Choices)
             {
-                if (v.Choices[i]!.Delta!.Content != null)
+                if (t!.Delta!.Content != null)
                 {
-                    string completion = v.Choices[i]!.Delta!.Content;
+                    string completion = t!.Delta!.Content;
                     output.WriteLine(completion);
                 }
             }
@@ -205,16 +204,60 @@ public class TestOfOpenAIClients
 
         foreach (var v in response!.AsT0.Data)
         {
-            for (int i = 0; i < v.Choices.Count; i++)
+            foreach (var t in v.Choices)
             {
-                if (v.Choices[i]!.Delta!.Content != null)
+                if (t!.Delta!.Content != null)
                 {
-                    string completion = v.Choices[i]!.Delta!.Content;
+                    string completion = t!.Delta!.Content;
                     output.WriteLine(completion);
                 }
             }
         }
     }
+
+
+    [Fact]
+    public async Task VerifyChatCompletionModelUsinStreamClient()
+    {
+        //https://platform.openai.com/docs/models/overview
+        //https://platform.openai.com/docs/api-reference/chat/create
+        //https://github.com/openai/openai-cookbook/blob/main/examples/How_to_stream_completions.ipynb
+
+        var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+
+        string deploymentName = "gpt-3.5-turbo";
+        var messages = new[]
+        {
+            new ChatCompletionMessage {Role = "system", Content = "You are a helpful assistant.!" },
+            new ChatCompletionMessage { Role = "user", Content = "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ..." }
+        };
+
+        var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
+            new ChatCompletionRequest
+            {
+                Model = deploymentName,
+                Messages = messages,
+                Stream = true,
+                MaxTokens = 200,
+            });
+
+        var responseCollection = aiClient.GetChatCompletionsStreamAsync(payload, CancellationToken.None);
+        await foreach (var response in responseCollection)
+        {
+            response.Should().NotBeNull();
+            response.IsT0.Should().BeTrue();
+            foreach (var t in response.AsT0.Choices)
+            {
+                if (t!.Delta!.Content != null)
+                {
+                    string completion = t!.Delta!.Content;
+                    output.WriteLine(completion);
+                }
+            }
+        }
+    }
+
+
     [Fact]
     public async Task VerifyChatCompletionModel2Client()
     {

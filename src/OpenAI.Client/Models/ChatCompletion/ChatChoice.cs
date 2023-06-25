@@ -1,8 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-using OpenAI.Client.Models.ChatCompletion;
-
-namespace OpenAI.Client.Models.Chat;
+namespace OpenAI.Client.Models.ChatCompletion;
 
 /// <summary>
 /// Response model for Chat Completion API.
@@ -36,17 +34,28 @@ public class ChatChoice
     public string? FinishReason { get; set; } = default!;
 }
 
-/// <summary>
-/// Streaming support
-/// https://github.com/openai/openai-cookbook/blob/main/examples/How_to_stream_completions.ipynb
-/// </summary>
-public class DeltaContent
-{
-    [JsonPropertyName("content")]
-    public string? Content { get; set; }
 
-    [JsonPropertyName("role")]
-    public string? Role { get; set; }
-    [JsonPropertyName("nothing")]
-    public string? Nothing { get; set; }
+
+/// </summary>
+public class StreamingError
+{
+
+    /// <summary>
+    /// DeltaIndex.
+    /// </summary>
+    [JsonPropertyName("error")]
+    public ErrorMessage Error { get; set; } = default!;
+
+}
+
+/// </summary>
+public class ErrorMessage
+{
+
+    /// <summary>
+    /// Log Prob Model.
+    /// </summary>
+    [JsonPropertyName("message")]
+    public string Message { get; set; } = default!;
+
 }

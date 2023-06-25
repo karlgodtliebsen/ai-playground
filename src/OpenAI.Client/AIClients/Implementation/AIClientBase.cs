@@ -110,7 +110,7 @@ public abstract class AIClientBase
     }
 
 
-    protected async Task<OneOf<string, ErrorResponse>> PostAsyncWithStream<T, TR>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
+    protected async Task<OneOf<string, ErrorResponse>> PostAsyncWithStream<TR, T>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
     {
         using var op = logger.BeginOperation("PostAsyncWithStream", subUri);
         try
@@ -142,12 +142,12 @@ public abstract class AIClientBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<OneOf<TS, ErrorResponse>> GetResponseUsingStreamAsync<TS, TR, T>(string subUri, T request, CancellationToken cancellationToken)
+    protected async Task<OneOf<TS, ErrorResponse>> GetResponseUsingStreamAsync<TS, TR, T>(string subUri, T request, CancellationToken cancellationToken)
         where TS : ResponseStream<TR>, new()
         where TR : class
     {
 
-        var result = await PostAsyncWithStream<T, TS>(subUri, request, cancellationToken);
+        var result = await PostAsyncWithStream<TS, T>(subUri, request, cancellationToken);
         return result.Match<OneOf<TS, ErrorResponse>>(
             success =>
             {
@@ -155,13 +155,54 @@ public abstract class AIClientBase
                 var resp = new TS();
                 foreach (var v in data.Where(d => !string.IsNullOrEmpty(d) && !d.Contains("[DONE]")))
                 {
-                    var obj = JsonSerializer.Deserialize<TR>(v);
-                    resp.Data.Add(obj!);
+                    var responseObject = JsonSerializer.Deserialize<TR>(v);
+                    resp.Data.Add(responseObject!);
                 }
                 return resp;
             },
             error => new ErrorResponse(error.Error)
         );
+    }
+
+    protected async IAsyncEnumerable<OneOf<TR, ErrorResponse>> GetResponseStreamAsync<TR, T>(string subUri, T request, CancellationToken cancellationToken)
+        where TR : class
+    {
+        using var op = logger.BeginOperation("GetResponseStreamAsync", subUri);
+        PrepareClient();
+        var response = await HttpClient.PostAsJsonAsync(subUri, request, SerializerOptions, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        await using (var stream = await response.Content.ReadAsStreamAsync(cancellationToken))
+        {
+            using StreamReader reader = new StreamReader(stream);
+            while (await reader.ReadLineAsync(cancellationToken) is { } line)
+            {
+                if (line.StartsWith("data:"))
+                {
+                    line = line.Substring("data:".Length);
+                }
+                line = line.TrimStart();
+                if (line.Contains("error:"))
+                {
+                    var responseObject = JsonSerializer.Deserialize<StreamingError>(line)!;
+                    yield return new ErrorResponse(responseObject.Error.Message);
+                }
+                if (line == "[DONE]")
+                {
+                    yield break;
+                }
+
+                else if (!string.IsNullOrWhiteSpace(line))
+                {
+                    var responseObject = JsonSerializer.Deserialize<TR>(line)!;
+                    yield return responseObject;
+                }
+                else if (line.StartsWith(":"))
+                {
+                    yield return new ErrorResponse("GetResponseStreamAsync Invalid string for Parsing: " + line);
+                }
+            }
+        }
+        op.Complete();
     }
 
     protected void PrepareClient()

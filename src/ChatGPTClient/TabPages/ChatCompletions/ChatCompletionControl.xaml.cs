@@ -100,8 +100,17 @@ public partial class ChatCompletionControl : UserControl
 
         var payload = CreatePayload(prompt);
         UpdateUIStatus(prompt);
-        var response = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
-        ProcessAnswer(response);
+        if (!payload.Stream)
+        {
+            var response = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
+            ProcessAnswer(response);
+        }
+        else
+        {
+            var responseCollection = aiClient.GetChatCompletionsStreamAsync(payload, CancellationToken.None);
+            await ProcessStreamedAnswer(responseCollection);
+        }
+        viewModel.IsReady = true;
     }
 
     private void ProcessAnswer(OneOf<ChatCompletions, ErrorResponse> response)
@@ -133,7 +142,44 @@ public partial class ChatCompletionControl : UserControl
                 });
             }
         );
-        viewModel.IsReady = true;
+    }
+
+    private async Task ProcessStreamedAnswer(IAsyncEnumerable<OneOf<ChatCompletions, ErrorResponse>> responseCollection)
+    {
+        await foreach (var response in responseCollection)
+        {
+            response.Switch(
+                completions =>
+                {
+                    foreach (var choice in completions.Choices)
+                    {
+                        if (choice.Delta!.Content != null)
+                        {
+                            var content = choice!.Delta!.Content!.Trim();
+                            viewModel.Result.Reply.Add(new RichResultViewModel()
+                            {
+                                Text = content,
+                                Kind = "A",
+                                Role = "assistant",
+                                Success = true,
+                            });
+
+                            messages.Add(new ChatCompletionMessage { Role = "assistant", Content = content });
+                        }
+                    }
+                },
+                error =>
+                {
+                    viewModel.Result.Reply.Add(new RichResultViewModel()
+                    {
+                        Text = error.Error,
+                        Role = "error",
+                        Kind = "F",
+                        Success = false,
+                    });
+                }
+            );
+        }
     }
 
     private ChatCompletionRequest CreatePayload(string prompt)
@@ -177,5 +223,8 @@ public partial class ChatCompletionControl : UserControl
         var result = button?.Tag as string;
         Clipboard.SetText(result);
     }
-
+    private void Clear_OnClick(object sender, RoutedEventArgs e)
+    {
+        viewModel.Result.Reply.Clear();
+    }
 }
