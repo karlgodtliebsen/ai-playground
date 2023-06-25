@@ -23,8 +23,6 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="20*"/>
             </Grid.RowDefinitions>
-
-
             <DockPanel Margin="5,5,5,5">
                 <Button  Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right" DockPanel.Dock="Right"  
                         
@@ -36,6 +34,7 @@
             </DockPanel>
 
             <TabControl x:Name ="TabControl"  Margin="5,5,5,5" Grid.Row="1"  DataContext="{Binding ViewState}">
+
             </TabControl>
 
             <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch"  VerticalAlignment="Center" ResizeBehavior="PreviousAndNext" Background="{DynamicResource PrimaryHueMidBrush}" />

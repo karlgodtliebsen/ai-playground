@@ -50,13 +50,8 @@ public partial class CreateImageControl : UserControl
         DataContext = ViewModel;
         ViewModel.ViewState = viewState;
         ViewModel.Prompt.Text = "A garden with Red Tulips";
-        SetViewModel();
     }
 
-    private void SetViewModel()
-    {
-
-    }
 
     private async void Key_OnUp(object sender, KeyEventArgs ev)
     {
@@ -89,10 +84,21 @@ public partial class CreateImageControl : UserControl
                 var index = 1;
                 foreach (var model in generatedImage.Data)
                 {
+                    //TODO: use a usercontrol
+
+                    var border = new Border()
+                    {
+                        Margin = new Thickness(5),
+                        CornerRadius = new CornerRadius(10),
+                        BorderBrush = System.Windows.Media.Brushes.White,
+                        BorderThickness = new Thickness(1),
+                        Child = CreateImage(model)
+                    };
                     var tabItem = new TabItem
                     {
+                        Margin = new Thickness(5),
                         Header = $"Image {index++}",
-                        Content = CreateImage(model)
+                        Content = border
                     };
                     TabControl.Items.Add(tabItem);
                     tabItem.Focus();
