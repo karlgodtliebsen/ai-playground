@@ -14,8 +14,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenAI", "OpenAI", "{E92551FE-B0EA-4C39-A6A9-AC31EA4CF720}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LLamaSharp", "LLamaSharp", "{703CDD20-E454-4130-95B0-D958CF1A0385}"
+	ProjectSection(SolutionItems) = preProject
+		LLamaSharp\README.md = LLamaSharp\README.md
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LLamaSharpApp.WebAPI", "LLamaSharp\LLamaSharpApp.WebAPI\LLamaSharpApp.WebAPI.csproj", "{11FF0A14-DD56-42C1-B2CA-AEBF9FEF3EB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LLamaSharpApp.WebAPI", "LLamaSharp\LLamaSharpApp.WebAPI\LLamaSharpApp.WebAPI.csproj", "{11FF0A14-DD56-42C1-B2CA-AEBF9FEF3EB9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B63C3753-33B6-4EEE-A6C9-2FF2F7FC72AA}"
 EndProject

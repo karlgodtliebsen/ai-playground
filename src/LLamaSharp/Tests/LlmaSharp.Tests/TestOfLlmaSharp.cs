@@ -34,7 +34,7 @@ public class TestOfLlmaSharpClients
 
 
     [Fact]
-    public async Task VerifyDownloadModelsClient()
+    public async Task Verify_WIP_()
     {
 
     }

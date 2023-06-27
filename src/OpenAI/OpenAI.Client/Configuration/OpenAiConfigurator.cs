@@ -12,7 +12,7 @@ using Serilog;
 
 namespace OpenAI.Client.Configuration;
 
-public static class OpenAiConfigurator
+public static class OpenAIConfigurator
 {
     public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, OpenAIOptions options)
     {
@@ -88,7 +88,7 @@ public static class OpenAiConfigurator
 
         return services;
     }
-    //nvironment.GetEnvironmentVariable("TEST_OPENAI_SECRET_KEY")
+    //Environment.GetEnvironmentVariable("TEST_OPENAI_SECRET_KEY")
     public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, Action<OpenAIOptions>? options = null)
     {
         var configuredOptions = new OpenAIOptions();
