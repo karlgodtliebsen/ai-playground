@@ -1,44 +1,28 @@
-﻿using LLama.OldVersion;
+﻿using LLama;
 
-using LLamaSharpApp.WebAPI.Configuration;
 using LLamaSharpApp.WebAPI.Models;
 
-using Microsoft.Extensions.Options;
 
 namespace LLamaSharpApp.WebAPI.Services;
 
-public interface IChatService
-{
-    string Send(SendMessageInput input);
-}
-
 public class ChatService : IChatService
 {
-    private readonly ChatSession<LLamaModel> _session;
-    private readonly LlmaOptions options;
+    private readonly ILlmaModelFactory factory;
 
-    public ChatService(IOptions<LLamaModel> model, IOptions<LlmaOptions> options)
+    //TODO: consider https://github.com/SciSharp/LLamaSharp/blob/master/docs/ChatSession/save-load-session.md
+    //TODO: use ChatHistory 
+
+    public ChatService(ILlmaModelFactory factory)
     {
-        this.options = options.Value;
-        _session = new ChatSession<LLamaModel>(model.Value)
-            .WithPromptFile(this.options.PromptFile)
-            .WithAntiprompt(this.options.AntiPrompt);
+        this.factory = factory;
     }
 
-    public string Send(SendMessageInput input)
+    public string Send(SendMessage input)
     {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine(input.Text);
-
-        Console.ForegroundColor = ConsoleColor.White;
-        var outputs = _session.Chat(input.Text);
-        var result = "";
-        foreach (var output in outputs)
-        {
-            Console.Write(output);
-            result += output;
-        }
-
-        return result;
+        //TODO: how to dispose LLamaModel
+        //TODO: how to use the difference  between Interactive and Instruct Executor?
+        var chatSession = factory.CreateChatSession<InstructExecutor>();
+        var outputs = chatSession.Chat(input.Text);
+        return string.Join("", outputs);
     }
 }

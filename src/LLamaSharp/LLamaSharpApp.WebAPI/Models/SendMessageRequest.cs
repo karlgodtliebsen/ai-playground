@@ -1,6 +1,8 @@
 ﻿namespace LLamaSharpApp.WebAPI.Models;
 
-public class SendMessageInput
+
+
+public class SendMessageRequest
 {
     public string Text { get; set; }
 }

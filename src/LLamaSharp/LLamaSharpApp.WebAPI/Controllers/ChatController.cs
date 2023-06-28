@@ -9,20 +9,21 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 [Route("[controller]")]
 public class ChatController : ControllerBase
 {
-    private readonly IChatService _service;
-    private readonly ILogger<ChatController> _logger;
+    private readonly IChatService domainService;
+    private readonly ILogger<ChatController> logger;
 
     public ChatController(ILogger<ChatController> logger,
         IChatService service)
     {
-        _logger = logger;
-        _service = service;
+        this.logger = logger;
+        domainService = service;
     }
 
 
-    [HttpPost("Send")]
-    public string SendMessage([FromBody] SendMessageInput input)
+    [HttpPost("chat")]
+    public string SendMessage([FromBody] SendMessageRequest request)
     {
-        return _service.Send(input);
+        var requestModel = new SendMessage(request.Text);
+        return domainService.Send(requestModel);
     }
 }
