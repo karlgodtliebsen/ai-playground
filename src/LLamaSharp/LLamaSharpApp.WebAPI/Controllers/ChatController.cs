@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
+using LLamaSharpApp.WebAPI.Controllers.Requests;
 using LLamaSharpApp.WebAPI.Models;
-using LLamaSharpApp.WebAPI.Models.Requests;
 using LLamaSharpApp.WebAPI.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace LLamaSharpApp.WebAPI.Controllers;
 
 /// <summary>
-/// Chat API
-/// https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/parameters/
+/// Chat API Controller
+/// <a href="https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/parameters/"/>
 /// </summary>
 [ApiVersion("1")]
 [ApiExplorerSettings(GroupName = "v1")]
@@ -23,14 +23,18 @@ public class ChatController : ControllerBase
     private readonly IChatService domainService;
     private readonly ILogger<ChatController> logger;
 
-    public ChatController(ILogger<ChatController> logger,
-        IChatService service)
+    public ChatController(IChatService service, ILogger<ChatController> logger)
     {
         this.logger = logger;
         domainService = service;
     }
 
 
+    /// <summary>
+    /// Invokes a chat with the prompt text, using the model parameters.
+    /// </summary>
+    /// <param name="request">Hold the Chat prompt/text</param>
+    /// <returns></returns>
     [HttpPost("chat")]
     public string Chat([FromBody] ChatMessageRequest request)
     {
@@ -38,6 +42,6 @@ public class ChatController : ControllerBase
         {
             UsePersistedModelState = request.UsePersistedModelState
         };
-        return domainService.Send(requestModel);
+        return domainService.Chat(requestModel);
     }
 }

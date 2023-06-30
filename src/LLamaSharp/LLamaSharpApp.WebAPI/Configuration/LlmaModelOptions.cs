@@ -4,18 +4,18 @@ namespace LLamaSharpApp.WebAPI.Configuration;
 /// <summary>
 /// Holds the user applicable settings for the LLamaSharpApp.WebAPI
 /// </summary>
-public class LlmaOptions : ModelParams
+public class LlmaModelOptions : ModelParams
 {
     /// <summary>
     /// Configuration SectionName
     /// </summary>
-    public const string SectionName = "LlmaOptions";
+    public const string SectionName = "LlmaModelOptions";
 
-    public LlmaOptions() : this("./LlmaModels")
+    public LlmaModelOptions() : this("./LlmaModels")
     {
     }
 
-    public LlmaOptions(string modelPath) : base(modelPath)
+    public LlmaModelOptions(string modelPath) : base(modelPath)
     {
     }
 }

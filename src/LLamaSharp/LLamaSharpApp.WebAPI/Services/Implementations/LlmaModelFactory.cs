@@ -6,58 +6,99 @@ using LLamaSharpApp.WebAPI.Configuration;
 
 using Microsoft.Extensions.Options;
 
-namespace LLamaSharpApp.WebAPI.Services;
+namespace LLamaSharpApp.WebAPI.Services.Implementations;
 
+/// <summary>
+/// Factory for creating LLama models, executors, parameters and embedders
+/// </summary>
 public class LlmaModelFactory : ILlmaModelFactory
 {
-    private readonly LlmaOptions llmaOptions;
+    private readonly LlmaModelOptions llmaModelOptions;
 
-    public LlmaModelFactory(IOptions<LlmaOptions> options)
+    public LlmaModelFactory(IOptions<LlmaModelOptions> options)
     {
         ArgumentNullException.ThrowIfNull(options.Value);
-        this.llmaOptions = options.Value;
+        llmaModelOptions = options.Value;
     }
 
+    /// <summary>
+    /// Returns the default model parameters 
+    /// </summary>
+    /// <returns></returns>
     public ModelParams CreateModelParams()
     {
-        return llmaOptions;
+        return llmaModelOptions;
     }
     //default value points at "models/lamma-7B/ggml-model.bin",. Since this is located in 'models' folder that is often dedicated to code models, we override it here
 
+    /// <summary>
+    /// Creates a default llama model 
+    /// </summary>
+    /// <returns></returns>
     public LLamaModel CreateModel()
     {
-        ModelParams parameters = CreateModelParams();
-        return new LLamaModel(parameters);                     //LlmaSharp Design smell: Should Use Interface for  LLamaModel
+        var parameters = CreateModelParams();
+        return new LLamaModel(parameters);
     }
+    /// <summary>
+    /// Creates a llama model with specified parameters
+    /// </summary>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
     public LLamaModel CreateModel(ModelParams parameters)
     {
-        return new LLamaModel(parameters);                     //LlmaSharp Design smell: Should Use Interface for  LLamaModel
+        return new LLamaModel(parameters);
     }
 
+    /// <summary>
+    /// Creates a default embedder
+    /// </summary>
+    /// <returns></returns>
     public LLamaEmbedder CreateEmbedder()
     {
-        return new LLamaEmbedder(CreateModelParams());      //LlmaSharp Design smell: Should Use Interface for  LLamaEmbedder
+        return new LLamaEmbedder(CreateModelParams());
     }
+    /// <summary>
+    /// Creates an embedder with specified parameters 
+    /// </summary>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
     public LLamaEmbedder CreateEmbedder(ModelParams parameters)
     {
-        return new LLamaEmbedder(parameters);      //LlmaSharp Design smell: Should Use Interface for  LLamaEmbedder
+        return new LLamaEmbedder(parameters);
     }
 
-    //LlmaSharp Design smell: Should Use Interface for  LLamaEmbedder
+    /// <summary>
+    /// Creates a default ChatSession
+    /// </summary>
+    /// <typeparam name="TExecutor"></typeparam>
+    /// <returns></returns>
     public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>() where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
-        LLamaModel model = CreateModel();
+        var model = CreateModel();
         var chatSession = CreateChatSession<TExecutor>(model);
         return (chatSession, model);
     }
 
+    /// <summary>
+    /// Creates a ChatSession with specified model parameters
+    /// </summary>
+    /// <param name="parameters"></param>
+    /// <typeparam name="TExecutor"></typeparam>
+    /// <returns></returns>
     public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(ModelParams parameters) where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
-        LLamaModel model = CreateModel(parameters);
+        var model = CreateModel(parameters);
         var chatSession = CreateChatSession<TExecutor>(model);
         return (chatSession, model);
     }
 
+    /// <summary>
+    /// Creates a ChatSession with specified model
+    /// </summary>
+    /// <param name="model"></param>
+    /// <typeparam name="TExecutor"></typeparam>
+    /// <returns></returns>
     public ChatSession CreateChatSession<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
         ILLamaExecutor executor = CreateStatefulExecutor<TExecutor>(model);
@@ -65,6 +106,12 @@ public class LlmaModelFactory : ILlmaModelFactory
         return chatSession;
     }
 
+    /// <summary>
+    /// Creates a  StatefulExecutor using specified model
+    /// </summary>
+    /// <param name="model"></param>
+    /// <typeparam name="TExecutor"></typeparam>
+    /// <returns></returns>
     public StatefulExecutorBase CreateStatefulExecutor<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
         switch (typeof(TExecutor))
@@ -78,6 +125,12 @@ public class LlmaModelFactory : ILlmaModelFactory
         }
     }
 
+    /// <summary>
+    /// Creates a  StatelessExecutor using specified model
+    /// </summary>
+    /// <param name="model"></param>
+    /// <typeparam name="TExecutor"></typeparam>
+    /// <returns></returns>
     public StatelessExecutor CreateStateLessExecutor<TExecutor>(LLamaModel model) where TExecutor : StatelessExecutor, ILLamaExecutor
     {
         return new StatelessExecutor(model);

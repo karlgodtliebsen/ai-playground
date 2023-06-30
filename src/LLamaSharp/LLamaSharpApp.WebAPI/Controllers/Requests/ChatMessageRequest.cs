@@ -1,4 +1,4 @@
-﻿namespace LLamaSharpApp.WebAPI.Models.Requests;
+﻿namespace LLamaSharpApp.WebAPI.Controllers.Requests;
 
 /// <summary>
 /// Request object to hold the text/message to be sent to the chatbot

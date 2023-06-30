@@ -9,6 +9,13 @@ public class DeTokenizeMessage
     {
         Tokens = tokens;
     }
+    /// <summary>
+    /// The tokens to be detokenized
+    /// </summary>
     public int[] Tokens { get; }
-    public bool UsePersistedModelState { get; set; } = true;
+
+    /// <summary>
+    /// Use Stateful Model
+    /// </summary>
+    public bool UsePersistedModelState { get; set; } = false;
 }

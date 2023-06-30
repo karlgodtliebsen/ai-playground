@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
+using LLamaSharpApp.WebAPI.Controllers.Requests;
 using LLamaSharpApp.WebAPI.Models;
-using LLamaSharpApp.WebAPI.Models.Requests;
 using LLamaSharpApp.WebAPI.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LLamaSharpApp.WebAPI.Controllers;
 /// <summary>
 /// Embeddings API
+/// <a href="https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/embeddings/"/>
 /// </summary>
 [ApiVersion("1")]
 [ApiExplorerSettings(GroupName = "v1")]
@@ -21,13 +22,22 @@ public class EmbeddingsController : ControllerBase
     private readonly IEmbeddingsService domainService;
     private readonly ILogger<EmbeddingsController> logger;
 
-    public EmbeddingsController(ILogger<EmbeddingsController> logger,
-        IEmbeddingsService service)
+    /// <summary>
+    /// Constructor for EmbeddingsController
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="logger"></param>
+    public EmbeddingsController(IEmbeddingsService service, ILogger<EmbeddingsController> logger)
     {
         this.logger = logger;
         domainService = service;
     }
 
+    /// <summary>
+    /// Get the embeddings of a text in LLM, for example, to train other MLP models.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("embeddings")]
     public float[] Embeddings([FromBody] EmbeddingsRequest request)
     {

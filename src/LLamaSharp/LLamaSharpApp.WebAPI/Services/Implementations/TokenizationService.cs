@@ -1,17 +1,18 @@
 ﻿using LLamaSharpApp.WebAPI.Models;
+using LLamaSharpApp.WebAPI.Repositories;
 
-namespace LLamaSharpApp.WebAPI.Services;
+namespace LLamaSharpApp.WebAPI.Services.Implementations;
 
 /// <inheritdoc />
 public class TokenizationService : ITokenizationService
 {
     private readonly ILlmaModelFactory factory;
-    private readonly IStateHandler stateHandler;
+    private readonly IModelStateRepository modelStateRepository;
 
-    public TokenizationService(ILlmaModelFactory factory, IStateHandler stateHandler)
+    public TokenizationService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository)
     {
         this.factory = factory;
-        this.stateHandler = stateHandler;
+        this.modelStateRepository = modelStateRepository;
     }
 
     /// <summary>
@@ -23,9 +24,9 @@ public class TokenizationService : ITokenizationService
     {
         var fileName = "something";
         var model = factory.CreateModel();
-        stateHandler.LoadState(model, () => input.UsePersistedModelState ? fileName : null);
-        int[] tokens = model.Tokenize(input.Text).ToArray();
-        stateHandler.SaveState(model, () => input.UsePersistedModelState ? fileName : null);
+        modelStateRepository.LoadState(model, () => input.UsePersistedModelState ? fileName : null);
+        var tokens = model.Tokenize(input.Text).ToArray();
+        modelStateRepository.SaveState(model, () => input.UsePersistedModelState ? fileName : null);
         return tokens;
     }
 
@@ -38,9 +39,9 @@ public class TokenizationService : ITokenizationService
     {
         var fileName = "something";
         var model = factory.CreateModel();
-        stateHandler.LoadState(model, () => input.UsePersistedModelState ? fileName : null);
+        modelStateRepository.LoadState(model, () => input.UsePersistedModelState ? fileName : null);
         var text = model.DeTokenize(input.Tokens);
-        stateHandler.SaveState(model, () => input.UsePersistedModelState ? fileName : null);
+        modelStateRepository.SaveState(model, () => input.UsePersistedModelState ? fileName : null);
         return text;
     }
 }

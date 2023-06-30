@@ -5,28 +5,41 @@ using LLama.Abstractions;
 
 using LLamaSharpApp.WebAPI.Configuration;
 using LLamaSharpApp.WebAPI.Models;
-
+using LLamaSharpApp.WebAPI.Repositories;
 using Microsoft.Extensions.Options;
 
-namespace LLamaSharpApp.WebAPI.Services;
+namespace LLamaSharpApp.WebAPI.Services.Implementations;
 
+/// <summary>
+/// Executor Service
+/// </summary>
 public class ExecutorService : IExecutorService
 {
     private readonly ILlmaModelFactory factory;
-    private readonly IStateHandler stateHandler;
+    private readonly IModelStateRepository modelStateRepository;
     private readonly InferenceOptions options;
 
-    public ExecutorService(ILlmaModelFactory factory, IStateHandler stateHandler, IOptions<InferenceOptions> options)
+    /// <summary>
+    /// Contructor for the Executor Service
+    /// </summary>
+    /// <param name="factory"></param>
+    /// <param name="modelStateRepository"></param>
+    /// <param name="options"></param>
+    public ExecutorService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository, IOptions<InferenceOptions> options)
     {
         this.factory = factory;
-        this.stateHandler = stateHandler;
+        this.modelStateRepository = modelStateRepository;
         this.options = options.Value;
     }
 
+    /// <summary>
+    /// Activates the executor and returns the result
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async IAsyncEnumerable<string> Executor(ExecutorInferMessage input, CancellationToken cancellationToken)
     {
-        //TODO: handle user specific parameters to override the default ones
-        //TODO: how to use the difference  between Interactive and Instruct Executor?
 
         IAsyncEnumerable<string> res;
         if (input.UseStatelessExecutor)
@@ -81,16 +94,25 @@ public class ExecutorService : IExecutorService
 
     private void SaveState(ExecutorInferMessage input, StatefulExecutorBase executor, string modelFileName, string executorFileName)
     {
-        stateHandler.SaveState(executor.Model, () => input.UsePersistedModelState ? modelFileName : null);
-        stateHandler.SaveState(executor, () => input.UsePersistedExecutorState ? executorFileName : null);
+        modelStateRepository.SaveState(executor.Model, () => input.UsePersistedModelState ? modelFileName : null);
+        modelStateRepository.SaveState(executor, () => input.UsePersistedExecutorState ? executorFileName : null);
     }
 
     private StatefulExecutorBase LoadStatefulExecutor(ExecutorInferMessage input, LLamaModel model, string modelFileName, string executorFileName)
     {
-        var executor = factory.CreateStatefulExecutor<InteractiveExecutor>(model);
-
-        stateHandler.LoadState(model, () => input.UsePersistedModelState ? modelFileName : null);
-        stateHandler.LoadState(executor, () => input.UsePersistedExecutorState ? executorFileName : null);
+        StatefulExecutorBase executor;
+        switch (input.InferenceType)
+        {
+            case InferenceType.InteractiveExecutor:
+                executor = factory.CreateStatefulExecutor<InteractiveExecutor>(model);
+                break;
+            case InferenceType.InstructExecutor:
+                executor = factory.CreateStatefulExecutor<InstructExecutor>(model);
+                break;
+            default: throw new ArgumentException($"InferenceType {input.InferenceType} is not supported");
+        }
+        modelStateRepository.LoadState(model, () => input.UsePersistedModelState ? modelFileName : null);
+        modelStateRepository.LoadState(executor, () => input.UsePersistedExecutorState ? executorFileName : null);
         return executor;
     }
 

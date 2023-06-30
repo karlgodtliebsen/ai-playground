@@ -4,5 +4,5 @@ namespace LLamaSharpApp.WebAPI.Services;
 
 public interface IChatService
 {
-    string Send(ChatMessage input);
+    string Chat(ChatMessage input);
 }

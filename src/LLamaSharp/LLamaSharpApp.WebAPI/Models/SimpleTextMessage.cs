@@ -11,7 +11,13 @@ public class SimpleTextMessage
         Text = text;
     }
 
+    /// <summary>
+    /// The prompt text
+    /// </summary>
     public string Text { get; }
 
-    public bool UsePersistedModelState { get; set; } = true;
+    /// <summary>
+    /// Use Stateful Model
+    /// </summary>
+    public bool UsePersistedModelState { get; set; } = false;
 }

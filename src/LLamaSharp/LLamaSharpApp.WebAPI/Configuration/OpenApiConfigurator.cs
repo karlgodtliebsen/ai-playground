@@ -1,4 +1,9 @@
-﻿namespace LLamaSharpApp.WebAPI.Configuration;
+﻿using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
+
+using Swashbuckle.AspNetCore.SwaggerGen;
+
+namespace LLamaSharpApp.WebAPI.Configuration;
 
 /// <summary>
 /// Handles OpenAPI (Swagger) configuration.
@@ -18,6 +23,7 @@ public static class OpenApiConfigurator
         services.AddSwaggerGen(options =>
         {
             options.CustomSchemaIds(type => type.FullName);
+            options.SchemaFilter<EnumSchemaFilter>();
             var name = AppDomain.CurrentDomain.FriendlyName;
             var xmlFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, $"{name}.xml", SearchOption.TopDirectoryOnly).ToList();
             xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
@@ -49,5 +55,23 @@ public static class OpenApiConfigurator
             app.UseSwaggerUI();
         }
         return app;
+    }
+}
+
+
+internal sealed class EnumSchemaFilter : ISchemaFilter
+{
+    public void Apply(OpenApiSchema model, SchemaFilterContext context)
+    {
+        if (context.Type.IsEnum)
+        {
+            model.Enum.Clear();
+            Enum
+                .GetNames(context.Type)
+                .ToList()
+                .ForEach(name => model.Enum.Add(new OpenApiString($"{name}")));
+            model.Type = "string";
+            model.Format = string.Empty;
+        }
     }
 }

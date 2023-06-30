@@ -1,11 +1,11 @@
 ﻿using LLama;
 
-namespace LLamaSharpApp.WebAPI.Services;
+namespace LLamaSharpApp.WebAPI.Repositories;
 
 /// <summary>
 /// Centralized handling for model state persist and load
 /// </summary>
-public interface IStateHandler
+public interface IModelStateRepository
 {
     void SaveState(LLamaModel model, Func<string?> save);
     void SaveState(StatefulExecutorBase executor, Func<string?> save);

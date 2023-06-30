@@ -9,7 +9,4 @@ public class InferenceOptions : InferenceParams
     /// </summary>
     public const string SectionName = "InferenceOptions";
 
-    //public InferenceOptions()//wizardLM-7B.ggmlv3.q4_1.bin
-    //{
-    //}
 }

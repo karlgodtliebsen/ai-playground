@@ -5,5 +5,9 @@
 /// </summary>
 public class EmbeddingsMessage : SimpleTextMessage
 {
+    /// <summary>
+    /// Constructor for EmbeddingsMessage
+    /// </summary>
+    /// <param name="text"></param>
     public EmbeddingsMessage(string? text) : base(text) { }
 }

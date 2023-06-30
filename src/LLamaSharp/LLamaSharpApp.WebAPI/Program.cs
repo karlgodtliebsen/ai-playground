@@ -1,10 +1,10 @@
 ﻿using LLamaSharpApp.WebAPI.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 var services = builder.Services;
-services.AddLlmaConfiguration(builder.Configuration);
+services
+    .AddConfiguration(builder.Configuration)
+    .AddLlmaConfiguration(builder.Configuration);
 services.AddControllers();
 services.AddOpenApi();
 
