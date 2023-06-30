@@ -9,7 +9,7 @@ namespace LLamaSharpApp.WebAPI.Configuration;
 public static class ApiVersionConfigurator
 {
     /// <summary>
-    /// Add Api Version Rules
+    /// Add Api Version Rules. Defaults to  majorVersion = 1 and minorVersion = 0
     /// https://blog.christian-schou.dk/how-to-use-api-versioning-in-net-core-web-api/
     /// </summary>
     /// <param name="services"></param>

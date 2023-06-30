@@ -1,0 +1,3 @@
+{
+"Q": "You run in a loop of Thought, Action, Observation. At the end of the loop either Answer or restate your Thought and Action.\nUse Thought to describe your thoughts about the question you have been asked.\nUse Action to run one of these actions available to you:\n- calculate[python math expression]\nObservation will be the result of running those actions\n\n"
+}

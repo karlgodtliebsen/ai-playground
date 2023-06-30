@@ -1,12 +1,23 @@
-﻿using LLamaSharpApp.WebAPI.Models;
+﻿using System.ComponentModel;
+
+using LLamaSharpApp.WebAPI.Models;
+using LLamaSharpApp.WebAPI.Models.Requests;
 using LLamaSharpApp.WebAPI.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace LLamaSharpApp.WebAPI.Controllers;
 
+/// <summary>
+/// Chat API
+/// https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/parameters/
+/// </summary>
+[ApiVersion("1")]
+[ApiExplorerSettings(GroupName = "v1")]
+[DisplayName("Llma Chat Controller <a href=\"https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/parameters/\">")]
+[Description("API to execute Chat using model parameters.")]
 [ApiController]
-[Route("[controller]")]
+[Route("api/llama")]
 public class ChatController : ControllerBase
 {
     private readonly IChatService domainService;
@@ -21,9 +32,12 @@ public class ChatController : ControllerBase
 
 
     [HttpPost("chat")]
-    public string SendMessage([FromBody] SendMessageRequest request)
+    public string Chat([FromBody] ChatMessageRequest request)
     {
-        var requestModel = new SendMessage(request.Text);
+        var requestModel = new ChatMessage(request.Text)
+        {
+            UsePersistedModelState = request.UsePersistedModelState
+        };
         return domainService.Send(requestModel);
     }
 }

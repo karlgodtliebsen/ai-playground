@@ -10,70 +10,76 @@ namespace LLamaSharpApp.WebAPI.Services;
 
 public class LlmaModelFactory : ILlmaModelFactory
 {
-    private readonly LlmaOptions options;
+    private readonly LlmaOptions llmaOptions;
 
     public LlmaModelFactory(IOptions<LlmaOptions> options)
     {
         ArgumentNullException.ThrowIfNull(options.Value);
-        this.options = options.Value;
+        this.llmaOptions = options.Value;
     }
 
-    public ModelParams CreateParams()
+    public ModelParams CreateModelParams()
     {
-        //TODO: a mapper like mapperly would be nice
-        //default value points at "models/lamma-7B/ggml-model.bin",. Since this is located in 'models' folder that is often dedicated to code models, we override it here
-        var llmaParams = new ModelParams(
-            modelPath: options.Model!,
-            contextSize: options.ContextSize!.Value,
-            gpuLayerCount: options.GpuLayerCount!.Value,
-            seed: options.Seed!.Value,
-            useFp16Memory: options.UseFp16Memory!.Value,
-            useMemorymap: options.UseMemorymap!.Value,
-            useMemoryLock: options.UseMemoryLock!.Value,
-            perplexity: options.Perplexity!.Value,
-            loraAdapter: options.LoraAdapter,
-            loraBase: options.LoraBase,
-            threads: options.Threads!.Value,
-            batchSize: options.BatchSize!.Value,
-            convertEosToNewLine: options.ConvertEosToNewLine!.Value,
-            embeddingMode: options.EmbeddingMode!.Value
-        );
-        return llmaParams;
+        return llmaOptions;
     }
-
+    //default value points at "models/lamma-7B/ggml-model.bin",. Since this is located in 'models' folder that is often dedicated to code models, we override it here
 
     public LLamaModel CreateModel()
     {
-        var parameters = CreateParams();
-        var model = new LLamaModel(parameters);//LlmaSharp Design: Should Use Interface for  LLamaModel
-        return model;
+        ModelParams parameters = CreateModelParams();
+        return new LLamaModel(parameters);                     //LlmaSharp Design smell: Should Use Interface for  LLamaModel
+    }
+    public LLamaModel CreateModel(ModelParams parameters)
+    {
+        return new LLamaModel(parameters);                     //LlmaSharp Design smell: Should Use Interface for  LLamaModel
     }
 
     public LLamaEmbedder CreateEmbedder()
     {
-        var embedder = new LLamaEmbedder(new ModelParams(options.Model!));//LlmaSharp Design: Should Use Interface for  LLamaEmbedder
-        return embedder;
+        return new LLamaEmbedder(CreateModelParams());      //LlmaSharp Design smell: Should Use Interface for  LLamaEmbedder
+    }
+    public LLamaEmbedder CreateEmbedder(ModelParams parameters)
+    {
+        return new LLamaEmbedder(parameters);      //LlmaSharp Design smell: Should Use Interface for  LLamaEmbedder
     }
 
-    //LlmaSharp Design: Should Use Interface for  LLamaEmbedder
-    public ChatSession CreateChatSession<TExecutor>() where TExecutor : StatefulExecutorBase, ILLamaExecutor
+    //LlmaSharp Design smell: Should Use Interface for  LLamaEmbedder
+    public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>() where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
-        var model = CreateModel();
-        ILLamaExecutor executor;
-        switch (typeof(TExecutor))
-        {
-            case { } type when type == typeof(InteractiveExecutor):
-                executor = new InteractiveExecutor(model);
-                break;
-            case { } type when type == typeof(InstructExecutor):
-                executor = new InstructExecutor(model);
-                break;
-            default:
-                executor = (ILLamaExecutor)Activator.CreateInstance(typeof(TExecutor), model)!;
-                break;
-        }
+        LLamaModel model = CreateModel();
+        var chatSession = CreateChatSession<TExecutor>(model);
+        return (chatSession, model);
+    }
+
+    public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(ModelParams parameters) where TExecutor : StatefulExecutorBase, ILLamaExecutor
+    {
+        LLamaModel model = CreateModel(parameters);
+        var chatSession = CreateChatSession<TExecutor>(model);
+        return (chatSession, model);
+    }
+
+    public ChatSession CreateChatSession<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
+    {
+        ILLamaExecutor executor = CreateStatefulExecutor<TExecutor>(model);
         var chatSession = new ChatSession(executor);
         return chatSession;
     }
 
+    public StatefulExecutorBase CreateStatefulExecutor<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
+    {
+        switch (typeof(TExecutor))
+        {
+            case { } type when type == typeof(InteractiveExecutor):
+                return new InteractiveExecutor(model);
+            case { } type when type == typeof(InstructExecutor):
+                return new InstructExecutor(model);
+            default:
+                return (StatefulExecutorBase)Activator.CreateInstance(typeof(TExecutor), model)!;
+        }
+    }
+
+    public StatelessExecutor CreateStateLessExecutor<TExecutor>(LLamaModel model) where TExecutor : StatelessExecutor, ILLamaExecutor
+    {
+        return new StatelessExecutor(model);
+    }
 }

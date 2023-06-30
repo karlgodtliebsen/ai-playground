@@ -11,8 +11,9 @@ public class EmbeddingsService : IEmbeddingsService
         this.factory = factory;
     }
 
-    public float[] GetEmbeddings(GetEmbeddings input)
+    public float[] GetEmbeddings(EmbeddingsMessage input)
     {
+        ////TODO: handle user specific parameters to override the default ones
         var embedder = factory.CreateEmbedder();
         float[] embeddings = embedder.GetEmbeddings(input.Text);
         return embeddings;

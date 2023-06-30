@@ -15,52 +15,67 @@ public static class LlmaConfigurator
     /// WizardLM  maps to wizardLM-7B.ggmlv3.q4_1.bin
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="options"></param>
+    /// <param name="llmaOptions"></param>
     /// <returns></returns>
-    public static IServiceCollection AddLlmaConfiguration(this IServiceCollection services, LlmaOptions options)
+    public static IServiceCollection AddLlmaConfiguration(this IServiceCollection services, LlmaOptions llmaOptions, InferenceOptions inferenceOptions)
     {
-        ArgumentNullException.ThrowIfNull(options);
-        //validate properties of LlmaOptions
-        ArgumentNullException.ThrowIfNull(options.Model);
-        ArgumentNullException.ThrowIfNull(options.ContextSize);
-        ArgumentNullException.ThrowIfNull(options.GpuLayerCount);
-        ArgumentNullException.ThrowIfNull(options.Seed);
-        ArgumentNullException.ThrowIfNull(options.UseFp16Memory);
-        ArgumentNullException.ThrowIfNull(options.UseMemorymap);
-        ArgumentNullException.ThrowIfNull(options.UseMemoryLock);
-        ArgumentNullException.ThrowIfNull(options.Perplexity);
-        ArgumentNullException.ThrowIfNull(options.LoraAdapter);
-        ArgumentNullException.ThrowIfNull(options.LoraBase);
-        ArgumentNullException.ThrowIfNull(options.Threads);
-        ArgumentNullException.ThrowIfNull(options.BatchSize);
-        ArgumentNullException.ThrowIfNull(options.ConvertEosToNewLine);
-        ArgumentNullException.ThrowIfNull(options.EmbeddingMode);
-
-
-        services.AddSingleton<IOptions<LlmaOptions>>(new OptionsWrapper<LlmaOptions>(options));
-        services.AddTransient<IChatService, ChatService>();
-        services.AddTransient<IEmbeddingsService, EmbeddingsService>();
-        services.AddTransient<ILlmaModelFactory, LlmaModelFactory>();
+        VerifyAndAddOptions(services, llmaOptions);
+        VerifyAndAddOptions(services, inferenceOptions);
+        AddDomain(services);
         return services;
     }
 
-
-    public static IServiceCollection AddLlmaConfiguration(this IServiceCollection services, Action<LlmaOptions>? options = null)
+    private static void VerifyAndAddOptions(IServiceCollection services, LlmaOptions options)
     {
-        var configuredOptions = new LlmaOptions();
-        options?.Invoke(configuredOptions);
-        return services.AddLlmaConfiguration(configuredOptions);
+        ArgumentNullException.ThrowIfNull(options);
+        //validate properties of LlmaOptions
+        ArgumentNullException.ThrowIfNull(options.ModelPath);
+        services.AddSingleton<IOptions<LlmaOptions>>(new OptionsWrapper<LlmaOptions>(options)); //TODO: replace or extend options wrapper to support reload
     }
 
-    public static IServiceCollection AddLlmaConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
+    private static void VerifyAndAddOptions(IServiceCollection services, InferenceOptions options)
     {
-        if (sectionName is null)
+        //ArgumentNullException.ThrowIfNull(options);
+        services.AddSingleton<IOptions<InferenceOptions>>(new OptionsWrapper<InferenceOptions>(options));   //TODO: replace or extend options wrapper to support reload
+    }
+
+    private static void AddDomain(IServiceCollection services)
+    {
+        services.AddTransient<IChatService, ChatService>();
+        services.AddTransient<IEmbeddingsService, EmbeddingsService>();
+        services.AddTransient<IExecutorService, ExecutorService>();
+        services.AddTransient<ITokenizationService, TokenizationService>();
+        services.AddTransient<ILlmaModelFactory, LlmaModelFactory>();
+        services.AddTransient<IStateHandler, StateHandler>();
+
+    }
+
+
+    public static IServiceCollection AddLlmaConfiguration(this IServiceCollection services, Action<LlmaOptions>? llmaOptions = null, Action<InferenceOptions>? inferenceOptions = null)
+    {
+        var configuredLlmaOptions = new LlmaOptions();
+        llmaOptions?.Invoke(configuredLlmaOptions);
+        var configuredInferenceOptions = new InferenceOptions();
+        inferenceOptions?.Invoke(configuredInferenceOptions);
+        return services.AddLlmaConfiguration(configuredLlmaOptions, configuredInferenceOptions);
+    }
+
+    public static IServiceCollection AddLlmaConfiguration(this IServiceCollection services, IConfiguration configuration, string? llmaOptionsSectionName = null, string? inferenceOptionsSectionName = null)
+    {
+        if (llmaOptionsSectionName is null)
         {
-            sectionName = LlmaOptions.SectionName;
+            llmaOptionsSectionName = LlmaOptions.SectionName;
         }
-        services.Configure<LlmaOptions>(configuration.GetSection(sectionName));
-        var configuredOptions = configuration.GetSection(sectionName).Get<LlmaOptions>()!;
-        ArgumentNullException.ThrowIfNull(configuredOptions);
-        return services.AddLlmaConfiguration(configuredOptions);
+        if (inferenceOptionsSectionName is null)
+        {
+            inferenceOptionsSectionName = InferenceOptions.SectionName;
+        }
+        //services.Configure<LlmaOptions>(configuration.GetSection(llmaOptionsSectionName));
+        var configuredLlmaOptions = configuration.GetSection(llmaOptionsSectionName).Get<LlmaOptions>()!;
+
+        //services.Configure<InferenceOptions>(configuration.GetSection(inferenceOptionsSectionName));
+        var configuredInferenceOptions = configuration.GetSection(inferenceOptionsSectionName).Get<InferenceOptions>()!;
+
+        return services.AddLlmaConfiguration(configuredLlmaOptions, configuredInferenceOptions);
     }
 }

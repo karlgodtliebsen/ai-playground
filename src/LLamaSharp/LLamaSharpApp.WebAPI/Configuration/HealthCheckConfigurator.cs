@@ -18,13 +18,23 @@ public static class HealthCheckConfigurator
     }
 
     /// <summary>
-    /// Use HealthCheck in Anonymous mode
+    /// Map HealthCheck. Adds endpoint at /health
     /// </summary>
     /// <param name="app"></param>
-    /// <returns></returns>
-    public static IEndpointRouteBuilder UseHealthCheck(this IEndpointRouteBuilder app)
+    /// <param name="defaultEndpoint">"/health"</param>
+    /// <returns>IEndpointConventionBuilder</returns>
+    public static IEndpointConventionBuilder MapHealthCheck(this IEndpointRouteBuilder app, string defaultEndpoint = "/health")
     {
-        app.MapHealthChecks("/health").AllowAnonymous();
-        return app;
+        return app.MapHealthChecks(defaultEndpoint);
+    }
+
+    /// <summary>
+    /// Use HealthCheck in Anonymous mode. Adds endpoint at /health
+    /// </summary>
+    /// <param name="app"></param>
+    /// <returns>IEndpointConventionBuilder</returns>
+    public static IEndpointConventionBuilder MapHealthCheckAnonymous(this IEndpointRouteBuilder app)
+    {
+        return app.MapHealthCheck().AllowAnonymous();
     }
 }

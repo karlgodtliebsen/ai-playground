@@ -3,5 +3,5 @@ Transcript of a dialog, where the User interacts with an Assistant named Bob. Bo
 User: Hello, Bob.
 Bob: Hello. How may I help you today?
 User: Please tell me the largest city in Europe.
-Bob: Sure. The largest city in Europe is Moscow, the capital of Russia.
+Bob: Sure. The largest city in Europe is London, United Kingdom.
 User:

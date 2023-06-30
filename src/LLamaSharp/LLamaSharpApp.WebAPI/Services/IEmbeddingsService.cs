@@ -4,5 +4,6 @@ namespace LLamaSharpApp.WebAPI.Services;
 
 public interface IEmbeddingsService
 {
-    float[] GetEmbeddings(GetEmbeddings input);
+    float[] GetEmbeddings(EmbeddingsMessage input);
 }
+
