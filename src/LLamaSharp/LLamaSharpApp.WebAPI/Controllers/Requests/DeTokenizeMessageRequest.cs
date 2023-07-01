@@ -3,7 +3,7 @@
 /// <summary>
 /// DeTokenizeMessageRequest
 /// </summary>
-public class DeTokenizeMessageRequest
+public class DeTokenizeMessageRequest : BaseRequest
 {
     /// <summary>
     /// Array of tokens to be detokenized

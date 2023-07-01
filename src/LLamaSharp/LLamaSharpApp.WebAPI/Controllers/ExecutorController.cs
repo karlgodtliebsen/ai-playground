@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LLamaSharpApp.WebAPI.Controllers;
 
 /// <summary>
-/// Executor Controller
+/// Executor Controller handles Inference
 /// <a href=" https://scisharp.github.io/LLamaSharp/0.4/LLamaExecutors/parameters/"/>
 /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/Examples/InstructModeExecute.md"/>
 /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/Examples/InteractiveModeExecute.md"/>
@@ -28,6 +28,11 @@ public class ExecutorController : ControllerBase
     private readonly IExecutorService domainService;
     private readonly ILogger<ExecutorController> logger;
 
+    /// <summary>
+    /// Constructor for ExecutorController
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="logger"></param>
     public ExecutorController(IExecutorService service, ILogger<ExecutorController> logger)
     {
         this.logger = logger;
@@ -51,11 +56,17 @@ public class ExecutorController : ControllerBase
     [HttpPost("executor")]
     public async Task<string> ExecutorAsync([FromBody] ExecutorInferRequest request, CancellationToken cancellationToken)
     {
-        var requestModel = new ExecutorInferMessage(request.Text);
+        var requestModel = new ExecutorInferMessage(request.Text)
+        {
+            InferenceType = request.InferenceType,
+            LlmaModelOptions = request.LlmaModelOptions,
+            InferenceOptions = request.InferenceOptions,
+            UserId = "42"
+        };
         if (request.UsePersistedModelState.HasValue) requestModel.UsePersistedModelState = request.UsePersistedModelState.Value;
         if (request.UsePersistedExecutorState.HasValue) requestModel.UsePersistedExecutorState = request.UsePersistedExecutorState.Value;
         if (request.UseStatelessExecutor.HasValue) requestModel.UseStatelessExecutor = request.UseStatelessExecutor.Value;
-        requestModel.InferenceType = request.InferenceType;
+
         var sb = new StringBuilder();
         var result = domainService.Executor(requestModel, CancellationToken.None);
         await foreach (var s in result.WithCancellation(cancellationToken))

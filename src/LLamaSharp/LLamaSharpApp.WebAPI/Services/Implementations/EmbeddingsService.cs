@@ -8,11 +8,19 @@ namespace LLamaSharpApp.WebAPI.Services.Implementations;
 public class EmbeddingsService : IEmbeddingsService
 {
     private readonly ILlmaModelFactory factory;
+    private readonly IOptionsService optionsService;
     private readonly ILogger<EmbeddingsService> logger;
 
-    public EmbeddingsService(ILlmaModelFactory factory, ILogger<EmbeddingsService> logger)
+    /// <summary>
+    /// Constructor for Embeddings Service
+    /// </summary>
+    /// <param name="factory"></param>
+    /// <param name="optionsService"></param>
+    /// <param name="logger"></param>
+    public EmbeddingsService(ILlmaModelFactory factory, IOptionsService optionsService, ILogger<EmbeddingsService> logger)
     {
         this.factory = factory;
+        this.optionsService = optionsService;
         this.logger = logger;
     }
 
@@ -20,10 +28,12 @@ public class EmbeddingsService : IEmbeddingsService
     /// Finds the embeddings of a text and returns them
     /// </summary>
     /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public float[] GetEmbeddings(EmbeddingsMessage input)
+    public async Task<float[]> GetEmbeddings(EmbeddingsMessage input, CancellationToken cancellationToken)
     {
-        var embedder = factory.CreateEmbedder();
+        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+        var embedder = factory.CreateEmbedder(modelOptions);
         var embeddings = embedder.GetEmbeddings(input.Text);
         return embeddings;
     }

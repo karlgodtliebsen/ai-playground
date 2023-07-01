@@ -4,5 +4,11 @@ namespace LLamaSharpApp.WebAPI.Services;
 
 public interface IChatService
 {
-    string Chat(ChatMessage input);
+    /// <summary>
+    /// Executes the chat
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<string> Chat(ChatMessage input, CancellationToken cancellationToken);
 }

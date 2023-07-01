@@ -59,6 +59,40 @@ public class OptionsService : IOptionsService
     }
 
     /// <inheritdoc />
+    public async Task<InferenceOptions> CoalsceInferenceOptions(InferenceOptions? queryOptions, string userId, CancellationToken cancellationToken)
+    {
+        //if (options for the user does not exist  then return snapshot of default options
+        if (queryOptions is not null)
+        {
+            return queryOptions;
+        }
+
+        var options = await stateRepository.GetInferenceOptions(userId, cancellationToken);
+        if (options is null)
+        {
+            options = JsonSerializer.Deserialize<InferenceOptions>(JsonSerializer.Serialize(inferenceOptions));
+        }
+        return options!;
+    }
+
+    /// <inheritdoc />
+    public async Task<LlmaModelOptions> CoalsceLlmaModelOptions(LlmaModelOptions? queryOptions, string userId, CancellationToken cancellationToken)
+    {
+        //if (options for the user does not exist  then return snapshot of default options
+        if (queryOptions is not null)
+        {
+            return queryOptions;
+        }
+        //if (options for the user does not exist  then return snapshot of  default options
+        var options = await stateRepository.GetLlmaModelOptions(userId, cancellationToken);
+        if (options is null)
+        {
+            options = JsonSerializer.Deserialize<LlmaModelOptions>(JsonSerializer.Serialize(llmaModelOptions));
+        }
+        return options!;
+    }
+
+    /// <inheritdoc />
     public async Task<InferenceOptions> GetInferenceOptions(string userId, CancellationToken cancellationToken)
     {
         //if (options for the user does not exist  then return snapshot of  default options

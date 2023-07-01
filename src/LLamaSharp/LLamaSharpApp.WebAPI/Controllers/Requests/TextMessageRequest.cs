@@ -1,9 +1,9 @@
 ﻿namespace LLamaSharpApp.WebAPI.Controllers.Requests;
 
 /// <summary>
-/// 
+/// TextMessageRequest
 /// </summary>
-public class BaseMessageRequest
+public class TextMessageRequest : BaseRequest
 {
     /// <summary>
     /// Prompt/Chat text

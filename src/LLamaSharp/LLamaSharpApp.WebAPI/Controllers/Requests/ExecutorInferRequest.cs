@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
+using LLamaSharpApp.WebAPI.Configuration;
 using LLamaSharpApp.WebAPI.Models;
 
 namespace LLamaSharpApp.WebAPI.Controllers.Requests;
@@ -7,8 +8,12 @@ namespace LLamaSharpApp.WebAPI.Controllers.Requests;
 /// <summary>
 /// Request object to hold the text/message to be sent to the executor
 /// </summary>
-public class ExecutorInferRequest : BaseMessageRequest
+public class ExecutorInferRequest : TextMessageRequest
 {
+    /// <summary>
+    /// Request specific options
+    /// </summary>
+    public InferenceOptions? InferenceOptions { get; set; } = default!;
 
     /// <summary>
     /// Discriminator for the statefull Executor type
@@ -24,7 +29,7 @@ public class ExecutorInferRequest : BaseMessageRequest
     /// <summary>
     /// When true, the models state will be loaded and saved from the file system
     /// </summary>
-    public bool? UsePersistedModelState { get; set; }
+    public bool? UsePersistedModelState { get; set; } = true;
     /// <summary>
     /// When true, the Executor state will be loaded and saved from the file system
     /// </summary>

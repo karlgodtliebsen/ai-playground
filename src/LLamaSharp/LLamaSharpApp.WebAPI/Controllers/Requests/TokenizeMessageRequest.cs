@@ -1,15 +1,14 @@
-﻿using LLamaSharpApp.WebAPI.Models;
-
-namespace LLamaSharpApp.WebAPI.Controllers.Requests;
+﻿namespace LLamaSharpApp.WebAPI.Controllers.Requests;
 
 /// <summary>
 /// TokenizeMessageRequest
 /// </summary>
-public class TokenizeMessageRequest : SimpleTextMessage
+public class TokenizeMessageRequest : TextMessageRequest
 {
+
     /// <summary>
-    /// Constructor
+    /// Use Stateful Model
     /// </summary>
-    /// <param name="text"></param>
-    public TokenizeMessageRequest(string? text) : base(text) { }
+    public bool UsePersistedModelState { get; set; } = false;
+
 }

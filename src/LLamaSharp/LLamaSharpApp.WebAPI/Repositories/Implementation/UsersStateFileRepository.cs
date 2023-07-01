@@ -13,9 +13,11 @@ namespace LLamaSharpApp.WebAPI.Repositories.Implementation;
 /// </summary>
 public class UsersStateFileRepository : IUsersStateRepository
 {
+    private const string InferenceFile = "inference-options.json";
+    private const string LlmaModelFile = "llmamodel-options.json";
     private readonly WebApiOptions webApiOptions;
-    private const string inferenceFile = "inference-options.json";
-    private const string llmaModelFile = "llmamodel-options.json";
+    private readonly string fullPath;
+
     /// <summary>
     /// Constructor for the User State File Repository
     /// </summary>
@@ -23,6 +25,7 @@ public class UsersStateFileRepository : IUsersStateRepository
     public UsersStateFileRepository(IOptions<WebApiOptions> webApiOptions)
     {
         this.webApiOptions = webApiOptions.Value;
+        fullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
     }
 
     private async Task PersistObject(object options, string fileName, CancellationToken cancellationToken)
@@ -34,9 +37,14 @@ public class UsersStateFileRepository : IUsersStateRepository
 
     private string GetFullPath(string userId)
     {
-        var path = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, webApiOptions.StatePersistencePath, userId));
+        var path = Path.GetFullPath(Path.Combine(fullPath, webApiOptions.StatePersistencePath, userId));
         Directory.CreateDirectory(path!);
         return path;
+    }
+    private string GetFileName(string userId, string fileName)
+    {
+        var path = GetFullPath(userId);
+        return Path.Combine(path, fileName);
     }
 
     /// <summary>
@@ -47,8 +55,7 @@ public class UsersStateFileRepository : IUsersStateRepository
     /// <param name="cancellationToken"></param>
     public async Task PersistInferenceOptions(InferenceOptions options, string userId, CancellationToken cancellationToken)
     {
-        var path = GetFullPath(userId);
-        var fileName = Path.Combine(path, inferenceFile);
+        var fileName = GetFileName(userId, InferenceFile);
         await PersistObject(options, fileName, cancellationToken);
     }
 
@@ -60,8 +67,7 @@ public class UsersStateFileRepository : IUsersStateRepository
     /// <param name="cancellationToken"></param>
     public async Task PersistLlmaModelOptions(LlmaModelOptions options, string userId, CancellationToken cancellationToken)
     {
-        var path = GetFullPath(userId);
-        var fileName = Path.Combine(path, llmaModelFile);
+        var fileName = GetFileName(userId, LlmaModelFile);
         await PersistObject(options, fileName, cancellationToken);
     }
 
@@ -73,8 +79,7 @@ public class UsersStateFileRepository : IUsersStateRepository
     /// <returns></returns>
     public async Task<InferenceOptions?> GetInferenceOptions(string userId, CancellationToken cancellationToken)
     {
-        var path = GetFullPath(userId);
-        var fileName = Path.Combine(path, inferenceFile);
+        var fileName = GetFileName(userId, InferenceFile);
         if (!File.Exists(fileName)) return null;
         await using var stream = File.OpenRead(fileName);
         var options = await JsonSerializer.DeserializeAsync<InferenceOptions>(stream, cancellationToken: cancellationToken);
@@ -89,8 +94,7 @@ public class UsersStateFileRepository : IUsersStateRepository
     /// <returns></returns>
     public async Task<LlmaModelOptions?> GetLlmaModelOptions(string userId, CancellationToken cancellationToken)
     {
-        var path = GetFullPath(userId);
-        var fileName = Path.Combine(path, llmaModelFile);
+        var fileName = GetFileName(userId, LlmaModelFile);
         if (!File.Exists(fileName)) return null;
         await using var stream = File.OpenRead(fileName);
         var options = await JsonSerializer.DeserializeAsync<LlmaModelOptions>(stream, cancellationToken: cancellationToken);

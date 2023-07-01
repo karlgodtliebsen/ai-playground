@@ -20,30 +20,12 @@ public interface ILlmaModelFactory
     LLamaModel CreateModel(ModelParams parameters);
 
     /// <summary>
-    /// Creates a LLamaModel with the default ModelParams
-    /// </summary>
-    /// <returns></returns>
-    LLamaModel CreateModel();
-
-    /// <summary>
-    /// Creates a LLamaEmbedder with the default ModelParams
-    /// </summary>
-    /// <returns></returns>
-    LLamaEmbedder CreateEmbedder();
-
-    /// <summary>
     /// Creates a LLamaEmbedder with the given ModelParams
     /// </summary>
     /// <param name="parameters"></param>
     /// <returns></returns>
     LLamaEmbedder CreateEmbedder(ModelParams parameters);
 
-    /// <summary>
-    /// Creates a ChatSession with a custom ILLamaExecutor
-    /// </summary>
-    /// <typeparam name="TExecutor">The ILLamaExecutor type to use for the ChatSession</typeparam>
-    /// <returns></returns>
-    (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>() where TExecutor : StatefulExecutorBase, ILLamaExecutor;
 
     /// <summary>
     /// Creates a ChatSession with a custom ILLamaExecutor and LLamaModel
@@ -54,17 +36,27 @@ public interface ILlmaModelFactory
     ChatSession CreateChatSession<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor;
 
     /// <summary>
-    /// Creates a ChatSession with a custom ILLamaExecutor and ModelParams
+    /// Creates a ChatSession with a custom ILLamaExecutor and specified ModelParams
     /// </summary>
     /// <typeparam name="TExecutor"></typeparam>
     /// <param name="parameters"></param>
     /// <returns></returns>
     (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(ModelParams parameters) where TExecutor : StatefulExecutorBase, ILLamaExecutor;
 
+    /// <summary>
+    /// Creates a stateful ILLamaExecutor using the specified LLamaModel
+    /// </summary>
+    /// <param name="model"></param>
+    /// <typeparam name="TExecutor"></typeparam>
+    /// <returns></returns>
     StatefulExecutorBase CreateStatefulExecutor<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor;
 
+    /// <summary>
+    /// Creates a stateless  ILLamaExecutor using the specified LLamaModel
+    /// </summary>
+    /// <param name="model"></param>
+    /// <typeparam name="TExecutor"></typeparam>
+    /// <returns></returns>
     StatelessExecutor CreateStateLessExecutor<TExecutor>(LLamaModel model) where TExecutor : StatelessExecutor, ILLamaExecutor;
-
-
 
 }

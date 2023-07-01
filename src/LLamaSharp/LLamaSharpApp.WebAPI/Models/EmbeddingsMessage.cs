@@ -10,4 +10,10 @@ public class EmbeddingsMessage : SimpleTextMessage
     /// </summary>
     /// <param name="text"></param>
     public EmbeddingsMessage(string? text) : base(text) { }
+
+    /// <summary>
+    /// The user id
+    /// </summary>
+    public string UserId { get; set; }
+
 }

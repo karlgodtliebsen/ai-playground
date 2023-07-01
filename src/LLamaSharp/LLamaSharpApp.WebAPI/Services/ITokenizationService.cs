@@ -11,13 +11,15 @@ public interface ITokenizationService
     /// Get the tokesn for the specified text
     /// </summary>
     /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    int[] Tokenize(TokenizeMessage input);
+    Task<int[]> Tokenize(TokenizeMessage input, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get the text for the specified tokens
     /// </summary>
     /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    string DeTokenize(DeTokenizeMessage input);
+    Task<string> DeTokenize(DeTokenizeMessage input, CancellationToken cancellationToken);
 }

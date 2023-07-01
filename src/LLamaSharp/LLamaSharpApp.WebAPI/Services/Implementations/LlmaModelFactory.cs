@@ -51,14 +51,6 @@ public class LlmaModelFactory : ILlmaModelFactory
     }
 
     /// <summary>
-    /// Creates a default embedder
-    /// </summary>
-    /// <returns></returns>
-    public LLamaEmbedder CreateEmbedder()
-    {
-        return new LLamaEmbedder(CreateModelParams());
-    }
-    /// <summary>
     /// Creates an embedder with specified parameters 
     /// </summary>
     /// <param name="parameters"></param>

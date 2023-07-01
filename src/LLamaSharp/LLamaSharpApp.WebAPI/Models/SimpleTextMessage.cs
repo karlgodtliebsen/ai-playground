@@ -3,8 +3,12 @@
 /// <summary>
 /// Domain Model for SimpleTextMessage
 /// </summary>
-public class SimpleTextMessage
+public class SimpleTextMessage : BaseMessageModel
 {
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="text"></param>
     public SimpleTextMessage(string? text)
     {
         ArgumentNullException.ThrowIfNull(text);

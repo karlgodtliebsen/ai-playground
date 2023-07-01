@@ -7,8 +7,33 @@ namespace LLamaSharpApp.WebAPI.Repositories;
 /// </summary>
 public interface IModelStateRepository
 {
-    void SaveState(LLamaModel model, Func<string?> save);
-    void SaveState(StatefulExecutorBase executor, Func<string?> save);
-    void LoadState(LLamaModel model, Func<string?> load);
-    void LoadState(StatefulExecutorBase executor, Func<string?> load);
+    /// <summary>
+    /// Saves the state of the model
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="userId"></param>
+    /// <param name="save"></param>
+    void SaveState(LLamaModel model, string userId, bool save);
+    /// <summary>
+    /// Saves the state of the executor
+    /// </summary>
+    /// <param name="executor"></param>
+    /// <param name="userId"></param>
+    /// <param name="save"></param>
+    void SaveState(StatefulExecutorBase executor, string userId, bool save);
+
+    /// <summary>
+    /// Saves the state of the model
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="userId"></param>
+    /// <param name="load"></param>
+    void LoadState(LLamaModel model, string userId, bool load);
+    /// <summary>
+    /// Saves the state of the executor
+    /// </summary>
+    /// <param name="executor"></param>
+    /// <param name="userId"></param>
+    /// <param name="load"></param>
+    void LoadState(StatefulExecutorBase executor, string userId, bool load);
 }

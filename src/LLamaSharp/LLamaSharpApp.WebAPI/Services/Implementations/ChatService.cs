@@ -5,33 +5,51 @@ using LLamaSharpApp.WebAPI.Repositories;
 
 namespace LLamaSharpApp.WebAPI.Services.Implementations;
 
+/// <summary>
+/// Chat Domain Service
+/// </summary>
 public class ChatService : IChatService
 {
     private readonly ILlmaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
+    private readonly IOptionsService optionsService;
+    private readonly ILogger<ChatService> logger;
 
     //TODO: consider https://github.com/SciSharp/LLamaSharp/blob/master/docs/ChatSession/save-load-session.md
     //TODO: use ChatHistory 
 
-    public ChatService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository)
+    /// <summary>
+    /// Constructor for Chat Service
+    /// </summary>
+    /// <param name="factory"></param>
+    /// <param name="modelStateRepository"></param>
+    /// <param name="optionsService"></param>
+    /// <param name="logger"></param>
+    public ChatService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository,
+        IOptionsService optionsService, ILogger<ChatService> logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;
+        this.optionsService = optionsService;
+        this.logger = logger;
     }
 
-    public string Chat(ChatMessage input)
+    /// <summary>
+    /// Executes the chat
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<string> Chat(ChatMessage input, CancellationToken cancellationToken)
     {
-        var fileName = "./chat-savedstate.st";   //for now, we use local file system to store the state
-                                                 //TODO: consider security etc. must be improved
+        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+        var (chatSession, model) = factory.CreateChatSession<InstructExecutor>(modelOptions);
 
-        var (chatSession, model) = factory.CreateChatSession<InstructExecutor>();//TODO: handle user specific parameters to override the default ones
-        modelStateRepository.LoadState(model, () => input.UsePersistedModelState ? fileName : null);
+        modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var outputs = chatSession.Chat(input.Text);
-        modelStateRepository.SaveState(model, () => input.UsePersistedModelState ? fileName : null);
         var result = string.Join("", outputs);
-
+        modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
         //model.Dispose();
-
-        return string.Join("", result);
+        return result;
     }
 }

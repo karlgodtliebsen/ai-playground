@@ -2,6 +2,9 @@
 
 namespace LLamaSharpApp.WebAPI.Configuration;
 
+/// <summary>
+/// InferenceOptions
+/// </summary>
 public class InferenceOptions : InferenceParams
 {
     /// <summary>

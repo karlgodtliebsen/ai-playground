@@ -1,4 +1,6 @@
-﻿namespace LLamaSharpApp.WebAPI.Models;
+﻿using LLamaSharpApp.WebAPI.Configuration;
+
+namespace LLamaSharpApp.WebAPI.Models;
 
 /// <summary>
 /// Domain Model for ExecutorInferMessage
@@ -12,6 +14,17 @@ public class ExecutorInferMessage : SimpleTextMessage
     public ExecutorInferMessage(string? text) : base(text)
     {
     }
+
+    /// <summary>
+    /// The request specific InferenceOptions: Optional
+    /// </summary>
+    public InferenceOptions? InferenceOptions { get; set; } = default!;
+
+    /// <summary>
+    /// The user id
+    /// </summary>
+    public string UserId { get; set; } = default!;
+
     /// <summary>
     /// Discriminator for the stateful Executor type
     /// Will be ignored when UseStatelessExecutor is true
@@ -19,7 +32,7 @@ public class ExecutorInferMessage : SimpleTextMessage
     /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/Examples/InstructModeExecute.md"/>
     /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/Examples/InteractiveModeExecute.md"/>
     /// </summary>
-    public InferenceType InferenceType { get; set; }
+    public InferenceType InferenceType { get; set; } = InferenceType.InteractiveExecutor;
 
 
     /// <summary>

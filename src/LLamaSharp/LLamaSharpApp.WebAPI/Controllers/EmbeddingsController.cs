@@ -37,11 +37,18 @@ public class EmbeddingsController : ControllerBase
     /// Get the embeddings of a text in LLM, for example, to train other MLP models.
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("embeddings")]
-    public float[] Embeddings([FromBody] EmbeddingsRequest request)
+    public async Task<float[]> Embeddings([FromBody] EmbeddingsRequest request, CancellationToken cancellationToken)
     {
-        var requestModel = new EmbeddingsMessage(request.Text);
-        return domainService.GetEmbeddings(requestModel);
+        var model = new EmbeddingsMessage(request.Text)
+        {
+            UsePersistedModelState = request.UsePersistedModelState,
+            LlmaModelOptions = request.LlmaModelOptions,
+            UserId = "42"
+        };
+
+        return await domainService.GetEmbeddings(model, cancellationToken);
     }
 }

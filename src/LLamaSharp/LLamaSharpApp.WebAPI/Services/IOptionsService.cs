@@ -39,4 +39,24 @@ public interface IOptionsService
     /// <returns></returns>
     Task<LlmaModelOptions> GetLlmaModelOptions(string userId, CancellationToken cancellationToken);
 
+
+    /// <summary>
+    /// This method unites the options that might be submitted for this specific call, or that might be stored for this specific user,
+    /// or the default options if none of the former exist, to form one whole or to merge into a single entity.
+    /// </summary>
+    /// <param name="queryOptions"></param>
+    /// <param name="userId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<InferenceOptions> CoalsceInferenceOptions(InferenceOptions? queryOptions, string userId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// This method unites the options that might be submitted for this specific call, or that might be stored for this specific user,
+    /// or the default options if none of the former exist, to form one whole or to merge into a single entity.
+    /// </summary>
+    /// <param name="queryOptions"></param>
+    /// <param name="userId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<LlmaModelOptions> CoalsceLlmaModelOptions(LlmaModelOptions? queryOptions, string userId, CancellationToken cancellationToken);
 }

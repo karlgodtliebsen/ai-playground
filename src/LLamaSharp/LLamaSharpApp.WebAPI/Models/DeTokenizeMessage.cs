@@ -3,8 +3,12 @@
 /// <summary>
 /// Domain Model for DeTokenizeMessage
 /// </summary>
-public class DeTokenizeMessage
+public class DeTokenizeMessage : BaseMessageModel
 {
+    /// <summary>
+    /// Constructor for DeTokenizeMessage
+    /// </summary>
+    /// <param name="tokens"></param>
     public DeTokenizeMessage(int[] tokens)
     {
         Tokens = tokens;
@@ -18,4 +22,9 @@ public class DeTokenizeMessage
     /// Use Stateful Model
     /// </summary>
     public bool UsePersistedModelState { get; set; } = false;
+
+    /// <summary>
+    /// The user id
+    /// </summary>
+    public string UserId { get; set; } = default!;
 }

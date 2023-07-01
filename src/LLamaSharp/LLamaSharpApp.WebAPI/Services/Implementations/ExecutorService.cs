@@ -3,10 +3,8 @@
 using LLama;
 using LLama.Abstractions;
 
-using LLamaSharpApp.WebAPI.Configuration;
 using LLamaSharpApp.WebAPI.Models;
 using LLamaSharpApp.WebAPI.Repositories;
-using Microsoft.Extensions.Options;
 
 namespace LLamaSharpApp.WebAPI.Services.Implementations;
 
@@ -17,19 +15,23 @@ public class ExecutorService : IExecutorService
 {
     private readonly ILlmaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
-    private readonly InferenceOptions options;
+
+    private readonly IOptionsService optionsService;
+    private readonly ILogger<ExecutorService> logger;
 
     /// <summary>
-    /// Contructor for the Executor Service
+    /// Constructor for the Executor Service
     /// </summary>
     /// <param name="factory"></param>
     /// <param name="modelStateRepository"></param>
-    /// <param name="options"></param>
-    public ExecutorService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository, IOptions<InferenceOptions> options)
+    /// <param name="optionsService"></param>
+    /// <param name="logger"></param>
+    public ExecutorService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger<ExecutorService> logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;
-        this.options = options.Value;
+        this.optionsService = optionsService;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -38,9 +40,8 @@ public class ExecutorService : IExecutorService
     /// <param name="input"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async IAsyncEnumerable<string> Executor(ExecutorInferMessage input, CancellationToken cancellationToken)
+    public async IAsyncEnumerable<string> Executor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-
         IAsyncEnumerable<string> res;
         if (input.UseStatelessExecutor)
         {
@@ -58,27 +59,29 @@ public class ExecutorService : IExecutorService
 
     private async IAsyncEnumerable<string> UseStatefulExecutor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var modelFileName = "./model-savedstate.st";
-        var executorFileName = "./executor-savedstate.st";
+        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
 
-        var model = factory.CreateModel();      //Default model specified by options
-        var executor = LoadStatefulExecutor(input, model, modelFileName, executorFileName);
-
-        var res = executor.InferAsync(input.Text, options, cancellationToken);
+        var model = factory.CreateModel(modelOptions);      //model specified by options
+        var executor = LoadStatefulExecutor(input, model);
+        var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
+        var res = executor.InferAsync(input.Text, inferenceOptions, cancellationToken);
         await foreach (var result in res.WithCancellation(cancellationToken))
         {
             yield return result;
         }
-        SaveState(input, executor, modelFileName, executorFileName);
+        SaveState(input, executor);
         //model.Dispose();
     }
 
     private async IAsyncEnumerable<string> UseStatelessExecutor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var model = factory.CreateModel();//Default model specified by options
+        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+
+        var model = factory.CreateModel(modelOptions);//model specified by options
         var executor = GetStatelessExecutor(model);
 
-        var res = executor.InferAsync(input.Text, options, cancellationToken);
+        var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
+        var res = executor.InferAsync(input.Text, inferenceOptions, cancellationToken);
         await foreach (var result in res.WithCancellation(cancellationToken))
         {
             yield return result;
@@ -92,13 +95,13 @@ public class ExecutorService : IExecutorService
         return executor;
     }
 
-    private void SaveState(ExecutorInferMessage input, StatefulExecutorBase executor, string modelFileName, string executorFileName)
+    private void SaveState(ExecutorInferMessage input, StatefulExecutorBase executor)
     {
-        modelStateRepository.SaveState(executor.Model, () => input.UsePersistedModelState ? modelFileName : null);
-        modelStateRepository.SaveState(executor, () => input.UsePersistedExecutorState ? executorFileName : null);
+        modelStateRepository.SaveState(executor.Model, input.UserId, input.UsePersistedModelState);
+        modelStateRepository.SaveState(executor, input.UserId, input.UsePersistedExecutorState);
     }
 
-    private StatefulExecutorBase LoadStatefulExecutor(ExecutorInferMessage input, LLamaModel model, string modelFileName, string executorFileName)
+    private StatefulExecutorBase LoadStatefulExecutor(ExecutorInferMessage input, LLamaModel model)
     {
         StatefulExecutorBase executor;
         switch (input.InferenceType)
@@ -111,8 +114,8 @@ public class ExecutorService : IExecutorService
                 break;
             default: throw new ArgumentException($"InferenceType {input.InferenceType} is not supported");
         }
-        modelStateRepository.LoadState(model, () => input.UsePersistedModelState ? modelFileName : null);
-        modelStateRepository.LoadState(executor, () => input.UsePersistedExecutorState ? executorFileName : null);
+        modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
+        modelStateRepository.LoadState(executor, input.UserId, input.UsePersistedExecutorState);
         return executor;
     }
 

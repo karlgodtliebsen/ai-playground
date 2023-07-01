@@ -24,40 +24,50 @@ public class TokenizationController : ControllerBase
     private readonly ITokenizationService domainService;
     private readonly ILogger<TokenizationController> logger;
 
+    /// <summary>
+    /// Construcor for TokenizationController
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="logger"></param>
     public TokenizationController(ITokenizationService service, ILogger<TokenizationController> logger)
     {
         this.logger = logger;
         domainService = service;
     }
 
-
     /// <summary>
     /// Tokenize a text
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("tokenize")]
-    public int[] Tokenizen([FromBody] TokenizeMessageRequest request)
+    public async Task<int[]> Tokenizen([FromBody] TokenizeMessageRequest request, CancellationToken cancellationToken)
     {
         var requestModel = new TokenizeMessage(request.Text)
         {
-            UsePersistedModelState = request.UsePersistedModelState
+            UsePersistedModelState = request.UsePersistedModelState,
+            LlmaModelOptions = request.LlmaModelOptions,
+            UserId = "42"
         };
-        return domainService.Tokenize(requestModel);
+        return await domainService.Tokenize(requestModel, cancellationToken);
     }
 
     /// <summary>
     /// DeTokenize an array of tokens to create a text
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("detokenize")]
-    public string DeTokenize([FromBody] DeTokenizeMessageRequest request)
+    public async Task<string> DeTokenize([FromBody] DeTokenizeMessageRequest request, CancellationToken cancellationToken)
     {
         var requestModel = new DeTokenizeMessage(request.Tokens)
         {
-            UsePersistedModelState = request.UsePersistedModelState
+            UsePersistedModelState = request.UsePersistedModelState,
+            LlmaModelOptions = request.LlmaModelOptions,
+            UserId = "42"
         };
-        return domainService.DeTokenize(requestModel);
+        return await domainService.DeTokenize(requestModel, cancellationToken);
     }
 }

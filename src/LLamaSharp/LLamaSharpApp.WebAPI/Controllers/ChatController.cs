@@ -23,6 +23,11 @@ public class ChatController : ControllerBase
     private readonly IChatService domainService;
     private readonly ILogger<ChatController> logger;
 
+    /// <summary>
+    /// Controller for Chat
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="logger"></param>
     public ChatController(IChatService service, ILogger<ChatController> logger)
     {
         this.logger = logger;
@@ -34,14 +39,17 @@ public class ChatController : ControllerBase
     /// Invokes a chat with the prompt text, using the model parameters.
     /// </summary>
     /// <param name="request">Hold the Chat prompt/text</param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("chat")]
-    public string Chat([FromBody] ChatMessageRequest request)
+    public async Task<string> Chat([FromBody] ChatMessageRequest request, CancellationToken cancellationToken)
     {
         var requestModel = new ChatMessage(request.Text)
         {
-            UsePersistedModelState = request.UsePersistedModelState
+            UsePersistedModelState = request.UsePersistedModelState,
+            LlmaModelOptions = request.LlmaModelOptions,
+            UserId = "42"
         };
-        return domainService.Chat(requestModel);
+        return await domainService.Chat(requestModel, cancellationToken);
     }
 }

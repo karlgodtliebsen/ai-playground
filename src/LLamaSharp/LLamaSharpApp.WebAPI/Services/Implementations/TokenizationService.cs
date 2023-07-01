@@ -8,11 +8,22 @@ public class TokenizationService : ITokenizationService
 {
     private readonly ILlmaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
+    private readonly IOptionsService optionsService;
+    private readonly ILogger<TokenizationService> logger;
 
-    public TokenizationService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository)
+    /// <summary>
+    /// Constructor for Tokenization Service
+    /// </summary>
+    /// <param name="factory"></param>
+    /// <param name="modelStateRepository"></param>
+    /// <param name="optionsService"></param>
+    /// <param name="logger"></param>
+    public TokenizationService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger<TokenizationService> logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;
+        this.optionsService = optionsService;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -20,13 +31,13 @@ public class TokenizationService : ITokenizationService
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    public int[] Tokenize(TokenizeMessage input)
+    public async Task<int[]> Tokenize(TokenizeMessage input, CancellationToken cancellationToken)
     {
-        var fileName = "something";
-        var model = factory.CreateModel();
-        modelStateRepository.LoadState(model, () => input.UsePersistedModelState ? fileName : null);
+        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+        var model = factory.CreateModel(modelOptions);
+        modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var tokens = model.Tokenize(input.Text).ToArray();
-        modelStateRepository.SaveState(model, () => input.UsePersistedModelState ? fileName : null);
+        modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
         return tokens;
     }
 
@@ -35,13 +46,13 @@ public class TokenizationService : ITokenizationService
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    public string DeTokenize(DeTokenizeMessage input)
+    public async Task<string> DeTokenize(DeTokenizeMessage input, CancellationToken cancellationToken)
     {
-        var fileName = "something";
-        var model = factory.CreateModel();
-        modelStateRepository.LoadState(model, () => input.UsePersistedModelState ? fileName : null);
+        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+        var model = factory.CreateModel(modelOptions);
+        modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var text = model.DeTokenize(input.Tokens);
-        modelStateRepository.SaveState(model, () => input.UsePersistedModelState ? fileName : null);
+        modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
         return text;
     }
 }
