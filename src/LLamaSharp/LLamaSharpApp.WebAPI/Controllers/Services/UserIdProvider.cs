@@ -1,7 +1,9 @@
-﻿namespace LLamaSharpApp.WebAPI.Controllers.Services;
+﻿using System.Security.Claims;
+
+namespace LLamaSharpApp.WebAPI.Controllers.Services;
 
 /// <summary>
-/// Placeholder for a future User id provider, Can be used together with authentication/identity or it can be replaced
+/// Placeholder for User id provider, Can be used together with authentication/identity or it can be replaced
 /// Reference: <a href="https://damienbod.com/" />
 /// /// </summary>
 public class UserIdProvider : IUserIdProvider
@@ -9,19 +11,22 @@ public class UserIdProvider : IUserIdProvider
     /// <summary>
     /// Constructor for dependency injection
     /// </summary>
-    public UserIdProvider()
+    public UserIdProvider(IHttpContextAccessor httpContextAccessor)
     {
-
-    }
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="userUserId"></param>
-    public UserIdProvider(string userUserId)
-    {
-        this.UserId = userUserId;
+        if (httpContextAccessor!.HttpContext!.User.Identity is ClaimsIdentity identity)
+        {
+            var s = identity.FindFirst("sub")!.Value;
+            if (Guid.TryParse(s, out var guid))
+            {
+                this.UserId = guid.ToString("N");
+            }
+            else
+            {
+                this.UserId = Guid.NewGuid().ToString("N");
+            }
+        }
     }
 
     /// <inheritdoc />
-    public string UserId { get; set; } = "42";// so this must be replaced with an authentication setup
+    public string UserId { get; set; } = Guid.NewGuid().ToString("N");
 }

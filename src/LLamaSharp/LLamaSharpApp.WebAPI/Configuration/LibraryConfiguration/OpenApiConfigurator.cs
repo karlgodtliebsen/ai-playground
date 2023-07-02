@@ -13,7 +13,7 @@ public static class OpenApiConfigurator
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
     /// <summary>
-    /// Add OpenAPI (Swagger support) to the pipeline.
+    /// Add OpenAPI (Swagger support) to the pipeline. This implementation is quite application specific as it hold names
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
@@ -22,8 +22,6 @@ public static class OpenApiConfigurator
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
-            //options.EnableAnnotations();
-
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
@@ -31,16 +29,13 @@ public static class OpenApiConfigurator
                 Description = "ASP.NET Web API handling Llama csharp model requests",
             });
 
-
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
-                //Name = "Authorization",
                 Name = "JWT Authentication",
                 Type = SecuritySchemeType.Http,
                 Description = "Enter JWT Bearer token **_only_**",
                 BearerFormat = "JWT",
-                //Scheme = "Bearer",
                 Scheme = "bearer", // must be lower case
                 Reference = new OpenApiReference
                 {

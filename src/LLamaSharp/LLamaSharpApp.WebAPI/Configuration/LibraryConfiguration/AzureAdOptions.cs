@@ -1,4 +1,7 @@
-﻿namespace LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
+
+namespace LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
 
 /// <summary>
 /// Azure Ad Options
@@ -6,7 +9,22 @@
 public class AzureAdOptions
 {
     /// <summary>
-    /// Configuration ConfigSectionName
+    /// DefaultSectionName
     /// </summary>
-    public string SectionName { get; set; } = "AzureAd";
+    public const string DefaultSectionName = Constants.AzureAd;
+
+    /// <summary>
+    /// Configuration SectionName
+    /// </summary>
+    public string SectionName { get; set; } = DefaultSectionName;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string JwtBearerScheme { get; set; } = JwtBearerDefaults.AuthenticationScheme;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool SubscribeToJwtBearerMiddlewareDiagnosticsEvents { get; set; } = false;
 }

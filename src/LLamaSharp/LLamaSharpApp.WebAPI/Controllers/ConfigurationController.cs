@@ -2,6 +2,7 @@
 using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Services;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LLamaSharpApp.WebAPI.Controllers;
@@ -15,6 +16,7 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 [ApiExplorerSettings(GroupName = "v1")]
 [ApiController]
 [Route("api/llama")]
+[Authorize]
 public class ConfigurationController : ControllerBase
 {
     private readonly IOptionsService domainService;

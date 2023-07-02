@@ -6,22 +6,25 @@
 public class CorsOptions
 {
     /// <summary>
-    /// Configuration ConfigSectionName
+    /// DefaultSectionName (const)
     /// </summary>
-    public string SectionName { get; set; } = "Cors";
+    public const string DefaultSectionName = "Cors";
 
-    //TODO needs fixing - work in progress
+    /// <summary>
+    /// Configuration SectionName - modifiable
+    /// </summary>
+    public string SectionName { get; set; } = DefaultSectionName;
+
 
     /// <summary>
     /// Origins
     /// </summary>
-    public string Origins { get; set; } = "https://localhost:4200";
+    public string[] Origins { get; set; } = Array.Empty<string>();
 
-    //TODO needs fixing - work in progress
 
     /// <summary>
     /// CORS Policy
     /// </summary>
-    public string Policy { get; set; } = "AllowMyOrigins";
+    public string Policy { get; set; } = default!;
 
 }

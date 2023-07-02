@@ -19,7 +19,7 @@ public static class WebApiConfigurator
     /// <param name="services"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddConfiguration(this IServiceCollection services, WebApiOptions options)
+    public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, WebApiOptions options)
     {
         services
             .VerifyAndAddOptions(options)
@@ -34,34 +34,34 @@ public static class WebApiConfigurator
     /// <param name="services"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddConfiguration(this IServiceCollection services, Action<WebApiOptions>? options = null)
+    public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, Action<WebApiOptions>? options = null)
     {
         var configuredOptions = new WebApiOptions();
         options?.Invoke(configuredOptions);
-        return services.AddConfiguration(configuredOptions);
+        return services.AddWebApiConfiguration(configuredOptions);
     }
 
     /// <summary>
     /// Add configuration from appsettings.json for the WebAPI parts (ie the not llama model parts)
+    /// If validation is not required, then just bind the options directly
+    /// IConfigurationSection section = configuration.GetSection(sectionName);
+    /// var section = section.GetSection(sectionName);
+    ///services.AddOptions&lt;WebApiOptions&gt;().Bind(section);
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
-    /// <param name="webapiOptionsSectionName"></param>
+    /// <param name="webApiOptionsSectionName"></param>
     /// <returns></returns>
-    public static IServiceCollection AddConfiguration(this IServiceCollection services, IConfiguration configuration, string? webapiOptionsSectionName = null)
+    public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, IConfiguration configuration, string? webApiOptionsSectionName = null)
     {
-        if (webapiOptionsSectionName is null)
+        if (webApiOptionsSectionName is null)
         {
-            webapiOptionsSectionName = WebApiOptions.SectionName;
+            webApiOptionsSectionName = WebApiOptions.SectionName;
         }
-        //If vaidation is not required, then just bind the options directly
-        //IConfigurationSection section = configuration.GetSection(webapiOptionsSectionName);
-        //var section = section.GetSection(webapiOptionsSectionName);
-        //services.AddOptions<WebApiOptions>().Bind(section);
-        var options = configuration.GetSection(webapiOptionsSectionName).Get<WebApiOptions>()!;
-        return services.AddConfiguration(options);
-    }
 
+        var options = configuration.GetSection(webApiOptionsSectionName).Get<WebApiOptions>()!;
+        return services.AddWebApiConfiguration(options);
+    }
 
     private static IServiceCollection VerifyAndAddOptions(this IServiceCollection services, WebApiOptions options)
     {
@@ -74,6 +74,7 @@ public static class WebApiConfigurator
     private static IServiceCollection AddUtilities(this IServiceCollection services)
     {
         services
+            .AddHttpContextAccessor()
             .AddScoped<IUserIdProvider, UserIdProvider>()
             ;
         return services;

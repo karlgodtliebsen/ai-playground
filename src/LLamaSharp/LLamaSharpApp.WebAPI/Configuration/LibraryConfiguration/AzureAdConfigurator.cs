@@ -1,9 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
-using Microsoft.IdentityModel.Logging;
 
 namespace LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
 
@@ -13,27 +10,20 @@ namespace LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
 public static class AzureAdConfigurator
 {
     /// <summary>
-    /// Add Security settings (authentication) using Jwt Bearer Token
+    /// Configure Azure AD JWT Bearer Token
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddJwt(this IServiceCollection services, IConfiguration configuration, Action<AzureAdOptions>? options = null)
+    public static IServiceCollection AddAzureAdConfiguration(this IServiceCollection services, IConfiguration configuration, AzureAdOptions options)
     {
-        var configOptions = new AzureAdOptions();
-        options?.Invoke(configOptions);
-
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
-        services.AddAuthorization(opt =>
-        {
-            //opt.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAssertion(_ => false).Build();
-            opt.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-        });
-        services.AddMicrosoftIdentityWebApiAuthentication(configuration, configSectionName: configOptions.SectionName);
+        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+        //this part is a little overengineered. But it proves usage of the configuration pattern
+        services.AddMicrosoftIdentityWebApiAuthentication(configuration, jwtBearerScheme: options.JwtBearerScheme, configSectionName: options.SectionName,
+            subscribeToJwtBearerMiddlewareDiagnosticsEvents: options.SubscribeToJwtBearerMiddlewareDiagnosticsEvents);
         return services;
     }
-
 
     /// <summary>
     /// Configure Azure AD  Bearer Token
@@ -42,69 +32,28 @@ public static class AzureAdConfigurator
     /// <param name="configuration"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddAzureAd(this IServiceCollection services, IConfiguration configuration, Action<AzureAdOptions>? options = null)
+    public static IServiceCollection AddAzureAdConfiguration(this IServiceCollection services, IConfiguration configuration, Action<AzureAdOptions>? options = default)
     {
         var configOptions = new AzureAdOptions();
         options?.Invoke(configOptions);
-
-        IdentityModelEventSource.ShowPII = true;
-        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-        services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // OpenIdConnectDefaults.AuthenticationScheme
-            ;
-        services
-            .AddMicrosoftIdentityWebApiAuthentication(configuration)
-           ;
-
-        // .AddMicrosoftIdentityWebApp(options => configuration.Bind("AzureAd", options))
-        //services.AddMicrosoftIdentityWebApiAuthentication(configuration, configSectionName: configOptions.SectionName);
-
-        return services;
+        return AddAzureAdConfiguration(services, configuration, configOptions);
     }
 
-    ///// <summary>
-    ///// Add Security settings (authentication) using Azure Ad
-    ///// </summary>
-    ///// <param name="services"></param>
-    ///// <param name="configuration"></param>
-    ///// <param name="options"></param>
-    ///// <returns></returns>
-    //public static IServiceCollection AddAzureAd(this IServiceCollection services, IConfiguration configuration, Action<AzureAdOptions>? options = null)
-    //{
-    //    var configOptions = new AzureAdOptions();
-    //    options?.Invoke(configOptions);
-    //    services
-    //        .AddAuthentication(options =>
-    //        {
-
-    //        })
-
-    //        .AddMicrosoftIdentityWebApp(configuration, configSectionName: configOptions.SectionName)
-    //        .EnableTokenAcquisitionToCallDownstreamApi()
-    //        .AddInMemoryTokenCaches()
-    //        ;
-
-    //    services.AddAuthorization(opt =>
-    //    {
-    //        //opt.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAssertion(_ => false).Build();
-    //        opt.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-    //    });
-    //    return services;
-    //}
-
-    //services.AddAuthentication(AzureADDefaults.AuthenticationScheme).AddAzureAD(options => builder.Configuration.Bind("AzureAd", options));
-
-    //    services.AddAuthentication(options =>
-    //    {
-    //        options.DefaultAuthenticateScheme = "YourAuthenticationScheme";
-    //        options.DefaultChallengeScheme = "YourAuthenticationScheme";
-    //    });
-
-
-    //services.AddAuthorization(options =>
-    //{
-    //    // Configure your authorization policies
-    //});
-
+    /// <summary>
+    /// Configure Azure AD  Bearer Token
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddAzureAdConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = default)
+    {
+        if (sectionName is null)
+        {
+            sectionName = AzureAdOptions.DefaultSectionName;
+        }
+        var options = configuration.GetSection(sectionName).Get<AzureAdOptions>()!;
+        return services.AddAzureAdConfiguration(configuration, options);
+    }
 
 }

@@ -12,14 +12,16 @@ https://huggingface.co/TheBloke
 https://huggingface.co/TheBloke/wizardLM-7B-GGML/resolve/main/wizardLM-7B.ggmlv3.q4_1.bin
 
 
+Add the Model to the 'LlmaModels' folder, and mark it for "Copy If Newer".
+If you prefer to locate the model file elsewhere, then modify the appsettings.json to point to the model.
 
-Add the Model to the folder LlmaModels, and mark it for "Copy If Newer" or locate the model file elsewhere.
+The web controllers are configured to use Authentication.  Either fill out the appsettings.json section (Remember not to commit/publish the information).
+Use either Keyvault or UserSecret during development.
 
-Modify the appsettings.json to point to the model.
+You can disable this in the Program.cs file, and remove the [Authentication] attributes from the controllers.
 
+```
 
-
-On the first run, there is 'a load of model' penalty or maybe execution time? This can be solved later on.
 
 
 # References
@@ -32,4 +34,5 @@ https://scisharp.github.io/LLamaSharp/0.4/ContributingGuide/#add-examples
 
 ### Authentication Identity
 https://damienbod.com/
+https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/
 
