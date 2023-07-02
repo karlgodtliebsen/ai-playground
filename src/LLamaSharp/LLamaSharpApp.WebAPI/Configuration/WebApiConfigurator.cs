@@ -1,4 +1,5 @@
-﻿using LLamaSharpApp.WebAPI.Repositories;
+﻿using LLamaSharpApp.WebAPI.Controllers.Services;
+using LLamaSharpApp.WebAPI.Repositories;
 using LLamaSharpApp.WebAPI.Repositories.Implementation;
 using LLamaSharpApp.WebAPI.Services;
 using LLamaSharpApp.WebAPI.Services.Implementations;
@@ -23,6 +24,7 @@ public static class WebApiConfigurator
         services
             .VerifyAndAddOptions(options)
             .AddDomain()
+            .AddUtilities()
             .AddRepository();
         return services;
     }
@@ -35,7 +37,15 @@ public static class WebApiConfigurator
         services.AddSingleton<IOptions<WebApiOptions>>(new OptionsWrapper<WebApiOptions>(options));
         return services;
     }
-
+    private static IServiceCollection AddUtilities(this IServiceCollection services)
+    {
+        services
+            .AddTransient<IUserIdProvider, UserIdProvider>()    // will end up being http request context scoped
+            .AddTransient<ILlmaModelFactory, LlmaModelFactory>()
+            .AddTransient<IOptionsService, OptionsService>()
+            ;
+        return services;
+    }
     private static IServiceCollection AddDomain(this IServiceCollection services)
     {
         services
@@ -43,8 +53,8 @@ public static class WebApiConfigurator
             .AddTransient<IEmbeddingsService, EmbeddingsService>()
             .AddTransient<IExecutorService, ExecutorService>()
             .AddTransient<ITokenizationService, TokenizationService>()
-            .AddTransient<ILlmaModelFactory, LlmaModelFactory>()
-            .AddTransient<IOptionsService, OptionsService>();
+            ;
+
         return services;
     }
 
@@ -82,6 +92,11 @@ public static class WebApiConfigurator
         {
             webapiOptionsSectionName = WebApiOptions.SectionName;
         }
+        //If vaidation is not required, then just bind the options directly
+        //IConfigurationSection section = configuration.GetSection(webapiOptionsSectionName);
+        //var section = section.GetSection(webapiOptionsSectionName);
+        //services.AddOptions<WebApiOptions>().Bind(section);
+
         var options = configuration.GetSection(webapiOptionsSectionName).Get<WebApiOptions>()!;
         return services.AddConfiguration(options);
     }

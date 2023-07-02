@@ -15,6 +15,10 @@ public class LlmaModelFactory : ILlmaModelFactory
 {
     private readonly LlmaModelOptions llmaModelOptions;
 
+    /// <summary>
+    /// Constructor for LLama Model Factory
+    /// </summary>
+    /// <param name="options"></param>
     public LlmaModelFactory(IOptions<LlmaModelOptions> options)
     {
         ArgumentNullException.ThrowIfNull(options.Value);

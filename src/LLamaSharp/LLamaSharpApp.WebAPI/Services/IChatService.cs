@@ -2,6 +2,9 @@
 
 namespace LLamaSharpApp.WebAPI.Services;
 
+/// <summary>
+/// Interface for Chat Service
+/// </summary>
 public interface IChatService
 {
     /// <summary>

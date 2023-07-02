@@ -4,10 +4,13 @@ using LLama.Common;
 
 namespace LLamaSharpApp.WebAPI.Services;
 
+/// <summary>
+/// Model Factory for creating LLama models, executors, parameters and embedders
+/// </summary>
 public interface ILlmaModelFactory
 {
     /// <summary>
-    /// Creates a ModelParams with the values obtained form IOptions<LlmaOptions>
+    /// Creates a ModelParams with the values obtained form IOptions&lt;LlmaOptions&gt;
     /// </summary>
     /// <returns></returns>
     ModelParams CreateModelParams();

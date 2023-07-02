@@ -11,10 +11,17 @@ public class LlmaModelOptions : ModelParams
     /// </summary>
     public const string SectionName = "LlmaModelOptions";
 
+    /// <summary>
+    /// Constructor for LlmaModelOptions
+    /// </summary>
     public LlmaModelOptions() : this("./LlmaModels")
     {
     }
 
+    /// <summary>
+    /// Constructor for LlmaModelOptions
+    /// </summary>
+    /// <param name="modelPath"></param>
     public LlmaModelOptions(string modelPath) : base(modelPath)
     {
     }

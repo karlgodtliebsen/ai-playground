@@ -1,6 +1,5 @@
-﻿using System.ComponentModel;
-
-using LLamaSharpApp.WebAPI.Controllers.Requests;
+﻿using LLamaSharpApp.WebAPI.Controllers.Requests;
+using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Models;
 using LLamaSharpApp.WebAPI.Services;
 
@@ -10,29 +9,29 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 
 /// <summary>
 ///Tokenization Controller
-///  <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/LLamaModel/tokenization.md"/>
+/// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/LLamaModel/tokenization.md"/>
 /// </summary>
 [ApiVersion("1")]
 [ApiExplorerSettings(GroupName = "v1")]
-[DisplayName("Llma  Tokenize Controller <a href=\"https://github.com/SciSharp/LLamaSharp/blob/master/docs/LLamaModel/tokenization.md\">")]
-[Description("API to create tokens from text and text from tokens.")]
-//[Authorize] Introduced later on
 [ApiController]
 [Route("api/llama")]
 public class TokenizationController : ControllerBase
 {
     private readonly ITokenizationService domainService;
+    private readonly IUserIdProvider userProvider;
     private readonly ILogger<TokenizationController> logger;
 
     /// <summary>
     /// Construcor for TokenizationController
     /// </summary>
     /// <param name="service"></param>
+    /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public TokenizationController(ITokenizationService service, ILogger<TokenizationController> logger)
+    public TokenizationController(ITokenizationService service, IUserIdProvider userProvider, ILogger<TokenizationController> logger)
     {
         this.logger = logger;
         domainService = service;
+        this.userProvider = userProvider;
     }
 
     /// <summary>
@@ -48,7 +47,7 @@ public class TokenizationController : ControllerBase
         {
             UsePersistedModelState = request.UsePersistedModelState,
             LlmaModelOptions = request.LlmaModelOptions,
-            UserId = "42"
+            UserId = userProvider.UserId
         };
         return await domainService.Tokenize(requestModel, cancellationToken);
     }
@@ -66,7 +65,7 @@ public class TokenizationController : ControllerBase
         {
             UsePersistedModelState = request.UsePersistedModelState,
             LlmaModelOptions = request.LlmaModelOptions,
-            UserId = "42"
+            UserId = userProvider.UserId
         };
         return await domainService.DeTokenize(requestModel, cancellationToken);
     }

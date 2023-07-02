@@ -1,6 +1,5 @@
-﻿using System.ComponentModel;
-
-using LLamaSharpApp.WebAPI.Controllers.Requests;
+﻿using LLamaSharpApp.WebAPI.Controllers.Requests;
+using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Models;
 using LLamaSharpApp.WebAPI.Services;
 
@@ -13,24 +12,25 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 /// </summary>
 [ApiVersion("1")]
 [ApiExplorerSettings(GroupName = "v1")]
-[DisplayName("Llma Embeddings Controller <a href=\"https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/embeddings/\">")]
-[Description("API to get the embeddings of a text in LLM, for example, to train other MLP models..")]
 [ApiController]
 [Route("api/llama")]
 public class EmbeddingsController : ControllerBase
 {
     private readonly IEmbeddingsService domainService;
+    private readonly IUserIdProvider userProvider;
     private readonly ILogger<EmbeddingsController> logger;
 
     /// <summary>
     /// Constructor for EmbeddingsController
     /// </summary>
     /// <param name="service"></param>
+    /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public EmbeddingsController(IEmbeddingsService service, ILogger<EmbeddingsController> logger)
+    public EmbeddingsController(IEmbeddingsService service, IUserIdProvider userProvider, ILogger<EmbeddingsController> logger)
     {
         this.logger = logger;
         domainService = service;
+        this.userProvider = userProvider;
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class EmbeddingsController : ControllerBase
         {
             UsePersistedModelState = request.UsePersistedModelState,
             LlmaModelOptions = request.LlmaModelOptions,
-            UserId = "42"
+            UserId = userProvider.UserId
         };
 
         return await domainService.GetEmbeddings(model, cancellationToken);

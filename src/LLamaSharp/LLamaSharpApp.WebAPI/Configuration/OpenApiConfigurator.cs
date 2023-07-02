@@ -1,7 +1,7 @@
-﻿using Microsoft.OpenApi.Any;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace LLamaSharpApp.WebAPI.Configuration;
 
@@ -22,6 +22,47 @@ public static class OpenApiConfigurator
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
+            //options.EnableAnnotations();
+
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "Llama csharp model requests",
+                Description = "ASP.NET Web API handling Llama csharp model requests",
+            });
+
+
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                //Name = "Authorization",
+                Name = "JWT Authentication",
+                Type = SecuritySchemeType.Http,
+                Description = "Enter JWT Bearer token **_only_**",
+                BearerFormat = "JWT",
+                //Scheme = "Bearer",
+                Scheme = "bearer", // must be lower case
+                Reference = new OpenApiReference
+                {
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            });
+
+            var requirement = new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                    }, new string[] { }
+                }
+            };
+            options.AddSecurityRequirement(requirement);
             options.CustomSchemaIds(type => type.FullName);
             options.SchemaFilter<EnumSchemaFilter>();
             var name = AppDomain.CurrentDomain.FriendlyName;
@@ -52,26 +93,13 @@ public static class OpenApiConfigurator
         if (restrictToEnvironment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(options =>
+            {
+                options.EnableDeepLinking();
+                options.DocExpansion(DocExpansion.List);
+                options.DisplayRequestDuration();
+            });
         }
         return app;
-    }
-}
-
-
-internal sealed class EnumSchemaFilter : ISchemaFilter
-{
-    public void Apply(OpenApiSchema model, SchemaFilterContext context)
-    {
-        if (context.Type.IsEnum)
-        {
-            model.Enum.Clear();
-            Enum
-                .GetNames(context.Type)
-                .ToList()
-                .ForEach(name => model.Enum.Add(new OpenApiString($"{name}")));
-            model.Type = "string";
-            model.Format = string.Empty;
-        }
     }
 }

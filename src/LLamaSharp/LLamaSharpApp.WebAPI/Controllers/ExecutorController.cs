@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
-using System.Text;
+﻿using System.Text;
 
 using LLamaSharpApp.WebAPI.Controllers.Requests;
+using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Models;
 using LLamaSharpApp.WebAPI.Services;
 
@@ -19,24 +19,25 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 /// </summary>
 [ApiVersion("1")]
 [ApiExplorerSettings(GroupName = "v1")]
-[DisplayName("Llma Executor Controller <a href=\"https://scisharp.github.io/LLamaSharp/0.4/LLamaExecutors/parameters/\">")]
-[Description("API to execute text-to-text tasks with Inference parameters.")]
 [ApiController]
 [Route("api/llama")]
 public class ExecutorController : ControllerBase
 {
     private readonly IExecutorService domainService;
+    private readonly IUserIdProvider userProvider;
     private readonly ILogger<ExecutorController> logger;
 
     /// <summary>
     /// Constructor for ExecutorController
     /// </summary>
     /// <param name="service"></param>
+    /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public ExecutorController(IExecutorService service, ILogger<ExecutorController> logger)
+    public ExecutorController(IExecutorService service, IUserIdProvider userProvider, ILogger<ExecutorController> logger)
     {
         this.logger = logger;
         domainService = service;
+        this.userProvider = userProvider;
     }
 
     /// <summary>
@@ -61,7 +62,7 @@ public class ExecutorController : ControllerBase
             InferenceType = request.InferenceType,
             LlmaModelOptions = request.LlmaModelOptions,
             InferenceOptions = request.InferenceOptions,
-            UserId = "42"
+            UserId = userProvider.UserId
         };
         if (request.UsePersistedModelState.HasValue) requestModel.UsePersistedModelState = request.UsePersistedModelState.Value;
         if (request.UsePersistedExecutorState.HasValue) requestModel.UsePersistedExecutorState = request.UsePersistedExecutorState.Value;

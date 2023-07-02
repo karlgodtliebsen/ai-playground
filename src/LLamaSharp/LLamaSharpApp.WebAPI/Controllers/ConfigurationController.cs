@@ -1,6 +1,5 @@
-﻿using System.ComponentModel;
-
-using LLamaSharpApp.WebAPI.Configuration;
+﻿using LLamaSharpApp.WebAPI.Configuration;
+using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -9,22 +8,30 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 
 /// <summary>
 /// Embeddings API
+/// Llma Embeddings Controller <a href="https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/embeddings/" />
+/// API to get the embeddings of a text in LLM, for example, to train other MLP models.
 /// </summary>
 [ApiVersion("1")]
 [ApiExplorerSettings(GroupName = "v1")]
-[DisplayName("Llma Embeddings Controller <a href=\"https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/embeddings/\">")]
-[Description("API to get the embeddings of a text in LLM, for example, to train other MLP models..")]
 [ApiController]
 [Route("api/llama")]
 public class ConfigurationController : ControllerBase
 {
     private readonly IOptionsService domainService;
+    private readonly IUserIdProvider userProvider;
     private readonly ILogger<ConfigurationController> logger;
 
-    public ConfigurationController(IOptionsService domainService, ILogger<ConfigurationController> logger)
+    /// <summary>
+    /// Constructor for ConfigurationController
+    /// </summary>
+    /// <param name="domainService"></param>
+    /// <param name="userProvider"></param>
+    /// <param name="logger"></param>
+    public ConfigurationController(IOptionsService domainService, IUserIdProvider userProvider, ILogger<ConfigurationController> logger)
     {
         this.logger = logger;
         this.domainService = domainService;
+        this.userProvider = userProvider;
     }
 
     /// <summary>
@@ -35,7 +42,7 @@ public class ConfigurationController : ControllerBase
     [HttpGet("configuration/modelparams")]
     public async Task<LlmaModelOptions> GetUsersLlamaModelConfiguration(CancellationToken cancellationToken)
     {
-        return await domainService.GetLlmaModelOptions("42", cancellationToken);
+        return await domainService.GetLlmaModelOptions(userProvider.UserId, cancellationToken);
     }
 
 
@@ -47,7 +54,7 @@ public class ConfigurationController : ControllerBase
     [HttpGet("configuration/inference")]
     public async Task<InferenceOptions> GetUsersInferenceModelConfiguration(CancellationToken cancellationToken)
     {
-        return await domainService.GetInferenceOptions("42", cancellationToken);
+        return await domainService.GetInferenceOptions(userProvider.UserId, cancellationToken);
     }
 
 
@@ -59,7 +66,7 @@ public class ConfigurationController : ControllerBase
     [HttpPut("configuration/modelparams")]
     public async Task UpdateLlmaModelOptions([FromBody] LlmaModelOptions request, CancellationToken cancellationToken)
     {
-        await domainService.PersistLlmaModelOptions(request, "42", cancellationToken);
+        await domainService.PersistLlmaModelOptions(request, userProvider.UserId, cancellationToken);
     }
 
     /// <summary>
@@ -70,7 +77,7 @@ public class ConfigurationController : ControllerBase
     [HttpPut("configuration/inference")]
     public async Task UpdateInferenceOptions([FromBody] InferenceOptions request, CancellationToken cancellationToken)
     {
-        await domainService.PersistInferenceOptions(request, "42", cancellationToken);
+        await domainService.PersistInferenceOptions(request, userProvider.UserId, cancellationToken);
     }
 
 }

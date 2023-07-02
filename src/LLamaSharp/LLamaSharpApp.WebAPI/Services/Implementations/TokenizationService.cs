@@ -30,6 +30,7 @@ public class TokenizationService : ITokenizationService
     /// Get the tokens from the text
     /// </summary>
     /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public async Task<int[]> Tokenize(TokenizeMessage input, CancellationToken cancellationToken)
     {
@@ -45,6 +46,7 @@ public class TokenizationService : ITokenizationService
     /// Get the text from the tokens
     /// </summary>
     /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public async Task<string> DeTokenize(DeTokenizeMessage input, CancellationToken cancellationToken)
     {

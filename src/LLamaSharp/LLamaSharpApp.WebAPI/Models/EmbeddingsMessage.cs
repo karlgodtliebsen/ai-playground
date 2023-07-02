@@ -14,6 +14,6 @@ public class EmbeddingsMessage : SimpleTextMessage
     /// <summary>
     /// The user id
     /// </summary>
-    public string UserId { get; set; }
+    public string UserId { get; set; } = default!;
 
 }
