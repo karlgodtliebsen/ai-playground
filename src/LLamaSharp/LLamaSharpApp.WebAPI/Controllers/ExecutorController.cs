@@ -2,8 +2,8 @@
 
 using LLamaSharpApp.WebAPI.Controllers.Requests;
 using LLamaSharpApp.WebAPI.Controllers.Services;
-using LLamaSharpApp.WebAPI.Models;
-using LLamaSharpApp.WebAPI.Services;
+using LLamaSharpApp.WebAPI.Domain.Models;
+using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.AspNetCore.Mvc;
 

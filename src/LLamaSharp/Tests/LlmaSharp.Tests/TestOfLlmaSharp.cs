@@ -13,7 +13,6 @@ public class TestOfLlmaSharpClients
     private readonly ILogger logger;
     private readonly HostApplicationFactory factory;
     private readonly string path;
-    //private readonly IModelRequestFactory requestFactory;
 
     public TestOfLlmaSharpClients(ITestOutputHelper output)
     {
@@ -29,7 +28,7 @@ public class TestOfLlmaSharpClients
         );
         logger = factory.Services.GetRequiredService<ILogger>();
         path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
-        //requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();
+
     }
 
 

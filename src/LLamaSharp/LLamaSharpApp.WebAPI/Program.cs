@@ -1,4 +1,5 @@
 ﻿using LLamaSharpApp.WebAPI.Configuration;
+using LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 

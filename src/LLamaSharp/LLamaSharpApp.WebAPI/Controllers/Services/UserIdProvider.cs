@@ -1,8 +1,9 @@
 ﻿namespace LLamaSharpApp.WebAPI.Controllers.Services;
 
 /// <summary>
-/// User id provider
-/// </summary>
+/// Placeholder for a future User id provider, Can be used together with authentication/identity or it can be replaced
+/// Reference: <a href="https://damienbod.com/" />
+/// /// </summary>
 public class UserIdProvider : IUserIdProvider
 {
     /// <summary>

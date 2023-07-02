@@ -1,6 +1,6 @@
 ﻿using LLamaSharpApp.WebAPI.Configuration;
 using LLamaSharpApp.WebAPI.Controllers.Services;
-using LLamaSharpApp.WebAPI.Services;
+using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
