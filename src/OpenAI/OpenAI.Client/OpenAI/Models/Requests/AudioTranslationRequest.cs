@@ -1,20 +1,16 @@
 ﻿using System.Text.Json.Serialization;
-using OpenAI.Client.Domain;
+
 using OpenAI.Client.OpenAI.Models.Audio;
 
 namespace OpenAI.Client.OpenAI.Models.Requests;
 
-public class AudioTranslationRequest : IModelRequest
+public class AudioTranslationRequest : ModelBaseRequest
 {
-
-    /// <summary>
-    /// Which model was used to generate this result.
-    /// </summary>
-    [JsonPropertyName("model")]
-    public string Model { get; set; } = "whisper-1";
-
-    [JsonIgnore]
-    public string RequestUri { get; set; } = "audio/translation";
+    public AudioTranslationRequest()
+    {
+        RequestUri = "audio/translation";
+        Model = "whisper-1";
+    }
 
     public string FullFilename { get; set; }
 

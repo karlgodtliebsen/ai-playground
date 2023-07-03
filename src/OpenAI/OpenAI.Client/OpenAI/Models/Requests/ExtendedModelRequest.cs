@@ -1,17 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-using OpenAI.Client.Domain;
-
 namespace OpenAI.Client.OpenAI.Models.Requests;
 
-public class BaseRequest : IModelRequest
+public class ExtendedModelRequest : ModelBaseRequest
 {
-    [JsonIgnore]
-    public string RequestUri { get; set; }
-
-
-    [JsonPropertyName("model")]
-    public string Model { get; set; }
 
     /// <summary>
     ///  The maximum number of tokens to generate in the chat completion.

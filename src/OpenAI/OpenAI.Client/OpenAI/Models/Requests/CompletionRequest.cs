@@ -2,7 +2,7 @@
 
 namespace OpenAI.Client.OpenAI.Models.Requests;
 
-public class CompletionRequest : BaseRequest
+public class CompletionRequest : ExtendedModelRequest
 {
     /// <summary>
     /// Constructor for Completions Request

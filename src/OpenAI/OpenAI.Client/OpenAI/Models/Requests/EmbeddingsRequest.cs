@@ -1,16 +1,13 @@
 ﻿using System.Text.Json.Serialization;
-using OpenAI.Client.Domain;
 
 namespace OpenAI.Client.OpenAI.Models.Requests;
 
-public class EmbeddingsRequest : IModelRequest
+public class EmbeddingsRequest : ModelBaseRequest
 {
-    [JsonPropertyName("model")]
-    public string Model { get; set; } = "";
-
-    [JsonIgnore]
-    public string RequestUri { get; set; } = "embeddings";
-
+    public EmbeddingsRequest()
+    {
+        RequestUri = "embeddings";
+    }
 
     [JsonPropertyName("input")]
     ///Input text to embed, encoded as a string or array of tokens.

@@ -1,20 +1,13 @@
 ﻿using System.Text.Json.Serialization;
-using OpenAI.Client.Domain;
 
 namespace OpenAI.Client.OpenAI.Models.Requests;
 
-public class FineTuneRequest : IModelRequest
+public class FineTuneRequest : ModelBaseRequest
 {
-
-    /// <summary>
-    /// Which model was used to generate this result.
-    /// </summary>
-    [JsonPropertyName("model")]
-    public string Model { get; set; }
-
-    [JsonIgnore]
-    public string RequestUri { get; set; } = "fine-tunes";
-
+    public FineTuneRequest()
+    {
+        RequestUri = "fine-tunes";
+    }
 
     [JsonPropertyName("training_file")]
     public string TrainingFile { get; set; }

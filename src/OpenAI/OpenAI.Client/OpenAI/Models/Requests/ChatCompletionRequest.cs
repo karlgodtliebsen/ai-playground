@@ -6,7 +6,7 @@ namespace OpenAI.Client.OpenAI.Models.Requests;
 /// <summary>
 /// https://platform.openai.com/docs/api-reference/chat/create
 /// </summary>
-public class ChatCompletionRequest : BaseRequest
+public class ChatCompletionRequest : ExtendedModelRequest
 {
     public ChatCompletionRequest()
     {

@@ -2,16 +2,12 @@
 
 namespace OpenAI.Client.OpenAI.Models.Requests;
 
-public class EditsRequest : BaseRequest
+public class EditsRequest : ModelBaseRequest
 {
 
     public EditsRequest()
     {
-        MaxTokens = null;
-        TopP = null;
-        Stream = null;
         RequestUri = "edits";
-
     }
 
     [JsonPropertyName("input")]

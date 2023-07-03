@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+
 using OpenAI.Client.Domain;
 using OpenAI.Client.OpenAI.Models.Images;
 
@@ -6,8 +7,6 @@ namespace OpenAI.Client.OpenAI.Models.Requests;
 
 public class GenerateVariationsOfImageRequest : IRequest
 {
-
-
     [JsonIgnore]
     public string RequestUri { get; set; } = "images/variations";
 

@@ -1,21 +1,15 @@
 ﻿using System.Text.Json.Serialization;
-using OpenAI.Client.Domain;
+
 using OpenAI.Client.OpenAI.Models.Images;
 
 namespace OpenAI.Client.OpenAI.Models.Requests;
 
-public class GenerateEditedImageRequest : IRequest
+public class GenerateEditedImageRequest : ModelBaseRequest
 {
     public GenerateEditedImageRequest()
     {
         RequestUri = "images/edits";
     }
-
-    [JsonPropertyName("model")]
-    public string Model { get; set; }
-
-    [JsonIgnore]
-    public string RequestUri { get; set; }
 
     [JsonIgnore]
     /// <summary>

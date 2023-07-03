@@ -369,7 +369,6 @@ public class TestOfOpenAIClients
                 Model = "text-davinci-edit-001",
                 Input = "What day of the wek is it?",
                 Instruction = "Fix the spelling mistakes",
-                Temperature = 0.0,
             }
         );
 
