@@ -11,7 +11,6 @@ public class OpenAIOptions
     public string ApiKey { get; set; } = null!;
     public string OpenAIUri { get; set; } = "https://api.openai.com/v1/"!;
 
-
     public Uri GetBaseAddress()
     {
         return new Uri(OpenAIUri);

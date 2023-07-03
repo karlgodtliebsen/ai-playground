@@ -2,12 +2,12 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
-using OpenAI.Client.Models.ChatCompletion;
-using OpenAI.Client.Models.Images;
-using OpenAI.Client.Models.Requests;
+using OpenAI.Client.OpenAI.HttpClients;
+using OpenAI.Client.OpenAI.Models.ChatCompletion;
+using OpenAI.Client.OpenAI.Models.Images;
+using OpenAI.Client.OpenAI.Models.Requests;
 using OpenAI.Tests.Utils;
 
 using Xunit.Abstractions;
@@ -104,7 +104,6 @@ public class TestOfOpenAIClients
 
         string deploymentName = "text-davinci-003"; //text-davinci-003 text-davinci-002
 
-
         var payload = requestFactory.CreateRequest<CompletionRequest>(() =>
             new CompletionRequest
             {
@@ -130,12 +129,11 @@ public class TestOfOpenAIClients
             {
                 completions.Choices.Count.Should().Be(1);
                 string completion = completions.Choices[0].Text.Trim();
-                completion.Should().NotBeNullOrWhiteSpace();
-                completion.Should().Contain("completion should contain next day");
-                completion.Should().Contain("completion should contain next number");
+                completion.Should().Contain("Tuesday");
                 output.WriteLine(completion);
             },
-            error => throw new Exception(error.Error));
+            error => throw new Exception(error.Error)
+            );
     }
 
     [Fact]
@@ -162,13 +160,18 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.GetChatCompletionsAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        string completion = response!.AsT0.Choices[0]!.Message!.Content.Trim();
-        completion.Should().NotBeNullOrWhiteSpace();
-        completion.Should().Contain("I assist you today?");
-        output.WriteLine(completion);
-    }
 
+        response.Switch(
+            completions =>
+            {
+                completions.Choices.Count.Should().Be(1);
+                string completion = completions.Choices.First().Message!.Content!.Trim();
+                completion.Should().Contain("I assist you today?");
+                output.WriteLine(completion);
+            },
+            error => throw new Exception(error.Error)
+        );
+    }
 
     [Fact]
     public async Task VerifyChatCompletionModelUsingLongAnswerAndStreamClient()
@@ -366,17 +369,23 @@ public class TestOfOpenAIClients
                 Model = "text-davinci-edit-001",
                 Input = "What day of the wek is it?",
                 Instruction = "Fix the spelling mistakes",
-            });
+                Temperature = 0.0,
+            }
+        );
 
         var response = await aiClient.GetEditsAsync(payload, CancellationToken.None);
-        response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        string completion = response!.AsT0.Choices[0].Text.Trim();
-        completion.Should().NotBeNullOrWhiteSpace();
-        completion.Should().Contain("What day of the week is it");
-        output.WriteLine(completion);
+        response.Switch(
+            completions =>
+            {
+                completions.Should().NotBeNull();
+                string completion = completions.Choices[0].Text.Trim();
+                completion.Should().NotBeNullOrWhiteSpace();
+                completion.Should().Contain("What day of the week is it");
+                output.WriteLine(completion);
+            }
+            , error => throw new Exception(error.Error)
+        );
     }
-
 
     [Fact]
     public async Task VerifyEmbeddingsModelClient()

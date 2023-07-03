@@ -4,9 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-using OpenAI.Client.AIClients;
-using OpenAI.Client.AIClients.Implementation;
 using OpenAI.Client.Domain;
+using OpenAI.Client.OpenAI.HttpClients;
+using OpenAI.Client.OpenAI.HttpClients.Implementation;
 
 using Serilog;
 
@@ -88,7 +88,7 @@ public static class OpenAIConfigurator
 
         return services;
     }
-    //Environment.GetEnvironmentVariable("TEST_OPENAI_SECRET_KEY")
+
     public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, Action<OpenAIOptions>? options = null)
     {
         var configuredOptions = new OpenAIOptions();
@@ -120,6 +120,10 @@ public static class OpenAIConfigurator
         services.Configure<OpenAIOptions>(configuration.GetSection(sectionName));
         var configuredOptions = configuration.GetSection(sectionName).Get<OpenAIOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
+        //Bind directly to the options when validation is not required
+        /// var section = configuration.GetSection(sectionName);
+        ///services.AddOptions<OpenAIOptions>().Bind(section);
+
         Log.Logger.Information("Completed Adding Azure OpenAI Configuration to Application");
         return services.AddOpenAIConfiguration(configuredOptions);
     }
