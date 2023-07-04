@@ -48,8 +48,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\AI.Library\AI.Library.csproj" />
-		<ProjectReference Include="..\..\src\OpenAI\AI.Library\AI.Library.csproj" />
 		<ProjectReference Include="..\..\src\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
 	</ItemGroup>
 

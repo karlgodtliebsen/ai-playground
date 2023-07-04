@@ -1,25 +1,24 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
-
-using ChatGPTClient.Models;
+﻿using ChatGPTClient.Models;
 
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 
 using OneOf;
 
-using OpenAI.Client.AIClients;
 using OpenAI.Client.Configuration;
-
 using OpenAI.Client.Domain;
-using OpenAI.Client.Models.Images;
-using OpenAI.Client.Models.Requests;
-using OpenAI.Client.Models.Responses;
+using OpenAI.Client.OpenAI.HttpClients;
+using OpenAI.Client.OpenAI.Models.Images;
+using OpenAI.Client.OpenAI.Models.Requests;
+using OpenAI.Client.OpenAI.Models.Responses;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace ChatGPTClient.TabPages;
 

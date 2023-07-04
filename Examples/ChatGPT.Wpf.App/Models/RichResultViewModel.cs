@@ -4,16 +4,12 @@ namespace ChatGPTClient.Models;
 
 public sealed class RichResultViewModel
 {
-    public string Text { get; set; }
-    public string Kind { get; set; }
+    public string Text { get; set; } = default!;
+    public string Kind { get; set; } = default!;
 
-    public string Role { get; set; }
+    public string Role { get; set; } = default!;
 
-    public bool Success { get; set; }
+    public bool Success { get; set; } = false;
 
-    public Visibility Visibility
-    {
-        get { return Kind == "A" ? Visibility.Visible : Visibility.Collapsed; }
-
-    }
+    public Visibility Visibility => Kind == "A" ? Visibility.Visible : Visibility.Collapsed;
 }

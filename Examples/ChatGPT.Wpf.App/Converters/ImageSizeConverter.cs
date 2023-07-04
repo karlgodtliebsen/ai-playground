@@ -1,7 +1,8 @@
-﻿using System;
+﻿using OpenAI.Client.OpenAI.Models.Images;
+
+using System;
 using System.Globalization;
 using System.Windows.Data;
-using OpenAI.Client.Models.Images;
 
 namespace ChatGPTClient.Converters;
 

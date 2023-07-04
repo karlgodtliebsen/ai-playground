@@ -1,4 +1,17 @@
-﻿using System;
+﻿using ChatGPTClient.Models;
+
+using Microsoft.Extensions.Options;
+
+using OneOf;
+
+using OpenAI.Client.Configuration;
+using OpenAI.Client.Domain;
+using OpenAI.Client.OpenAI.HttpClients;
+using OpenAI.Client.OpenAI.Models.ChatCompletion;
+using OpenAI.Client.OpenAI.Models.Requests;
+using OpenAI.Client.OpenAI.Models.Responses;
+
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,19 +19,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-
-using ChatGPTClient.Models;
-
-using Microsoft.Extensions.Options;
-
-using OneOf;
-
-using OpenAI.Client.AIClients;
-using OpenAI.Client.Configuration;
-using OpenAI.Client.Domain;
-using OpenAI.Client.Models.ChatCompletion;
-using OpenAI.Client.Models.Requests;
-using OpenAI.Client.Models.Responses;
 
 namespace ChatGPTClient;
 

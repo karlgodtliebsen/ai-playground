@@ -1,9 +1,9 @@
-﻿using System;
+﻿using ChatGPTClient.Models;
+
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
-using ChatGPTClient.Models;
 
 namespace ChatGPTClient.UserControls
 {
@@ -24,15 +24,15 @@ namespace ChatGPTClient.UserControls
         public static readonly DependencyProperty PromptProperty = DependencyProperty.Register(nameof(Prompt), typeof(PromptTextModel), typeof(PromptUserControl));
         public PromptTextModel Prompt
         {
-            get { return (PromptTextModel)GetValue(PromptProperty); }
-            set { SetValue(PromptProperty, value); }
+            get => (PromptTextModel)GetValue(PromptProperty);
+            set => SetValue(PromptProperty, value);
         }
 
         public static readonly DependencyProperty IsReadyProperty = DependencyProperty.Register(nameof(IsReady), typeof(bool), typeof(PromptUserControl));
         public bool IsReady
         {
-            get { return (bool)GetValue(IsReadyProperty); }
-            set { SetValue(IsReadyProperty, value); }
+            get => (bool)GetValue(IsReadyProperty);
+            set => SetValue(IsReadyProperty, value);
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)

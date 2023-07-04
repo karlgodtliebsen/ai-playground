@@ -1,4 +1,6 @@
-﻿using ChatGPTClient.Configuration;
+﻿using AI.Library.Configuration;
+
+using ChatGPTClient.Configuration;
 using ChatGPTClient.TabPages;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using AI.Library.Configuration;
 
 namespace ChatGPTClient;
 
@@ -31,7 +32,7 @@ public partial class App : Application
         {
             services.AddAppConfiguration(context.Configuration);
             services.AddSingleton<MainWindow>();
-            //these could be found using reflection
+            //TODO: consider->these could be found using reflection
             services.AddSingleton<CompletionControl>();
             services.AddSingleton<ChatCompletionControl>();
             services.AddSingleton<CreateImageControl>();

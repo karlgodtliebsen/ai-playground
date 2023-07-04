@@ -1,6 +1,8 @@
-﻿using OpenAI.Client.Models.ChatCompletion;
+﻿using ChatGPTClient.Dialogs.Models;
 
-namespace ChatGPTClient.Dialogs.Models;
+using OpenAI.Client.OpenAI.Models.ChatCompletion;
+
+namespace ChatGPT.Wpf.App.Dialogs.Models;
 
 public class ChatCompletionOptionsViewModel : OptionsViewModelBase
 {

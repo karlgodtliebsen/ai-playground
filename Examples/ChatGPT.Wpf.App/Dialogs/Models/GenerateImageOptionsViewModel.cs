@@ -1,6 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using OpenAI.Client.OpenAI.Models.Images;
+
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using OpenAI.Client.Models.Images;
 
 namespace ChatGPTClient.Dialogs.Models;
 
