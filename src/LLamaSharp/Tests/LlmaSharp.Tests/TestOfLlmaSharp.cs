@@ -35,7 +35,7 @@ public class TestOfLlmaSharpClients
     [Fact]
     public async Task Verify_WIP_()
     {
-
+        throw new NotImplementedException();
     }
 
 }

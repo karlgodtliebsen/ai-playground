@@ -1,0 +1,24 @@
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+
+namespace AI.CaaP.Domain;
+
+public class UserIdentity : IUserIdentity
+{
+    private readonly IHttpContextAccessor _contextAccessor;
+    private IEnumerable<Claim> _claims => _contextAccessor.HttpContext.User.Claims;
+
+    public UserIdentity(IHttpContextAccessor contextAccessor)
+    {
+        _contextAccessor = contextAccessor;
+    }
+
+
+    public string Id => _claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+
+    public string Email => _claims.First(x => x.Type == ClaimTypes.Email).Value;
+
+    public string FirstName => _claims.First(x => x.Type == ClaimTypes.GivenName).Value;
+
+    public string LastName => _claims.First(x => x.Type == ClaimTypes.Surname).Value;
+}
