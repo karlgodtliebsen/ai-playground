@@ -1,6 +1,7 @@
-# Conversation as a Platform
+# A Qdrant Vector database Wrapper 
 
 Based on inspiration from:
+
 https://github.com/openai/chatgpt-retrieval-plugin/blob/main/docs/providers/qdrant/setup.md
 https://python.langchain.com/docs
 https://github.com/SciSharp/BotSharp
@@ -16,7 +17,8 @@ Use Docker to run Qdrant:
 ```
 
 # References
-https://github.com/qdrant/
+https://github.com/qdrant/qdrant
+https://github.com/openai/chatgpt-retrieval-plugin/blob/main/docs/providers/qdrant/setup.md
 https://python.langchain.com/docs
 https://github.com/SciSharp/BotSharp
 
