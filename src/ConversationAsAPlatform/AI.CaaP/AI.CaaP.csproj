@@ -7,6 +7,8 @@
   </PropertyGroup>
   <ItemGroup>
 
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Qdrant.Client" Version="0.1.0" />
     <PackageReference Include="Serilog" Version="3.0.1" />
@@ -20,7 +22,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
     <ProjectReference Include="..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
-    <ProjectReference Include="..\AI.Library.Qdrant\AI.Library.Qdrant.csproj" />
   </ItemGroup>
 
 </Project>

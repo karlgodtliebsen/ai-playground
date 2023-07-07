@@ -50,9 +50,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\AI.Library\AI.Library.csproj" />
+		<ProjectReference Include="..\..\src\ConversationAsAPlatform\AI.CaaP\AI.CaaP.csproj" />
 		<ProjectReference Include="..\..\src\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
-		<ProjectReference Include="..\..\src\VectorDatabases\AI.CaaP\AI.CaaP.csproj" />
-		<ProjectReference Include="..\..\src\VectorDatabases\AI.Library.Qdrant\AI.Library.Qdrant.csproj" />
+		<ProjectReference Include="..\..\src\VectorDatabases\AI.VectorDatabases.Qdrant\AI.Library.Qdrant.csproj" />
 	</ItemGroup>
 
 </Project>
