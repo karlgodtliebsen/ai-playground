@@ -16,9 +16,9 @@ public class AgentService : IAgentService
         return await repository.FindAllAgents(cancellationToken);
     }
 
-    public async Task<Agent?> FindAgent(Guid userId, CancellationToken cancellationToken)
+    public async Task<Agent?> FindAgent(Guid agentId, Guid userId, CancellationToken cancellationToken)
     {
-        return await repository.FindAgent(userId, cancellationToken);
+        return await repository.FindAgent(agentId, userId, cancellationToken);
     }
 
     public async Task UpdateAgent(Agent agent, CancellationToken cancellationToken)
@@ -26,9 +26,9 @@ public class AgentService : IAgentService
         await repository.UpdateAgent(agent, cancellationToken);
     }
 
-    public async Task<bool> DeleteAgent(Guid userId, CancellationToken cancellationToken)
+    public async Task<bool> DeleteAgent(Guid agentId, CancellationToken cancellationToken)
     {
-        return await repository.DeleteAgent(userId, cancellationToken);
+        return await repository.DeleteAgent(agentId, cancellationToken);
     }
 
     public async Task<Agent> CreateAgent(Agent agent, CancellationToken cancellationToken)

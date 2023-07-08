@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using AI.CaaP.Domain;
+
 namespace AI.CaaP.AgentsDomain;
 
 public class Agent
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Owner user id
@@ -41,4 +43,8 @@ public class Agent
 
     public DateTimeOffset UpdatedTime { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset CreatedTime { get; set; } = DateTimeOffset.UtcNow;
+
+    [NotMapped]
+    public IList<Conversation> Messages { get; set; } = new List<Conversation>();
+
 }

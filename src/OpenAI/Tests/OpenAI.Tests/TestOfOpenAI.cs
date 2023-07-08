@@ -48,13 +48,18 @@ public class TestOfOpenAIClients
 
         var aiClient = factory.Services.GetRequiredService<IModelsAIClient>();
         var response = await aiClient.GetModelsAsync(CancellationToken.None);
-        response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        response!.AsT0.ModelData.Length.Should().BeGreaterThan(0);
-        foreach (var model in response!.AsT0.ModelData)
-        {
-            output.WriteLine(model.Id);
-        }
+        response.Switch(
+            r =>
+            {
+                var models = r.ModelData;
+                models.Length.Should().BeGreaterThan(0);
+                foreach (var model in models)
+                {
+                    output.WriteLine(model.Id);
+                }
+            },
+        error => throw new Exception(error.Error)
+        );
     }
 
     [Fact]
@@ -86,12 +91,17 @@ public class TestOfOpenAIClients
             });
 
         var response = await aiClient.GetCompletionsAsync(payload, CancellationToken.None);
-        response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        string completion = response!.AsT0.Choices[0].Text.Trim();
-        completion.Should().NotBeNullOrWhiteSpace();
-        completion.Should().Be("This is indeed a test");
-        output.WriteLine(completion);
+        response.Switch(
+            r =>
+            {
+                string completion = r.Choices[0].Text.Trim();
+                completion.Should().NotBeNullOrWhiteSpace();
+                completion.Should().Be("This is indeed a test");
+                output.WriteLine(completion);
+            },
+            error => throw new Exception(error.Error)
+        );
+
     }
     [Fact]
     public async Task VerifyCompletionModelClient()
@@ -148,8 +158,8 @@ public class TestOfOpenAIClients
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
         {
-            new ChatCompletionMessage {Role = ChatMessageRole.System.ToString(), Content = "You are a helpful assistant.!" },
-            new ChatCompletionMessage { Role = ChatMessageRole.User.ToString(), Content = "Hello!" }
+            new ChatCompletionMessage {Role = ChatMessageRole.System.AsOpenAIRole(), Content = "You are a helpful assistant.!" },
+            new ChatCompletionMessage { Role = ChatMessageRole.User.AsOpenAIRole(), Content = "Hello!" }
         };
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -185,8 +195,8 @@ public class TestOfOpenAIClients
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
         {
-            new ChatCompletionMessage {Role = ChatMessageRole.System.ToString(), Content = "You are a helpful assistant.!" },
-            new ChatCompletionMessage { Role = ChatMessageRole.User.ToString(), Content = "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ..." }
+            new ChatCompletionMessage {Role = ChatMessageRole.System.AsOpenAIRole(), Content = "You are a helpful assistant.!" },
+            new ChatCompletionMessage { Role = ChatMessageRole.User.AsOpenAIRole(), Content = "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ..." }
         };
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -230,8 +240,8 @@ public class TestOfOpenAIClients
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
         {
-            new ChatCompletionMessage {Role = ChatMessageRole.System.ToString(), Content = "You are a helpful assistant.!" },
-            new ChatCompletionMessage { Role = ChatMessageRole.User.ToString(), Content = "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ..." }
+            new ChatCompletionMessage {Role = ChatMessageRole.System.AsOpenAIRole(), Content = "You are a helpful assistant.!" },
+            new ChatCompletionMessage { Role = ChatMessageRole.User.AsOpenAIRole(), Content = "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ..." }
         };
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -278,8 +288,8 @@ public class TestOfOpenAIClients
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
         {
-            new ChatCompletionMessage {Role =ChatMessageRole.System.ToString(), Content = "You are a helpful assistant.!" },
-            new ChatCompletionMessage { Role = ChatMessageRole.User.ToString(), Content = "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ..." }
+            new ChatCompletionMessage {Role =ChatMessageRole.System.AsOpenAIRole(), Content = "You are a helpful assistant.!" },
+            new ChatCompletionMessage { Role = ChatMessageRole.User.AsOpenAIRole(), Content = "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ..." }
         };
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -297,7 +307,6 @@ public class TestOfOpenAIClients
             response.Switch(
                 completions =>
                 {
-                    //completions.Choices.Count.Should().Be();
                     foreach (var t in completions.Choices)
                     {
                         if (t!.Delta!.Content != null)
@@ -324,8 +333,8 @@ public class TestOfOpenAIClients
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
         {
-            new ChatCompletionMessage {Role = ChatMessageRole.System.ToString(), Content = "You are a helpful assistant.!" },
-            new ChatCompletionMessage { Role = ChatMessageRole.User.ToString(), Content = "What is the population in Denmark!" }
+            new ChatCompletionMessage {Role = ChatMessageRole.System.AsOpenAIRole(), Content = "You are a helpful assistant.!" },
+            new ChatCompletionMessage { Role = ChatMessageRole.User.AsOpenAIRole(), Content = "What is the population in Denmark!" }
         };
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -367,9 +376,13 @@ public class TestOfOpenAIClients
             });
 
         var response = await aiClient.GetModerationAsync(payload, CancellationToken.None);
-        response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        response!.AsT0.Results.Should().NotBeNull();//Shallow check
+        response.Switch(
+            r =>
+            {
+                r.Results.Should().NotBeNull();//Shallow check
+            },
+            error => throw new Exception(error.Error)
+        );
     }
 
 
@@ -418,8 +431,6 @@ public class TestOfOpenAIClients
             });
 
         var response = await aiClient.GetEmbeddingsAsync(payload, CancellationToken.None);
-        response.Should().NotBeNull();
-
         response.Switch(
             embeddings =>
             {
@@ -447,7 +458,6 @@ public class TestOfOpenAIClients
 
         File.Exists(payload.FullFilename).Should().BeTrue();
         var response = await aiClient.UploadFilesAsync(payload, CancellationToken.None);
-        response.Should().NotBeNull();
         response.Switch(
             fileData =>
             {
@@ -456,7 +466,6 @@ public class TestOfOpenAIClients
             },
             error => throw new Exception(error.Error)
         );
-
     }
 
     [Fact]
@@ -465,7 +474,6 @@ public class TestOfOpenAIClients
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         //https://platform.openai.com/docs/models/overview
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
-        response.Should().NotBeNull();
         response.Switch(
             fileData =>
             {
@@ -488,14 +496,13 @@ public class TestOfOpenAIClients
         );
 
         await Task.Delay(TimeSpan.FromSeconds(10));
-
         foreach (var fileData in response!.AsT0.FileData)
         {
             var responseDelete = await aiClient.DeleteFileAsync(fileData.Id, CancellationToken.None);
             responseDelete.Switch(
-                fileData =>
+                fd =>
                 {
-                    fileData.Deleted.Should().BeTrue();
+                    fd.Deleted.Should().BeTrue();
                 },
                 error => throw new Exception(error.Error)
             );
@@ -553,16 +560,24 @@ public class TestOfOpenAIClients
 
         var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
-        response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        response!.AsT0.FileData.Length.Should().Be(1);
+        response.Switch(
+            fd =>
+            {
+                fd.FileData.Length.Should().Be(1);
+            },
+            error => throw new Exception(error.Error)
+        );
 
         foreach (var fileData in response!.AsT0.FileData)
         {
             var responseFileContent = await aiClient.RetrieveFileContentAsync(fileData.Id, CancellationToken.None);
-            responseFileContent.Should().NotBeNull();
-            responseFileContent.IsT0.Should().BeTrue();
-            responseFileContent!.AsT0.Length.Should().Be(5514);
+            responseFileContent.Switch(
+                r =>
+                {
+                    r.Length.Should().Be(5514);
+                },
+                error => throw new Exception(error.Error)
+            );
         }
     }
 
@@ -581,16 +596,19 @@ public class TestOfOpenAIClients
             };
 
         var response = await aiClient.CreateImageAsync(payload, CancellationToken.None);
-        response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        response!.AsT0.Data.Length.Should().Be(2);
-
-        foreach (var model in response!.AsT0.Data)
-        {
-            model.Url.Should().NotBeNullOrEmpty();
-            model.Data.Should().BeNull();
-            output.WriteLine(model.Url);
-        }
+        response.Switch(
+            r =>
+            {
+                r.Data.Length.Should().Be(2);
+                foreach (var model in r.Data)
+                {
+                    model.Url.Should().NotBeNullOrEmpty();
+                    model.Data.Should().BeNull();
+                    output.WriteLine(model.Url);
+                }
+            },
+            error => throw new Exception(error.Error)
+        );
     }
 
     [Fact]
@@ -607,16 +625,19 @@ public class TestOfOpenAIClients
         };
 
         var response = await aiClient.CreateImageAsync(payload, CancellationToken.None);
-        response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        response!.AsT0.Data.Length.Should().Be(1);
-
-        foreach (var model in response!.AsT0.Data)
-        {
-            model.Url.Should().BeNull();
-            model.Data.Should().NotBeNull();
-            output.WriteLine(model.Data);
-        }
+        response.Switch(
+            r =>
+            {
+                r.Data.Length.Should().Be(1);
+                foreach (var model in r.Data)
+                {
+                    model.Url.Should().BeNullOrEmpty();
+                    model.Data.Should().NotBeNullOrEmpty();
+                    output.WriteLine(model.Data);
+                }
+            },
+            error => throw new Exception(error.Error)
+        );
     }
 
     [Fact(Skip = "WIP")]
@@ -639,14 +660,20 @@ public class TestOfOpenAIClients
 
         var response = await aiClient.CreateImageEditsAsync(payload, CancellationToken.None);
         response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        response!.AsT0.Data.Length.Should().Be(1);
-        foreach (var model in response!.AsT0.Data)
-        {
-            model.Url.Should().NotBeNullOrEmpty();
-            model.Data.Should().BeNull();
-            output.WriteLine(model.Url);
-        }
+        response.Switch(
+            r =>
+            {
+                r.Data.Length.Should().Be(1);
+                foreach (var model in r.Data)
+                {
+                    model.Url.Should().NotBeNullOrEmpty();
+                    model.Data.Should().BeNull();
+                    output.WriteLine(model.Url);
+                }
+            },
+            error => throw new Exception(error.Error)
+        );
+
     }
 
     [Fact]
@@ -666,15 +693,20 @@ public class TestOfOpenAIClients
         };
 
         var response = await aiClient.CreateImageVariationsAsync(payload, CancellationToken.None);
-        response.Should().NotBeNull();
-        response.IsT0.Should().BeTrue();
-        response!.AsT0.Data.Length.Should().Be(2);
-        foreach (var model in response!.AsT0.Data)
-        {
-            model.Url.Should().NotBeNullOrEmpty();
-            model.Data.Should().BeNull();
-            output.WriteLine(model.Url);
-        }
+        response.Switch(
+            r =>
+            {
+                r.Data.Length.Should().Be(2);
+                foreach (var model in r.Data)
+                {
+                    model.Url.Should().NotBeNullOrEmpty();
+                    model.Data.Should().BeNull();
+                    output.WriteLine(model.Url);
+                }
+            },
+            error => throw new Exception(error.Error)
+        );
+
     }
 
 

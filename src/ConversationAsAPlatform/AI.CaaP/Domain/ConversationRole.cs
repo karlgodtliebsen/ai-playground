@@ -2,8 +2,16 @@
 
 public enum ConversationRole
 {
-    System = 0,
-    User = 1,
-    Assistent = 2,
-    Function = 3,
+    System,
+    User,
+    Assistant,
+    Function
+}
+
+public static class ConversationRoleExtensions
+{
+    public static string ToRole(this ConversationRole role)
+    {
+        return role.ToString().ToLower();
+    }
 }

@@ -66,12 +66,13 @@ namespace AI.CaaP.Repository.Migrations
 
             modelBuilder.Entity("AI.CaaP.Domain.Conversation", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<Guid>("AgentId")
-                        .HasMaxLength(50)
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
@@ -95,7 +96,6 @@ namespace AI.CaaP.Repository.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid>("UserId")
-                        .HasMaxLength(50)
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using OpenAI.Client.Configuration;
+using OpenAI.Client.Domain;
 
 namespace AI.CaaP.Configuration;
 
@@ -19,6 +20,7 @@ public static class CaaPConfigurator
         services.AddSingleton<IOptions<ChunkOptions>>(new OptionsWrapper<ChunkOptions>(chunkOptions));
         services
             .AddTransient<IAgentService, AgentService>()
+            .AddTransient<ILanguageService, LanguageService>()
             .AddTransient<IConversationService, ConversationService>()
             .AddTransient<ITextChopperService, TextChopperService>()
             .AddOpenAIConfiguration(aiOptions);

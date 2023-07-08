@@ -34,10 +34,11 @@ namespace AI.CaaP.Repository.Migrations
                 name: "Conversations",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Role = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    AgentId = table.Column<Guid>(type: "uniqueidentifier", maxLength: 50, nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", maxLength: 50, nullable: false),
+                    AgentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", maxLength: 2147483647, nullable: false),
                     UpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),

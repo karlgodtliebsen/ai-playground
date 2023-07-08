@@ -30,7 +30,7 @@ public class ImagesAIClient : AIClientBase, IImagesAIClient
     {
         try
         {
-            using var op = logger.BeginOperation("UploadImageAsync for Variations", subUri);
+            using var op = logger.BeginOperation($"UploadImageAsync for Variations {subUri}");
             using var content = new MultipartFormDataContent();
             using var imageData = new MemoryStream();
             await request.ImageStream.CopyToAsync(imageData, cancellationToken).ConfigureAwait(false);
@@ -62,7 +62,7 @@ public class ImagesAIClient : AIClientBase, IImagesAIClient
     {
         try
         {
-            using var op = logger.BeginOperation("UploadImageAsync For Edit", subUri);
+            using var op = logger.BeginOperation($"UploadImageAsync For Edit {subUri}");
             using var content = new MultipartFormDataContent();
             using var imageData = new MemoryStream();
             await request.ImageStream.CopyToAsync(imageData, cancellationToken).ConfigureAwait(false);

@@ -1,11 +1,15 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
+
 using Microsoft.Extensions.Options;
+
 using OneOf;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;
 using OpenAI.Client.OpenAI.Models.Responses;
+
 using SerilogTimings.Extensions;
 
 namespace OpenAI.Client.OpenAI.HttpClients.Implementation;
@@ -35,7 +39,7 @@ public abstract class AIClientBase
 
     protected async Task<OneOf<TR, ErrorResponse>> PostAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
     {
-        using var op = logger.BeginOperation("PostAsync", subUri);
+        using var op = logger.BeginOperation($"PostAsync {subUri}");
         try
         {
             PrepareClient();
@@ -55,7 +59,7 @@ public abstract class AIClientBase
 
     protected async Task<OneOf<TR, ErrorResponse>> GetAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
     {
-        using var op = logger.BeginOperation("GetAsync", subUri);
+        using var op = logger.BeginOperation($"GetAsync {subUri}");
         try
         {
             PrepareClient();
@@ -72,7 +76,7 @@ public abstract class AIClientBase
 
     protected async Task<OneOf<string, ErrorResponse>> GetContentAsync(string subUri, CancellationToken cancellationToken)
     {
-        using var op = logger.BeginOperation("GetContentAsync", subUri);
+        using var op = logger.BeginOperation($"GetContentAsync {subUri}");
         try
         {
             PrepareClient();
@@ -89,7 +93,7 @@ public abstract class AIClientBase
 
     protected async Task<OneOf<TR, ErrorResponse>> DeleteAsync<TR>(string subUri, CancellationToken cancellationToken) where TR : class
     {
-        using var op = logger.BeginOperation("DeleteAsync", subUri);
+        using var op = logger.BeginOperation($"DeleteAsync {subUri}");
         try
         {
             PrepareClient();
@@ -108,7 +112,7 @@ public abstract class AIClientBase
 
     protected async Task<OneOf<string, ErrorResponse>> PostAsyncWithStream<TR, T>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
     {
-        using var op = logger.BeginOperation("PostAsyncWithStream", subUri);
+        using var op = logger.BeginOperation($"PostAsyncWithStream {subUri}");
         try
         {
             PrepareClient();
@@ -163,7 +167,7 @@ public abstract class AIClientBase
     protected async IAsyncEnumerable<OneOf<TR, ErrorResponse>> GetResponseStreamAsync<TR, T>(string subUri, T request, CancellationToken cancellationToken)
         where TR : class
     {
-        using var op = logger.BeginOperation("GetResponseStreamAsync", subUri);
+        using var op = logger.BeginOperation($"GetResponseStreamAsync {subUri}");
         PrepareClient();
         var response = await HttpClient.PostAsJsonAsync(subUri, request, SerializerOptions, cancellationToken);
         response.EnsureSuccessStatusCode();

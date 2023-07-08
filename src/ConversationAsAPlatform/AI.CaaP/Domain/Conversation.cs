@@ -8,15 +8,13 @@ public class Conversation
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
+    public long Id { get; set; }
 
     [StringLength(25)]
-    public string Role { get; set; } = ConversationRole.User.ToString();
+    public string Role { get; set; } = ConversationRole.User.ToRole();
 
-    [StringLength(50)]
     public Guid AgentId { get; set; }
 
-    [StringLength(50)]
     public Guid UserId { get; set; }
 
     [StringLength(255)]

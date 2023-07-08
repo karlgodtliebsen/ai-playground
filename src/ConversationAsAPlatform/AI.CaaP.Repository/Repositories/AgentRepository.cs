@@ -24,9 +24,10 @@ public class AgentRepository : IAgentRepository
         return await result.ToListAsync(cancellationToken);
     }
 
-    public async Task<Agent?> FindAgent(Guid agentId, CancellationToken cancellationToken)
+    public async Task<Agent?> FindAgent(Guid agentId, Guid userId, CancellationToken cancellationToken)
     {
-        var agent = await dbContext.Agents.FindAsync(agentId, cancellationToken);
+        var agents = dbContext.Agents.Where(x => x.Id == agentId && x.OwnerId == userId);
+        var agent = await agents.FirstOrDefaultAsync(cancellationToken);
         return agent;
     }
 

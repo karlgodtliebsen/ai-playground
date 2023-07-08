@@ -44,34 +44,34 @@ public class ConversationController : ControllerBase
     /// <param name="requests">Hold an array of Chat prompt/text</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpPost("converse")]
-    public async Task Converse([FromBody] TextMessageRequest[] requests, CancellationToken cancellationToken)
+    [HttpPost("conversate")]
+    public async Task<ConversationResponse> Converse([FromBody] ConversationRequest requests, CancellationToken cancellationToken)
     {
         var userId = userProvider.UserId;
-
-        var agent = await domainService.FindAgent(userId, cancellationToken);
-        if (agent == null)
-        {
-            agent = new Agent()
-            {
-                OwnerId = userId,
-                Instruction = "",
-                Name = "Default Agent",
-            };
-            agent = await domainService.CreateAgent(agent, cancellationToken);
-        }
-
         var conversations = new List<Conversation>();
-        foreach (var textMessageRequest in requests)
+        foreach (var textMessageRequest in requests.Prompt)
         {
             conversations.Add(new Conversation()
             {
                 Content = textMessageRequest.Text!.Trim(),
-                AgentId = agent.Id,
-                Role = ConversationRole.User.ToString(),
-                UserId = userId
+                Role = ConversationRole.User.ToRole(),
+                UserId = userId,
             });
         }
-        await conversationService.ExecuteConversation(userId, agent, conversations, cancellationToken);
+        var message = new ConversationMessage()
+        {
+            UserId = userId,
+            AgentId = requests.ConversationId,
+            Conversations = conversations,
+            AddSystemPrompt = true,
+            SystemPrompt = requests.SystemPrompt,
+        };
+
+        var conversation = await conversationService.RunConversation(message, cancellationToken);
+
+        return new ConversationResponse()
+        {
+            Conversation = conversation,
+        };
     }
 }

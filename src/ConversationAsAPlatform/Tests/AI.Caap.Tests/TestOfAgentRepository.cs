@@ -49,7 +49,7 @@ public class TestOfAgentRepository
         this.factory.Services.CleanDatabase();
 
         var repository = factory.Services.GetRequiredService<IAgentRepository>();
-
+        var conversationId = Guid.NewGuid();
         var agent = new Agent()
         {
             Name = "Arthur",
@@ -58,7 +58,8 @@ public class TestOfAgentRepository
         };
 
         await repository.AddAgent(agent, CancellationToken.None);
-        var persistedAgent = await repository.FindAgent(agent.Id, CancellationToken.None);
+
+        var persistedAgent = await repository.FindAgent(conversationId, agent.Id, CancellationToken.None);
         persistedAgent.Should().NotBeNull();
 
         persistedAgent.Should().BeEquivalentTo(agent, options => options.Excluding(x => x.CreatedTime).Excluding(x => x.UpdatedTime));

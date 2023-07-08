@@ -1,5 +1,6 @@
 ﻿using AI.Library.Configuration;
 
+using ChatGPTClient;
 using ChatGPTClient.Configuration;
 using ChatGPTClient.TabPages;
 
@@ -10,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 
-namespace ChatGPTClient;
+namespace ChatGPT.Wpf.App;
 
 /// <summary>
 /// Interaction logic for App.xaml
@@ -26,7 +27,7 @@ public partial class App : Application
     {
         base.OnStartup(e);
         IHostBuilder builder = Host.CreateDefaultBuilder();
-        builder.AddHostLogging();
+        builder.AddLogging();
         builder.AddSecrets<App>();
         builder.ConfigureServices((context, services) =>
         {
@@ -61,6 +62,4 @@ public partial class App : Application
         }
         base.OnExit(e);
     }
-
-
 }

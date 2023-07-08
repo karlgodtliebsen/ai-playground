@@ -1,6 +1,6 @@
 ﻿using AI.CaaP.Client.Configuration;
 using AI.Library.Configuration;
-using AI.Library.Qdrant.VectorStorage;
+using AI.VectorDatabaseQdrant.VectorStorage;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,7 +14,7 @@ Console.WriteLine("To use this application, you must start a Docker instance of 
 Observability.StartLogging(applicationName);
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.AddHostLogging();
+builder.AddLogging();
 builder.AddSecrets<Program>();
 builder.Services.AddAppConfiguration(builder.Configuration);
 

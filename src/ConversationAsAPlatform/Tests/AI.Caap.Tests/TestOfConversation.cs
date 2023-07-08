@@ -74,16 +74,16 @@ public class TestOfConversation
     //	https://api.openai.com/v1/chat/completions
 
     [Fact]
-    public async Task CreatAConversation()
+    public async Task RunAConversation()
     {
         var aiChatClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
         {
-            new ChatCompletionMessage {Role = ConversationRole.System.ToString(), Content = "You are a helpful assistant." },
-            new ChatCompletionMessage { Role = ConversationRole.User.ToString(), Content = "Who won the world series in 2020?!" },
-            new ChatCompletionMessage { Role = ConversationRole.Assistent.ToString(), Content = "The Los Angeles Dodgers won the World Series in 2020." },
-            new ChatCompletionMessage { Role = ConversationRole.User.ToString(), Content = "Where was it played?" },
+            new ChatCompletionMessage { Role = ConversationRole.System.ToRole(), Content = "You are a helpful assistant." },
+            new ChatCompletionMessage { Role = ConversationRole.User.ToRole(), Content = "Who won the world series in 2020?!" },
+            new ChatCompletionMessage { Role = ConversationRole.Assistant.ToRole(), Content = "The Los Angeles Dodgers won the World Series in 2020." },
+            new ChatCompletionMessage { Role = ConversationRole.User.ToRole(), Content = "Where was it played?" },
         };
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -109,7 +109,7 @@ public class TestOfConversation
 
 
     [Fact]
-    public async Task CreatAConversationUsingName()
+    public async Task RunAConversationUsingANameQuestion()
     {
 
         var aiChatService = factory.Services.GetRequiredService<IOpenAiChatCompletionService>();
@@ -120,7 +120,7 @@ public class TestOfConversation
         ////a set of conversation messages
         var conversation = new Conversation()
         {
-            Role = ConversationRole.User.ToString(),
+            Role = ConversationRole.User.ToRole(),
             Content = "My name is Arthur",
             AgentId = agentId,
             UserId = userId,
@@ -128,7 +128,7 @@ public class TestOfConversation
 
         var conversation2 = new Conversation()
         {
-            Role = ConversationRole.User.ToString(),
+            Role = ConversationRole.User.ToRole(),
             Content = "What is my name?",
             AgentId = agentId,
             UserId = userId,
@@ -153,7 +153,7 @@ public class TestOfConversation
     }
 
     [Fact]
-    public async Task CreatAPersistedConversation()
+    public async Task RunAPersistedConversation()
     {
         this.factory.Services.CleanDatabase();
         var conversationRepository = factory.Services.GetRequiredService<IConversationRepository>();
@@ -166,7 +166,7 @@ public class TestOfConversation
         //create a set of conversation messages
         var conversation = new Conversation()
         {
-            Role = ConversationRole.User.ToString(),
+            Role = ConversationRole.User.ToRole(),
             Content = "My name is Arthur",
             AgentId = agentId,
             UserId = userId,
@@ -174,7 +174,7 @@ public class TestOfConversation
         await conversationRepository.AddConversation(conversation, CancellationToken.None);
         conversation = new Conversation()
         {
-            Role = ConversationRole.User.ToString(),
+            Role = ConversationRole.User.ToRole(),
             Content = "What is my name?",
             AgentId = agentId,
             UserId = userId,

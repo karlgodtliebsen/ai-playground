@@ -1,6 +1,7 @@
 ﻿using OneOf;
 
 using OpenAI.Client.OpenAI.HttpClients;
+using OpenAI.Client.OpenAI.Models.Chat;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;
 using OpenAI.Client.OpenAI.Models.Requests;
 using OpenAI.Client.OpenAI.Models.Responses;
@@ -33,6 +34,24 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
         this.requestFactory = requestFactory;
     }
 
+    public void AddStandardSystemPrompt(IList<ChatCompletionMessage> messages)
+    {
+        messages.Insert(0, new ChatCompletionMessage
+        {
+            Role = ChatMessageRole.System.AsOpenAIRole(),
+            Content = systemPrompt
+        });
+    }
+
+    public void AddSummarizePrompt(IList<ChatCompletionMessage> messages)
+    {
+        messages.Insert(0, new ChatCompletionMessage
+        {
+            Role = ChatMessageRole.System.AsOpenAIRole(),
+            Content = summarizePrompt
+        });
+    }
+
 
     /// <summary>
     /// Sends a prompt to the deployed OpenAI LLM model and returns the response.
@@ -47,8 +66,8 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
         {
-            new ChatCompletionMessage {Role = "system", Content = systemPrompt },
-            new ChatCompletionMessage { Role = "user", Content = userPrompt },
+            new ChatCompletionMessage {Role =ChatMessageRole.System.AsOpenAIRole(), Content = systemPrompt },
+            new ChatCompletionMessage { Role = ChatMessageRole.User.AsOpenAIRole(), Content = userPrompt },
         };
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -73,7 +92,7 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
                 var responseTokens = completions.Usage.CompletionTokens;
                 return (response: result, promptTokens: promptTokens, responseTokens: responseTokens);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -85,17 +104,11 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
     /// <param name="sessionId">Chat session identifier for the current conversation.</param>
     /// <param name="deploymentName"></param>
     /// <param name="cancellationToken"></param>
-    /// <param name="addStandardSystemPrompt"></param>
-    /// <param name="userPrompt">Prompt message to send to the deployment.</param>
     /// <returns>Response from the OpenAI model along with tokens for the prompt and response.</returns>
     public async Task<OneOf<(ChatChoice response, int promptTokens, int responseTokens), ErrorResponse>> GetChatCompletion(
-        IList<ChatCompletionMessage> messages,
-        Guid sessionId, string deploymentName, CancellationToken cancellationToken, bool addStandardSystemPrompt = true)
+    IList<ChatCompletionMessage> messages,
+    Guid sessionId, string deploymentName, CancellationToken cancellationToken)
     {
-        if (addStandardSystemPrompt)
-        {
-            messages.Insert(0, new ChatCompletionMessage { Role = "system", Content = systemPrompt });
-        }
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
             new ChatCompletionRequest
@@ -119,7 +132,7 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
                 var responseTokens = completions.Usage.CompletionTokens;
                 return (response: result, promptTokens: promptTokens, responseTokens: responseTokens);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -128,14 +141,15 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
     /// </summary>
     /// <param name="sessionId">Chat session identifier for the current conversation.</param>
     /// <param name="conversation">Prompt conversation to send to the deployment.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Summarization response from the OpenAI model deployment.</returns>
     public async Task<string> Summarize(Guid sessionId, string userPrompt, CancellationToken cancellationToken)
     {
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
         {
-            new ChatCompletionMessage {Role = "system", Content = summarizePrompt },
-            new ChatCompletionMessage { Role = "user", Content = userPrompt },
+            new ChatCompletionMessage {Role = ChatMessageRole.System.AsOpenAIRole(), Content = summarizePrompt },
+            new ChatCompletionMessage { Role = ChatMessageRole.User.AsOpenAIRole(), Content = userPrompt },
         };
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -158,7 +172,7 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
                 string summary = completions.Choices.First().Message!.Content!;
                 return summary;
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 }

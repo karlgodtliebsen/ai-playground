@@ -1,10 +1,14 @@
 ﻿using System.Net.Http.Json;
+
 using Microsoft.Extensions.Options;
+
 using OneOf;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.OpenAI.Models.Files;
 using OpenAI.Client.OpenAI.Models.Requests;
 using OpenAI.Client.OpenAI.Models.Responses;
+
 using SerilogTimings.Extensions;
 
 namespace OpenAI.Client.OpenAI.HttpClients.Implementation;
@@ -22,7 +26,7 @@ public class FilesAIClient : AIClientBase, IFilesAIClient
 
     private async Task<OneOf<TR, ErrorResponse>> UploadFileAsync<TR>(string subUri, UploadFileRequest request, CancellationToken cancellationToken) where TR : class
     {
-        using var op = logger.BeginOperation("UploadFileAsync", subUri);
+        using var op = logger.BeginOperation($"UploadFileAsync {subUri}");
         try
         {
             PrepareClient();
