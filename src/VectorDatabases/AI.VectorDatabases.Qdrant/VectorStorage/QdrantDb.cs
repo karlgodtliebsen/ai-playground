@@ -1,138 +1,260 @@
-﻿using AI.VectorDatabaseQdrant.Configuration;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using AI.VectorDatabaseQdrant.Configuration;
+using AI.VectorDatabaseQdrant.VectorStorage.Models;
+
 using Microsoft.Extensions.Options;
+
 using OneOf;
-using QdrantCSharp;
-using QdrantCSharp.Models;
+
+using Serilog;
+
+using SerilogTimings.Extensions;
+
+//using CollectCreationBody = AI.VectorDatabaseQdrant.VectorStorage.Models.CollectCreationBody;
+//using CollectionInfo = AI.VectorDatabaseQdrant.VectorStorage.Models.CollectionInfo;
+//using CollectionList = AI.VectorDatabaseQdrant.VectorStorage.Models.CollectionList;
+//using PointStruct = AI.VectorDatabaseQdrant.VectorStorage.Models.PointStruct;
+//using PointsUpsertBody = AI.VectorDatabaseQdrant.VectorStorage.Models.PointsUpsertBody;
+//using ScoredPoint = AI.VectorDatabaseQdrant.VectorStorage.Models.ScoredPoint;
+//using SearchBody = QdrantCSharp.Models.SearchBody;
+//using UpdateResult = QdrantCSharp.Models.UpdateResult;
+//using UpdateStatus = QdrantCSharp.Enums.UpdateStatus;
+//using VectorParams = AI.VectorDatabaseQdrant.VectorStorage.Models.VectorParams;
 
 namespace AI.VectorDatabaseQdrant.VectorStorage;
 
-
+/// <summary>
+/// <a href="https://qdrant.github.io/qdrant/redoc/index.html#tag/collections/operation/create_collection" />
+/// </summary>
 public class QdrantDb : IVectorDb
 {
+    private readonly HttpClient httpClient;
+    private readonly ILogger logger;
+    private readonly JsonSerializerOptions serializerOptions;
+    private readonly QdrantOptions options;
 
-    private readonly QdrantHttpClient client;
-    private readonly QdrantOptions qOptions;
-
-    public QdrantDb(QdrantHttpClient client, IOptions<QdrantOptions> qOptions)
+    public QdrantDb(IOptions<QdrantOptions> options, HttpClient httpClient, ILogger logger)
     {
-        this.client = client;
-        this.qOptions = qOptions.Value;
+        this.httpClient = httpClient;
+        this.logger = logger;
+        this.options = options.Value;
+        serializerOptions = new JsonSerializerOptions()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+    }
+
+    private async Task<OneOf<TR, ErrorResponse>> PostAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken)
+    {
+        using var op = logger.BeginOperation($"PostAsync {subUri}");
+        try
+        {
+            PrepareClient();
+            var response = await httpClient.PostAsJsonAsync(subUri, payload, serializerOptions, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<Models.QdrantHttpResponse<TR>>(cancellationToken: cancellationToken);
+            if (result is null)
+            {
+                return new ErrorResponse($"PostAsync failed.");
+            }
+            if (result.Status is not OperationStatus.Succeeded)
+            {
+                return new ErrorResponse($"PostAsync failed with status {result.Status}.");
+            }
+            op.Complete();
+            return result!.Result;
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "PostAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
+        }
+    }
+    private async Task<OneOf<TR, ErrorResponse>> PutAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken)
+    {
+        using var op = logger.BeginOperation($"PutAsync {subUri}");
+        try
+        {
+            PrepareClient();
+            var response = await httpClient.PutAsJsonAsync(subUri, payload, serializerOptions, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<Models.QdrantHttpResponse<TR>>(cancellationToken: cancellationToken);
+            if (result is null)
+            {
+                return new ErrorResponse($"PutAsync failed.");
+            }
+            if (result.Status is not OperationStatus.Succeeded)
+            {
+                return new ErrorResponse($"PutAsync failed with status {result.Status}.");
+            }
+            op.Complete();
+            return result!.Result;
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "PutAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
+        }
+    }
+
+    private async Task<OneOf<TR, ErrorResponse>> GetAsync<TR>(string subUri, CancellationToken cancellationToken)
+    {
+        using var op = logger.BeginOperation($"GetAsync {subUri}");
+        try
+        {
+            PrepareClient();
+            var result = await httpClient.GetFromJsonAsync<Models.QdrantHttpResponse<TR>>(subUri, cancellationToken)!;
+            if (result is null)
+            {
+                return new ErrorResponse($"GetAsync failed.");
+            }
+            if (result.Status is not OperationStatus.Succeeded)
+            {
+                return new ErrorResponse($"GetAsync failed with status {result.Status}.");
+            }
+            op.Complete();
+            return result!.Result;
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "GetAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
+        }
+    }
+    private async Task<OneOf<TR, ErrorResponse>> DeleteAsync<TR>(string subUri, CancellationToken cancellationToken)
+    {
+        using var op = logger.BeginOperation($"DeleteAsync {subUri}");
+        try
+        {
+            PrepareClient();
+            var result = await httpClient.DeleteFromJsonAsync<Models.QdrantHttpResponse<TR>>(subUri, cancellationToken);
+            if (result is null)
+            {
+                return new ErrorResponse($"DeleteAsync failed.");
+            }
+            if (result.Status is not OperationStatus.Succeeded)
+            {
+                return new ErrorResponse($"DeleteAsync failed with status {result.Status}.");
+            }
+            op.Complete();
+            return result!.Result;
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "DeleteAsync Failed {uri}", subUri);
+            return new ErrorResponse(ex.Message);
+        }
+    }
+    private void PrepareClient()
+    {
+        httpClient.DefaultRequestHeaders.Clear();
+        httpClient.DefaultRequestHeaders.Add("api-key", options.ApiKey);
     }
 
     public VectorParams CreateParams(int? dimension = null, string? distance = null, bool? storeOnDisk = null)
     {
         if (string.IsNullOrEmpty(distance))
         {
-            distance = qOptions.DefaultDistance;
+            distance = options.DefaultDistance;
         }
         if (!storeOnDisk.HasValue)
         {
-            storeOnDisk = qOptions.DefaultStoreOnDisk;
+            storeOnDisk = options.DefaultStoreOnDisk;
         }
         if (!dimension.HasValue)
         {
-            dimension = qOptions.DefaultDimension;
+            dimension = options.DefaultDimension;
         }
         var p = new VectorParams(size: dimension.Value, distance: distance, storeOnDisk.Value);
         return p;
     }
 
-    public async Task<OneOf<bool, ErrorResponse>> RemoveAllCollections()
+    public async Task<OneOf<bool, ErrorResponse>> CreateCollection(string collectionName, VectorParams vectorsConfig, CancellationToken cancellationToken)
     {
-        var allCollection = await GetCollectionNames();
+        var payLoad = new CollectCreationBody()
+        {
+            Vectors = vectorsConfig
+        };
+        var res = await PutAsync<CollectCreationBody, bool>($"/collections/{collectionName}", payLoad, cancellationToken);
+        return res;
+    }
+
+
+    public async Task<OneOf<CollectionList, ErrorResponse>> GetCollections(CancellationToken cancellationToken)
+    {
+        return await GetAsync<CollectionList>("/collections", cancellationToken);
+    }
+
+    public async Task<OneOf<IList<string>, ErrorResponse>> GetCollectionNames(CancellationToken cancellationToken)
+    {
+        var result = await GetCollections(cancellationToken);
+        return result.Match<OneOf<IList<string>, ErrorResponse>>(
+            collections => collections.Collections.Select(x => x.Name).ToList(),
+            error => error
+        );
+    }
+
+    public async Task<OneOf<CollectionInfo, ErrorResponse>> GetCollection(string collectionName, CancellationToken cancellationToken)
+    {
+        return await GetAsync<CollectionInfo>($"/collections/{collectionName}", cancellationToken);
+    }
+
+
+    public async Task<OneOf<bool, ErrorResponse>> RemoveAllCollections(CancellationToken cancellationToken)
+    {
+        var allCollection = await GetCollectionNames(cancellationToken);
         return await allCollection.Match<Task<OneOf<bool, ErrorResponse>>>(
 
             async collection =>
             {
                 foreach (var collectionName in collection)
                 {
-                    await RemoveCollection(collectionName);
+                    await DeleteCollection(collectionName, cancellationToken);
                 }
                 return true;
             },
-            error =>
-                Task.FromResult<OneOf<bool, ErrorResponse>>(
-                    new ErrorResponse($"Failed to get collection names: {error.Error}")
-                )
+            error => Task.FromResult<OneOf<bool, ErrorResponse>>(new ErrorResponse($"Failed to Remove all collections: {error.Error}"))
         );
     }
 
-    public async Task<OneOf<string, ErrorResponse>> RemoveCollection(string collectionName)
+    public async Task<OneOf<bool, ErrorResponse>> RemoveCollection(string collectionName, CancellationToken cancellationToken)
     {
-        var result = await client.DeleteCollection(collectionName);
-        if (result.Status is not "ok")
+        return await DeleteCollection(collectionName, cancellationToken);
+    }
+
+
+    public async Task<OneOf<bool, ErrorResponse>> DeleteCollection(string collectionName, CancellationToken cancellationToken)
+    {
+        var result = await DeleteAsync<bool>($"/collections/{collectionName}", cancellationToken);
+        return result;
+    }
+
+
+    public async Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
+    {
+        var payLoad = new PointsUpsertBody()
         {
-            return new ErrorResponse($"Remove collections {collectionName} failed with status {result.Status}.");
-        }
-        return collectionName;
+            Points = points.ToList()
+        };
+        var result = await PutAsync<PointsUpsertBody, UpdateResult>($"/collections/{collectionName}/points?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+            );
     }
 
-
-    public async Task<OneOf<IList<CollectionDescription>, ErrorResponse>> GetCollections()
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, float[] queryVector, CancellationToken cancellationToken, int limit = 10, int offset = 0)
     {
-        // List all the collections
-        var collections = await client.GetCollections();
-        if (collections.Status is not "ok")
+        var payLoad = new SearchBody()
         {
-            return new ErrorResponse($"Get collections failed with status {collections.Status}.");
-        }
-
-        return collections.Result.Collections.ToList();
-    }
-
-    public async Task<OneOf<IList<string>, ErrorResponse>> GetCollectionNames()
-    {
-        // List all the collections
-        var collections = await client.GetCollections();
-        if (collections.Status is not "ok")
-        {
-            return new ErrorResponse($"Get collections failed with status {collections.Status}.");
-        }
-        return collections.Result.Collections.Select(x => x.Name).ToList();
-    }
-
-
-    public async Task<OneOf<CollectionInfo, ErrorResponse>> CreateCollection(string collectionName, VectorParams vectorParams, CancellationToken cancellationToken)
-    {
-        var existingCollections = await GetCollectionNames();
-        return await existingCollections.Match(
-           async collection =>
-            {
-                if (!collection.Contains(collectionName))
-                {
-                    var result = await client.CreateCollection(collectionName, vectorParams);
-                    if (result.Status is not "ok")
-                    {
-                        return new ErrorResponse($"Create {collectionName} failed with status {result.Status}.");
-                    }
-                }
-                // Get collection info
-                var response = await client.GetCollection(collectionName);
-                if (response.Status is not "ok")
-                {
-                    return new ErrorResponse($"GetCollection after Create {collectionName} failed with status {response.Status}.");
-                }
-                return response.Result;
-
-            },
-            error => Task.FromResult<OneOf<CollectionInfo, ErrorResponse>>(
-                new ErrorResponse($"Create {collectionName} failed with status {error.Error}."))
-        );
-    }
-
-    public async Task Upsert(string collectionName, int id, float[] vector, string text, CancellationToken cancellationToken)
-    {
-        // Insert vectors
-        /*await _client.Upsert(collectionName, points: new List<PointStruct>
-        {
-            new PointStruct(id: id, vector: vector)
-        });*/
-    }
-
-
-    public async Task<OneOf<IList<string>, ErrorResponse>> Search(string collectionName, float[] vector, CancellationToken cancellationToken, int limit = 5)
-    {
-        var result = await client.Search(collectionName, vector, limit);
-        return result.Result.Select(x => x.Id.ToString()).ToList();
+            Limit = limit,
+            Offset = offset,
+            Vector = queryVector
+        };
+        var res = await PostAsync<SearchBody, ScoredPoint[]>($"/collections/{collectionName}/points/search", payLoad, cancellationToken);
+        return res;
     }
 }

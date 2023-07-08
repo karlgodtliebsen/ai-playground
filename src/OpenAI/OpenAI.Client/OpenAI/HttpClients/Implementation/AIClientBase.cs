@@ -18,7 +18,7 @@ public abstract class AIClientBase
 {
     private const string UserAgent = "ai/openai_api";
     protected readonly HttpClient HttpClient;
-    protected JsonSerializerOptions SerializerOptions;
+    protected readonly JsonSerializerOptions SerializerOptions;
     protected readonly OpenAIOptions Options;
     protected readonly ILogger logger;
 

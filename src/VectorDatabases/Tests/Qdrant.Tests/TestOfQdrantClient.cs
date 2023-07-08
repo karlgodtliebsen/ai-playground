@@ -1,4 +1,6 @@
 ﻿using AI.VectorDatabaseQdrant.Configuration;
+using AI.VectorDatabaseQdrant.VectorStorage;
+using AI.VectorDatabaseQdrant.VectorStorage.Models;
 
 using FluentAssertions;
 
@@ -7,10 +9,9 @@ using Microsoft.Extensions.Options;
 
 using Qdrant.Tests.Utils;
 
-using QdrantCSharp;
-using QdrantCSharp.Models;
 
 using Xunit.Abstractions;
+
 
 namespace Qdrant.Tests;
 
@@ -53,20 +54,24 @@ public class TestOfQdrant
     [Fact]
     public async Task CleanupCollections()
     {
-        var client = factory.Services.GetRequiredService<QdrantHttpClient>();
-        var result = await client.DeleteCollection(collectionName);
-        result.Status.Should().Be("ok");
+        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var result = await client.RemoveCollection(collectionName, CancellationToken.None);
+        result.Switch(
+            _ => { },
+            error => throw new QdrantException(error.Error)
+            );
     }
 
 
     [Fact]
     public async Task VerifyInitialAccessToQdrant()
     {
-        var client = factory.Services.GetRequiredService<QdrantHttpClient>();
-        QdrantHttpResponse<CollectionList> result = await client.GetCollections();
-        result.Status.Should().Be("ok");
-        var collections = result.Result.Collections;
-        collections.Should().NotBeNull();
+        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var result = await client.GetCollections(CancellationToken.None);
+        result.Switch(
+            collections => collections.Should().NotBeNull(),
+            error => throw new QdrantException(error.Error)
+        );
     }
 
     [Fact]
@@ -74,22 +79,26 @@ public class TestOfQdrant
     {
         await CleanupCollections();
 
-        var vectorParams = new VectorParams(4, "Dot", true);
+        var vectorParams = new VectorParams(4, Distance.DOT, true);
 
-        var client = factory.Services.GetRequiredService<QdrantHttpClient>();
+        var client = factory.Services.GetRequiredService<IVectorDb>();
 
-        QdrantHttpResponse<bool> response = await client.CreateCollection(collectionName, vectorParams);
-        response.Status.Should().Be("ok");
-        response.Should().NotBeNull();
+        var response = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
 
-        QdrantHttpResponse<CollectionList> result = await client.GetCollections();
-        result.Status.Should().Be("ok");
-        var collections = result.Result.Collections;
-        collections.Should().NotBeNull();
-        collections.Any(c => c.Name == collectionName).Should().BeTrue();
+        response.Switch(
+            _ => { },
+            error => throw new QdrantException(error.Error)
+        );
+
+        var result = await client.GetCollections(CancellationToken.None);
+        result.Switch(
+            r =>
+            {
+                r.Collections.Should().NotBeNull();
+                r.Collections.Any(c => c.Name == collectionName).Should().BeTrue();
+            },
+            error => throw new QdrantException(error.Error)
+        );
     }
-
-
-
 
 }
