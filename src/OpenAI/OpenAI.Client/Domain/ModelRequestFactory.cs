@@ -34,7 +34,7 @@ public class ModelRequestFactory : IModelRequestFactory
     /// <returns></returns>
     public IList<string> GetModels(string requestUri)
     {
-        if (OpenAiModeMap.Map.TryGetValue(requestUri, out var models))
+        if (OpenAiModelMap.Map.TryGetValue(requestUri, out var models))
         {
             return models;
         }

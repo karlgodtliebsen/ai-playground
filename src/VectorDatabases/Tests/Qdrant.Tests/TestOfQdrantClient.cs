@@ -1,4 +1,4 @@
-﻿using AI.Library.Qdrant.Configuration;
+﻿using AI.VectorDatabaseQdrant.Configuration;
 
 using FluentAssertions;
 

@@ -4,9 +4,13 @@ namespace OpenAI.Client.OpenAI.Models.Requests;
 
 public class ExtendedEmbeddingsRequest : ModelBaseRequest
 {
+    /// <summary>
+    /// <a href="https://platform.openai.com/docs/guides/embeddings/what-are-embeddings" />
+    /// </summary>
     public ExtendedEmbeddingsRequest()
     {
         RequestUri = "embeddings";
+        //text-embedding-ada-002 
     }
 
     [JsonPropertyName("input")]

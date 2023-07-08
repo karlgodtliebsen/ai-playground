@@ -1,5 +1,5 @@
-﻿using AI.Library.Qdrant.Configuration;
-using AI.Library.Qdrant.VectorStorage;
+﻿using AI.VectorDatabaseQdrant.Configuration;
+using AI.VectorDatabaseQdrant.VectorStorage;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

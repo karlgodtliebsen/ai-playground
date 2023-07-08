@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using OpenAI.Client.Configuration;
+using OpenAI.Client.OpenAI.Models.Chat;
 
 using Xunit.Abstractions;
 
@@ -56,7 +57,6 @@ public class TestOfAzureOpenAI
     }
 
 
-
     [Fact]
     public async Task VerifyInitialAccessToCodeCompletionModel()
     {
@@ -89,7 +89,7 @@ public class TestOfAzureOpenAI
         {
             Messages = {
                 new ChatMessage(
-                    new ChatRole("user"),
+                    new ChatRole(ChatMessageRole.User.ToString()),
                     prompt)
             }
         };
@@ -111,7 +111,7 @@ public class TestOfAzureOpenAI
 
         var options = new ChatCompletionsOptions()
         {
-            Messages = { new ChatMessage(new ChatRole("user"), prompt) }
+            Messages = { new ChatMessage(new ChatRole(ChatMessageRole.User.ToString()), prompt) }
         };
         var chatResponse = await azureOpenAIClient.GetChatCompletionsAsync(deploymentName, options, CancellationToken.None);
         string message = chatResponse.Value.Choices[0].Message.Content;

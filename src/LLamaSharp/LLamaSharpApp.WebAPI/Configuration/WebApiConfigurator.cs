@@ -60,6 +60,7 @@ public static class WebApiConfigurator
         }
 
         var options = configuration.GetSection(webApiOptionsSectionName).Get<WebApiOptions>()!;
+        ArgumentNullException.ThrowIfNull(options);
         return services.AddWebApiConfiguration(options);
     }
 

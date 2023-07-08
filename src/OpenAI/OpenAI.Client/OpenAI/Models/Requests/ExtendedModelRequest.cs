@@ -24,10 +24,12 @@ public class ExtendedModelRequest : ModelBaseRequest
     /// Defaults to 1
     /// An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass.
     /// So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+    /// Also called NucleusSamplingFactor 
     /// We generally recommend altering this or temperature but not both.
     /// </summary>
     [JsonPropertyName("top_p")]
     public double? TopP { get; init; } = 1.0;
+
 
     [JsonPropertyName("n")]
     public int? NumChoicesPerPrompt { get; init; } = default!;
@@ -36,6 +38,7 @@ public class ExtendedModelRequest : ModelBaseRequest
     /// <summary>
     /// If set, partial message deltas will be sent, like in ChatGPT.
     /// Tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a data
+    /// To mimic the effect seen in ChatGPT where the text is returned iteratively, set the stream parameter to true.
     /// </summary>
     [JsonPropertyName("stream")]
     public bool? Stream { get; init; } = default!;

@@ -1,10 +1,15 @@
 ﻿using System.Net.Http.Json;
+
 using Microsoft.Extensions.Options;
+
 using OneOf;
+
 using OpenAI.Client.Configuration;
+using OpenAI.Client.OpenAI.Models.Chat;
 using OpenAI.Client.OpenAI.Models.Images;
 using OpenAI.Client.OpenAI.Models.Requests;
 using OpenAI.Client.OpenAI.Models.Responses;
+
 using SerilogTimings.Extensions;
 
 namespace OpenAI.Client.OpenAI.HttpClients.Implementation;
@@ -36,7 +41,7 @@ public class ImagesAIClient : AIClientBase, IImagesAIClient
 
             if (!string.IsNullOrWhiteSpace(request.User))
             {
-                content.Add(new StringContent(request.User), "user");
+                content.Add(new StringContent(request.User), ChatMessageRole.User.ToString());
             }
             PrepareClient();
             var response = await HttpClient.PostAsync(subUri, content, cancellationToken);
@@ -74,7 +79,7 @@ public class ImagesAIClient : AIClientBase, IImagesAIClient
             }
             if (!string.IsNullOrWhiteSpace(request.User))
             {
-                content.Add(new StringContent(request.User), "user");
+                content.Add(new StringContent(request.User), ChatMessageRole.User.ToString());
             }
             PrepareClient();
             var response = await HttpClient.PostAsync(subUri, content, cancellationToken);

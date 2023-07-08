@@ -22,11 +22,11 @@ public static class ObservabilityConfigurator
     /// <returns></returns>
     public static WebApplicationBuilder AddWebHostLogging(this WebApplicationBuilder builder, Action<LoggingOptions>? options = null)
     {
-        var setOptions = new LoggingOptions();
-        options?.Invoke(setOptions);
+        var configuredOptions = new LoggingOptions();
+        options?.Invoke(configuredOptions);
         builder.Logging.ClearProviders();
         builder.Host.AddHostLogging();
-        if (setOptions.UseRequestResponseLogging)
+        if (configuredOptions.UseRequestResponseLogging)
         {
             builder.Services.AddRequestResponseLogging();
         }
@@ -42,8 +42,8 @@ public static class ObservabilityConfigurator
     /// <returns></returns>
     public static IHostBuilder AddHostLogging(this IHostBuilder builder, Action<LoggingOptions>? options = null)
     {
-        var setOptions = new LoggingOptions();
-        options?.Invoke(setOptions);
+        var configuredOptions = new LoggingOptions();
+        options?.Invoke(configuredOptions);
         builder.UseSerilog((ctx, sp, lc) =>
         {
             lc.ReadFrom.Configuration(ctx.Configuration)
@@ -61,8 +61,7 @@ public static class ObservabilityConfigurator
     /// <returns></returns>
     public static HostApplicationBuilder AddHostLogging(this HostApplicationBuilder builder, Action<LoggingOptions>? options = null)
     {
-        Log.Information("Application {name} is running in Environment {environment}",
-            builder.Environment.ApplicationName, builder.Environment.EnvironmentName);
+        Log.Information("Application {name} is running in Environment {environment}", builder.Environment.ApplicationName, builder.Environment.EnvironmentName);
 
         var setOptions = new LoggingOptions();
         options?.Invoke(setOptions);

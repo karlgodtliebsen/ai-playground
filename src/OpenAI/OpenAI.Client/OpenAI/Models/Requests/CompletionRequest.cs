@@ -36,6 +36,7 @@ public class CompletionRequest : ExtendedModelRequest
 
     /// <summary>
     /// The suffix that comes after a completion of inserted text.  Defaults to null.
+    /// <a href="https://platform.openai.com/docs/guides/gpt/inserting-text" />
     /// </summary>
     [JsonPropertyName("suffix")]
     public string? Suffix { get; init; } = default!;

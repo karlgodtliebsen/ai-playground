@@ -1,13 +1,10 @@
-﻿using AI.Library.Qdrant.Configuration;
-
+﻿using AI.VectorDatabaseQdrant.Configuration;
 using Microsoft.Extensions.Options;
-
 using OneOf;
-
 using QdrantCSharp;
 using QdrantCSharp.Models;
 
-namespace AI.Library.Qdrant.VectorStorage;
+namespace AI.VectorDatabaseQdrant.VectorStorage;
 
 
 public class QdrantDb : IVectorDb

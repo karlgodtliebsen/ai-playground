@@ -1,8 +1,7 @@
 ﻿using OneOf;
-
 using QdrantCSharp.Models;
 
-namespace AI.Library.Qdrant.VectorStorage;
+namespace AI.VectorDatabaseQdrant.VectorStorage;
 
 public interface IVectorDb
 {

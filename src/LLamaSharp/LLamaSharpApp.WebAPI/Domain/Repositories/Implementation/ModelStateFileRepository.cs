@@ -1,7 +1,6 @@
 ﻿using LLama;
 
 using LLamaSharpApp.WebAPI.Configuration;
-using LLamaSharpApp.WebAPI.Domain.Repositories;
 
 using Microsoft.Extensions.Options;
 

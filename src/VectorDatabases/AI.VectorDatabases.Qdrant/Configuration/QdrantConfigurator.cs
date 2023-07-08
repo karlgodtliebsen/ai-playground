@@ -1,4 +1,4 @@
-﻿using AI.Library.Qdrant.VectorStorage;
+﻿using AI.VectorDatabaseQdrant.VectorStorage;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 using QdrantCSharp;
 
-namespace AI.Library.Qdrant.Configuration;
+namespace AI.VectorDatabaseQdrant.Configuration;
 
 public static class QdrantConfigurator
 {
@@ -15,10 +15,7 @@ public static class QdrantConfigurator
     {
         services.AddSingleton<IOptions<QdrantOptions>>(new OptionsWrapper<QdrantOptions>(options));
         services.AddScoped<IVectorDb, QdrantDb>();
-        //services.AddScoped<IAgentService, AgentService>();
-
         services.AddTransient<QdrantHttpClient>(_ => new QdrantHttpClient(url: options.QdrantUrl, apiKey: "n/a"));
-
         return services;
     }
 

@@ -1,6 +1,6 @@
 ﻿using QdrantCSharp.Enums;
 
-namespace AI.Library.Qdrant.Configuration;
+namespace AI.VectorDatabaseQdrant.Configuration;
 
 public class QdrantOptions
 {    /// <summary>

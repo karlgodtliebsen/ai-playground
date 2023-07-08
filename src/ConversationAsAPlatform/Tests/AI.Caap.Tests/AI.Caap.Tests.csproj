@@ -42,12 +42,13 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
 
-		<PackageReference Include="xunit" Version="2.4.2" />
+		<PackageReference Include="xunit" Version="2.5.0" />
 		<PackageReference Include="xunit.abstractions" Version="2.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\AI.Library\AI.Library.csproj" />
+	  <ProjectReference Include="..\..\AI.CaaP.Repository\AI.CaaP.Repository.csproj" />
 	  <ProjectReference Include="..\..\AI.CaaP\AI.CaaP.csproj" />
 	</ItemGroup>
 

@@ -17,6 +17,7 @@ public static class OpenAIConfigurator
     public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, OpenAIOptions options)
     {
         services.AddTransient<IModelRequestFactory, ModelRequestFactory>();
+        services.AddTransient<IOpenAiChatCompletionService, OpenAiChatCompletionService>();
         services.AddSingleton<IOptions<OpenAiModelsVerification>>(new OptionsWrapper<OpenAiModelsVerification>(new OpenAiModelsVerification()));
 
         ArgumentNullException.ThrowIfNull(options);
@@ -120,10 +121,6 @@ public static class OpenAIConfigurator
         services.Configure<OpenAIOptions>(configuration.GetSection(sectionName));
         var configuredOptions = configuration.GetSection(sectionName).Get<OpenAIOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
-        //Bind directly to the options when validation is not required
-        /// var section = configuration.GetSection(sectionName);
-        ///services.AddOptions<OpenAIOptions>().Bind(section);
-
         Log.Logger.Information("Completed Adding Azure OpenAI Configuration to Application");
         return services.AddOpenAIConfiguration(configuredOptions);
     }
