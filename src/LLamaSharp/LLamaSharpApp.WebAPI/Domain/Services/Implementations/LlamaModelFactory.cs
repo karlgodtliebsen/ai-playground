@@ -12,18 +12,18 @@ namespace LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 /// <summary>
 /// Factory for creating LLama models, executors, parameters and embedders
 /// </summary>
-public class LlmaModelFactory : ILlmaModelFactory
+public class LlamaModelFactory : ILlamaModelFactory
 {
-    private readonly LlmaModelOptions llmaModelOptions;
+    private readonly LlamaModelOptions llamaModelOptions;
 
     /// <summary>
     /// Constructor for LLama Model Factory
     /// </summary>
     /// <param name="options"></param>
-    public LlmaModelFactory(IOptions<LlmaModelOptions> options)
+    public LlamaModelFactory(IOptions<LlamaModelOptions> options)
     {
         ArgumentNullException.ThrowIfNull(options.Value);
-        llmaModelOptions = options.Value;
+        llamaModelOptions = options.Value;
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class LlmaModelFactory : ILlmaModelFactory
     /// <returns></returns>
     public ModelParams CreateModelParams()
     {
-        return llmaModelOptions;
+        return llamaModelOptions;
     }
     //default value points at "models/lamma-7B/ggml-model.bin",. Since this is located in 'models' folder that is often dedicated to code models, we override it here
 

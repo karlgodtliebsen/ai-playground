@@ -48,7 +48,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\AI.Library\AI.Library.csproj" />
-	  <ProjectReference Include="..\..\AI.VectorDatabases.Qdrant\AI.VectorDatabaseQdrant.csproj" />
+	  <ProjectReference Include="..\..\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
 	</ItemGroup>
 
 

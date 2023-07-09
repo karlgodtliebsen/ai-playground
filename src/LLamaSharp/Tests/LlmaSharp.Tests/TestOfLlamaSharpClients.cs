@@ -7,14 +7,14 @@ using Xunit.Abstractions;
 namespace OpenAI.Tests;
 
 
-public class TestOfLlmaSharpClients
+public class TestOfLlamaSharpClients
 {
     private readonly ITestOutputHelper output;
     private readonly ILogger logger;
     private readonly HostApplicationFactory factory;
     private readonly string path;
 
-    public TestOfLlmaSharpClients(ITestOutputHelper output)
+    public TestOfLlamaSharpClients(ITestOutputHelper output)
     {
         this.output = output;
         this.factory = HostApplicationFactory.Build(

@@ -48,7 +48,7 @@ public class TokenizationController : ControllerBase
         var requestModel = new TokenizeMessage(request.Text)
         {
             UsePersistedModelState = request.UsePersistedModelState,
-            LlmaModelOptions = request.LlmaModelOptions,
+            LlamaModelOptions = request.LlamaModelOptions,
             UserId = userProvider.UserId
         };
         return await domainService.Tokenize(requestModel, cancellationToken);
@@ -66,7 +66,7 @@ public class TokenizationController : ControllerBase
         var requestModel = new DeTokenizeMessage(request.Tokens)
         {
             UsePersistedModelState = request.UsePersistedModelState,
-            LlmaModelOptions = request.LlmaModelOptions,
+            LlamaModelOptions = request.LlamaModelOptions,
             UserId = userProvider.UserId
         };
         return await domainService.DeTokenize(requestModel, cancellationToken);

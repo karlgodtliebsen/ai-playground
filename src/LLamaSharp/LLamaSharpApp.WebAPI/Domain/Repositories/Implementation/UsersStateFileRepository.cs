@@ -14,7 +14,7 @@ namespace LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 public class UsersStateFileRepository : IUsersStateRepository
 {
     private const string InferenceFile = "inference-options.json";
-    private const string LlmaModelFile = "llmamodel-options.json";
+    private const string LlamaModelFile = "llamamodel-options.json";
     private readonly WebApiOptions webApiOptions;
     private readonly string fullPath;
 
@@ -65,9 +65,9 @@ public class UsersStateFileRepository : IUsersStateRepository
     /// <param name="options"></param>
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
-    public async Task PersistLlmaModelOptions(LlmaModelOptions options, string userId, CancellationToken cancellationToken)
+    public async Task PersistLlamaModelOptions(LlamaModelOptions options, string userId, CancellationToken cancellationToken)
     {
-        var fileName = GetFileName(userId, LlmaModelFile);
+        var fileName = GetFileName(userId, LlamaModelFile);
         await PersistObject(options, fileName, cancellationToken);
     }
 
@@ -92,12 +92,12 @@ public class UsersStateFileRepository : IUsersStateRepository
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<LlmaModelOptions?> GetLlmaModelOptions(string userId, CancellationToken cancellationToken)
+    public async Task<LlamaModelOptions?> GetLlamaModelOptions(string userId, CancellationToken cancellationToken)
     {
-        var fileName = GetFileName(userId, LlmaModelFile);
+        var fileName = GetFileName(userId, LlamaModelFile);
         if (!File.Exists(fileName)) return null;
         await using var stream = File.OpenRead(fileName);
-        var options = await JsonSerializer.DeserializeAsync<LlmaModelOptions>(stream, cancellationToken: cancellationToken);
+        var options = await JsonSerializer.DeserializeAsync<LlamaModelOptions>(stream, cancellationToken: cancellationToken);
         return options;
     }
 }

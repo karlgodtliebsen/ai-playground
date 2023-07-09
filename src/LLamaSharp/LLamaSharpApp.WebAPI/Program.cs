@@ -24,7 +24,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 builder.AddLogging();
 services
     .AddWebApiConfiguration(configuration)
-    .AddLlmaConfiguration(configuration)
+    .AddLlamaConfiguration(configuration)
     .AddAzureAdConfiguration(configuration, (string?)null)
     .AddCorsConfig(configuration, options =>
     {

@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B63C3753
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8A9347B0-59C0-4769-811E-2A809A5794AB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LlmaSharp.Tests", "LLamaSharp\Tests\LlmaSharp.Tests\LlmaSharp.Tests.csproj", "{C5BD5080-E92E-416D-8FE3-AD554C175122}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LlamaSharp.Tests", "LLamaSharp\Tests\LlmaSharp.Tests\LlamaSharp.Tests.csproj", "{C5BD5080-E92E-416D-8FE3-AD554C175122}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConversationAsAPlatform", "ConversationAsAPlatform", "{F0E9906E-2AB5-479A-B2A8-519DE4CD4917}"
 EndProject
@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{69D83285
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VectorDatabases", "VectorDatabases", "{36278D88-2ED6-43C4-8A24-688A0A9D5422}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.VectorDatabaseQdrant", "VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabaseQdrant.csproj", "{F9C6B042-1C42-46E3-B42C-AEE545099809}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.VectorDatabase.Qdrant", "VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj", "{F9C6B042-1C42-46E3-B42C-AEE545099809}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{930C3329-24E2-4062-B97D-7E374BAA0732}"
 EndProject
@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.Caap.Tests", "Conversati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.CaaP", "ConversationAsAPlatform\AI.CaaP\AI.CaaP.csproj", "{46C98F64-A28D-4D2A-84B5-141E6276063B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.CaaP.Repository", "ConversationAsAPlatform\AI.CaaP.Repository\AI.CaaP.Repository.csproj", "{905260F0-6153-4939-A9A1-03CC16D7555C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.CaaP.Repository", "ConversationAsAPlatform\AI.CaaP.Repository\AI.CaaP.Repository.csproj", "{905260F0-6153-4939-A9A1-03CC16D7555C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.CaaP.WebAPI", "ConversationAsAPlatform\AI.CaaP.WebAPI\AI.CaaP.WebAPI.csproj", "{8AF9E45F-AF31-436F-A52B-38C27D5DF540}"
 EndProject

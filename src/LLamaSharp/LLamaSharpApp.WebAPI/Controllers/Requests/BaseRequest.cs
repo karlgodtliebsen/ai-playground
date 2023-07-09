@@ -8,7 +8,7 @@ namespace LLamaSharpApp.WebAPI.Controllers.Requests;
 public class BaseRequest
 {
     /// <summary>
-    /// Request specific LlmaModelOptions
+    /// Request specific LlamaModelOptions
     /// </summary>
-    public LlmaModelOptions? LlmaModelOptions { get; set; } = default!;
+    public LlamaModelOptions? LlamaModelOptions { get; set; } = default!;
 }

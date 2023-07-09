@@ -34,7 +34,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
     <ProjectReference Include="..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
-    <ProjectReference Include="..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabaseQdrant.csproj" />
+    <ProjectReference Include="..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
     <ProjectReference Include="..\AI.CaaP.Repository\AI.CaaP.Repository.csproj" />
     <ProjectReference Include="..\AI.CaaP\AI.CaaP.csproj" />
   </ItemGroup>

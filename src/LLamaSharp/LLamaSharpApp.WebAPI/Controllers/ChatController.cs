@@ -49,7 +49,7 @@ public class ChatController : ControllerBase
         var requestModel = new ChatMessage(request.Text)
         {
             UsePersistedModelState = request.UsePersistedModelState,
-            LlmaModelOptions = request.LlmaModelOptions,
+            LlamaModelOptions = request.LlamaModelOptions,
             UserId = userProvider.UserId
         };
         return await domainService.Chat(requestModel, cancellationToken);

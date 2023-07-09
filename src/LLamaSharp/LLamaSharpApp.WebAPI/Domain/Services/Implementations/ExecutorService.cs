@@ -13,7 +13,7 @@ namespace LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 /// </summary>
 public class ExecutorService : IExecutorService
 {
-    private readonly ILlmaModelFactory factory;
+    private readonly ILlamaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
 
     private readonly IOptionsService optionsService;
@@ -26,7 +26,7 @@ public class ExecutorService : IExecutorService
     /// <param name="modelStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public ExecutorService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger<ExecutorService> logger)
+    public ExecutorService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger<ExecutorService> logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;
@@ -59,7 +59,7 @@ public class ExecutorService : IExecutorService
 
     private async IAsyncEnumerable<string> UseStatefulExecutor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
 
         var model = factory.CreateModel(modelOptions);      //model specified by options
         var executor = LoadStatefulExecutor(input, model);
@@ -75,7 +75,7 @@ public class ExecutorService : IExecutorService
 
     private async IAsyncEnumerable<string> UseStatelessExecutor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
 
         var model = factory.CreateModel(modelOptions);//model specified by options
         var executor = GetStatelessExecutor(model);

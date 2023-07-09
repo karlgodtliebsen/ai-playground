@@ -21,7 +21,7 @@ public interface IOptionsService
     /// <param name="options"></param>
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
-    Task PersistLlmaModelOptions(LlmaModelOptions? options, string userId, CancellationToken cancellationToken);
+    Task PersistLlamaModelOptions(LlamaModelOptions? options, string userId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get Inference Options
@@ -37,7 +37,7 @@ public interface IOptionsService
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<LlmaModelOptions> GetLlmaModelOptions(string userId, CancellationToken cancellationToken);
+    Task<LlamaModelOptions> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
 
 
     /// <summary>
@@ -58,5 +58,5 @@ public interface IOptionsService
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<LlmaModelOptions> CoalsceLlmaModelOptions(LlmaModelOptions? queryOptions, string userId, CancellationToken cancellationToken);
+    Task<LlamaModelOptions> CoalsceLlamaModelOptions(LlamaModelOptions? queryOptions, string userId, CancellationToken cancellationToken);
 }

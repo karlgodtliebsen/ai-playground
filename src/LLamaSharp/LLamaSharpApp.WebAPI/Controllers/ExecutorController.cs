@@ -62,7 +62,7 @@ public class ExecutorController : ControllerBase
         var requestModel = new ExecutorInferMessage(request.Text)
         {
             InferenceType = request.InferenceType,
-            LlmaModelOptions = request.LlmaModelOptions,
+            LlamaModelOptions = request.LlamaModelOptions,
             InferenceOptions = request.InferenceOptions,
             UserId = userProvider.UserId
         };

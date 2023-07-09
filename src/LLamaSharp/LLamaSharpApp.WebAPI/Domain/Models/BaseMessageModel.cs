@@ -15,7 +15,7 @@ public class BaseMessageModel
     }
 
     /// <summary>
-    /// The request specific LlmaModelOptions: Optional
+    /// The request specific LlamaModelOptions: Optional
     /// </summary>
-    public LlmaModelOptions? LlmaModelOptions { get; set; } = default!;
+    public LlamaModelOptions? LlamaModelOptions { get; set; } = default!;
 }

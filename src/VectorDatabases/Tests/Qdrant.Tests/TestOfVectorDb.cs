@@ -93,6 +93,7 @@ public class TestOfVectorDb
     public async Task VerifyCreateCollectionInVectorDb()
     {
         await CleanupCollections();
+        await Task.Delay(1000);
         var client = factory.Services.GetRequiredService<IVectorDb>();
         var vectorParams = client.CreateParams(4, Distance.DOT, true);
         var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);

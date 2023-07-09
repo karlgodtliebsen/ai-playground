@@ -3,7 +3,7 @@
 namespace LLamaSharpApp.WebAPI.Domain.Repositories;
 
 /// <summary>
-/// Handles Users State for InferenceOptions and LlmaModelOptions
+/// Handles Users State for InferenceOptions and LlamaModelOptions
 /// </summary>
 public interface IUsersStateRepository
 {
@@ -21,7 +21,7 @@ public interface IUsersStateRepository
     /// <param name="options"></param>
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
-    Task PersistLlmaModelOptions(LlmaModelOptions options, string userId, CancellationToken cancellationToken);
+    Task PersistLlamaModelOptions(LlamaModelOptions options, string userId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get Inference Options
@@ -37,5 +37,5 @@ public interface IUsersStateRepository
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<LlmaModelOptions?> GetLlmaModelOptions(string userId, CancellationToken cancellationToken);
+    Task<LlamaModelOptions?> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
 }

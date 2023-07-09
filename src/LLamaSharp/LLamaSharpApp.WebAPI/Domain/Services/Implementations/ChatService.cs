@@ -10,7 +10,7 @@ namespace LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 /// </summary>
 public class ChatService : IChatService
 {
-    private readonly ILlmaModelFactory factory;
+    private readonly ILlamaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
     private readonly IOptionsService optionsService;
     private readonly ILogger<ChatService> logger;
@@ -25,7 +25,7 @@ public class ChatService : IChatService
     /// <param name="modelStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public ChatService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository,
+    public ChatService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository,
         IOptionsService optionsService, ILogger<ChatService> logger)
     {
         this.factory = factory;
@@ -42,7 +42,7 @@ public class ChatService : IChatService
     /// <returns></returns>
     public async Task<string> Chat(ChatMessage input, CancellationToken cancellationToken)
     {
-        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
         var (chatSession, model) = factory.CreateChatSession<InstructExecutor>(modelOptions);
 
         modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);

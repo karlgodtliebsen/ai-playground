@@ -37,14 +37,14 @@ public class ConfigurationController : ControllerBase
     }
 
     /// <summary>
-    /// Finds the Users LlmaModel Options
+    /// Finds the Users LlamaModel Options
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet("configuration/modelparams")]
-    public async Task<LlmaModelOptions> GetUsersLlamaModelConfiguration(CancellationToken cancellationToken)
+    public async Task<LlamaModelOptions> GetUsersLlamaModelConfiguration(CancellationToken cancellationToken)
     {
-        return await domainService.GetLlmaModelOptions(userProvider.UserId, cancellationToken);
+        return await domainService.GetLlamaModelOptions(userProvider.UserId, cancellationToken);
     }
 
 
@@ -66,9 +66,9 @@ public class ConfigurationController : ControllerBase
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     [HttpPut("configuration/modelparams")]
-    public async Task UpdateLlmaModelOptions([FromBody] LlmaModelOptions request, CancellationToken cancellationToken)
+    public async Task UpdateLlamaModelOptions([FromBody] LlamaModelOptions request, CancellationToken cancellationToken)
     {
-        await domainService.PersistLlmaModelOptions(request, userProvider.UserId, cancellationToken);
+        await domainService.PersistLlamaModelOptions(request, userProvider.UserId, cancellationToken);
     }
 
     /// <summary>

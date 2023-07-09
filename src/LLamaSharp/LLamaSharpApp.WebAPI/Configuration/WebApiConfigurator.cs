@@ -84,7 +84,7 @@ public static class WebApiConfigurator
     private static IServiceCollection AddDomain(this IServiceCollection services)
     {
         services
-            .AddTransient<ILlmaModelFactory, LlmaModelFactory>()
+            .AddTransient<ILlamaModelFactory, LlamaModelFactory>()
             .AddTransient<IOptionsService, OptionsService>()
             .AddTransient<IChatService, ChatService>()
             .AddTransient<IEmbeddingsService, EmbeddingsService>()

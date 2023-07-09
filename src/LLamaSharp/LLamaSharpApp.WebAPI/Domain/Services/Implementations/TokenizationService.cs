@@ -7,7 +7,7 @@ namespace LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 /// <inheritdoc />
 public class TokenizationService : ITokenizationService
 {
-    private readonly ILlmaModelFactory factory;
+    private readonly ILlamaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
     private readonly IOptionsService optionsService;
     private readonly ILogger<TokenizationService> logger;
@@ -19,7 +19,7 @@ public class TokenizationService : ITokenizationService
     /// <param name="modelStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public TokenizationService(ILlmaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger<TokenizationService> logger)
+    public TokenizationService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger<TokenizationService> logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;
@@ -35,7 +35,7 @@ public class TokenizationService : ITokenizationService
     /// <returns></returns>
     public async Task<int[]> Tokenize(TokenizeMessage input, CancellationToken cancellationToken)
     {
-        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
         var model = factory.CreateModel(modelOptions);
         modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var tokens = model.Tokenize(input.Text).ToArray();
@@ -51,7 +51,7 @@ public class TokenizationService : ITokenizationService
     /// <returns></returns>
     public async Task<string> DeTokenize(DeTokenizeMessage input, CancellationToken cancellationToken)
     {
-        var modelOptions = await optionsService.GetLlmaModelOptions(input.UserId, cancellationToken);
+        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
         var model = factory.CreateModel(modelOptions);
         modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var text = model.DeTokenize(input.Tokens);

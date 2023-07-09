@@ -1,5 +1,7 @@
 # A Qdrant Vector database Wrapper 
 
+This project contains a very good implementation of a Qdrant client.
+
 Based on inspiration from:
 
 https://github.com/openai/chatgpt-retrieval-plugin/blob/main/docs/providers/qdrant/setup.md

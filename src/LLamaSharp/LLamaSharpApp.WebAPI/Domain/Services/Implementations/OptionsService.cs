@@ -2,7 +2,6 @@
 
 using LLamaSharpApp.WebAPI.Configuration;
 using LLamaSharpApp.WebAPI.Domain.Repositories;
-using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.Extensions.Options;
 
@@ -15,7 +14,7 @@ public class OptionsService : IOptionsService
 {
     private readonly IUsersStateRepository stateRepository;
     private readonly ILogger<OptionsService> logger;
-    private readonly LlmaModelOptions llmaModelOptions;
+    private readonly LlamaModelOptions llamaModelOptions;
     private readonly InferenceOptions inferenceOptions;
 
     /// <summary>
@@ -28,12 +27,12 @@ public class OptionsService : IOptionsService
     public OptionsService(
         IUsersStateRepository stateRepository,
         IOptions<InferenceOptions> inferenceOptions,
-        IOptions<LlmaModelOptions> llmaOptions,
+        IOptions<LlamaModelOptions> llmaOptions,
         ILogger<OptionsService> logger)
     {
         this.stateRepository = stateRepository;
         this.logger = logger;
-        llmaModelOptions = llmaOptions.Value;
+        llamaModelOptions = llmaOptions.Value;
         this.inferenceOptions = inferenceOptions.Value;
     }
 
@@ -49,14 +48,14 @@ public class OptionsService : IOptionsService
     }
 
     /// <inheritdoc />
-    public async Task PersistLlmaModelOptions(LlmaModelOptions? options, string userId, CancellationToken cancellationToken)
+    public async Task PersistLlamaModelOptions(LlamaModelOptions? options, string userId, CancellationToken cancellationToken)
     {
         //if (options for the user does not exist  then use default options
         if (options is null)
         {
-            options = JsonSerializer.Deserialize<LlmaModelOptions>(JsonSerializer.Serialize(llmaModelOptions));
+            options = JsonSerializer.Deserialize<LlamaModelOptions>(JsonSerializer.Serialize(llamaModelOptions));
         }
-        await stateRepository.PersistLlmaModelOptions(options!, userId, cancellationToken);
+        await stateRepository.PersistLlamaModelOptions(options!, userId, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -77,7 +76,7 @@ public class OptionsService : IOptionsService
     }
 
     /// <inheritdoc />
-    public async Task<LlmaModelOptions> CoalsceLlmaModelOptions(LlmaModelOptions? queryOptions, string userId, CancellationToken cancellationToken)
+    public async Task<LlamaModelOptions> CoalsceLlamaModelOptions(LlamaModelOptions? queryOptions, string userId, CancellationToken cancellationToken)
     {
         //if (options for the user does not exist  then return snapshot of default options
         if (queryOptions is not null)
@@ -85,10 +84,10 @@ public class OptionsService : IOptionsService
             return queryOptions;
         }
         //if (options for the user does not exist  then return snapshot of  default options
-        var options = await stateRepository.GetLlmaModelOptions(userId, cancellationToken);
+        var options = await stateRepository.GetLlamaModelOptions(userId, cancellationToken);
         if (options is null)
         {
-            options = JsonSerializer.Deserialize<LlmaModelOptions>(JsonSerializer.Serialize(llmaModelOptions));
+            options = JsonSerializer.Deserialize<LlamaModelOptions>(JsonSerializer.Serialize(llamaModelOptions));
         }
         return options!;
     }
@@ -106,13 +105,13 @@ public class OptionsService : IOptionsService
     }
 
     /// <inheritdoc />
-    public async Task<LlmaModelOptions> GetLlmaModelOptions(string userId, CancellationToken cancellationToken)
+    public async Task<LlamaModelOptions> GetLlamaModelOptions(string userId, CancellationToken cancellationToken)
     {
         //if (options for the user does not exist  then return snapshot of  default options
-        var options = await stateRepository.GetLlmaModelOptions(userId, cancellationToken);
+        var options = await stateRepository.GetLlamaModelOptions(userId, cancellationToken);
         if (options is null)
         {
-            options = JsonSerializer.Deserialize<LlmaModelOptions>(JsonSerializer.Serialize(llmaModelOptions));
+            options = JsonSerializer.Deserialize<LlamaModelOptions>(JsonSerializer.Serialize(llamaModelOptions));
         }
         return options!;
     }

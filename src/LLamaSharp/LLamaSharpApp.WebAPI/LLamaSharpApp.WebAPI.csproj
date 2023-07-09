@@ -57,7 +57,7 @@
     <None Update="Assets\reason-act.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="LlmaModels\wizardLM-7B.ggmlv3.q4_1.bin">
+    <None Update="LlamaModels\wizardLM-7B.ggmlv3.q4_1.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="wizardLM-7B.ggmlv3.q4_1.bin">

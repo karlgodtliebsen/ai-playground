@@ -47,7 +47,7 @@ public class EmbeddingsController : ControllerBase
         var model = new EmbeddingsMessage(request.Text)
         {
             UsePersistedModelState = request.UsePersistedModelState,
-            LlmaModelOptions = request.LlmaModelOptions,
+            LlamaModelOptions = request.LlamaModelOptions,
             UserId = userProvider.UserId
         };
 

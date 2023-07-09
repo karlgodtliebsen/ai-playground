@@ -8,7 +8,7 @@ public class WebApiOptions
     /// <summary>
     /// Configuration SectionName
     /// </summary>
-    public const string SectionName = "WebApiOptions";
+    public const string SectionName = "WebApi";
 
     /// <summary>
     /// Path to the StatePersistence directory

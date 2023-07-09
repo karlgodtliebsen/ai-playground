@@ -7,7 +7,7 @@ namespace LLamaSharpApp.WebAPI.Domain.Services;
 /// <summary>
 /// Model Factory for creating LLama models, executors, parameters and embedders
 /// </summary>
-public interface ILlmaModelFactory
+public interface ILlamaModelFactory
 {
     /// <summary>
     /// Creates a ModelParams with the values obtained form IOptions&lt;LlmaOptions&gt;
