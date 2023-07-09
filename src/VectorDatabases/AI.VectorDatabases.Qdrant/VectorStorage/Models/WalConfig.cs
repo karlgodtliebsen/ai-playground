@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AI.VectorDatabaseQdrant.VectorStorage.Models;
+namespace AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
 public class WalConfig
 {

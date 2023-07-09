@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AI.VectorDatabaseQdrant.VectorStorage.Models.Search;
+namespace AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 
 public class TBRFilter
 {

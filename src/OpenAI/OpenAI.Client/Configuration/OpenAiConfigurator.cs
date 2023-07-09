@@ -16,6 +16,8 @@ public static class OpenAIConfigurator
 {
     public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, OpenAIOptions options)
     {
+        Log.Logger.Information("Setting up OpenAI Configuration to Applications Configuration");
+
         ArgumentNullException.ThrowIfNull(options);
         services.AddSingleton<IOptions<OpenAiModelsVerification>>(new OptionsWrapper<OpenAiModelsVerification>(new OpenAiModelsVerification()));
         services.AddSingleton<IOptions<OpenAIOptions>>(new OptionsWrapper<OpenAIOptions>(options));
@@ -23,71 +25,76 @@ public static class OpenAIConfigurator
         services.AddTransient<IModelRequestFactory, ModelRequestFactory>();
         services.AddTransient<IOpenAiChatCompletionService, OpenAiChatCompletionService>();
 
+        SetupHttpClients(services, options);
+
+        Log.Logger.Information("Completed Adding OpenAI Configuration to Applications Configuration");
+        return services;
+    }
+
+    private static void SetupHttpClients(IServiceCollection services, OpenAIOptions options)
+    {
         services.AddHttpClient<ICompletionAIClient, CompletionAIClient>((_, client) =>
-        {
-            client.BaseAddress = options.GetBaseAddress();
-        })
+            {
+                client.BaseAddress = options.GetBaseAddress();
+            })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
 
         services.AddHttpClient<IModerationAIClient, ModerationAIClient>((_, client) =>
-        {
-            client.BaseAddress = options.GetBaseAddress();
-        })
+            {
+                client.BaseAddress = options.GetBaseAddress();
+            })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
 
         services.AddHttpClient<IChatCompletionAIClient, ChatCompletionAIClient>((_, client) =>
-        {
-            client.BaseAddress = options.GetBaseAddress();
-        })
+            {
+                client.BaseAddress = options.GetBaseAddress();
+            })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
 
         services.AddHttpClient<IAudioFileAIClient, AudioFileAIClient>((_, client) =>
-                {
-                    client.BaseAddress = options.GetBaseAddress();
-                })
-                    .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
-                    .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
+            {
+                client.BaseAddress = options.GetBaseAddress();
+            })
+            .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
+            .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
 
         services.AddHttpClient<IEmbeddingsAIClient, EmbeddingsAIClient>((_, client) =>
-        {
-            client.BaseAddress = options.GetBaseAddress();
-        })
+            {
+                client.BaseAddress = options.GetBaseAddress();
+            })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
 
         services.AddHttpClient<IImagesAIClient, ImagesAIClient>((_, client) =>
-        {
-            client.BaseAddress = options.GetBaseAddress();
-        })
+            {
+                client.BaseAddress = options.GetBaseAddress();
+            })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
 
         services.AddHttpClient<IFilesAIClient, FilesAIClient>((sp, client) =>
-        {
-            client.BaseAddress = options.GetBaseAddress();
-        })
+            {
+                client.BaseAddress = options.GetBaseAddress();
+            })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
 
         services.AddHttpClient<IEditsAIClient, EditsAIClient>((_, client) =>
-        {
-            client.BaseAddress = options.GetBaseAddress();
-        })
+            {
+                client.BaseAddress = options.GetBaseAddress();
+            })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
 
         services.AddHttpClient<IModelsAIClient, ModelsAIClient>((_, client) =>
-        {
-            client.BaseAddress = options.GetBaseAddress();
-        })
+            {
+                client.BaseAddress = options.GetBaseAddress();
+            })
             .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
             .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());
-
-        Log.Logger.Information("Completed Adding OpenAI Configuration to Application");
-        return services;
     }
 
     public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, Action<OpenAIOptions>? options = null)
@@ -112,7 +119,7 @@ public static class OpenAIConfigurator
 
     public static IServiceCollection AddAzureOpenAIConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
-        Log.Logger.Information("Starting Adding Azure OpenAI Configuration to Application");
+        Log.Logger.Information("Starting Adding Azure OpenAI Configuration to Applications Configuration");
 
         if (sectionName is null)
         {
@@ -121,7 +128,7 @@ public static class OpenAIConfigurator
         //services.Configure<OpenAIOptions>(configuration.GetSection(sectionName));
         var configuredOptions = configuration.GetSection(sectionName).Get<OpenAIOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
-        Log.Logger.Information("Completed Adding Azure OpenAI Configuration to Application");
+        Log.Logger.Information("Completed Adding Azure OpenAI Configuration to Applications Configuration");
         return services.AddOpenAIConfiguration(configuredOptions);
     }
 

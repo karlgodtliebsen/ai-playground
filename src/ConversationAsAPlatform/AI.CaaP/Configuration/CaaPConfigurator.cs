@@ -6,24 +6,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using OpenAI.Client.Configuration;
-using OpenAI.Client.Domain;
 
 namespace AI.CaaP.Configuration;
 
 public static class CaaPConfigurator
 {
 
-    public static IServiceCollection AddCaaP(this IServiceCollection services,// IConfiguration configuration, 
-        CaaPOptions options, ChunkOptions chunkOptions, OpenAIOptions aiOptions)
+    public static IServiceCollection AddCaaP(this IServiceCollection services, CaaPOptions options, ChunkOptions chunkOptions, OpenAIOptions aiOptions)
     {
-        services.AddSingleton<IOptions<CaaPOptions>>(new OptionsWrapper<CaaPOptions>(options));
-        services.AddSingleton<IOptions<ChunkOptions>>(new OptionsWrapper<ChunkOptions>(chunkOptions));
         services
+            .AddSingleton<IOptions<CaaPOptions>>(new OptionsWrapper<CaaPOptions>(options))
+            .AddSingleton<IOptions<ChunkOptions>>(new OptionsWrapper<ChunkOptions>(chunkOptions))
             .AddTransient<IAgentService, AgentService>()
             .AddTransient<ILanguageService, LanguageService>()
             .AddTransient<IConversationService, ConversationService>()
-            .AddTransient<ITextChopperService, TextChopperService>()
-            .AddOpenAIConfiguration(aiOptions);
+            .AddTransient<ITextChopperService, TextChopperService>();
+
+        services.AddOpenAIConfiguration(aiOptions);
         return services;
     }
 

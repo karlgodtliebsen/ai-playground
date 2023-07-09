@@ -1,4 +1,4 @@
-﻿namespace AI.VectorDatabaseQdrant.VectorStorage;
+﻿namespace AI.VectorDatabase.Qdrant.VectorStorage;
 
 public class ErrorResponse
 {

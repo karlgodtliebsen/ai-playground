@@ -1,10 +1,9 @@
-﻿using AI.VectorDatabaseQdrant.VectorStorage.Models.Collections;
-using AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
-using AI.VectorDatabaseQdrant.VectorStorage.Models.Search;
-
+﻿using AI.VectorDatabase.Qdrant.VectorStorage.Models.Collections;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 using OneOf;
 
-namespace AI.VectorDatabaseQdrant.VectorStorage;
+namespace AI.VectorDatabase.Qdrant.VectorStorage;
 
 public interface IVectorDb
 {

@@ -1,22 +1,17 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
-using AI.VectorDatabaseQdrant.Configuration;
-using AI.VectorDatabaseQdrant.VectorStorage.Models;
-using AI.VectorDatabaseQdrant.VectorStorage.Models.Collections;
-using AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
-using AI.VectorDatabaseQdrant.VectorStorage.Models.Search;
-
+using AI.VectorDatabase.Qdrant.Configuration;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Collections;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 using Microsoft.Extensions.Options;
-
 using OneOf;
-
 using Serilog;
-
 using SerilogTimings.Extensions;
 
-namespace AI.VectorDatabaseQdrant.VectorStorage;
+namespace AI.VectorDatabase.Qdrant.VectorStorage;
 
 /// <summary>
 /// <a href="https://qdrant.github.io/qdrant/redoc/index.html#tag/collections/operation/create_collection" />

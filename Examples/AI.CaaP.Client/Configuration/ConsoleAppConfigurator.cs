@@ -1,11 +1,10 @@
 ﻿using AI.CaaP.Configuration;
-using AI.Library.Qdrant.Configuration;
+using AI.CaaP.Repository.Configuration;
+using AI.VectorDatabase.Qdrant.Configuration;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using OpenAI.Client.Configuration;
 
 namespace AI.CaaP.Client.Configuration;
 
@@ -25,7 +24,8 @@ public static class ConsoleAppConfigurator
         return services
             .AddQdrant(configuration)
             .AddCaaP(configuration)
-            .AddOpenAIConfiguration(configuration);
+            .AddRepository()
+            .AddDatabaseContext(configuration)
+             ;
     }
-
 }

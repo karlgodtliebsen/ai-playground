@@ -57,7 +57,6 @@ public class TestOfConversation
                 {
                     options.UseInMemoryDatabase("Conversations");
                 });
-
             },
             fixedDateTime: () => DateTimeOffset.UtcNow,
             output: () => output

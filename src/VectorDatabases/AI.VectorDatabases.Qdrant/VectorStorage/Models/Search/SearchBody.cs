@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Text.Json.Serialization;
 
-namespace AI.VectorDatabaseQdrant.VectorStorage.Models.Search;
+namespace AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 
 /// <summary>
 /// <a href="https://qdrant.github.io/qdrant/redoc/index.html#tag/points/operation/search_points" />

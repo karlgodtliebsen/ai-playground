@@ -1,10 +1,8 @@
 ﻿using System.Text.Json.Serialization;
-
-using AI.VectorDatabaseQdrant.Configuration;
-using AI.VectorDatabaseQdrant.VectorStorage;
-using AI.VectorDatabaseQdrant.VectorStorage.Models.Collections;
-using AI.VectorDatabaseQdrant.VectorStorage.Models.Search;
-
+using AI.VectorDatabase.Qdrant.Configuration;
+using AI.VectorDatabase.Qdrant.VectorStorage;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Collections;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +13,8 @@ using Qdrant.Tests.Utils;
 
 using Xunit.Abstractions;
 
-using Distance = AI.VectorDatabaseQdrant.VectorStorage.Models.Distance;
-using PointStruct = AI.VectorDatabaseQdrant.VectorStorage.Models.Payload.PointStruct;
+using Distance = AI.VectorDatabase.Qdrant.VectorStorage.Models.Distance;
+using PointStruct = AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload.PointStruct;
 
 namespace Qdrant.Tests;
 

@@ -1,8 +1,7 @@
-﻿using AI.VectorDatabaseQdrant.Configuration;
-using AI.VectorDatabaseQdrant.VectorStorage;
-using AI.VectorDatabaseQdrant.VectorStorage.Models;
-using AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
-
+﻿using AI.VectorDatabase.Qdrant.Configuration;
+using AI.VectorDatabase.Qdrant.VectorStorage;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;

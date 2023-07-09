@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
+namespace AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 
 public class PointStruct
 {

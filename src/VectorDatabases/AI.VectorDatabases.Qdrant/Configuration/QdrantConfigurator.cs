@@ -1,15 +1,12 @@
 ﻿using System.Net;
-
-using AI.VectorDatabaseQdrant.VectorStorage;
-
+using AI.VectorDatabase.Qdrant.VectorStorage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
 using Polly;
 using Polly.Extensions.Http;
 
-namespace AI.VectorDatabaseQdrant.Configuration;
+namespace AI.VectorDatabase.Qdrant.Configuration;
 
 public static class QdrantConfigurator
 {

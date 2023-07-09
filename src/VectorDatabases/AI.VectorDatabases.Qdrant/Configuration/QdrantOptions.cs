@@ -1,6 +1,6 @@
-﻿using AI.VectorDatabaseQdrant.VectorStorage.Models;
+﻿using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
-namespace AI.VectorDatabaseQdrant.Configuration;
+namespace AI.VectorDatabase.Qdrant.Configuration;
 
 public class QdrantOptions
 {    /// <summary>
