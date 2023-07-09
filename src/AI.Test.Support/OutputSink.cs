@@ -2,7 +2,7 @@
 using Serilog.Events;
 using Serilog.Formatting;
 
-namespace Azure.OpenAI.Tests.Utils;
+namespace AI.Test.Support;
 
 public class OutputSink : ILogEventSink
 {

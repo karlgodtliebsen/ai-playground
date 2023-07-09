@@ -1,24 +1,24 @@
 ﻿using System.Text.Json.Serialization;
+
+using AI.Test.Support;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Collections;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
+
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
-using Qdrant.Tests.Utils;
-
+using Qdrant.Tests.Fixtures;
 
 using Xunit.Abstractions;
 
-using Distance = AI.VectorDatabase.Qdrant.VectorStorage.Models.Distance;
-using PointStruct = AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload.PointStruct;
-
 namespace Qdrant.Tests;
 
-
+[Collection("VectorDb Collection")]
 public class TestOfVectorDb
 {
     private readonly ITestOutputHelper output;
@@ -27,37 +27,20 @@ public class TestOfVectorDb
     private readonly QdrantOptions options;
     private readonly JsonSerializerOptions serializerOptions;
 
-    public TestOfVectorDb(ITestOutputHelper output)
+    public TestOfVectorDb(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
+        fixture.GetOutput = () => output;
         this.output = output;
-        this.factory = HostApplicationFactory.Build(
-            environment: () => "IntegrationTests",
-            serviceContext: (services, configuration) =>
-            {
-                services.AddQdrant(configuration);
-            },
-            fixedDateTime: () => DateTimeOffset.UtcNow,
-            output: () => output
-        );
-        logger = factory.Services.GetRequiredService<ILogger>();
-        options = factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
-
+        this.factory = fixture.Factory;
+        this.options = fixture.Options;
+        this.logger = fixture.Logger;
+        LaunchDocker.Launch();
         serializerOptions = new JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
     }
 
-
-    /*
-     https://github.com/qdrant/qdrant/blob/master/QUICK_START.md
-    docker run -p 6333:6333 qdrant/qdrant
-
-    docker run -p 6333:6333 \
-    -v $(pwd)/path/to/data:/qdrant/storage \
-    -v $(pwd)/path/to/custom_config.yaml:/qdrant/config/production.yaml \
-    qdrant/qdrant
-    */
 
     private const string collectionName = "test-collection";
 

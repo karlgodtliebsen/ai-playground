@@ -48,6 +48,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\AI.Library\AI.Library.csproj" />
+	  <ProjectReference Include="..\..\..\AI.Test.Support\AI.Test.Support.csproj" />
 	  <ProjectReference Include="..\..\AI.CaaP.Repository\AI.CaaP.Repository.csproj" />
 	  <ProjectReference Include="..\..\AI.CaaP\AI.CaaP.csproj" />
 	</ItemGroup>

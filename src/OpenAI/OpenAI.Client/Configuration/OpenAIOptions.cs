@@ -15,12 +15,4 @@ public class OpenAIOptions
     {
         return new Uri(OpenAIUri);
     }
-
-    //"OpenAi": {
-    //    "Endpoint": "",
-    //    "Key": "",
-    //    "ModelName": "chatmodel",
-    //    "MaxConversationTokens": "2000"
-    //}
-
 }

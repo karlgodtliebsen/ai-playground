@@ -1,5 +1,6 @@
-﻿using Azure.AI.OpenAI;
-using Azure.OpenAI.Tests.Utils;
+﻿using AI.Test.Support;
+
+using Azure.AI.OpenAI;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

@@ -1,14 +1,14 @@
-﻿using AI.VectorDatabase.Qdrant.Configuration;
+﻿using AI.Test.Support;
+using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
+
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
-using Qdrant.Tests.Utils;
-
+using Qdrant.Tests.Fixtures;
 
 using Xunit.Abstractions;
 
@@ -16,6 +16,7 @@ using Xunit.Abstractions;
 namespace Qdrant.Tests;
 
 
+[Collection("VectorDb Collection")]
 public class TestOfQdrant
 {
     private readonly ITestOutputHelper output;
@@ -24,30 +25,15 @@ public class TestOfQdrant
     private readonly QdrantOptions options;
 
 
-    public TestOfQdrant(ITestOutputHelper output)
+    public TestOfQdrant(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
         this.output = output;
-        this.factory = HostApplicationFactory.Build(
-            environment: () => "IntegrationTests",
-            serviceContext: (services, configuration) =>
-            {
-                services.AddQdrant(configuration);
-            },
-            fixedDateTime: () => DateTimeOffset.UtcNow,
-            output: () => output
-        );
-        logger = factory.Services.GetRequiredService<ILogger>();
-        options = factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
+        this.factory = fixture.Factory;
+        this.options = fixture.Options;
+        this.logger = fixture.Logger;
+        LaunchDocker.Launch();
     }
-    /*
-     https://github.com/qdrant/qdrant/blob/master/QUICK_START.md
-    docker run -p 6333:6333 qdrant/qdrant
 
-    docker run -p 6333:6333 \
-    -v $(pwd)/path/to/data:/qdrant/storage \
-    -v $(pwd)/path/to/custom_config.yaml:/qdrant/config/production.yaml \
-    qdrant/qdrant
-    */
 
     private const string collectionName = "test-collection";
 

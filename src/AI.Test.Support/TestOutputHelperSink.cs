@@ -2,7 +2,7 @@
 using Serilog.Events;
 using Xunit.Abstractions;
 
-namespace Qdrant.Tests.Utils;
+namespace AI.Test.Support;
 
 public class TestOutputHelperSink : ILogEventSink
 {

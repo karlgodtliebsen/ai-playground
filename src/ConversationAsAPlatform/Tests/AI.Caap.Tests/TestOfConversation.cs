@@ -5,6 +5,7 @@ using AI.CaaP.Domain;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
 using AI.CaaP.Repository.DatabaseContexts;
+using AI.Test.Support;
 
 using FluentAssertions;
 
@@ -16,8 +17,6 @@ using OpenAI.Client.Domain;
 using OpenAI.Client.OpenAI.HttpClients;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;
 using OpenAI.Client.OpenAI.Models.Requests;
-
-using Qdrant.Tests.Utils;
 
 using Xunit.Abstractions;
 

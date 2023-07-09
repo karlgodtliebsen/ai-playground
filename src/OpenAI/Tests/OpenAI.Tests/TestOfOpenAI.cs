@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using AI.Test.Support;
+
+using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,7 +11,6 @@ using OpenAI.Client.OpenAI.Models.Chat;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;
 using OpenAI.Client.OpenAI.Models.Images;
 using OpenAI.Client.OpenAI.Models.Requests;
-using OpenAI.Tests.Utils;
 
 using Xunit.Abstractions;
 

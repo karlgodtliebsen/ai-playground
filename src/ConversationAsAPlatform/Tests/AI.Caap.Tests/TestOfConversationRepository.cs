@@ -5,13 +5,12 @@ using AI.CaaP.Domain;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
 using AI.CaaP.Repository.DatabaseContexts;
+using AI.Test.Support;
 
 using FluentAssertions;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-
-using Qdrant.Tests.Utils;
 
 using Xunit.Abstractions;
 

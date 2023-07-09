@@ -2,12 +2,11 @@
 using AI.CaaP.Configuration;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
+using AI.Test.Support;
 
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
-
-using Qdrant.Tests.Utils;
 
 using Xunit.Abstractions;
 
