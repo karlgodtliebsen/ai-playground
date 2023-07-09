@@ -14,9 +14,20 @@ using OpenAI.Client.Domain;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;
 
 const string applicationName = "AI CaaP Client - Conversation as a Platform";
-const string collectionName = "console-app-collection";
 
-Console.WriteLine("To use this application, you must start a Docker instance of Qdrant, or use local/cloud service. Remember to update appSettings ");
+Console.ForegroundColor = ConsoleColor.Red;
+Console.WriteLine("To use this application, you must start a Docker instance of Qdrant:");
+Console.WriteLine("docker run -p 6333:6333 qdrant/qdrant.");
+Console.WriteLine("Or you can connect to a local/cloud service, remember to update appSettings.");
+
+Console.WriteLine();
+Console.WriteLine("You must also create a MsSql Database using the Entity Framework Migrations in 'AI.CaaP.Repository' by calling DestroyMigration and UseMigration.");
+
+Console.ResetColor();
+
+
+Console.WriteLine("Press any key to continue");
+Console.ReadLine();
 
 
 Observability.StartLogging(applicationName);
@@ -27,28 +38,20 @@ builder.AddSecrets<Program>();
 builder.Services
     .AddAppConfiguration(builder.Configuration);
 
+
+
 Observability.LogFinalizedConfiguration(applicationName);
 
 IHost host = builder.Build();
 using (host)
 {
     //Vector database run
-    Console.WriteLine($"Attempting to Create a Collection {collectionName} in Qdrant");
-
-    var client = host.Services.GetRequiredService<IVectorDb>();
-    await client.RemoveCollection(collectionName, CancellationToken.None);
-
-    var vectorParams = client.CreateParams(4, Distance.DOT, true);
-    var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
-    result.Switch(
-
-        collectionInfo => Console.WriteLine($"Created Collection {collectionName} in Qdrant. Status {collectionInfo}"),
-        error => throw new QdrantException(error.Error)
-    );
+    Console.WriteLine("Running a Qdrant VectorDb demo..");
+    await RunAVectorDbDemo(host.Services);
 
     //CaaP run
-    //database must be created first
-    Console.WriteLine("Running a Conversation..");
+
+    Console.WriteLine("Running a Conversation demo..");
     await RunAPersistedConversation(host.Services);
 
     Console.WriteLine("...");
@@ -64,11 +67,35 @@ Observability.StopLogging(applicationName);
 /// </summary>
 public partial class Program
 {
+    static async Task RunAVectorDbDemo(IServiceProvider services)
+    {
+        const string collectionName = "console-app-collection";
+
+        //Vector database run
+        Console.WriteLine($"Attempting to Create a Collection {collectionName} in Qdrant");
+
+        var client = services.GetRequiredService<IVectorDb>();
+        await client.RemoveCollection(collectionName, CancellationToken.None);
+
+        var vectorParams = client.CreateParams(4, Distance.DOT, true);
+        var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
+        result.Switch(
+
+            collectionInfo => Console.WriteLine($"Created Collection {collectionName} in Qdrant. Status {collectionInfo}"),
+            error => throw new QdrantException(error.Error)
+        );
+    }
+
     static async Task RunAPersistedConversation(IServiceProvider services)
     {
         // Short demo. use the AI.CaaP.WebAPI to create a conversation using agents and userId
 
-        services.CleanDatabase();
+        //database must be created first
+        Console.WriteLine("Recreating the mssql database..");
+        services.DestroyMigration();
+        services.UseMigration();
+
+        //services.CleanDatabase();
         var conversationRepository = services.GetRequiredService<IConversationRepository>();
         var aiChatService = services.GetRequiredService<IOpenAiChatCompletionService>();
 

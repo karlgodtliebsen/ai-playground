@@ -1,15 +1,11 @@
-﻿using System.Data.Common;
-
-using AI.CaaP.Configuration;
+﻿using AI.CaaP.Configuration;
 using AI.CaaP.Domain;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
-using AI.CaaP.Repository.DatabaseContexts;
 using AI.Test.Support;
 
 using FluentAssertions;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using Xunit.Abstractions;
@@ -36,17 +32,6 @@ public class TestOfConversationRepository
                     .AddRepository()
                     .AddDatabaseContext(configuration)
                     ;
-                if (!UseRelationelDatabase)
-                {
-                    var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ConversationDbContext>));
-                    if (dbContextDescriptor != null) services.Remove(dbContextDescriptor);
-                    var dbConnectionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbConnection));
-                    if (dbConnectionDescriptor != null) services.Remove(dbConnectionDescriptor);
-                    services.AddDbContext<ConversationDbContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("ConversationDatabase");
-                    });
-                }
             },
             fixedDateTime: () => DateTimeOffset.UtcNow,
             output: () => output

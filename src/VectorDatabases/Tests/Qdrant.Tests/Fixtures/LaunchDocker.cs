@@ -1,6 +1,6 @@
 ﻿using AI.Test.Support;
 
-namespace Qdrant.Tests;
+namespace Qdrant.Tests.Fixtures;
 
 public static class LaunchDocker
 {
@@ -13,6 +13,7 @@ public static class LaunchDocker
     {
         //no action
     }
+
     /*
      https://github.com/qdrant/qdrant/blob/master/QUICK_START.md
     docker run -p 6333:6333 qdrant/qdrant
