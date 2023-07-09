@@ -1,6 +1,7 @@
 ﻿using AI.VectorDatabaseQdrant.Configuration;
 using AI.VectorDatabaseQdrant.VectorStorage;
 using AI.VectorDatabaseQdrant.VectorStorage.Models;
+using AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
 
 using FluentAssertions;
 

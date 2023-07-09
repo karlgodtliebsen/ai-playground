@@ -1,6 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AI.VectorDatabaseQdrant.VectorStorage.Models;
+using AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
+
+namespace AI.VectorDatabaseQdrant.VectorStorage.Models.Collections;
 
 
 

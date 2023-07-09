@@ -1,4 +1,4 @@
-﻿namespace AI.VectorDatabaseQdrant.VectorStorage.Models;
+﻿namespace AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
 
 public class ScalarQuantization
 {

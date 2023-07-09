@@ -1,6 +1,9 @@
-﻿using AI.VectorDatabaseQdrant.Configuration;
+﻿using System.Text.Json.Serialization;
+
+using AI.VectorDatabaseQdrant.Configuration;
 using AI.VectorDatabaseQdrant.VectorStorage;
-using AI.VectorDatabaseQdrant.VectorStorage.Models;
+using AI.VectorDatabaseQdrant.VectorStorage.Models.Collections;
+using AI.VectorDatabaseQdrant.VectorStorage.Models.Search;
 
 using FluentAssertions;
 
@@ -13,7 +16,7 @@ using Qdrant.Tests.Utils;
 using Xunit.Abstractions;
 
 using Distance = AI.VectorDatabaseQdrant.VectorStorage.Models.Distance;
-using PointStruct = AI.VectorDatabaseQdrant.VectorStorage.Models.PointStruct;
+using PointStruct = AI.VectorDatabaseQdrant.VectorStorage.Models.Payload.PointStruct;
 
 namespace Qdrant.Tests;
 
@@ -24,6 +27,7 @@ public class TestOfVectorDb
     private readonly ILogger logger;
     private readonly HostApplicationFactory factory;
     private readonly QdrantOptions options;
+    private readonly JsonSerializerOptions serializerOptions;
 
     public TestOfVectorDb(ITestOutputHelper output)
     {
@@ -39,6 +43,11 @@ public class TestOfVectorDb
         );
         logger = factory.Services.GetRequiredService<ILogger>();
         options = factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
+
+        serializerOptions = new JsonSerializerOptions()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
     }
 
 
@@ -105,29 +114,170 @@ public class TestOfVectorDb
             error => throw new QdrantException(error.Error)
         );
     }
-
     [Fact]
-    public async Task AddVectorToCollections()
+    public async Task AddVectorToCollectionAndUseSearch()
     {
         await VerifyCreateCollectionInVectorDb();
-        await Task.Delay(1000);
+        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var points = CreatePoints();
+        var result = await client.Upsert(collectionName, points, CancellationToken.None);
+        result.Switch(
 
+            _ => output.WriteLine("Succeeded"),
+            error => throw new QdrantException(error.Error)
+        );
+
+        var vector = new float[]
+        {
+            0.05f, 0.61f, 0.76f, 0.74f
+        };
+
+        var searchResult = await client.Search(collectionName, vector, CancellationToken.None);
+        searchResult.Switch(
+
+            r =>
+            {
+                r.Length.Should().Be(6);
+                output.WriteLine("Result: " + r.First(x => x.Score > 1.0).Score);
+            },
+            error => throw new QdrantException(error.Error)
+        );
+    }
+
+    public async Task AddBasicDataToCollection()
+    {
+        await VerifyCreateCollectionInVectorDb();
+        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var points = CreatePoints();
+        var result = await client.Upsert(collectionName, points, CancellationToken.None);
+        result.Switch(
+
+            _ => output.WriteLine("Succeeded"),
+            error => throw new QdrantException(error.Error)
+        );
+    }
+
+    [Fact]
+    public async Task AddVectorToCollectionAndUseSearchWithPayload()
+    {
+        await AddBasicDataToCollection();
         var client = factory.Services.GetRequiredService<IVectorDb>();
 
-        //float[] vector = new float[] { 1, 2, 3, 4/*, 5, 6, 7, 8, 9, 10 */};
-        //string text = Distance.DOT;
-        //[
-        //{ "id": 1, "vector": [0.05, 0.61, 0.76, 0.74], "payload": { "city": "Berlin"} },
-        //{ "id": 2, "vector": [0.19, 0.81, 0.75, 0.11], "payload": { "city": ["Berlin", "London"] } },
-        //{ "id": 3, "vector": [0.36, 0.55, 0.47, 0.94], "payload": { "city": ["Berlin", "Moscow"] } },
-        //{ "id": 4, "vector": [0.18, 0.01, 0.85, 0.80], "payload": { "city": ["London", "Moscow"] } },
-        //{ "id": 5, "vector": [0.24, 0.18, 0.22, 0.44], "payload": { "count": [0]} },
-        //{ "id": 6, "vector": [0.35, 0.08, 0.11, 0.44]}
-        //]
-        //"[{\"id\":1,\"vector\":[0.05,0.61,0.76,0.74],\"payload\":{\"city\":\"Berlin\"}},{\"id\":2,\"vector\":[0.19,0.81,0.75,0.11],\"payload\":{\"city\":[\"Berlin\",\"London\"]}},{\"id\":3,\"vector\":[0.36,0.55,0.47,0.94],\"payload\":{\"city\":[\"Berlin\",\"Moscow\"]}},{\"id\":4,\"vector\":[0.18,0.01,0.85,0.8],\"payload\":{\"city\":[\"London\",\"Moscow\"]}},{\"id\":5,\"vector\":[0.24,0.18,0.22,0.44],\"payload\":{\"count\":[0]}},{\"id\":6,\"vector\":[0.35,0.08,0.11,0.44]}]"
+        var vector = new float[]
+        {
+            0.05f, 0.61f, 0.76f, 0.74f
+        };
+
+        var search = new SearchBody();
+        search.SetVector(vector);
+        search.SetWithPayload(true);
+
+        var searchResult = await client.Search(collectionName, search, CancellationToken.None);
+        searchResult.Switch(
+
+            r =>
+            {
+                r.Length.Should().Be(6);
+                foreach (var scoredPoint in r)
+                {
+                    output.WriteLine("Result: " + scoredPoint);
+                }
+            },
+            error => throw new QdrantException(error.Error)
+        );
+    }
+
+    [Fact]
+    public async Task AddVectorToCollectionAndUseSearchWithMustFilter()
+    {
+        await AddBasicDataToCollection();
+        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var vector = new float[]
+        {
+            0.05f, 0.61f, 0.76f, 0.74f
+        };
+
+        var search = new SearchBody();
+        search.SetVector(vector);
+        search.SetWithPayload(true);
+
+        search.Filter = new SearchFilter() { };
+        search.Filter.AddMust(new ConditionalFilter
+        {
+            Key = "city",
+            Match = new MatchFilter()
+            {
+                Value = "Berlin"
+            }
+        }
+        );
+
+        var serialized = JsonSerializer.Serialize(search, serializerOptions);
+        output.WriteLine(serialized);
+
+        var searchResult = await client.Search(collectionName, search, CancellationToken.None);
+        searchResult.Switch(
+
+            r =>
+            {
+                r.Length.Should().Be(3);
+                foreach (var scoredPoint in r)
+                {
+                    output.WriteLine("Result: " + scoredPoint);
+                }
+            },
+            error => throw new QdrantException(error.Error)
+        );
+    }
+
+    [Fact]
+    public async Task AddVectorToCollectionAndUseSearchWithMustNotFilter()
+    {
+        await AddBasicDataToCollection();
+        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var points = CreatePoints();
+        var vector = new float[]
+        {
+            0.05f, 0.61f, 0.76f, 0.74f
+        };
+
+        var search = new SearchBody();
+        search.SetVector(vector);
+        search.SetWithPayload(true);
+        search.Filter = new SearchFilter() { };
+        search.Filter.AddMustNot(new ConditionalFilter
+        {
+            Key = "city",
+            Match = new MatchFilter()
+            {
+                Value = "Berlin"
+            }
+        }
+        );
+
+        var serialized = JsonSerializer.Serialize(search, serializerOptions);
+        output.WriteLine(serialized);
+
+        var searchResult = await client.Search(collectionName, search, CancellationToken.None);
+        searchResult.Switch(
+
+            r =>
+            {
+                r.Length.Should().Be(3);
+                foreach (var scoredPoint in r)
+                {
+                    output.WriteLine("Result: " + scoredPoint);
+                }
+            },
+            error => throw new QdrantException(error.Error)
+        );
+    }
+
+    //https://qdrant.github.io/qdrant/redoc/index.html#tag/points/operation/search_points
+    private IList<PointStruct> CreatePoints()
+    {
         IList<PointStruct> points = new List<PointStruct>()
         {
-
             new PointStruct()
             {
                 Id = 1,
@@ -179,28 +329,6 @@ public class TestOfVectorDb
                 Vector = new float[] { 0.35f, 0.08f, 0.11f, 0.44f }
             }
         };
-
-        var result = await client.Upsert(collectionName, points, CancellationToken.None);
-
-        result.Switch(
-
-            _ => output.WriteLine("Succeeded"),
-            error => throw new QdrantException(error.Error)
-        );
-
-        var vector = new float[]
-        {
-            0.05f, 0.61f, 0.76f, 0.74f
-        };
-
-        var searchResult = await client.Search(collectionName, vector, CancellationToken.None);
-        searchResult.Switch(
-
-            r =>
-            {
-                output.WriteLine("Result: " + r.First(x => x.Score > 1.0).Score);
-            },
-            error => throw new QdrantException(error.Error)
-        );
+        return points;
     }
 }

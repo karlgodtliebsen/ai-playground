@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AI.VectorDatabaseQdrant.VectorStorage.Models;
+namespace AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
 
 public class VectorParams
 {
@@ -26,8 +26,8 @@ public class VectorParams
 
     public VectorParams(int size = 1, string distance = "Cosine", bool onDisk = true)
     {
-        this.Size = size;
-        this.Distance = distance;
-        this.OnDisk = onDisk;
+        Size = size;
+        Distance = distance;
+        OnDisk = onDisk;
     }
 }

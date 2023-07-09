@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 using AI.VectorDatabaseQdrant.Configuration;
 using AI.VectorDatabaseQdrant.VectorStorage.Models;
+using AI.VectorDatabaseQdrant.VectorStorage.Models.Collections;
+using AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
+using AI.VectorDatabaseQdrant.VectorStorage.Models.Search;
 
 using Microsoft.Extensions.Options;
 
@@ -12,17 +15,6 @@ using OneOf;
 using Serilog;
 
 using SerilogTimings.Extensions;
-
-//using CollectCreationBody = AI.VectorDatabaseQdrant.VectorStorage.Models.CollectCreationBody;
-//using CollectionInfo = AI.VectorDatabaseQdrant.VectorStorage.Models.CollectionInfo;
-//using CollectionList = AI.VectorDatabaseQdrant.VectorStorage.Models.CollectionList;
-//using PointStruct = AI.VectorDatabaseQdrant.VectorStorage.Models.PointStruct;
-//using PointsUpsertBody = AI.VectorDatabaseQdrant.VectorStorage.Models.PointsUpsertBody;
-//using ScoredPoint = AI.VectorDatabaseQdrant.VectorStorage.Models.ScoredPoint;
-//using SearchBody = QdrantCSharp.Models.SearchBody;
-//using UpdateResult = QdrantCSharp.Models.UpdateResult;
-//using UpdateStatus = QdrantCSharp.Enums.UpdateStatus;
-//using VectorParams = AI.VectorDatabaseQdrant.VectorStorage.Models.VectorParams;
 
 namespace AI.VectorDatabaseQdrant.VectorStorage;
 
@@ -246,15 +238,22 @@ public class QdrantDb : IVectorDb
             );
     }
 
-    public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, float[] queryVector, CancellationToken cancellationToken, int limit = 10, int offset = 0)
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, float[] queryVector, CancellationToken cancellationToken,
+        int limit = 10, int offset = 0)
     {
         var payLoad = new SearchBody()
         {
             Limit = limit,
             Offset = offset,
-            Vector = queryVector
         };
+        payLoad.SetVector(queryVector);
         var res = await PostAsync<SearchBody, ScoredPoint[]>($"/collections/{collectionName}/points/search", payLoad, cancellationToken);
+        return res;
+    }
+
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, SearchBody query, CancellationToken cancellationToken)
+    {
+        var res = await PostAsync<SearchBody, ScoredPoint[]>($"/collections/{collectionName}/points/search", query, cancellationToken);
         return res;
     }
 }

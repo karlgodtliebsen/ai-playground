@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using AI.VectorDatabaseQdrant.VectorStorage.Models.Payload;
 
-namespace AI.VectorDatabaseQdrant.VectorStorage.Models;
+namespace AI.VectorDatabaseQdrant.VectorStorage.Models.Collections;
 
 public class CollectionParams
 {
