@@ -3,7 +3,7 @@
 The purpose of this repository is to provide a playground for learning about using AI API, specifically OpenAI and other language models, using dotnet. It aims to demonstrate how to integrate and use AI products together with dotnet technologies.
 
 ### OpenAI:
-A dotnet Web API 'OpenAI.Client' with a Test project and a WPF application that shows how to use it.
+A dotnet Client 'OpenAI.Client' with a Test project and a WPF application that shows how to use it.
 
 ### Llamasharp:
 A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. This project could be a candidate for a missing feature at Llamasharp.
