@@ -2,7 +2,7 @@
 using Serilog.Events;
 using Serilog.Formatting;
 
-namespace OpenAI.Tests.Utils;
+namespace LlamaSharp.Tests.Utils;
 
 public class OutputSink : ILogEventSink
 {

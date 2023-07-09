@@ -1,14 +1,11 @@
 ﻿using AI.Library.Configuration;
 using AI.Library.Utils;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 using Serilog;
-
 using Xunit.Abstractions;
 
-namespace OpenAI.Tests.Utils;
+namespace LlamaSharp.Tests.Utils;
 
 public class HostApplicationFactory
 {

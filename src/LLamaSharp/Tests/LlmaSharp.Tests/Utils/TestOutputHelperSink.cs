@@ -3,7 +3,7 @@ using Serilog.Events;
 
 using Xunit.Abstractions;
 
-namespace OpenAI.Tests.Utils;
+namespace LlamaSharp.Tests.Utils;
 
 public class TestOutputHelperSink : ILogEventSink
 {

@@ -1,41 +1,35 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentAssertions;
 
-using OpenAI.Tests.Utils;
+using LlamaSharp.Tests.Utils;
 
-using Xunit.Abstractions;
+using LLamaSharpApp.WebAPI.Controllers.Services;
 
-namespace OpenAI.Tests;
+using Microsoft.Extensions.DependencyInjection;
 
+namespace LlamaSharp.Tests;
 
-public class TestOfLlamaSharpClients
+public class TestOfLlamaSharpClients : IClassFixture<IntegrationTestWebApplicationFactory>, IDisposable
 {
-    private readonly ITestOutputHelper output;
-    private readonly ILogger logger;
-    private readonly HostApplicationFactory factory;
-    private readonly string path;
+    private readonly IntegrationTestWebApplicationFactory factory;
 
-    public TestOfLlamaSharpClients(ITestOutputHelper output)
+    public TestOfLlamaSharpClients(IntegrationTestWebApplicationFactory factory)
     {
-        this.output = output;
-        this.factory = HostApplicationFactory.Build(
-            environment: () => "IntegrationTests",
-            serviceContext: (services, configuration) =>
-            {
-                //services.AddOpenAIConfiguration(configuration);
-            },
-            fixedDateTime: () => DateTimeOffset.UtcNow,
-            output: () => output
-        );
-        logger = factory.Services.GetRequiredService<ILogger>();
-        path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
-
+        this.factory = factory;
+    }
+    public void Dispose()
+    {
+        factory.Dispose();
     }
 
 
     [Fact]
-    public async Task Verify_WIP_()
+    public async Task VerifyThatUserIdProviderFindsUserSubject()
     {
-        throw new NotImplementedException();
+        using var scope = factory.Services.CreateScope();
+        var userProvider = scope.ServiceProvider.GetRequiredService<IUserIdProvider>();
+        userProvider.UserId.Should().Be(factory.UserId);
     }
+
+    //TODO: extend the tests to verify that the clients work as expected
 
 }
