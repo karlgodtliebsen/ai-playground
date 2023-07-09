@@ -4,10 +4,15 @@ namespace OpenAI.Client.OpenAI.Models.Requests;
 
 public class EmbeddingsRequest : ModelBaseRequest
 {
+    /// <summary>
+    /// <a href="https://platform.openai.com/docs/guides/embeddings/what-are-embeddings" />
+    /// </summary>
     public EmbeddingsRequest()
     {
-        RequestUri = "embeddings";
+        RequestUri = "embeddings";//text-embedding-ada-002 
     }
+
+    //text-embedding-ada-002 
 
     [JsonPropertyName("input")]
     ///Input text to embed, encoded as a string or array of tokens.
@@ -23,6 +28,7 @@ public class EmbeddingsRequest : ModelBaseRequest
     [JsonPropertyName("user")]
     public string? User { get; init; } = default!;
 }
+
 
 //TODO: Add support for the following request
 //https://platform.openai.com/docs/api-reference/embeddings

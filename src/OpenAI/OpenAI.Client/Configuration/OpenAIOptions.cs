@@ -5,7 +5,7 @@ public class OpenAIOptions
     /// <summary>
     /// Configuration ConfigSectionName
     /// </summary>
-    public const string ConfigSectionName = "OpenAIOptions";
+    public const string ConfigSectionName = "OpenAI";
 
     public string OrganisationKey { get; set; } = null!;
     public string ApiKey { get; set; } = null!;
@@ -15,5 +15,12 @@ public class OpenAIOptions
     {
         return new Uri(OpenAIUri);
     }
+
+    //"OpenAi": {
+    //    "Endpoint": "",
+    //    "Key": "",
+    //    "ModelName": "chatmodel",
+    //    "MaxConversationTokens": "2000"
+    //}
 
 }

@@ -1,4 +1,4 @@
-﻿namespace AI.Library.Qdrant.VectorStorage;
+﻿namespace AI.VectorDatabaseQdrant.VectorStorage;
 
 [Serializable]
 public class QdrantException : Exception

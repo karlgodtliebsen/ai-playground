@@ -32,6 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Assets\alpaca.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

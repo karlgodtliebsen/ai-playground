@@ -1,6 +1,6 @@
-﻿using QdrantCSharp.Enums;
+﻿using AI.VectorDatabaseQdrant.VectorStorage.Models;
 
-namespace AI.Library.Qdrant.Configuration;
+namespace AI.VectorDatabaseQdrant.Configuration;
 
 public class QdrantOptions
 {    /// <summary>
@@ -8,7 +8,9 @@ public class QdrantOptions
      /// </summary>
     public const string ConfigSectionName = "Qdrant";
 
-    public string QdrantUrl { get; set; }
+    public string Url { get; set; }
+
+    public string ApiKey { get; set; } = "n/a";
 
 
     public int DefaultDimension { get; set; } = 4;

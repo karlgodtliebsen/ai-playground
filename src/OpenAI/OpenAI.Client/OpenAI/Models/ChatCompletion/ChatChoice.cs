@@ -33,29 +33,3 @@ public class ChatChoice
     [JsonPropertyName("finish_reason")]
     public string? FinishReason { get; set; } = default!;
 }
-
-
-
-/// </summary>
-public class StreamingError
-{
-
-    /// <summary>
-    /// DeltaIndex.
-    /// </summary>
-    [JsonPropertyName("error")]
-    public ErrorMessage Error { get; set; } = default!;
-
-}
-
-/// </summary>
-public class ErrorMessage
-{
-
-    /// <summary>
-    /// Log Prob Model.
-    /// </summary>
-    [JsonPropertyName("message")]
-    public string Message { get; set; } = default!;
-
-}
