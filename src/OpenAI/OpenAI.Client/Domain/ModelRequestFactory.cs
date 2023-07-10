@@ -2,6 +2,11 @@
 
 namespace OpenAI.Client.Domain;
 
+/// <summary>
+/// OpenAI model factory
+/// Details at <a href="https://platform.openai.com/docs/models/how-we-use-your-data" />
+/// <a href="https://learn.microsoft.com/en-us/semantic-kernel/prompt-engineering/llm-models?source=recommendations" />
+/// </summary>
 public class ModelRequestFactory : IModelRequestFactory
 {
     private readonly OpenAiModelsVerification modelVerificationOptions;
@@ -15,7 +20,7 @@ public class ModelRequestFactory : IModelRequestFactory
     /// </summary>
     /// <typeparam name="T">The Request to Create an Instance of</typeparam>
     /// <param name="create"></param>/// <returns></returns>
-    /// <remarks>Details at https://platform.openai.com/docs/models/how-we-use-your-data</remarks>
+    /// <remarks><a href="https://platform.openai.com/docs/models/how-we-use-your-data" /></remarks>
     /// <exception cref="ArgumentException"></exception>
     public T CreateRequest<T>(Func<T> create) where T : class, IModelRequest, new()
     {

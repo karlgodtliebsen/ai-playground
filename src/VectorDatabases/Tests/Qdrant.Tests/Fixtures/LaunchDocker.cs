@@ -1,12 +1,22 @@
 ﻿using AI.Test.Support;
 
+using DotNet.Testcontainers.Configurations;
+
 namespace Qdrant.Tests.Fixtures;
 
 public static class LaunchDocker
 {
     static LaunchDocker()
     {
-        TestContainerFactory.Build("qdrant/qdrant:latest", 6333, 6333, 6333).Wait();
+        //https://www.lambdatest.com/automation-testing-advisor/csharp/methods/DotNet.Testcontainers.Builders.TestcontainersBuilderTDockerContainer.WithVolumeMount
+        var sourcePath = Path.GetFullPath(Path.Combine("/temp", "qdrant_storage"));
+        if (!Directory.Exists(sourcePath))
+        {
+            Directory.CreateDirectory(sourcePath);
+        }
+        TestContainerFactory.Build("qdrant/qdrant:latest", 6333, 6333, 6333,
+              b => b.WithBindMount(sourcePath, "/qdrant/storage", AccessMode.ReadWrite)
+            ).Wait();
     }
 
     public static void Launch()

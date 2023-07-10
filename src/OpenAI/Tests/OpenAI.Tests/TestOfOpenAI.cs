@@ -59,7 +59,7 @@ public class TestOfOpenAIClients
                     output.WriteLine(model.Id);
                 }
             },
-        error => throw new Exception(error.Error)
+        error => throw new AIException(error.Error)
         );
     }
 
@@ -100,7 +100,7 @@ public class TestOfOpenAIClients
                 completion.Should().Be("This is indeed a test");
                 output.WriteLine(completion);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
 
     }
@@ -144,7 +144,7 @@ public class TestOfOpenAIClients
                 completion.Should().Contain("Tuesday");
                 output.WriteLine(completion);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
             );
     }
 
@@ -181,7 +181,7 @@ public class TestOfOpenAIClients
                 completion.Should().Contain("I assist you today?");
                 output.WriteLine(completion);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -226,7 +226,7 @@ public class TestOfOpenAIClients
                     }
                 }
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -272,7 +272,7 @@ public class TestOfOpenAIClients
                     }
                 }
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -317,7 +317,7 @@ public class TestOfOpenAIClients
                         }
                     }
                 },
-                error => throw new Exception(error.Error)
+                error => throw new AIException(error.Error)
             );
         }
     }
@@ -355,7 +355,7 @@ public class TestOfOpenAIClients
                 completion.Should().NotBeNullOrWhiteSpace();
                 output.WriteLine(completion);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -382,7 +382,7 @@ public class TestOfOpenAIClients
             {
                 r.Results.Should().NotBeNull();//Shallow check
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -413,7 +413,7 @@ public class TestOfOpenAIClients
                 completion.Should().Contain("What day of the week is it");
                 output.WriteLine(completion);
             }
-            , error => throw new Exception(error.Error)
+            , error => throw new AIException(error.Error)
         );
     }
 
@@ -440,7 +440,7 @@ public class TestOfOpenAIClients
                 data.Embedding.Length.Should().Be(1536);
                 output.WriteLine(data.Embedding.Length.ToString());
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -480,7 +480,7 @@ public class TestOfOpenAIClients
             {
                 fileData.FileData.Length.Should().BeGreaterThan(0);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -493,7 +493,7 @@ public class TestOfOpenAIClients
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Switch(
             _ => { },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
 
         await Task.Delay(TimeSpan.FromSeconds(10));
@@ -514,7 +514,7 @@ public class TestOfOpenAIClients
             {
                 fileData.FileData.Length.Should().Be(0);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -534,7 +534,7 @@ public class TestOfOpenAIClients
             {
                 fd.FileData.Length.Should().Be(1);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
 
         foreach (var fileData in response!.AsT0.FileData)
@@ -547,7 +547,7 @@ public class TestOfOpenAIClients
                     fd.Bytes.Should().Be(5514);
                     fd.Filename.Should().Be("fine-tuning-data.jsonl");
                 },
-                error => throw new Exception(error.Error)
+                error => throw new AIException(error.Error)
             );
         }
     }
@@ -566,7 +566,7 @@ public class TestOfOpenAIClients
             {
                 fd.FileData.Length.Should().Be(1);
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
 
         foreach (var fileData in response!.AsT0.FileData)
@@ -577,7 +577,7 @@ public class TestOfOpenAIClients
                 {
                     r.Length.Should().Be(5514);
                 },
-                error => throw new Exception(error.Error)
+                error => throw new AIException(error.Error)
             );
         }
     }
@@ -608,7 +608,7 @@ public class TestOfOpenAIClients
                     output.WriteLine(model.Url);
                 }
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -637,7 +637,7 @@ public class TestOfOpenAIClients
                     output.WriteLine(model.Data);
                 }
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
     }
 
@@ -672,7 +672,7 @@ public class TestOfOpenAIClients
                     output.WriteLine(model.Url);
                 }
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
 
     }
@@ -705,7 +705,7 @@ public class TestOfOpenAIClients
                     output.WriteLine(model.Url);
                 }
             },
-            error => throw new Exception(error.Error)
+            error => throw new AIException(error.Error)
         );
 
     }

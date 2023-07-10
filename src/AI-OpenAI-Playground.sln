@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.CaaP.WebAPI", "Conversat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.Test.Support", "AI.Test.Support\AI.Test.Support.csproj", "{7FA0D828-9A40-4943-AE43-53DFC45A4958}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Embeddings.Qdrant.Tests", "VectorDatabases\Tests\Embeddings.Qdrant.Tests\Embeddings.Qdrant.Tests.csproj", "{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,10 @@ Global
 		{7FA0D828-9A40-4943-AE43-53DFC45A4958}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FA0D828-9A40-4943-AE43-53DFC45A4958}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FA0D828-9A40-4943-AE43-53DFC45A4958}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{46C98F64-A28D-4D2A-84B5-141E6276063B} = {F0E9906E-2AB5-479A-B2A8-519DE4CD4917}
 		{905260F0-6153-4939-A9A1-03CC16D7555C} = {F0E9906E-2AB5-479A-B2A8-519DE4CD4917}
 		{8AF9E45F-AF31-436F-A52B-38C27D5DF540} = {F0E9906E-2AB5-479A-B2A8-519DE4CD4917}
+		{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E} = {930C3329-24E2-4062-B97D-7E374BAA0732}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A365742-464F-4F92-BCF0-6F080A5C398C}

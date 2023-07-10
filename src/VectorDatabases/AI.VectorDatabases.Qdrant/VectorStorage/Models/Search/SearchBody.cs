@@ -16,13 +16,14 @@ public class SearchBody
     /// Named mode:
     /// { "vector": { "vector": [1.0, 2.0, 3.0], "name": "image-embeddings" } }
     /// </summary>
-    [JsonPropertyName("vector")] public object Vector { get; private set; }
+    [JsonPropertyName("vector")]
+    public object Vector { get; private set; } = default!;
 
-    /// <summary>
-    /// Unnamed mode:
-    /// { "vector": [1.0, 2.0, 3.0]}
-    /// </summary>
-    /// <param name="vector"></param>
+    public void SetVector(double[] vector)
+    {
+        Vector = vector;
+    }
+
     public void SetVector(float[] vector)
     {
         Vector = vector;

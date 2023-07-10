@@ -18,10 +18,10 @@ public class HostApplicationFactory
     public IServiceProvider Services { get; private set; } = null!;
 
     public static HostApplicationFactory Build(
-        Func<string>? environment = null,
-        Action<IServiceCollection, IConfigurationRoot>? serviceContext = null,
-        Func<DateTimeOffset>? fixedDateTime = null,
-        Func<ITestOutputHelper>? output = null)
+                                                Func<string>? environment = null,
+                                                Action<IServiceCollection, IConfigurationRoot>? serviceContext = null,
+                                                Func<DateTimeOffset>? fixedDateTime = null,
+                                                Func<ITestOutputHelper>? output = null)
     {
         var instance = new HostApplicationFactory();
         var builder = new ConfigurationBuilder();

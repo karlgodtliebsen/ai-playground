@@ -1,6 +1,7 @@
 ﻿using AI.VectorDatabase.Qdrant.VectorStorage.Models.Collections;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
+
 using OneOf;
 
 namespace AI.VectorDatabase.Qdrant.VectorStorage;
@@ -23,7 +24,31 @@ public interface IVectorDb
 
     Task<OneOf<IList<string>, ErrorResponse>> GetCollectionNames(CancellationToken cancellationToken);
 
-    Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken);
+
+    //Task<OneOf<bool, ErrorResponse>> Delete(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken);
+
+    //Task<OneOf<bool, ErrorResponse>> Delete(string collectionName, IList<PointStructWithNamedVector> points, CancellationToken cancellationToken);
+
+    //Task<OneOf<bool, ErrorResponse>> Delete(string collectionName, BatchStruct batch, CancellationToken cancellationToken);
+
+    Task<OneOf<bool, ErrorResponse>> DeletePayloadKeys(string collectionName, DeleteFilter filter, CancellationToken cancellationToken);
+
+    Task<OneOf<bool, ErrorResponse>> Update(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken);
+
+    Task<OneOf<bool, ErrorResponse>> Update(string collectionName, IList<PointStructWithNamedVector> points, CancellationToken cancellationToken);
+
+    Task<OneOf<bool, ErrorResponse>> Update(string collectionName, BatchStruct batch, CancellationToken cancellationToken);
+
+
+    Task<OneOf<bool, ErrorResponse>> Upload(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken);
+
+    Task<OneOf<bool, ErrorResponse>> Upload(string collectionName, IList<PointStructWithNamedVector> points, CancellationToken cancellationToken);
+
+
+    Task<OneOf<bool, ErrorResponse>> Upload(string collectionName, BatchStruct batch, CancellationToken cancellationToken);
+
+
+    Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, double[] vector, CancellationToken cancellationToken, int limit = 10, int offset = 0);
 
     Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, float[] vector, CancellationToken cancellationToken, int limit = 10, int offset = 0);
 

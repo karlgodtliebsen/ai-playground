@@ -1,14 +1,18 @@
 ﻿namespace OpenAI.Client.Domain;
 
 /// <summary>
-/// https://platform.openai.com/docs/models/how-we-use-your-data
+///  <a href="https://platform.openai.com/docs/models/how-we-use-your-data" />
+/// <a href="https://learn.microsoft.com/en-us/semantic-kernel/prompt-engineering/llm-models?source=recommendations" />
 /// </summary>
 public static class OpenAiModelMap
 {
 
     public static Dictionary<string, string[]> Map { get; set; } = new();
 
-    //TODO: should be moved to configuration (appsettings)
+    /// <summary>
+    /// <a href="https://platform.openai.com/docs/models/how-we-use-your-data" />
+    /// <a href="https://learn.microsoft.com/en-us/semantic-kernel/prompt-engineering/llm-models?source=recommendations" />
+    /// /// </summary>
     static OpenAiModelMap()
     {
         Map.Add("chat/completions", "gpt-4, gpt-4-0613, gpt-4-32k, gpt-4-32k-0613, gpt-3.5-turbo, gpt-3.5-turbo-0613, gpt-3.5-turbo-16k, gpt-3.5-turbo-16k-0613".Split(','));

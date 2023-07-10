@@ -2,6 +2,9 @@
 
 namespace AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 
+/// <summary>
+/// <a href="https://qdrant.tech/documentation/concepts/search/" />
+/// </summary>
 public class SearchFilter
 {
 

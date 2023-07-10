@@ -10,6 +10,7 @@ namespace Qdrant.Tests.Fixtures;
 
 public sealed class VectorDbTestFixture : IDisposable
 {
+    public static bool Launch { get; set; } = true;
     public ILogger Logger { get; private set; }
     public HostApplicationFactory Factory { get; private set; }
     public QdrantOptions Options { get; private set; }
@@ -29,7 +30,10 @@ public sealed class VectorDbTestFixture : IDisposable
         );
         Logger = Factory.Services.GetRequiredService<ILogger>();
         Options = Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
-        LaunchDocker.Launch();
+        if (Launch)
+        {
+            // LaunchDocker.Launch();
+        }
     }
 
     public void Dispose()

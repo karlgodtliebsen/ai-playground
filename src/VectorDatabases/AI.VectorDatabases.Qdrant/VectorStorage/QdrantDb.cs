@@ -1,14 +1,20 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Collections;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
+
 using Microsoft.Extensions.Options;
+
 using OneOf;
+
 using Serilog;
+
+using SerilogTimings;
 using SerilogTimings.Extensions;
 
 namespace AI.VectorDatabase.Qdrant.VectorStorage;
@@ -23,6 +29,20 @@ public class QdrantDb : IVectorDb
     private readonly JsonSerializerOptions serializerOptions;
     private readonly QdrantOptions options;
 
+
+    public class HttpStatusResponse
+    {
+        [JsonPropertyName("status")]
+        public HttpErrorResponse? Status { get; init; }
+        [JsonPropertyName("time")]
+        public double Time { get; init; }
+    }
+    public class HttpErrorResponse
+    {
+        [JsonPropertyName("error")]
+        public string? Error { get; init; }
+    }
+
     public QdrantDb(IOptions<QdrantOptions> options, HttpClient httpClient, ILogger logger)
     {
         this.httpClient = httpClient;
@@ -33,57 +53,99 @@ public class QdrantDb : IVectorDb
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
     }
+    private async Task<OneOf<TR, ErrorResponse>> VerifyResult<TR>(HttpResponseMessage response, string subUri, Operation op, CancellationToken cancellationToken)
+    {
+        if (response.StatusCode != System.Net.HttpStatusCode.BadRequest)
+        {
+            var result = await response.Content.ReadFromJsonAsync<QdrantHttpResponse<TR>>(cancellationToken: cancellationToken);
+            if (result is null)
+            {
+                return await HandleError(response, subUri, cancellationToken);
+            }
+            if (result.Status is not OperationStatus.Succeeded)
+            {
+                return await HandleError(response, subUri, cancellationToken);
+            }
+            op.Complete();
+            return result!.Result;
+        }
+        return await HandleError(response, subUri, cancellationToken);
+    }
+    private OneOf<TR, ErrorResponse> VerifyResult<TR>(QdrantHttpResponse<TR>? response, Operation op)
+    {
+        if (response is null)
+        {
+            return new ErrorResponse($"Operation failed.");
+        }
+
+        if (response.Status is not OperationStatus.Succeeded)
+        {
+            return new ErrorResponse($"Operation failed with status {response.Status}.");
+        }
+
+        op.Complete();
+        return response!.Result;
+    }
+
+    private ErrorResponse HandleError(Exception ex, string subUri)
+    {
+        logger.Error(ex, "Operation Failed for {uri}", subUri);
+        return new ErrorResponse("Operation Failed for" + subUri + ex.Message);
+    }
+
+    private async Task<ErrorResponse> HandleError(HttpResponseMessage? response, string subUri, CancellationToken cancellationToken, Exception? ex = null)
+    {
+        if (ex is not null)
+        {
+            logger.Error(ex, "Operation Failed {uri}", subUri);
+            return new ErrorResponse("Fatal Error Calling Qdrant.\n" + ex.Message);
+        }
+        if (response is not null && response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            var result = await response.Content.ReadFromJsonAsync<HttpStatusResponse>(cancellationToken: cancellationToken);
+            if (result is null)
+            {
+                return new ErrorResponse($"Operation failed.");
+            }
+
+            if (result.Status is not null)
+            {
+                return new ErrorResponse($"Operation failed with status: {result.Status.Error}.");
+            }
+        }
+        return new ErrorResponse("Fatal Error Calling Qdrant");
+    }
+
 
     private async Task<OneOf<TR, ErrorResponse>> PostAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation($"PostAsync {subUri}");
+        HttpResponseMessage? response = null;
         try
         {
             PrepareClient();
-            var response = await httpClient.PostAsJsonAsync(subUri, payload, serializerOptions, cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadFromJsonAsync<Models.QdrantHttpResponse<TR>>(cancellationToken: cancellationToken);
-            if (result is null)
-            {
-                return new ErrorResponse($"PostAsync failed.");
-            }
-            if (result.Status is not OperationStatus.Succeeded)
-            {
-                return new ErrorResponse($"PostAsync failed with status {result.Status}.");
-            }
-            op.Complete();
-            return result!.Result;
+            response = await httpClient.PostAsJsonAsync(subUri, payload, serializerOptions, cancellationToken);
+            return await VerifyResult<TR>(response, subUri, op, cancellationToken);
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "PostAsync Failed {uri}", subUri);
-            return new ErrorResponse(ex.Message);
+            return await HandleError(response, subUri, cancellationToken, ex);
         }
     }
+
     private async Task<OneOf<TR, ErrorResponse>> PutAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation($"PutAsync {subUri}");
+        HttpResponseMessage? response = null;
         try
         {
             PrepareClient();
-            var response = await httpClient.PutAsJsonAsync(subUri, payload, serializerOptions, cancellationToken);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadFromJsonAsync<Models.QdrantHttpResponse<TR>>(cancellationToken: cancellationToken);
-            if (result is null)
-            {
-                return new ErrorResponse($"PutAsync failed.");
-            }
-            if (result.Status is not OperationStatus.Succeeded)
-            {
-                return new ErrorResponse($"PutAsync failed with status {result.Status}.");
-            }
-            op.Complete();
-            return result!.Result;
+            response = await httpClient.PutAsJsonAsync(subUri, payload, serializerOptions, cancellationToken);
+            return await VerifyResult<TR>(response, subUri, op, cancellationToken);
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "PutAsync Failed {uri}", subUri);
-            return new ErrorResponse(ex.Message);
+            return await HandleError(response, subUri, cancellationToken, ex);
         }
     }
 
@@ -93,48 +155,30 @@ public class QdrantDb : IVectorDb
         try
         {
             PrepareClient();
-            var result = await httpClient.GetFromJsonAsync<Models.QdrantHttpResponse<TR>>(subUri, cancellationToken)!;
-            if (result is null)
-            {
-                return new ErrorResponse($"GetAsync failed.");
-            }
-            if (result.Status is not OperationStatus.Succeeded)
-            {
-                return new ErrorResponse($"GetAsync failed with status {result.Status}.");
-            }
-            op.Complete();
-            return result!.Result;
+            var response = await httpClient.GetFromJsonAsync<QdrantHttpResponse<TR>>(subUri, cancellationToken)!;
+            return VerifyResult(response, op);
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "GetAsync Failed {uri}", subUri);
-            return new ErrorResponse(ex.Message);
+            return HandleError(ex, subUri);
         }
     }
+
     private async Task<OneOf<TR, ErrorResponse>> DeleteAsync<TR>(string subUri, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation($"DeleteAsync {subUri}");
         try
         {
             PrepareClient();
-            var result = await httpClient.DeleteFromJsonAsync<Models.QdrantHttpResponse<TR>>(subUri, cancellationToken);
-            if (result is null)
-            {
-                return new ErrorResponse($"DeleteAsync failed.");
-            }
-            if (result.Status is not OperationStatus.Succeeded)
-            {
-                return new ErrorResponse($"DeleteAsync failed with status {result.Status}.");
-            }
-            op.Complete();
-            return result!.Result;
+            var response = await httpClient.DeleteFromJsonAsync<QdrantHttpResponse<TR>>(subUri, cancellationToken);
+            return VerifyResult(response, op);
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "DeleteAsync Failed {uri}", subUri);
-            return new ErrorResponse(ex.Message);
+            return HandleError(ex, subUri);
         }
     }
+
     private void PrepareClient()
     {
         httpClient.DefaultRequestHeaders.Clear();
@@ -218,9 +262,148 @@ public class QdrantDb : IVectorDb
         var result = await DeleteAsync<bool>($"/collections/{collectionName}", cancellationToken);
         return result;
     }
+    /*
+    https://qdrant.tech/documentation/concepts/points/#modify-points
+{
+    "points": [0, 3, 100],
+    "vectors": ["text", "image"]
+}
+    */
+
+    public async Task<OneOf<bool, ErrorResponse>> Delete(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
+    {
+        var payLoad = new PointsUpsertBody()
+        {
+            Points = points.ToList()
+        };
+        var result = await PostAsync<PointsUpsertBody, UpdateResult>($"/collections/{collectionName}/points/vectors/delete?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+    public async Task<OneOf<bool, ErrorResponse>> Delete(string collectionName, IList<PointStructWithNamedVector> points, CancellationToken cancellationToken)
+    {
+        var payLoad = new PointsWithNamedVectorsUpsertBody()
+        {
+            Points = points.ToList()
+        };
+        var result = await PostAsync<PointsWithNamedVectorsUpsertBody, UpdateResult>($"/collections/{collectionName}/points/vectors/delete?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+
+    public async Task<OneOf<bool, ErrorResponse>> Delete(string collectionName, BatchStruct batch, CancellationToken cancellationToken)
+    {
+        var payLoad = new BatchUpsertBody()
+        {
+            Batch = batch
+        };
+        var result = await PostAsync<BatchUpsertBody, UpdateResult>($"/collections/{collectionName}/points/vectors/delete?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+
+    public async Task<OneOf<bool, ErrorResponse>> DeletePayloadKeys(string collectionName, DeleteFilter filter, CancellationToken cancellationToken)
+    {
+        var result = await PostAsync<DeleteFilter, UpdateResult>($"/collections/{collectionName}/points/payload/delete?wait=true", filter, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+
+    public async Task<OneOf<bool, ErrorResponse>> Update(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
+    {
+        var payLoad = new PointsUpsertBody()
+        {
+            Points = points.ToList()
+        };
+        var result = await PostAsync<PointsUpsertBody, UpdateResult>($"/collections/{collectionName}/points/vectors?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+    public async Task<OneOf<bool, ErrorResponse>> Update(string collectionName, IList<PointStructWithNamedVector> points, CancellationToken cancellationToken)
+    {
+        var payLoad = new PointsWithNamedVectorsUpsertBody()
+        {
+            Points = points.ToList()
+        };
+        var result = await PostAsync<PointsWithNamedVectorsUpsertBody, UpdateResult>($"/collections/{collectionName}/points/vectors?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+
+    public async Task<OneOf<bool, ErrorResponse>> Update(string collectionName, BatchStruct batch, CancellationToken cancellationToken)
+    {
+        var payLoad = new BatchUpsertBody()
+        {
+            Batch = batch
+        };
+        var result = await PostAsync<BatchUpsertBody, UpdateResult>($"/collections/{collectionName}/points/vectors?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+    /// <summary>
+    /// <a href="https://qdrant.tech/documentation/concepts/payload/#set-payload">Set Payload</a>
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="points"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<OneOf<bool, ErrorResponse>> SetPayload(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
+    {
+        var payLoad = new PointsUpsertBody()
+        {
+            Points = points.ToList()
+        };
+        var result = await PostAsync<PointsUpsertBody, UpdateResult>($"/collections/{collectionName}/points/payload?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+    /// <summary>
+    ///   /// <a href="https://qdrant.tech/documentation/concepts/payload/#delete-payload">Delete Payload</a>
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="points"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<OneOf<bool, ErrorResponse>> DeletePayload(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
+    {
+        var payLoad = new PointsUpsertBody()
+        {
+            Points = points.ToList()
+        };
+        var result = await PostAsync<PointsUpsertBody, UpdateResult>($"/collections/{collectionName}/points/payload/delete?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
 
 
-    public async Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
+
+
+    /// <summary>
+    /// a href= "https://qdrant.tech/documentation/concepts/points/#upload-points" />
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="points"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<OneOf<bool, ErrorResponse>> Upload(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
     {
         var payLoad = new PointsUpsertBody()
         {
@@ -230,11 +413,48 @@ public class QdrantDb : IVectorDb
         return result.Match<OneOf<bool, ErrorResponse>>(
             updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
             error => error
-            );
+        );
+    }
+    /// <summary>
+    /// a href= "https://qdrant.tech/documentation/concepts/points/#upload-points" />
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="points"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<OneOf<bool, ErrorResponse>> Upload(string collectionName, IList<PointStructWithNamedVector> points, CancellationToken cancellationToken)
+    {
+        var payLoad = new PointsWithNamedVectorsUpsertBody()
+        {
+            Points = points.ToList()
+        };
+        var result = await PutAsync<PointsWithNamedVectorsUpsertBody, UpdateResult>($"/collections/{collectionName}/points?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+    /// <summary>
+    /// a href= "https://qdrant.tech/documentation/concepts/points/#upload-points" />
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="batch"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<OneOf<bool, ErrorResponse>> Upload(string collectionName, BatchStruct batch, CancellationToken cancellationToken)
+    {
+        var payLoad = new BatchUpsertBody()
+        {
+            Batch = batch
+        };
+        var result = await PutAsync<BatchUpsertBody, UpdateResult>($"/collections/{collectionName}/points?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
     }
 
-    public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, float[] queryVector, CancellationToken cancellationToken,
-        int limit = 10, int offset = 0)
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, double[] queryVector, CancellationToken cancellationToken, int limit = 10, int offset = 0)
     {
         var payLoad = new SearchBody()
         {
@@ -245,7 +465,17 @@ public class QdrantDb : IVectorDb
         var res = await PostAsync<SearchBody, ScoredPoint[]>($"/collections/{collectionName}/points/search", payLoad, cancellationToken);
         return res;
     }
-
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, float[] queryVector, CancellationToken cancellationToken, int limit = 10, int offset = 0)
+    {
+        var payLoad = new SearchBody()
+        {
+            Limit = limit,
+            Offset = offset,
+        };
+        payLoad.SetVector(queryVector);
+        var res = await PostAsync<SearchBody, ScoredPoint[]>($"/collections/{collectionName}/points/search", payLoad, cancellationToken);
+        return res;
+    }
     public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, SearchBody query, CancellationToken cancellationToken)
     {
         var res = await PostAsync<SearchBody, ScoredPoint[]>($"/collections/{collectionName}/points/search", query, cancellationToken);
