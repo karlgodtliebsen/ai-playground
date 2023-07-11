@@ -5,11 +5,14 @@ This is early work.
 
 ## How to download the source and build:
 
+### Select a Llma.cpp/ggml model
+
 Download a model like: wizardLM-7B.ggmlv3.q4_1.bin
 
 https://huggingface.co/TheBloke
 
 https://huggingface.co/TheBloke/wizardLM-7B-GGML/resolve/main/wizardLM-7B.ggmlv3.q4_1.bin
+
 
 These models has been testet:
 ```
@@ -21,7 +24,6 @@ ggml-vicuna-13B-1.1-q8_0.bin
 wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
 ```
 
-
 To build and use the projects, two projects with 'LlmaModels' folders need to be updated with the model of your choice:
 ```   
     LLamaSharpApp.WebAPI
@@ -31,13 +33,22 @@ Add the Model to the 'LlmaModels' folders, and mark it for "Copy If Newer".
 
 If you prefer to locate the model file(s) elsewhere, then modify the appsettings.json to point to the model.
 
+Add this section into appsettings.json
+
+```json
+  "LlmaModel": {
+    "modelPath": "LlmaModels\\wizardLM-7B.ggmlv3.q4_1.bin",
+  }
+
+```
+
+### Authentication
 The Asp.net Web APIs are configured to use Authentication:  
 Either fill out the appsettings.json section (Remember not to commit/publish the information) or use Keyvault or UserSecret during development.
 
 More information at: https://damienbod.com/
 
 Authentication can be disabled in the Program.cs files, and remember to remove the [Authentication] attributes from the controllers, and Hardcode some User Identity. 
-
 
 
 
