@@ -8,9 +8,19 @@ A dotnet Client 'OpenAI.Client' with a Test project and a WPF application that s
 ### Llamasharp:
 A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. This project could be a candidate for a missing feature at Llamasharp.
 
+These models has been testet:
+```
+wizardLM-7B.ggmlv3.q4_1.bin
+ggml-vic13b-uncensored-q4_1.bin
+ggml-vic13b-uncensored-q5_0.bin
+ggml-vicuna-13B-1.1-q4_0.bin
+ggml-vicuna-13B-1.1-q8_0.bin
+wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
+```
 
 ### Qdrant Vector database:
 A dotnet Web API for Qdrant Vector database 'AI.VectorDatabase.Qdrant' has been implemented and a Test project that show how to use it. A new implementation of the NuGet package 'Qdrant.Client' has been implemented
+
 
 ### Conversation as a Platform:
 A dotnet Web API 'AI.CaaP.WebAPI' + 'AI.CaaP.Repository' + 'AI.CaaP' for working on a Conversation as a Platform experience, with a Test project that show how to use it.
@@ -18,12 +28,23 @@ A dotnet Web API 'AI.CaaP.WebAPI' + 'AI.CaaP.Repository' + 'AI.CaaP' for working
 
 ### Dependencies:
 The projects uses other Open Source project: 
+```
+Oneof
+Serilog
+SerilogTimings
+Destructurama
+Polly
+NetEscapades.AspNetCore.SecurityHeader 
+Riok.Mapperly
+LLamaSharp
+LLamaSharp.Backend.Cpu
+Llama models from Huggingface.
+```
 
-Oneof, Serilog, SerilogTimings, Destructurama, Polly, NetEscapades.AspNetCore.SecurityHeader, Riok.Mapperly, LLamaSharp,  LLamaSharp.Backend.Cpu.
-
-The WEB API projects uses Azure AD for Authorization:
-
+The WEB API projects uses Azure AD for Authentication:
+```
 https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/
+```
 
 
 ## Inspiration
@@ -38,7 +59,9 @@ https://platform.openai.com/docs/api-reference/
 https://platform.openai.com/docs/
 
 #### Azure OpenAI Services:
-Microsoft Azure Cognitive Services also provide support for OpenAI. You can explore the overview and documentation of Azure OpenAI Services at:
+Microsoft Azure Cognitive Services also provide support for OpenAI. 
+You can explore the overview and documentation of Azure OpenAI Services at:
+
 https://learn.microsoft.com/en-us/azure/cognitive-services/openai/overview
 https://devblogs.microsoft.com/dotnet/getting-started-azure-openai-dotnet/
 
@@ -47,8 +70,11 @@ https://qdrant.github.io/qdrant/redoc/index.html
 
 
 ## GitHub Repositories
-Several GitHub repositories offer useful code examples, libraries, and resources related to OpenAI and dotnet integration. Here are some repositories worth checking out:
+Several GitHub repositories offer useful code examples, libraries, and resources related to OpenAI and dotnet integration. 
+
 Please explore these resources to gain insights and discover more possibilities for using AI products together with dotnet.
+
+Here are some repositories worth checking out:
 
 #### ChatGPT by lencx:
 https://github.com/lencx/ChatGPT
@@ -74,8 +100,20 @@ https://www.opensourceagenda.com/projects/openainet
 
 #### Azure Authentication/Identity:
 https://damienbod.com/
+
 https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/
 
+### Llama models (llma.cpp/ggml) from Huggingface:
+https://huggingface.co/TheBloke
+
+```
+wizardLM-7B.ggmlv3.q4_1.bin
+ggml-vic13b-uncensored-q4_1.bin
+ggml-vic13b-uncensored-q5_0.bin
+ggml-vicuna-13B-1.1-q4_0.bin
+ggml-vicuna-13B-1.1-q8_0.bin
+wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
+```
 
 ### Youtube:
 ```
@@ -90,6 +128,7 @@ ByteByteGo
 ```
 
 ## Configuration
+
 
 #### OpenAI:
 Add appsettings.json (I recommend using user secrets to avoid having the API key in the Repository)

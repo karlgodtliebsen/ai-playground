@@ -55,8 +55,6 @@ public sealed class EmbeddingsVectorDbTestFixture : IDisposable
         ModelFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LlamaModelOptions.ModelPath);
         RequestFactory = Factory.Services.GetRequiredService<IModelRequestFactory>();
         LlamaModelFactory = Factory.Services.GetRequiredService<ILlamaModelFactory>();
-
-        //LaunchDocker.Launch();
     }
 
     public void Dispose()

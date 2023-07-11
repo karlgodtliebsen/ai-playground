@@ -25,4 +25,8 @@
 
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
+  </ItemGroup>
+
 </Project>

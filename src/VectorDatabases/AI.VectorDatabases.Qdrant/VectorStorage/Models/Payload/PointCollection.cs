@@ -1,4 +1,6 @@
-﻿namespace AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
+﻿using System.Text.Json.Serialization;
+
+namespace AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 
 public class PointCollection : List<PointStruct>
 {
@@ -15,6 +17,7 @@ public class PointCollection : List<PointStruct>
     {
     }
 
+    [JsonIgnore]
     public int Dimension
     {
         get
@@ -27,3 +30,4 @@ public class PointCollection : List<PointStruct>
         }
     }
 }
+

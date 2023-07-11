@@ -1,9 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
+using AI.Library.Utils;
 using AI.Test.Support;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Collections;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 
@@ -37,6 +39,7 @@ public class TestOfVectorDbUsingPoints
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
+        LaunchQdrantDocker.Launch();
     }
 
 
@@ -69,13 +72,14 @@ public class TestOfVectorDbUsingPoints
         );
     }
 
+
     [Fact]
     public async Task AddVectorToCollectionAndUseSearch()
     {
         await CleanUpAndCreateCollectionInVectorDb();
         var client = factory.Services.GetRequiredService<IVectorDb>();
         var points = CreatePoints();
-        var result = await client.Upload(collectionName, points, CancellationToken.None);
+        var result = await client.Upsert(collectionName, points, CancellationToken.None);
         result.Switch(
 
             _ => output.WriteLine("Succeeded"),
@@ -87,13 +91,24 @@ public class TestOfVectorDbUsingPoints
             0.05f, 0.61f, 0.76f, 0.74f
         };
 
+        var payLoad = new SearchBody()
+        {
+            Limit = 10,
+            Offset = 0,
+        };
+        payLoad.SetVector(vector);
+        output.WriteLine(payLoad.ToJson(serializerOptions));
+
         var searchResult = await client.Search(collectionName, vector, CancellationToken.None);
         searchResult.Switch(
 
-            r =>
+            res =>
             {
-                r.Length.Should().Be(7);
-                output.WriteLine("Result: " + r.First(x => x.Score > 1.0).Score);
+                res.Length.Should().Be(7);
+                foreach (var r in res)
+                {
+                    output.WriteLine($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
+                }
             },
             error => throw new QdrantException(error.Error)
         );
@@ -104,7 +119,7 @@ public class TestOfVectorDbUsingPoints
         await CleanUpAndCreateCollectionInVectorDb();
         var client = factory.Services.GetRequiredService<IVectorDb>();
         var points = CreatePoints();
-        var result = await client.Upload(collectionName, points, CancellationToken.None);
+        var result = await client.Upsert(collectionName, points, CancellationToken.None);
         result.Switch(
 
             _ => output.WriteLine("Succeeded"),
@@ -130,12 +145,12 @@ public class TestOfVectorDbUsingPoints
         var searchResult = await client.Search(collectionName, search, CancellationToken.None);
         searchResult.Switch(
 
-            r =>
+            res =>
             {
-                r.Length.Should().Be(6);
-                foreach (var scoredPoint in r)
+                res.Length.Should().Be(7);
+                foreach (var r in res)
                 {
-                    output.WriteLine("Result: " + scoredPoint);
+                    output.WriteLine($"Result: {r.Payload!.ToJson()} {+r.Score} {r.Id}");
                 }
             },
             error => throw new QdrantException(error.Error)
@@ -173,12 +188,12 @@ public class TestOfVectorDbUsingPoints
         var searchResult = await client.Search(collectionName, search, CancellationToken.None);
         searchResult.Switch(
 
-            r =>
+            res =>
             {
-                r.Length.Should().Be(4);
-                foreach (var scoredPoint in r)
+                res.Length.Should().Be(4);
+                foreach (var r in res)
                 {
-                    output.WriteLine("Result: " + scoredPoint);
+                    output.WriteLine($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
                 }
             },
             error => throw new QdrantException(error.Error)
@@ -215,12 +230,12 @@ public class TestOfVectorDbUsingPoints
         var searchResult = await client.Search(collectionName, search, CancellationToken.None);
         searchResult.Switch(
 
-            r =>
+            res =>
             {
-                r.Length.Should().Be(2);
-                foreach (var scoredPoint in r)
+                res.Length.Should().Be(3);
+                foreach (var r in res)
                 {
-                    output.WriteLine("Result: " + scoredPoint);
+                    output.WriteLine($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
                 }
             },
             error => throw new QdrantException(error.Error)
@@ -231,26 +246,36 @@ public class TestOfVectorDbUsingPoints
     [Fact]
     public async Task AddDataWithNamedVectorsToCollectionAndUseSearch()
     {
-        await CleanUpAndCreateCollectionInVectorDb();
+        await CleanupCollection();
 
         var client = factory.Services.GetRequiredService<IVectorDb>();
-        var points = CreateImageTextPoints();
-        var result = await client.Upload(collectionName, points, CancellationToken.None);
-        result.Switch(
+
+        var vectors = new CollectCreationBodyWithMultipleNamedVectors();
+        vectors.NamedVectors = new Dictionary<string, VectorParams>()
+        {
+            {"image", new VectorParams(4,Distance.DOT)} ,
+            {"text", new VectorParams(8,Distance.COSINE)} ,
+        };
+        output.WriteLine(vectors.ToJson(serializerOptions));
+
+        var result1 = await client.CreateCollection(collectionName, vectors, CancellationToken.None);
+        result1.Switch(
 
             _ => output.WriteLine("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
 
-        var pointsWithNamedVectors = CreatePointsWithNames();
 
+        var pointsWithNamedVectors = CreatePointsWithNames();
         var body = new PointsWithNamedVectorsUpsertBody()
         {
             Points = pointsWithNamedVectors.ToArray()
         };
 
-        output.WriteLine(JsonSerializer.Serialize(body, serializerOptions));
-        result = await client.Upload(collectionName, pointsWithNamedVectors, CancellationToken.None);
+        output.WriteLine("");
+        output.WriteLine(body.ToJson(serializerOptions));
+
+        var result = await client.Upsert(collectionName, pointsWithNamedVectors, CancellationToken.None);
         result.Switch(
             _ => output.WriteLine("Succeeded"),
             error => throw new QdrantException(error.Error)
@@ -261,18 +286,31 @@ public class TestOfVectorDbUsingPoints
             0.9, 0.1, 0.1, 0.2
         };
 
-        var searchResult = await client.Search(collectionName, vector, CancellationToken.None);
+        var search = new SearchBody();
+        search.Limit = 3;
+        var p = new Dictionary<string, object>()
+                {
+                    {"name", "image"},
+                    {"vector", vector}
+                };
+
+        search.SetVector(p);
+        output.WriteLine("");
+        output.WriteLine(search.ToJson(serializerOptions));
+
+        var searchResult = await client.Search(collectionName, search, CancellationToken.None);
         searchResult.Switch(
-            r =>
+            res =>
             {
-                r.Length.Should().Be(3);
-                output.WriteLine("Result: " + r.First(x => x.Score > 1.0).Score);
+                res.Length.Should().Be(2);
+                foreach (var r in res)
+                {
+                    output.WriteLine($"Result: {+r.Score} {r.Id}");
+                }
             },
             error => throw new QdrantException(error.Error)
         );
     }
-
-
 
 
     //https://qdrant.github.io/qdrant/redoc/index.html#tag/points/operation/search_points
@@ -327,7 +365,7 @@ public class TestOfVectorDbUsingPoints
             },
             new ()
             {
-                Id =Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 Vector = new double[] { 0.35f, 0.08f, 0.11f, 0.44f }
             },
             new ()
@@ -344,41 +382,63 @@ public class TestOfVectorDbUsingPoints
         return points;
     }
 
-    private IList<PointStruct> CreateImageTextPoints()
-    {
-        IList<PointStruct> points = new List<PointStruct>()
-        {
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Vector = new double[] { 0.05f, 0.61f, 0.76f, 0.74f },
-                Payload = new Dictionary<string, object>()
-                {
-                    { "image", "text" }
-                }
-            },
-             new()
-            {
-                Id = Guid.NewGuid(),
-                Vector = new double[] { 0.2, 0.1, 0.3, 0.9 },
-                Payload = new Dictionary<string, object>()
-                {
-                    { "image", "text" }
-                }
-            },
+    //private IList<PointStruct> CreateImageTextPoints()
+    //{
+    //    IList<PointStruct> points = new List<PointStruct>()
+    //    {
+    //        new()
+    //        {
+    //            Id = Guid.NewGuid(),
+    //            Vector = new double[] { 0.05f, 0.61f, 0.76f, 0.74f },
+    //            Payload = new Dictionary<string, object>()
+    //            {
+    //                { "image", "text" }
+    //            }
+    //        },
+    //         new()
+    //        {
+    //            Id = Guid.NewGuid(),
+    //            Vector = new double[] { 0.2, 0.1, 0.3, 0.9 },
+    //            Payload = new Dictionary<string, object>()
+    //            {
+    //                { "image", "text" }
+    //            }
+    //        },
 
-             new()
-             {
-                 Id = Guid.NewGuid(),
-                 Vector = new double[] { 0.9, 0.1, 0.1, 0.2 },
-                 Payload = new Dictionary<string, object>()
-                 {
-                     { "image", "text" }
-                 }
-             },
-        };
-        return points;
-    }
+    //         new()
+    //         {
+    //             Id =Guid.NewGuid(),
+    //             Vector = new double[] { 0.9, 0.1, 0.1, 0.2 },
+    //             Payload = new Dictionary<string, object>()
+    //             {
+    //                 { "image", "text" }
+    //             }
+    //         },
+    //    };
+    //    return points;
+    //}
+
+    /*
+     {
+    "points": [
+        {
+            "id": 1,
+            "vector": {
+                "image": [0.9, 0.1, 0.1, 0.2],
+                "text": [0.4, 0.7, 0.1, 0.8, 0.1, 0.1, 0.9, 0.2]
+            }
+        },
+        {
+            "id": 2,
+            "vector": {
+                "image": [0.2, 0.1, 0.3, 0.9],
+                "text": [0.5, 0.2, 0.7, 0.4, 0.7, 0.2, 0.3, 0.9]
+            }
+        }
+    ]
+}
+
+    */
 
     private IList<PointStructWithNamedVector> CreatePointsWithNames()
     {

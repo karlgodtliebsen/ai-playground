@@ -32,6 +32,7 @@ public class TestOfQdrantAdministration
         this.factory = fixture.Factory;
         this.options = fixture.Options;
         this.logger = fixture.Logger;
+        LaunchQdrantDocker.Launch();
     }
 
 

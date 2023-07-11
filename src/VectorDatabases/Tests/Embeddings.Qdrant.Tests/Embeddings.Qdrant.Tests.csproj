@@ -68,15 +68,6 @@
 	  <None Update="Files\UBER_2022.html">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="LlamaModels\all-MiniLM-L12-v2.bin">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="LlamaModels\all-MiniLM-L6-v2.bin">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="LlamaModels\wizardLM-7B.ggmlv3.q4_1.bin">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 
 

@@ -111,13 +111,30 @@ public class SearchBody
     /// Whether to return the point vector with the result?
     /// </summary>
     [JsonPropertyName("with_vector")] public object? WithVector { get; private set; } = default!;
-
+    /// <summary>
+    /// (WithVector (WithVector (boolean) or Array of WithVector (strings))) or (any or null)
+    /// Default: null
+    /// Whether to return the point vector with the result?
+    /// </summary>
     public void SetWithVector(bool withVector)
     {
         WithVector = withVector;
     }
-
+    /// <summary>
+    /// (WithVector (WithVector (boolean) or Array of WithVector (strings))) or (any or null)
+    /// Default: null
+    /// Whether to return the point vector with the result?
+    /// </summary>
     public void SetWithVector(string[] withVector)
+    {
+        WithVector = withVector;
+    }
+    /// <summary>
+    /// (WithVector (WithVector (boolean) or Array of WithVector (strings))) or (any or null)
+    /// Default: null
+    /// Whether to return the point vector with the result?
+    /// </summary>
+    public void SetWithVector(object withVector)
     {
         WithVector = withVector;
     }

@@ -18,7 +18,6 @@ using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
 
 using Xunit.Abstractions;
@@ -38,7 +37,6 @@ public class TestOfSearchScenarioInVectorDbUsingPoints
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly JsonSerializerOptions serializerOptions;
     private readonly QdrantOptions qdrantOptions;
-    private readonly OpenAIOptions openAIOptions;
     private readonly EmbeddingsVectorDbTestFixture fixture;
     private readonly IModelRequestFactory requestFactory;
     private readonly string testFilesPath;
@@ -54,20 +52,31 @@ public class TestOfSearchScenarioInVectorDbUsingPoints
         this.requestFactory = fixture.RequestFactory;
         this.fixture = fixture;
         this.qdrantOptions = fixture.QdrantOptions;
-        this.openAIOptions = fixture.OpenAIOptions;
         this.testFilesPath = fixture.TestFilesPath;
         this.modelFilesPath = fixture.ModelFilesPath;
         this.llamaModelFactory = fixture.LlamaModelFactory;
+
+        //test embeddings with these ggml models. all succeeded
+        //manuallly testet  for now
+        //default model
+        //fixture.LlamaModelOptions.ModelPath = "LlamaModels/wizardLM-7B.ggmlv3.q4_1.bin";
+        //fixture.LlamaModelOptions.ModelPath = "LlamaModels/ggml-vic13b-uncensored-q4_1.bin";
+        //fixture.LlamaModelOptions.ModelPath = "LlamaModels/ggml-vic13b-uncensored-q5_0.bin";
+        //fixture.LlamaModelOptions.ModelPath = "LlamaModels/ggml-vicuna-13B-1.1-q4_0.bin";
+        //fixture.LlamaModelOptions.ModelPath = "LlamaModels/ggml-vicuna-13B-1.1-q8_0.bin";
+        //fixture.LlamaModelOptions.ModelPath = "LlamaModels/wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin";
+
+        modelFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fixture.LlamaModelOptions.ModelPath);
         var modelParams = llamaModelFactory.CreateModelParams();
         modelParams.ModelPath = modelFilesPath;
-        modelParams.ContextSize = 384;
-        //'all-MiniLM-L6-v2'
+
         embedder = llamaModelFactory.CreateEmbedder(modelParams);
 
         serializerOptions = new JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
+        LaunchQdrantDocker.Launch();
     }
 
     private const string collectionName = "books-search-collection";
@@ -107,7 +116,7 @@ public class TestOfSearchScenarioInVectorDbUsingPoints
 
         //points.ToJson(serializerOptions);
 
-        var result = await client.Upload(collectionName, points, CancellationToken.None);
+        var result = await client.Upsert(collectionName, points, CancellationToken.None);
         result.Switch(
 
             _ => output.WriteLine("Succeeded"),
@@ -136,7 +145,7 @@ public class TestOfSearchScenarioInVectorDbUsingPoints
                 res.Length.Should().Be(search.Limit);
                 foreach (var r in res)
                 {
-                    output.WriteLine("Result: " + r.Payload.ToJson() + " " + +r.Score + " " + +r.Id);
+                    output.WriteLine($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
                 }
             },
             error => throw new QdrantException(error.Error)
@@ -169,17 +178,17 @@ public class TestOfSearchScenarioInVectorDbUsingPoints
         };
 
         var points = new PointCollection();
-        var i = 10;
         foreach (var document in documents)
         {
             var point = new PointStruct()
             {
-                Id = i++,//Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 Payload = new Dictionary<string, string>()
                 {
                     {"name", document.Name},
                     {"author", document.Author},
                     {"year", document.Year.ToString()},
+                    {"description", document.Description},
                 },
                 Vector = embedder.GetEmbeddings(document.Description).Select(x => (double)x).ToArray()
             };

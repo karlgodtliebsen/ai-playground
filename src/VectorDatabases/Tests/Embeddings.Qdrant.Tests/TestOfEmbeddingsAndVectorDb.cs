@@ -47,30 +47,18 @@ public class TestOfEmbeddingsAndVectorDb
         this.qdrantOptions = fixture.QdrantOptions;
         this.openAIOptions = fixture.OpenAIOptions;
         this.testFilesPath = fixture.TestFilesPath;
+
         this.logger = fixture.Logger;
         serializerOptions = new JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
+        LaunchQdrantDocker.Launch();
     }
 
-    private const string collectionName = "embeddings-collection";
+    private const string collectionName = "embeddings-test-collection";
 
-
-    [Fact]
-    public async Task VerifyInitialAccessToVectorDb()
-    {
-        var client = hostApplicationFactory.Services.GetRequiredService<IVectorDb>();
-        var result = await client.GetCollections(CancellationToken.None);
-        result.Switch(
-
-            collectionList => output.WriteLine(string.Join("|", collectionList.Collections.Select(c => c.Name))),
-            error => throw new QdrantException(error.Error)
-        );
-    }
-
-    [Fact]
-    public async Task CleanupCollection()
+    private async Task CleanupCollection()
     {
         var client = hostApplicationFactory.Services.GetRequiredService<IVectorDb>();
         var result = await client.RemoveCollection(collectionName, CancellationToken.None);
@@ -93,12 +81,6 @@ public class TestOfEmbeddingsAndVectorDb
     Semantic memory is not likely to give you an exact match — but it will always give you a set 
     of matches ranked in terms of how similar your query matches other pieces of text.
     */
-
-    [Fact(Skip = "Work in progress")]
-    public async Task SemanticSearchUsingEmbeddings()
-    {
-        // await VerifyEmbeddingsModelOpenAIClient();
-    }
 
 
     [Fact(Skip = "Takes to long. Needs solving")]
@@ -124,7 +106,8 @@ public class TestOfEmbeddingsAndVectorDb
 
 
     [Fact(Skip = "To many request. Needs solving")]
-    public async Task VerifyEmbeddingsModelOpenAIClient()
+    // [Fact]
+    public async Task VerifyEmbeddingsModelUsingOpenAIClient()
     {
         var fileData = await File.ReadAllTextAsync(Path.Combine(testFilesPath, "UBER_2019.html"));
 
@@ -174,7 +157,7 @@ public class TestOfEmbeddingsAndVectorDb
     {
         var client = hostApplicationFactory.Services.GetRequiredService<IVectorDb>();
         var points = CreatePoints(index, embeddings);
-        var result = await client.Upload(collectionName, points, CancellationToken.None);
+        var result = await client.Upsert(collectionName, points, CancellationToken.None);
         result.Switch(
 
             _ => output.WriteLine("Succeeded adding vector to qdrant: "),

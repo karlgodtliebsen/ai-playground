@@ -205,14 +205,24 @@ public class QdrantDb : IVectorDb
 
     public async Task<OneOf<bool, ErrorResponse>> CreateCollection(string collectionName, VectorParams vectorsConfig, CancellationToken cancellationToken)
     {
-        var payLoad = new CollectCreationBody()
+        var payLoad = new CreateCollectionBody()
         {
             Vectors = vectorsConfig
         };
-        var res = await PutAsync<CollectCreationBody, bool>($"/collections/{collectionName}", payLoad, cancellationToken);
+        var res = await PutAsync<CreateCollectionBody, bool>($"/collections/{collectionName}", payLoad, cancellationToken);
+        return res;
+    }
+    public async Task<OneOf<bool, ErrorResponse>> CreateCollection(string collectionName, CreateCollectionBody payLoad, CancellationToken cancellationToken)
+    {
+        var res = await PutAsync<CreateCollectionBody, bool>($"/collections/{collectionName}", payLoad, cancellationToken);
         return res;
     }
 
+    public async Task<OneOf<bool, ErrorResponse>> CreateCollection(string collectionName, CollectCreationBodyWithMultipleNamedVectors payLoad, CancellationToken cancellationToken)
+    {
+        var res = await PutAsync<CollectCreationBodyWithMultipleNamedVectors, bool>($"/collections/{collectionName}", payLoad, cancellationToken);
+        return res;
+    }
 
     public async Task<OneOf<CollectionList, ErrorResponse>> GetCollections(CancellationToken cancellationToken)
     {
@@ -232,7 +242,6 @@ public class QdrantDb : IVectorDb
     {
         return await GetAsync<CollectionInfo>($"/collections/{collectionName}", cancellationToken);
     }
-
 
     public async Task<OneOf<bool, ErrorResponse>> RemoveAllCollections(CancellationToken cancellationToken)
     {
@@ -262,13 +271,7 @@ public class QdrantDb : IVectorDb
         var result = await DeleteAsync<bool>($"/collections/{collectionName}", cancellationToken);
         return result;
     }
-    /*
-    https://qdrant.tech/documentation/concepts/points/#modify-points
-{
-    "points": [0, 3, 100],
-    "vectors": ["text", "image"]
-}
-    */
+
 
     public async Task<OneOf<bool, ErrorResponse>> Delete(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
     {
@@ -297,10 +300,7 @@ public class QdrantDb : IVectorDb
 
     public async Task<OneOf<bool, ErrorResponse>> Delete(string collectionName, BatchStruct batch, CancellationToken cancellationToken)
     {
-        var payLoad = new BatchUpsertBody()
-        {
-            Batch = batch
-        };
+        var payLoad = new BatchUpsertBody(batch);
         var result = await PostAsync<BatchUpsertBody, UpdateResult>($"/collections/{collectionName}/points/vectors/delete?wait=true", payLoad, cancellationToken);
         return result.Match<OneOf<bool, ErrorResponse>>(
             updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
@@ -344,16 +344,24 @@ public class QdrantDb : IVectorDb
 
     public async Task<OneOf<bool, ErrorResponse>> Update(string collectionName, BatchStruct batch, CancellationToken cancellationToken)
     {
-        var payLoad = new BatchUpsertBody()
-        {
-            Batch = batch
-        };
+        var payLoad = new BatchUpsertBody(batch);
         var result = await PostAsync<BatchUpsertBody, UpdateResult>($"/collections/{collectionName}/points/vectors?wait=true", payLoad, cancellationToken);
         return result.Match<OneOf<bool, ErrorResponse>>(
             updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
             error => error
         );
     }
+
+    /// <inheritdoc />
+    public async Task<OneOf<bool, ErrorResponse>> Update(string collectionName, BatchUpsertBody payLoad, CancellationToken cancellationToken)
+    {
+        var result = await PostAsync<BatchUpsertBody, UpdateResult>($"/collections/{collectionName}/points/vectors?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+
     /// <summary>
     /// <a href="https://qdrant.tech/documentation/concepts/payload/#set-payload">Set Payload</a>
     /// </summary>
@@ -394,8 +402,6 @@ public class QdrantDb : IVectorDb
     }
 
 
-
-
     /// <summary>
     /// a href= "https://qdrant.tech/documentation/concepts/points/#upload-points" />
     /// </summary>
@@ -403,7 +409,7 @@ public class QdrantDb : IVectorDb
     /// <param name="points"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<OneOf<bool, ErrorResponse>> Upload(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
+    public async Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
     {
         var payLoad = new PointsUpsertBody()
         {
@@ -422,7 +428,7 @@ public class QdrantDb : IVectorDb
     /// <param name="points"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<OneOf<bool, ErrorResponse>> Upload(string collectionName, IList<PointStructWithNamedVector> points, CancellationToken cancellationToken)
+    public async Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, IList<PointStructWithNamedVector> points, CancellationToken cancellationToken)
     {
         var payLoad = new PointsWithNamedVectorsUpsertBody()
         {
@@ -441,12 +447,24 @@ public class QdrantDb : IVectorDb
     /// <param name="batch"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<OneOf<bool, ErrorResponse>> Upload(string collectionName, BatchStruct batch, CancellationToken cancellationToken)
+    public async Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, BatchStruct batch, CancellationToken cancellationToken)
     {
-        var payLoad = new BatchUpsertBody()
-        {
-            Batch = batch
-        };
+        var payLoad = new BatchUpsertBody(batch);
+        var result = await PutAsync<BatchUpsertBody, UpdateResult>($"/collections/{collectionName}/points?wait=true", payLoad, cancellationToken);
+        return result.Match<OneOf<bool, ErrorResponse>>(
+            updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
+            error => error
+        );
+    }
+    /// <summary>
+    /// a href= "https://qdrant.tech/documentation/concepts/points/#upload-points" />
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="payLoad"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, BatchUpsertBody payLoad, CancellationToken cancellationToken)
+    {
         var result = await PutAsync<BatchUpsertBody, UpdateResult>($"/collections/{collectionName}/points?wait=true", payLoad, cancellationToken);
         return result.Match<OneOf<bool, ErrorResponse>>(
             updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
@@ -465,6 +483,7 @@ public class QdrantDb : IVectorDb
         var res = await PostAsync<SearchBody, ScoredPoint[]>($"/collections/{collectionName}/points/search", payLoad, cancellationToken);
         return res;
     }
+
     public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, float[] queryVector, CancellationToken cancellationToken, int limit = 10, int offset = 0)
     {
         var payLoad = new SearchBody()
