@@ -38,13 +38,12 @@ public class HostApplicationFactory
         IServiceCollection serviceCollection = new ServiceCollection();
         serviceContext?.Invoke(serviceCollection, configuration);
 
-        var outputHelper = output?.Invoke();
-        if (outputHelper is not null)
+        if (output is not null)
         {
             var cfg = Observability.CreateLoggerConfigurationUsingAppConfiguration(configuration);
             cfg = cfg
                 .MinimumLevel.Debug()
-                .WriteTo.Sink(new TestOutputHelperSink(outputHelper));
+                .WriteTo.Sink(new LazyTestOutputHelperSink(output));
             Log.Logger = cfg.CreateLogger();
         }
         else
@@ -55,10 +54,10 @@ public class HostApplicationFactory
         serviceCollection.AddSingleton(Log.Logger);
 
         instance.Services = serviceCollection.BuildServiceProvider();
-        var fixedDT = fixedDateTime?.Invoke();
-        if (fixedDT is not null)
+        var fixedDt = fixedDateTime?.Invoke();
+        if (fixedDt is not null)
         {
-            var dateTime = fixedDT.Value;
+            var dateTime = fixedDt.Value;
             var dpMock = new Mock<IDateTimeProvider>();
             dpMock
                 .Setup((x) => x.Now)

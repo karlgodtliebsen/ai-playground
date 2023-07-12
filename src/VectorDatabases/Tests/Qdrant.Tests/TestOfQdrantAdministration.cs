@@ -28,27 +28,15 @@ public class TestOfQdrantAdministration
 
     public TestOfQdrantAdministration(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
+        fixture.Output = output;
         this.output = output;
         this.factory = fixture.Factory;
         this.options = fixture.Options;
         this.logger = fixture.Logger;
-        LaunchQdrantDocker.Launch();
     }
 
 
     private const string collectionName = "test-collection";
-
-    [Fact]
-    public async Task CleanupCollections()
-    {
-        var client = factory.Services.GetRequiredService<IVectorDb>();
-        var result = await client.RemoveCollection(collectionName, CancellationToken.None);
-        result.Switch(
-            _ => { },
-            error => throw new QdrantException(error.Error)
-            );
-    }
-
 
     [Fact]
     public async Task VerifyInitialAccessToQdrant()
@@ -59,6 +47,17 @@ public class TestOfQdrantAdministration
             collections => collections.Should().NotBeNull(),
             error => throw new QdrantException(error.Error)
         );
+    }
+
+    [Fact]
+    public async Task CleanupCollections()
+    {
+        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var result = await client.RemoveCollection(collectionName, CancellationToken.None);
+        result.Switch(
+            _ => { logger.Information("Succeeded"); },
+            error => throw new QdrantException(error.Error)
+            );
     }
 
     [Fact]
@@ -94,7 +93,10 @@ public class TestOfQdrantAdministration
         var result = await client.RemoveCollection(collectionName, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine($"{collectionName} deleted"),
+            _ =>
+            {
+                logger.Information($"{collectionName} deleted");
+            },
             error => throw new QdrantException(error.Error)
         );
     }

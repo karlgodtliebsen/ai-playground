@@ -46,7 +46,7 @@ public class TestOfSearchScenarioInVectorDbUsingPoints
 
     public TestOfSearchScenarioInVectorDbUsingPoints(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.GetOutput = () => output;
+        fixture.Output = output;
         this.output = output;
         this.hostApplicationFactory = fixture.Factory;
         this.requestFactory = fixture.RequestFactory;
@@ -76,7 +76,6 @@ public class TestOfSearchScenarioInVectorDbUsingPoints
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
-        LaunchQdrantDocker.Launch();
     }
 
     private const string collectionName = "books-search-collection";

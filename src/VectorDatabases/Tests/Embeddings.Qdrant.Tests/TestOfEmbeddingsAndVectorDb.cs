@@ -39,7 +39,7 @@ public class TestOfEmbeddingsAndVectorDb
 
     public TestOfEmbeddingsAndVectorDb(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.GetOutput = () => output;
+        fixture.Output = output;
         this.output = output;
         this.hostApplicationFactory = fixture.Factory;
         this.requestFactory = fixture.RequestFactory;
@@ -53,7 +53,6 @@ public class TestOfEmbeddingsAndVectorDb
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
-        LaunchQdrantDocker.Launch();
     }
 
     private const string collectionName = "embeddings-test-collection";

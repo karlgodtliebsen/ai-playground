@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace Qdrant.Tests;
 
 /// <summary>
-/// <a href="https://colab.research.google.com/github/qdrant/examples/blob/master/qdrant_101_getting_started/getting_started.ipynb#scrollTo=5ws2UoCZo8bW" />
+/// <a href="https://colab.research.google.com/github/qdrant/examples/blob/master/qdrant_101_getting_started/getting_started.ipynb#scrollTo=5ws2UoCZo8bW" >Samples</a>
 /// </summary>
 [Collection("VectorDb Collection")]
 public class TestOfVectorDbUsingBatch
@@ -30,7 +30,7 @@ public class TestOfVectorDbUsingBatch
 
     public TestOfVectorDbUsingBatch(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.GetOutput = () => output;
+        fixture.Output = output;
         this.output = output;
         this.factory = fixture.Factory;
         this.options = fixture.Options;
@@ -39,7 +39,6 @@ public class TestOfVectorDbUsingBatch
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
-        LaunchQdrantDocker.Launch();
     }
     private const string collectionName = "embeddings-collection";
 

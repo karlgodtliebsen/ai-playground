@@ -15,7 +15,8 @@ public static class TestContainerFactory
     /// <param name="waitForPort">The port to check. Waits for the port to respond</param>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static async Task<IContainer> Build(string imageName, int hostPort, int containerPort, ushort waitForPort, Func<ContainerBuilder, ContainerBuilder>? builder = null)
+    public static IContainer Build(string imageName, int hostPort, int containerPort, ushort waitForPort,
+                                Func<ContainerBuilder, ContainerBuilder>? builder = null)
     {
         var containerBuilder = new ContainerBuilder()
             // Set the image for the container to "testcontainers/helloworld:1.1.0".
@@ -36,9 +37,8 @@ public static class TestContainerFactory
         {
             return container;
         }
-
-        // Start the container.
-        await container.StartAsync().ConfigureAwait(false);
+        //To allow call from non-async methods
+        container.StartAsync().Wait();
         return container;
     }
 }

@@ -30,7 +30,7 @@ public class TestOfVectorDbUsingPoints
 
     public TestOfVectorDbUsingPoints(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.GetOutput = () => output;
+        fixture.Output = output;
         this.output = output;
         this.factory = fixture.Factory;
         this.options = fixture.Options;
@@ -39,7 +39,6 @@ public class TestOfVectorDbUsingPoints
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
-        LaunchQdrantDocker.Launch();
     }
 
 
