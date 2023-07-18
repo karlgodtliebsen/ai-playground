@@ -8,49 +8,43 @@ namespace AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 public class SearchFilter
 {
 
-    [JsonPropertyName("should")] public ConditionalFilter[]? Should { get; set; } = default!;
-    [JsonPropertyName("must")] public ConditionalFilter[]? Must { get; set; } = default!;
-    [JsonPropertyName("must_not")] public ConditionalFilter[]? MustNot { get; set; } = default!;
+    [JsonPropertyName("should")] public IList<ConditionalFilter>? Should { get; set; } = default!;
+    [JsonPropertyName("must")] public IList<ConditionalFilter>? Must { get; set; } = default!;
+    [JsonPropertyName("must_not")] public IList<ConditionalFilter>? MustNot { get; set; } = default!;
 
-    public void AddShould(ConditionalFilter filter)
+    public void AddShouldMatch(ConditionalFilter filter)
     {
         if (Should == null)
         {
-            Should = new ConditionalFilter[] { filter };
+            Should = new List<ConditionalFilter>() { filter };
         }
         else
         {
-            var list = Should.ToList();
-            list.Add(filter);
-            Should = list.ToArray();
+            Should.Add(filter);
         }
     }
 
-    public void AddMust(ConditionalFilter filter)
+    public void AddMustMatch(ConditionalFilter filter)
     {
         if (Must == null)
         {
-            Must = new ConditionalFilter[] { filter };
+            Must = new List<ConditionalFilter>() { filter };
         }
         else
         {
-            var list = Must.ToList();
-            list.Add(filter);
-            Must = list.ToArray();
-        }
-    }
-    public void AddMustNot(ConditionalFilter filter)
-    {
-        if (MustNot == null)
-        {
-            MustNot = new ConditionalFilter[] { filter };
-        }
-        else
-        {
-            var list = MustNot.ToList();
-            list.Add(filter);
-            MustNot = list.ToArray();
+            Must.Add(filter);
         }
     }
 
+    public void AddMustNotMatch(ConditionalFilter filter)
+    {
+        if (MustNot == null)
+        {
+            MustNot = new List<ConditionalFilter>() { filter };
+        }
+        else
+        {
+            MustNot.Add(filter);
+        }
+    }
 }

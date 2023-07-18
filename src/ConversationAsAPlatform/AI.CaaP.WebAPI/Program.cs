@@ -15,18 +15,15 @@ var builder = WebApplication.CreateBuilder(args);
 var env = builder.Environment;
 var configuration = builder.Configuration;
 var services = builder.Services;
-//builder.AddEnvironmentVariables();
-//builder.AddUserSecrets<HostApplicationFactory>();
-
 IdentityModelEventSource.ShowPII = env.IsDevelopment();
+
+builder.WithLogging();
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.AddServerHeader = false;
 });
-
-builder.AddLogging();
-
 services
+
     .AddWebApiConfiguration(configuration, (string?)null)
     .AddAzureAdConfiguration(configuration, (string?)null)
     .AddCorsConfig(configuration, options =>

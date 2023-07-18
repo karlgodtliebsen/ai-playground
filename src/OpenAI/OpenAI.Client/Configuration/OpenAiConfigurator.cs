@@ -14,6 +14,12 @@ namespace OpenAI.Client.Configuration;
 
 public static class OpenAIConfigurator
 {
+    /// <summary>
+    /// AddOpenAIConfiguration
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
     public static IServiceCollection AddOpenAIConfiguration(this IServiceCollection services, OpenAIOptions options)
     {
         Log.Logger.Information("Setting up OpenAI Configuration to Applications Configuration");
@@ -123,13 +129,14 @@ public static class OpenAIConfigurator
 
         if (sectionName is null)
         {
-            sectionName = OpenAIOptions.ConfigSectionName;
+            sectionName = AzureOpenAIOptions.ConfigSectionName;
         }
-        //services.Configure<OpenAIOptions>(configuration.GetSection(sectionName));
-        var configuredOptions = configuration.GetSection(sectionName).Get<OpenAIOptions>()!;
+        var configuredOptions = configuration.GetSection(sectionName).Get<AzureOpenAIOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
+        services.AddSingleton<IOptions<AzureOpenAIOptions>>(new OptionsWrapper<AzureOpenAIOptions>(configuredOptions));
+
         Log.Logger.Information("Completed Adding Azure OpenAI Configuration to Applications Configuration");
-        return services.AddOpenAIConfiguration(configuredOptions);
+        return services;
     }
 
 

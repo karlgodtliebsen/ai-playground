@@ -3,6 +3,7 @@ using AI.Library.Utils;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using Moq;
 
@@ -15,6 +16,9 @@ namespace AI.Test.Support;
 public class HostApplicationFactory
 {
     public IDateTimeProvider DateTimeProvider { get; private set; } = null!;
+    public Serilog.ILogger Logger() => Services.GetRequiredService<ILogger>();
+    public Microsoft.Extensions.Logging.ILogger MsLogger() => Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<object>>();
+
     public IServiceProvider Services { get; private set; } = null!;
 
     public static HostApplicationFactory Build(
@@ -24,23 +28,23 @@ public class HostApplicationFactory
                                                 Func<ITestOutputHelper>? output = null)
     {
         var instance = new HostApplicationFactory();
-        var builder = new ConfigurationBuilder();
-        builder.AddJsonFile("appsettings.json", optional: true);
+        var configurationBuilder = new ConfigurationBuilder();
+        configurationBuilder.AddJsonFile("appsettings.json", optional: true);
         var env = environment?.Invoke();
         if (env is not null)
         {
-            builder.AddJsonFile($"appsettings.{env}.json", optional: true);
+            configurationBuilder.AddJsonFile($"appsettings.{env}.json", optional: true);
         }
-        builder.AddEnvironmentVariables();
-        builder.AddUserSecrets<HostApplicationFactory>();
+        configurationBuilder.AddEnvironmentVariables();
+        configurationBuilder.AddUserSecrets<HostApplicationFactory>();
 
-        IConfigurationRoot configuration = builder.Build();
+        IConfigurationRoot configuration = configurationBuilder.Build();
         IServiceCollection serviceCollection = new ServiceCollection();
         serviceContext?.Invoke(serviceCollection, configuration);
 
         if (output is not null)
         {
-            var cfg = Observability.CreateLoggerConfigurationUsingAppConfiguration(configuration);
+            var cfg = Observability.CreateLoggerConfigurationUsingAppSettings(configuration);
             cfg = cfg
                 .MinimumLevel.Debug()
                 .WriteTo.Sink(new LazyTestOutputHelperSink(output));
@@ -48,10 +52,11 @@ public class HostApplicationFactory
         }
         else
         {
-            Log.Logger = Observability.CreateConfigurationBasedLogger(configuration);
+            Log.Logger = Observability.CreateAppSettingsBasedLogger(configuration);
         }
 
         serviceCollection.AddSingleton(Log.Logger);
+        serviceCollection.AddSingleton<ILoggerFactory>(new XUnitTestLoggerFactory(Log.Logger));
 
         instance.Services = serviceCollection.BuildServiceProvider();
         var fixedDt = fixedDateTime?.Invoke();

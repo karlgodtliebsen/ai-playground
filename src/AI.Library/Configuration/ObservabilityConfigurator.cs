@@ -20,12 +20,12 @@ public static class ObservabilityConfigurator
     /// <param name="builder"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static WebApplicationBuilder AddLogging(this WebApplicationBuilder builder, Action<LoggingOptions>? options = null)
+    public static WebApplicationBuilder WithLogging(this WebApplicationBuilder builder, Action<LoggingOptions>? options = null)
     {
         var configuredOptions = new LoggingOptions();
         options?.Invoke(configuredOptions);
         builder.Logging.ClearProviders();
-        builder.Host.AddLogging();
+        builder.Host.WithLogging();
         if (configuredOptions.UseRequestResponseLogging)
         {
             builder.Services.AddRequestResponseLogging();
@@ -39,7 +39,7 @@ public static class ObservabilityConfigurator
     /// <param name="builder"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IHostBuilder AddLogging(this IHostBuilder builder, Action<LoggingOptions>? options = null)
+    public static IHostBuilder WithLogging(this IHostBuilder builder, Action<LoggingOptions>? options = null)
     {
         var configuredOptions = new LoggingOptions();
         options?.Invoke(configuredOptions);
@@ -58,14 +58,14 @@ public static class ObservabilityConfigurator
     /// <param name="builder"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static HostApplicationBuilder AddLogging(this HostApplicationBuilder builder, Action<LoggingOptions>? options = null)
+    public static HostApplicationBuilder WithLogging(this HostApplicationBuilder builder, Action<LoggingOptions>? options = null)
     {
         Log.Information("Application {name} is running in Environment {environment}", builder.Environment.ApplicationName, builder.Environment.EnvironmentName);
         var setOptions = new LoggingOptions();
         options?.Invoke(setOptions);
 
         builder.Logging.ClearProviders();
-        var logger = Observability.CreateConfigurationBasedLogger(builder.Configuration);
+        var logger = Observability.CreateAppSettingsBasedLogger(builder.Configuration);
         builder.Logging.AddSerilog(logger, false);
         builder.Services.AddSingleton<ILogger>(logger);
         return builder;

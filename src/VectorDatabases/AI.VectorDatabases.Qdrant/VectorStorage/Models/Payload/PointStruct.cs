@@ -11,7 +11,7 @@ public class PointStruct
     /// <a href="https://qdrant.tech/documentation/concepts/points/" />
     /// </summary>
     [JsonPropertyName("id")]
-    public object Id { get; init; } = default!;
+    public string Id { get; init; } = default!;
 
     /// <summary>
     /// <a href="https://qdrant.tech/documentation/concepts/points/" />

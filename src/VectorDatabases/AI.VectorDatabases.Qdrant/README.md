@@ -23,6 +23,8 @@ or
 ```
 
 
+The test projects uses TestContainer to run Qdrant in a docker container.
+
 
 ## Missing features:
 

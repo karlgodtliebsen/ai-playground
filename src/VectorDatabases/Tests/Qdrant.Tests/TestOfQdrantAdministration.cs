@@ -41,7 +41,7 @@ public class TestOfQdrantAdministration
     [Fact]
     public async Task VerifyInitialAccessToQdrant()
     {
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.GetCollections(CancellationToken.None);
         result.Switch(
             collections => collections.Should().NotBeNull(),
@@ -52,7 +52,7 @@ public class TestOfQdrantAdministration
     [Fact]
     public async Task CleanupCollections()
     {
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.RemoveCollection(collectionName, CancellationToken.None);
         result.Switch(
             _ => { logger.Information("Succeeded"); },
@@ -67,7 +67,7 @@ public class TestOfQdrantAdministration
 
         var vectorParams = new VectorParams(4, Distance.DOT, true);
 
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
 
         var response = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
 
@@ -89,7 +89,7 @@ public class TestOfQdrantAdministration
     [Fact]
     public async Task CleanupCollection()
     {
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.RemoveCollection(collectionName, CancellationToken.None);
         result.Switch(
 
@@ -107,7 +107,7 @@ public class TestOfQdrantAdministration
         await CleanupCollection();
         await Task.Delay(1000);
 
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
         var vectorParams = client.CreateParams(4, Distance.DOT, true);
         var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
         result.Switch(

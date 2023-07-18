@@ -19,7 +19,9 @@ public sealed class VectorDbTestFixture : IDisposable
 
     public QdrantOptions Options { get; private set; }
 
-    public ILogger Logger { get; private set; }
+    public Serilog.ILogger Logger { get; private set; }
+    public Microsoft.Extensions.Logging.ILogger MsLogger { get; set; }
+
     public HostApplicationFactory Factory { get; private set; }
 
 
@@ -40,7 +42,8 @@ public sealed class VectorDbTestFixture : IDisposable
             fixedDateTime: () => DateTimeOffset.UtcNow,
             output: getOutput
         );
-        Logger = Factory.Services.GetRequiredService<ILogger>();
+        Logger = Factory.Logger();
+        MsLogger = Factory.MsLogger();
         Options = Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
         Launcher = Factory.Services.GetRequiredService<TestContainerDockerLauncher>();
         Launcher.Start();

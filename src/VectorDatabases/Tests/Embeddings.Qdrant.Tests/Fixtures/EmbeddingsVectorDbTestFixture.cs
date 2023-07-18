@@ -16,7 +16,9 @@ namespace Embeddings.Qdrant.Tests.Fixtures;
 
 public sealed class EmbeddingsVectorDbTestFixture : IDisposable
 {
-    public ILogger Logger { get; private set; }
+    public Serilog.ILogger Logger { get; private set; }
+    public Microsoft.Extensions.Logging.ILogger MsLogger { get; set; }
+
     public HostApplicationFactory Factory { get; private set; }
     public QdrantOptions QdrantOptions { get; private set; }
     public OpenAIOptions OpenAIOptions { get; private set; }
@@ -53,7 +55,9 @@ public sealed class EmbeddingsVectorDbTestFixture : IDisposable
              fixedDateTime: () => DateTimeOffset.UtcNow,
              output: getOutput
          );
-        Logger = Factory.Services.GetRequiredService<ILogger>();
+        Logger = Factory.Logger();
+        MsLogger = Factory.MsLogger();
+
         QdrantOptions = Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
         LlamaModelOptions = Factory.Services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
         OpenAIOptions = Factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
