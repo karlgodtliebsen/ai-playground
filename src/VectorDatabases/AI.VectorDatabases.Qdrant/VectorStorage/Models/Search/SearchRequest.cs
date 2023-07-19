@@ -17,6 +17,7 @@ public class SearchRequest
     /// { "vector": { "vector": [1.0, 2.0, 3.0], "name": "image-embeddings" } }
     /// </summary>
     [JsonPropertyName("vector")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Vector { get; private set; } = default!;
 
     /// <summary>
@@ -39,6 +40,7 @@ public class SearchRequest
     /// Look only for points which satisfies this conditions
     /// </summary>
     [JsonPropertyName("filter")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public SearchFilter? Filter { get; set; } = default!;
 
     /// <summary>
@@ -46,6 +48,7 @@ public class SearchRequest
     /// Additional search params
     /// </summary>
     [JsonPropertyName("params")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Params { get; set; } = default!;
 
     /// <summary>
@@ -57,14 +60,19 @@ public class SearchRequest
     /// Select which payload to return with the response.Default: None
     /// </summary>
     [JsonPropertyName("with_payload")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? WithPayload { get; private set; } = default!;
+
     /// <summary>
     /// (WithVector (WithVector (boolean) or Array of WithVector (strings))) or (any or null)
     /// Default: null
     /// Whether to return the point vector with the result?
     /// </summary>
     [JsonPropertyName("with_vector")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? WithVector { get; private set; } = default!;
+
+
     /// <summary>
     /// Read consistency guarantees for the operation
     /// </summary>
@@ -79,6 +87,7 @@ public class SearchRequest
     ///  the Distance function used.E.g. for cosine similarity only higher scores will be returned.
     /// </summary>
     [JsonPropertyName("score_threshold")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? ScoreThreshold { get; set; } = default!;
 
     /// <summary>
@@ -145,6 +154,12 @@ public class SearchRequest
         WithPayload = withPayload;
         return this;
     }
+    public SearchRequest UseWithPayload(string[] withPayload)
+    {
+        WithPayload = withPayload;
+        return this;
+    }
+
     public SearchRequest IncludePayLoad()
     {
         this.WithPayload = true;
@@ -160,11 +175,7 @@ public class SearchRequest
     {
         return this.FromPosition(0).Take(1);
     }
-    public SearchRequest UseWithPayload(string[] withPayload)
-    {
-        WithPayload = withPayload;
-        return this;
-    }
+
 
     public SearchRequest UseWithPayloadSelectorInclude(string[] withPayload)
     {

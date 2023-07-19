@@ -8,7 +8,8 @@ namespace AI.VectorDatabase.Qdrant.VectorStorage;
 
 public interface IQdrantVectorDb
 {
-    VectorParams CreateParams(int? dimension = null, string? distance = null, bool? storeOnDisk = null);
+
+    void SetCollectionName(string collectionName);
 
     void SetVectorSize(int dimension);
 

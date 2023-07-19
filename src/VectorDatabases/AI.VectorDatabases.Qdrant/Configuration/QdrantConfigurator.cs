@@ -11,6 +11,7 @@ public static class QdrantConfigurator
 
     public static IServiceCollection AddQdrant(this IServiceCollection services, QdrantOptions options)
     {
+        services.AddTransient<IQdrantFactory, QdrantFactory>();
         services.AddSingleton<IOptions<QdrantOptions>>(new OptionsWrapper<QdrantOptions>(options));
         services.AddHttpClient<IQdrantVectorDb, QdrantVectorDb>((_, client) =>
             {

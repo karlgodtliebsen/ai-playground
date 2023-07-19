@@ -9,7 +9,7 @@ public class ScoredPoint
     /// The unique point id for assigned to the vector index.
     /// </summary>
     [JsonIgnore]
-    public string PointId { get; set; } = Guid.NewGuid().ToString("N");
+    public string PointId { get; set; } = Guid.NewGuid().ToString();
 
     [JsonPropertyName("id")]
     public string Id { get; set; } = default!;

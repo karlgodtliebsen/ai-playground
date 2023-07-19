@@ -77,7 +77,7 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
                 Messages = messages,
                 Temperature = 0.3f,
                 MaxTokens = 4000,
-                User = sessionId.ToString("N"),
+                User = sessionId.ToString(),
                 TopP = 0.5f,
                 FrequencyPenalty = 0,
                 PresencePenalty = 0
@@ -117,7 +117,7 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
                 Messages = messages.ToArray(),
                 Temperature = 0.3f,
                 MaxTokens = 4000,
-                User = sessionId.ToString("N"),
+                User = sessionId.ToString(),
                 TopP = 0.5f,
                 FrequencyPenalty = 0,
                 PresencePenalty = 0
@@ -159,7 +159,7 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
                 Messages = messages,
                 Temperature = 0.0f,
                 MaxTokens = 200,
-                User = sessionId.ToString("N"),
+                User = sessionId.ToString(),
                 TopP = 0.5f,
                 FrequencyPenalty = 0,
                 PresencePenalty = 0

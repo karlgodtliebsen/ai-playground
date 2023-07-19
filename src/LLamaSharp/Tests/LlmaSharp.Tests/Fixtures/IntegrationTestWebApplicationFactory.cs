@@ -20,7 +20,7 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
         Log.CloseAndFlush();
     }
 
-    public string UserId { get; set; } = Guid.NewGuid().ToString("N");
+    public string UserId { get; set; } = Guid.NewGuid().ToString();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {

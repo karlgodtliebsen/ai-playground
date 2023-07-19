@@ -10,23 +10,22 @@ using Microsoft.SemanticKernel.Memory;
 
 namespace SemanticKernel.Tests;
 
-public class QdrantVectorDbStore : IQdrantMemoryStore
+internal class QdrantMemoryStore : IQdrantMemoryStore
 {
     /// <summary>
     /// The Qdrant Vector Database memory store logger.
     /// </summary>
     private readonly Serilog.ILogger? logger;
-    private readonly IQdrantVectorDb qdrantClient;
+    private IQdrantVectorDb? qdrantClient = null;
 
-    public QdrantVectorDbStore(IQdrantVectorDb store, ILogger logger)
+    public QdrantMemoryStore(ILogger logger)
     {
-        this.qdrantClient = store;
         this.logger = logger;
     }
 
-    public void SetVectorSize(int vectorSize)
+    public void SetClient(IQdrantVectorDb qdrantVectorDb)
     {
-        this.qdrantClient.SetVectorSize(vectorSize);
+        this.qdrantClient = qdrantVectorDb;
     }
 
 
@@ -92,7 +91,7 @@ public class QdrantVectorDbStore : IQdrantMemoryStore
 
                     var result = await this.qdrantClient.RemoveCollection(collectionName, cancellationToken).ConfigureAwait(false);
                     result.Switch(
-                        _ => { },
+                        _ => { logger.Debug("Deleted Collection: {collectionName}", collectionName); },
                         error => throw new QdrantException("DeleteCollectionAsync", error.Error)
                     );
                 }
@@ -118,7 +117,7 @@ public class QdrantVectorDbStore : IQdrantMemoryStore
 
             var result = await this.qdrantClient.Upsert(collectionName, payLoad, cancellationToken).ConfigureAwait(false);
             result.Switch(
-                _ => { },
+                _ => { logger.Debug("UpsertAsync succeeded for: {collectionName}", collectionName); },
                 error => throw new QdrantException("UpsertAsync", error.Error)
             );
         }
@@ -392,7 +391,7 @@ public class QdrantVectorDbStore : IQdrantMemoryStore
             var existingRecord = await this.qdrantClient.SearchSingleByPayloadId(collectionName, record.Metadata.Id, cancellationToken: cancellationToken).ConfigureAwait(false);
             pointId = await existingRecord.Match<Task<string>>(
                 point => Task.FromResult(point.PointId), // similar to existingRecord.PointId;
-                async _ =>
+                async nullresult =>
                 {
                     var @break = false;
                     string pid;

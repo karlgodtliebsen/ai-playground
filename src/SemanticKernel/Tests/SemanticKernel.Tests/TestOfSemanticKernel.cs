@@ -79,8 +79,11 @@ public class TestOfSemanticKernel
     private async Task CleanUpAndCreateCollectionInVectorDb(int size)
     {
         await CleanupCollection();
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
-        var vectorParams = client.CreateParams(size, Distance.COSINE, true);
+
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(size, Distance.COSINE, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, cancellationToken: CancellationToken.None);
+
         var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
         result.Switch(
 
@@ -94,24 +97,28 @@ public class TestOfSemanticKernel
     public async Task UseQdrantMemoryCollectionc()
     {
         var url = this.qdrantOptions.Url;
-        await CleanUpAndCreateCollectionInVectorDb(1536);
+        var completionModel = "text-davinci-003";
+        var embeddingModel = "text-embedding-ada-002";
+        const int openAiVectorSize = 1536;
+        bool recreateCollection = true;
+        bool storeOnDisk = false;
 
-        var memoryStorage = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStore>();
-        memoryStorage.SetVectorSize(1536);
+        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
+        var memoryStorage = await factory.Create(collectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         IKernel kernel = Kernel.Builder
             .WithLogger(fixture.MsLogger)
-            .WithOpenAITextCompletionService("text-davinci-003", openAIOptions.ApiKey)
-            .WithOpenAITextEmbeddingGenerationService("text-embedding-ada-002", openAIOptions.ApiKey)
+            .WithOpenAITextCompletionService(completionModel, openAIOptions.ApiKey)
+            .WithOpenAITextEmbeddingGenerationService(embeddingModel, openAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)
             .Build();
 
-        //logger.Information("== Printing Collections in DB ==");
-        //var collections = memoryStorage.GetCollectionsAsync();
-        //await foreach (var collection in collections)
-        //{
-        //    logger.Information(collection);
-        //}
+        logger.Information("== Printing Collections in DB ==");
+        var collections = memoryStorage.GetCollectionsAsync();
+        await foreach (var collection in collections)
+        {
+            logger.Information(collection);
+        }
 
         logger.Information("== Adding Memories ==");
 
@@ -119,12 +126,12 @@ public class TestOfSemanticKernel
         var key2 = await kernel.Memory.SaveInformationAsync(collectionName, id: "cat2", text: "orange tabby");
         var key3 = await kernel.Memory.SaveInformationAsync(collectionName, id: "cat3", text: "norwegian forest cat");
 
-        //logger.Information("== Printing Collections in DB ==");
-        //collections = memoryStorage.GetCollectionsAsync();
-        //await foreach (var collection in collections)
-        //{
-        //    logger.Information(collection);
-        //}
+        logger.Information("== Printing Collections in DB ==");
+        collections = memoryStorage.GetCollectionsAsync();
+        await foreach (var collection in collections)
+        {
+            logger.Information(collection);
+        }
 
         logger.Information("== Retrieving Memories Through the Kernel ==");
         MemoryQueryResult? lookup = await kernel.Memory.GetAsync(collectionName, "cat1");
@@ -245,11 +252,20 @@ Give me a TLDR with the fewest words.";
         //https://github.com/microsoft/semantic-kernel/tree/main/dotnet/samples/KernelSyntaxExamples
         //https://github.com/microsoft/semantic-kernel/blob/main/dotnet/samples/KernelSyntaxExamples/Example14_SemanticMemory.cs
 
-        var memoryStorage = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStore>();
+        //var memoryStorage = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStore>();
+        var completionModel = "text-davinci-003";
+        var embeddingModel = "text-embedding-ada-002";
+        const int openAiVectorSize = 1536;
+        bool recreateCollection = true;
+        bool storeOnDisk = false;
+
+        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
+        var memoryStorage = await factory.Create(collectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
+
         IKernel kernel = Kernel.Builder
             .WithLogger(fixture.MsLogger)
-            .WithOpenAITextCompletionService("text-davinci-003", openAIOptions.ApiKey)
-            .WithOpenAITextEmbeddingGenerationService("text-embedding-ada-002", openAIOptions.ApiKey)
+            .WithOpenAITextCompletionService(completionModel, openAIOptions.ApiKey)
+            .WithOpenAITextEmbeddingGenerationService(embeddingModel, openAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)
             .Build();
         string text1 = @"
@@ -261,7 +277,7 @@ Give me a TLDR with the fewest words.";
             collection: collectionName,
             //description: text1,
             text: text1,
-            externalId: Guid.NewGuid().ToString("N"),
+            externalId: Guid.NewGuid().ToString(),
             externalSourceName: "Uber"
         );
         logger.Information("saved.");
@@ -291,7 +307,7 @@ Give me a TLDR with the fewest words.";
                 collection: collectionName,
                 description: file.Content,
                 text: file.Summary,
-                externalId: file.Id.ToString("N"),
+                externalId: file.Id.ToString(),
                 externalSourceName: "Uber"
             );
             logger.Information($" #{++i} saved.");
@@ -385,7 +401,7 @@ Give me a TLDR with the fewest words.";
             }
             var point = new PointStruct()
             {
-                Id = file.Id.ToString("N"),
+                Id = file.Id.ToString(),
                 Payload = payload,
                 Vector = chunkVector.ToArray()
             };

@@ -71,14 +71,14 @@ public sealed class SemanticKernelTestFixture : IDisposable
         LlamaModelOptions = Factory.Services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
         RequestFactory = Factory.Services.GetRequiredService<IModelRequestFactory>();
         LlamaModelFactory = Factory.Services.GetRequiredService<ILlamaModelFactory>();
-        //Launcher = Factory.Services.GetRequiredService<TestContainerDockerLauncher>();
-        //Launcher.Start();
+        Launcher = Factory.Services.GetRequiredService<TestContainerDockerLauncher>();
+        Launcher.Start();
     }
 
 
 
     public void Dispose()
     {
-        //Launcher.Stop();
+        Launcher.Stop();
     }
 }

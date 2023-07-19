@@ -39,6 +39,7 @@ public class TestOfVectorDbUsingBatch
         };
     }
     private const string collectionName = "embeddings-collection";
+    private const int vectorSize = 3;
 
 
     private async Task CleanupCollection()
@@ -56,9 +57,9 @@ public class TestOfVectorDbUsingBatch
     private async Task CleanUpAndCreateCollectionInVectorDb(int size)
     {
         await CleanupCollection();
-
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
-        var vectorParams = client.CreateParams(size, Distance.COSINE, true);
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
         var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
         result.Switch(
 
@@ -77,7 +78,11 @@ public class TestOfVectorDbUsingBatch
           new double[] {0.1, 0.9, 0.1},
           new double[] {0.1, 0.1, 0.9}
         };
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+
         var batch = CreateBatch(vector);
         var payLoad = new BatchUpsertRequest(batch);
 
@@ -132,12 +137,14 @@ public class TestOfVectorDbUsingBatch
             new double[] {-0.1296899 , -0.8325752 ,  0.46608321, -0.39436982,  0.12301721, 0.22336377, -0.95403339,  0.30383946,  0.7568641 , -0.91504574, 0.21398519, -0.43977382, -0.07772702,  0.02275247, -0.22655445, -0.02363874, -0.56423764,  0.94943287,  0.26219995,  0.62735642},
         };
 
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
         var batch = CreateBatch(vector);
         var payLoad = new BatchUpsertRequest(batch);
         logger.Information(payLoad.ToJson(serializerOptions));
 
-        await CleanUpAndCreateCollectionInVectorDb(payLoad.Dimension);
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(payLoad.Dimension, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, cancellationToken: CancellationToken.None);
+
         var result = await client.Upsert(collectionName, payLoad, CancellationToken.None);
         result.Switch(
 
@@ -153,7 +160,7 @@ public class TestOfVectorDbUsingBatch
         for (int i = 0; i < vectors.Length; i++)
         {
             batch.Vectors.Add(vectors[i]);
-            batch.Ids.Add(Guid.NewGuid().ToString("N"));
+            batch.Ids.Add(Guid.NewGuid().ToString());
             batch.Payloads.Add(new Dictionary<string, object>()
             {
                 {"color", "red " +(id)}

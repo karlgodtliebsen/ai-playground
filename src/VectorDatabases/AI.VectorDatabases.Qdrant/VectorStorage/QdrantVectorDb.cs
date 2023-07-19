@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using OneOf;
 
 using Serilog;
+using Serilog.Events;
 
 namespace AI.VectorDatabase.Qdrant.VectorStorage;
 
@@ -22,6 +23,8 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     private readonly ILogger logger;
     private readonly QdrantOptions options;
     private int? vectorSize = 0;
+    private string collectionName;
+
 
     public class HttpStatusResponse
     {
@@ -35,33 +38,18 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
         [JsonPropertyName("error")]
         public string? Error { get; init; }
     }
-
+    public void SetCollectionName(string collectionName)
+    {
+        this.collectionName = collectionName;
+    }
     public void SetVectorSize(int dimension)
     {
         this.vectorSize = dimension;
     }
+
     public void UseParams(VectorParams @params)
     {
         this.vectorSize = @params.Size;
-    }
-
-    public VectorParams CreateParams(int? dimension = null, string? distance = null, bool? storeOnDisk = null)
-    {
-        if (string.IsNullOrEmpty(distance))
-        {
-            distance = options.DefaultDistance;
-        }
-        if (!storeOnDisk.HasValue)
-        {
-            storeOnDisk = options.DefaultStoreOnDisk;
-        }
-
-        if (!dimension.HasValue)
-        {
-            dimension = options.DefaultDimension;
-        }
-        var p = new VectorParams(size: dimension.Value, distance: distance, storeOnDisk.Value);
-        return p;
     }
 
     /// <summary>
@@ -89,6 +77,7 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
         {
             Vectors = vectorsConfig
         };
+        this.vectorSize = vectorsConfig.Size;
         var res = await PutAsync<CreateCollectionWithVectorRequest, bool>($"/collections/{collectionName}", payLoad, cancellationToken);
         return res;
     }
@@ -462,15 +451,15 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
         return result;
     }
 
-
-    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadIds(string collectionName, IEnumerable<string> ids, bool withEmbeddings = false, int limit = 10, int offset = 0, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadIds(string collectionName, IEnumerable<string> ids, bool withVectors = false, int limit = 10, int offset = 0, CancellationToken cancellationToken = default)
     {
         var search = new SearchRequest()
             .SimilarToVector(new float[this.vectorSize!.Value])
             .HavingExternalId(ids)
             .IncludePayLoad()
             .Take(ids.Count())
-            .IncludeVectorData(withEmbeddings)
+            .IncludeVectorData(withVectors)
+            .WithScoreThreshold(-1)
             ;
 
         var result = await Search(collectionName, search, cancellationToken: cancellationToken);
@@ -478,40 +467,30 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     }
 
 
-    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string collectionName, string id, bool withEmbeddings = false, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string collectionName, string id, bool withVectors = false, CancellationToken cancellationToken = default)
     {
         var search = new SearchRequest()
                 .SimilarToVector(new float[this.vectorSize!.Value])
                 .HavingExternalId(id)
                 .IncludePayLoad()
                 .TakeFirst()
-                .IncludeVectorData(withEmbeddings)
+                .IncludeVectorData(withVectors)
+                .WithScoreThreshold(-1)
             ;
-        var result = await Search(collectionName, search, cancellationToken: cancellationToken);
-        return result;
-    }
-    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPointIds(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, CancellationToken cancellationToken = default)
-    {
-        var search = new SearchRequest()
-                .SimilarToVector(new float[this.vectorSize!.Value])
-                .WithPointIDs(pointIds)
-                .UseWithPayload(true)
-                .SetWithVector(withVectors)
-            ;
-        //var s = JsonSerializer.Serialize(search, serializerOptions);
         var result = await Search(collectionName, search, cancellationToken: cancellationToken);
         return result;
     }
 
-    public async Task<OneOf<ScoredPoint, NullResult, ErrorResponse>> SearchSingleByPointId(string collectionName, string pointId, bool withVectors = false, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ScoredPoint, NullResult, ErrorResponse>> SearchSingleByPayloadId(string collectionName, string id, bool withVectors = false, CancellationToken cancellationToken = default)
     {
         var search = new SearchRequest()
                 .SimilarToVector(new float[this.vectorSize!.Value])
-                .WithPointId(pointId)
-                .UseWithPayload(true)
-                .SetWithVector(withVectors)
-                ;
-        var s = JsonSerializer.Serialize(search, serializerOptions);
+                .HavingExternalId(id)
+                .IncludePayLoad()
+                .TakeFirst()
+                .IncludeVectorData(withVectors)
+                .WithScoreThreshold(-1)
+            ;
         var result = await Search(collectionName, search, cancellationToken: cancellationToken).ConfigureAwait(false);
         return result.Match<OneOf<ScoredPoint, NullResult, ErrorResponse>>(
             points => points.Length > 0 ? points[0] : new NullResult(),
@@ -520,26 +499,71 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     }
 
 
-    public async Task<OneOf<ScoredPoint, NullResult, ErrorResponse>> SearchSingleByPayloadId(string collectionName, string id, bool withVectors = false, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPointIds(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, CancellationToken cancellationToken = default)
     {
         var search = new SearchRequest()
-            .SimilarToVector(new float[this.vectorSize!.Value])
-            .HavingExternalId(id)
-            .IncludePayLoad()
-            .TakeFirst()
-            .IncludeVectorData(withVectors)
+                //.SimilarToVector(new float[this.vectorSize!.Value])
+                .WithPointIDs(pointIds)
+                .UseWithPayload(true)
+                .SetWithVector(withVectors)
+                .WithScoreThreshold(0)
             ;
-        //var s = JsonSerializer.Serialize(search, serializerOptions);
-        var result = await Search(collectionName, search, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var s = JsonSerializer.Serialize(search, serializerOptions);
+        logger.Debug(s);
+        var result = await SearchUsingPointId(collectionName, search, cancellationToken: cancellationToken);
+        return result;
+    }
+
+    public async Task<OneOf<ScoredPoint, NullResult, ErrorResponse>> SearchSingleByPointId(string collectionName, string pointId, bool withVectors = false, CancellationToken cancellationToken = default)
+    {
+        var search = new SearchRequest()
+                //.SimilarToVector(new float[this.vectorSize!.Value])
+                .WithPointId(pointId)
+                .UseWithPayload(true)
+                .TakeFirst()
+                .SetWithVector(withVectors)
+                .WithScoreThreshold(0)
+                ;
+
+        var result = await SearchUsingPointId(collectionName, search, cancellationToken: cancellationToken).ConfigureAwait(false);
         return result.Match<OneOf<ScoredPoint, NullResult, ErrorResponse>>(
             points => points.Length > 0 ? points[0] : new NullResult(),
             error => error
-            );
+        );
     }
+
+
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchUsingPointId(string collectionName, SearchRequest query, CancellationToken cancellationToken)
+    {
+        if (logger.IsEnabled(LogEventLevel.Debug))
+        {
+            var s = JsonSerializer.Serialize(query, serializerOptions);
+            logger.Debug(s);
+        }
+        var res = await PostAsync<SearchRequest, ScoredPoint[]>($"/collections/{collectionName}/points", query, cancellationToken);
+        res.Switch(
+            points =>
+            {
+                foreach (var p in points)
+                {
+                    p.InitializeVectors();
+                }
+            },
+            _ => { }
+        );
+
+        return res;
+    }
+
+
 
     public async Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, SearchRequest query, CancellationToken cancellationToken)
     {
-        //var s = JsonSerializer.Serialize(query, serializerOptions);
+        if (logger.IsEnabled(LogEventLevel.Debug))
+        {
+            var s = JsonSerializer.Serialize(query, serializerOptions);
+            logger.Debug(s);
+        }
         var res = await PostAsync<SearchRequest, ScoredPoint[]>($"/collections/{collectionName}/points/search", query, cancellationToken);
         res.Switch(
             points =>

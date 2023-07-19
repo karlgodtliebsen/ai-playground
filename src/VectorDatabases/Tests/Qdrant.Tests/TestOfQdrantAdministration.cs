@@ -16,13 +16,12 @@ using Xunit.Abstractions;
 
 namespace Qdrant.Tests;
 
-
 [Collection("VectorDb Collection")]
 public class TestOfQdrantAdministration
 {
     private readonly ITestOutputHelper output;
     private readonly ILogger logger;
-    private readonly HostApplicationFactory factory;
+    private readonly HostApplicationFactory hostApplicationFactory;
     private readonly QdrantOptions options;
 
 
@@ -30,18 +29,19 @@ public class TestOfQdrantAdministration
     {
         fixture.Output = output;
         this.output = output;
-        this.factory = fixture.Factory;
+        this.hostApplicationFactory = fixture.Factory;
         this.options = fixture.Options;
         this.logger = fixture.Logger;
     }
 
 
     private const string collectionName = "test-collection";
+    private const int vectorSize = 4;
 
     [Fact]
     public async Task VerifyInitialAccessToQdrant()
     {
-        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.GetCollections(CancellationToken.None);
         result.Switch(
             collections => collections.Should().NotBeNull(),
@@ -52,7 +52,7 @@ public class TestOfQdrantAdministration
     [Fact]
     public async Task CleanupCollections()
     {
-        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.RemoveCollection(collectionName, CancellationToken.None);
         result.Switch(
             _ => { logger.Information("Succeeded"); },
@@ -65,12 +65,10 @@ public class TestOfQdrantAdministration
     {
         await CleanupCollections();
 
-        var vectorParams = new VectorParams(4, Distance.DOT, true);
-
-        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
-
+        var vectorParams = new VectorParams(vectorSize, Distance.DOT, true);
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
         var response = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
-
         response.Switch(
             _ => { },
             error => throw new QdrantException(error.Error)
@@ -89,7 +87,7 @@ public class TestOfQdrantAdministration
     [Fact]
     public async Task CleanupCollection()
     {
-        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.RemoveCollection(collectionName, CancellationToken.None);
         result.Switch(
 
@@ -105,10 +103,11 @@ public class TestOfQdrantAdministration
     public async Task VerifyCreateCollectionInVectorDb()
     {
         await CleanupCollection();
-        await Task.Delay(1000);
 
-        var client = factory.Services.GetRequiredService<IQdrantVectorDb>();
-        var vectorParams = client.CreateParams(4, Distance.DOT, true);
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+
         var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
         result.Switch(
 

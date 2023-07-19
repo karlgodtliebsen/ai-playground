@@ -7,9 +7,9 @@ public static class QdrantConfigurator
 {
     public static IServiceCollection AddQdrantVectorStore(this IServiceCollection services)
     {
-        services.AddTransient<IQdrantMemoryStore, QdrantVectorDbStore>();
-        services.AddTransient<IMemoryStore, QdrantVectorDbStore>();
-        services.AddSingleton<IQdrantFactory, QdrantFactory>();
+        services.AddTransient<IQdrantMemoryStore, QdrantMemoryStore>();
+        services.AddTransient<IMemoryStore, QdrantMemoryStore>();
+        services.AddSingleton<IQdrantMemoryStoreFactory, QdrantMemoryStoreFactory>();
         return services;
     }
 }

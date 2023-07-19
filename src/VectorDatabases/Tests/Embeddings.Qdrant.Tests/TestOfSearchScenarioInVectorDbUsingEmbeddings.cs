@@ -66,6 +66,8 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     }
 
     private const string collectionName = "books-search-collection";
+    private const int vectorSize = 3;
+
 
     private async Task CleanupCollection()
     {
@@ -80,8 +82,10 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
 
     private async Task CreateCollectionInVectorDb(int size)
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
-        var vectorParams = client.CreateParams(size, Distance.COSINE, true);
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(size, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, cancellationToken: CancellationToken.None);
+
         var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
         result.Switch(
 
@@ -120,10 +124,12 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     private async Task RunEmbedding(LLamaEmbedder embedder)
     {
         await CleanupCollection();
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
-
         var points = CreatePointsusingDocuments();
         int numberOfDimensions = points.Dimension;
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(numberOfDimensions, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, cancellationToken: CancellationToken.None);
+
         await CreateCollectionInVectorDb(numberOfDimensions);
         points.ToJson(serializerOptions);
 
@@ -192,7 +198,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
         {
             var point = new PointStruct()
             {
-                Id = Guid.NewGuid().ToString("N"),
+                Id = Guid.NewGuid().ToString(),
                 Payload = new Dictionary<string, string>()
                 {
                     {"name", document.Name},
