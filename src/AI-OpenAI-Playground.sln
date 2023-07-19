@@ -47,6 +47,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI.Test.Support", "AI.Test.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Embeddings.Qdrant.Tests", "VectorDatabases\Tests\Embeddings.Qdrant.Tests\Embeddings.Qdrant.Tests.csproj", "{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5CCAF46-AFEE-4AD7-AFEA-3EADA69927CE}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SemanticKernel", "SemanticKernel", "{83D32A6A-E08B-4C8C-A991-E2B839BE3D6F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7B547F1B-D200-433D-8B6E-33B5E3A5B724}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernel.Tests", "SemanticKernel\Tests\SemanticKernel.Tests\SemanticKernel.Tests.csproj", "{478EBCCF-728D-4B25-BF00-3FD5889B5380}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinancialAgents", "FinancialAgents", "{9FCD611C-72B6-44FC-A19B-7FF5CA72AB9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B2864683-C195-471A-91BE-6E86A7E2331E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialAgents.Tests", "FinancialAgents\Tests\FinancialAgents.Tests\FinancialAgents.Tests.csproj", "{7591A36E-6971-4D59-9846-CA765F1EE26E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +126,14 @@ Global
 		{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{478EBCCF-728D-4B25-BF00-3FD5889B5380}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{478EBCCF-728D-4B25-BF00-3FD5889B5380}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{478EBCCF-728D-4B25-BF00-3FD5889B5380}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{478EBCCF-728D-4B25-BF00-3FD5889B5380}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7591A36E-6971-4D59-9846-CA765F1EE26E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7591A36E-6971-4D59-9846-CA765F1EE26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7591A36E-6971-4D59-9846-CA765F1EE26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7591A36E-6971-4D59-9846-CA765F1EE26E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,6 +155,10 @@ Global
 		{905260F0-6153-4939-A9A1-03CC16D7555C} = {F0E9906E-2AB5-479A-B2A8-519DE4CD4917}
 		{8AF9E45F-AF31-436F-A52B-38C27D5DF540} = {F0E9906E-2AB5-479A-B2A8-519DE4CD4917}
 		{45C7AC1D-15E2-4AC4-8837-C65B94F16D1E} = {930C3329-24E2-4062-B97D-7E374BAA0732}
+		{7B547F1B-D200-433D-8B6E-33B5E3A5B724} = {83D32A6A-E08B-4C8C-A991-E2B839BE3D6F}
+		{478EBCCF-728D-4B25-BF00-3FD5889B5380} = {7B547F1B-D200-433D-8B6E-33B5E3A5B724}
+		{B2864683-C195-471A-91BE-6E86A7E2331E} = {9FCD611C-72B6-44FC-A19B-7FF5CA72AB9D}
+		{7591A36E-6971-4D59-9846-CA765F1EE26E} = {B2864683-C195-471A-91BE-6E86A7E2331E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A365742-464F-4F92-BCF0-6F080A5C398C}

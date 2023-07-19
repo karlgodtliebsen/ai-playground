@@ -24,7 +24,7 @@ public class TestOfVectorDbUsingPoints
 {
     private readonly ITestOutputHelper output;
     private readonly ILogger logger;
-    private readonly HostApplicationFactory factory;
+    private readonly HostApplicationFactory hostApplicationFactory;
     private readonly QdrantOptions options;
     private readonly JsonSerializerOptions serializerOptions;
 
@@ -32,7 +32,8 @@ public class TestOfVectorDbUsingPoints
     {
         fixture.Output = output;
         this.output = output;
-        this.factory = fixture.Factory;
+        this.logger = fixture.Logger;
+        this.hostApplicationFactory = fixture.Factory;
         this.options = fixture.Options;
         this.logger = fixture.Logger;
         serializerOptions = new JsonSerializerOptions()
@@ -41,13 +42,13 @@ public class TestOfVectorDbUsingPoints
         };
     }
 
-
-    private const string collectionName = "test-collection";
+    private const int vectorSize = 4;
+    private const string collectionName = "vector-test-collection";
 
 
     private async Task CleanupCollection()
     {
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.RemoveCollection(collectionName, CancellationToken.None);
         result.Switch(
 
@@ -59,10 +60,9 @@ public class TestOfVectorDbUsingPoints
     private async Task CleanUpAndCreateCollectionInVectorDb()
     {
         await CleanupCollection();
-        await Task.Delay(1000);
-
-        var client = factory.Services.GetRequiredService<IVectorDb>();
-        var vectorParams = client.CreateParams(4, Distance.DOT, true);
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
         var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
         result.Switch(
 
@@ -76,9 +76,12 @@ public class TestOfVectorDbUsingPoints
     public async Task AddVectorToCollectionAndUseSearch()
     {
         await CleanUpAndCreateCollectionInVectorDb();
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+
         var points = CreatePoints();
-        var result = await client.Upsert(collectionName, points, CancellationToken.None);
+        var result = await client.Upsert(collectionName, points, cancellationToken: CancellationToken.None);
         result.Switch(
 
             _ => output.WriteLine("Succeeded"),
@@ -90,15 +93,15 @@ public class TestOfVectorDbUsingPoints
             0.05f, 0.61f, 0.76f, 0.74f
         };
 
-        var payLoad = new SearchBody()
+        var payLoad = new SearchRequest()
         {
             Limit = 10,
             Offset = 0,
         };
-        payLoad.SetVector(vector);
+        payLoad.SimilarToVector(vector);
         output.WriteLine(payLoad.ToJson(serializerOptions));
 
-        var searchResult = await client.Search(collectionName, vector, CancellationToken.None);
+        var searchResult = await client.Search(collectionName, vector, cancellationToken: CancellationToken.None);
         searchResult.Switch(
 
             res =>
@@ -116,9 +119,11 @@ public class TestOfVectorDbUsingPoints
     public async Task AddBasicDataToCollection()
     {
         await CleanUpAndCreateCollectionInVectorDb();
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
         var points = CreatePoints();
-        var result = await client.Upsert(collectionName, points, CancellationToken.None);
+        var result = await client.Upsert(collectionName, points, cancellationToken: CancellationToken.None);
         result.Switch(
 
             _ => output.WriteLine("Succeeded"),
@@ -130,18 +135,20 @@ public class TestOfVectorDbUsingPoints
     public async Task AddVectorToCollectionAndUseSearchWithPayload()
     {
         await AddBasicDataToCollection();
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
 
         var vector = new double[]
         {
             0.05f, 0.61f, 0.76f, 0.74f
         };
 
-        var search = new SearchBody();
-        search.SetVector(vector);
-        search.SetWithPayload(true);
+        var search = new SearchRequest();
+        search.SimilarToVector(vector);
+        search.UseWithPayload(true);
 
-        var searchResult = await client.Search(collectionName, search, CancellationToken.None);
+        var searchResult = await client.Search(collectionName, search, cancellationToken: CancellationToken.None);
         searchResult.Switch(
 
             res =>
@@ -156,22 +163,71 @@ public class TestOfVectorDbUsingPoints
         );
     }
 
+
+    [Fact]
+    public async Task AddMultiplePointsWithVectorToCollectionAndUseSearch()
+    {
+        await CleanUpAndCreateCollectionInVectorDb();
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+
+        var points1 = CreatePoints();
+        var result = await client.Upsert(collectionName, points1, cancellationToken: CancellationToken.None);
+        result.Switch(
+
+            _ => output.WriteLine("Succeeded"),
+            error => throw new QdrantException(error.Error)
+        );
+
+        var points2 = CreatePoints();
+        result = await client.Upsert(collectionName, points2, cancellationToken: CancellationToken.None);
+        result.Switch(
+
+            _ => output.WriteLine("Succeeded"),
+            error => throw new QdrantException(error.Error)
+        );
+
+        var points3 = CreatePoints();
+        result = await client.Upsert(collectionName, points3, cancellationToken: CancellationToken.None);
+        result.Switch(
+            _ => output.WriteLine("Succeeded"),
+            error => throw new QdrantException(error.Error)
+        );
+
+        var searchId = points3.First().Id;
+        output.WriteLine(searchId);
+        var searchResult = await client.SearchSingleByPointId(collectionName, searchId, cancellationToken: CancellationToken.None);
+        searchResult.Switch(
+            res =>
+            {
+                res.Id.Should().Be(searchId);
+            },
+            _ => throw new QdrantException("Did not find the PointId based record"),
+            error => throw new QdrantException(error.Error)
+        );
+    }
+
+
     [Fact]
     public async Task AddVectorToCollectionAndUseSearchWithMustFilter()
     {
         await AddBasicDataToCollection();
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+
         var vector = new double[]
         {
             0.05f, 0.61f, 0.76f, 0.74f
         };
 
-        var search = new SearchBody();
-        search.SetVector(vector);
-        search.SetWithPayload(true);
+        var search = new SearchRequest();
+        search.SimilarToVector(vector);
+        search.UseWithPayload(true);
 
         search.Filter = new SearchFilter() { };
-        search.Filter.AddMust(new ConditionalFilter
+        search.Filter.AddMustMatch(new ConditionalFilter
         {
             Key = "city",
             Match = new MatchFilter()
@@ -184,7 +240,7 @@ public class TestOfVectorDbUsingPoints
         var serialized = JsonSerializer.Serialize(search, serializerOptions);
         output.WriteLine(serialized);
 
-        var searchResult = await client.Search(collectionName, search, CancellationToken.None);
+        var searchResult = await client.Search(collectionName, search, cancellationToken: CancellationToken.None);
         searchResult.Switch(
 
             res =>
@@ -203,17 +259,21 @@ public class TestOfVectorDbUsingPoints
     public async Task AddVectorToCollectionAndUseSearchWithMustNotFilter()
     {
         await AddBasicDataToCollection();
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+
         var vector = new double[]
         {
             0.05f, 0.61f, 0.76f, 0.74f
         };
 
-        var search = new SearchBody();
-        search.SetVector(vector);
-        search.SetWithPayload(true);
+        var search = new SearchRequest()
+            .SimilarToVector(vector)
+            .UseWithPayload(true);
+
         search.Filter = new SearchFilter() { };
-        search.Filter.AddMustNot(new ConditionalFilter
+        search.Filter.AddMustNotMatch(new ConditionalFilter
         {
             Key = "city",
             Match = new MatchFilter()
@@ -226,7 +286,7 @@ public class TestOfVectorDbUsingPoints
         var serialized = JsonSerializer.Serialize(search, serializerOptions);
         output.WriteLine(serialized);
 
-        var searchResult = await client.Search(collectionName, search, CancellationToken.None);
+        var searchResult = await client.Search(collectionName, search, cancellationToken: CancellationToken.None);
         searchResult.Switch(
 
             res =>
@@ -247,9 +307,11 @@ public class TestOfVectorDbUsingPoints
     {
         await CleanupCollection();
 
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
 
-        var vectors = new CollectCreationBodyWithMultipleNamedVectors();
+        var vectors = new CreateCollectionWithMultipleNamedVectorsRequest();
         vectors.NamedVectors = new Dictionary<string, VectorParams>()
         {
             {"image", new VectorParams(4,Distance.DOT)} ,
@@ -263,7 +325,6 @@ public class TestOfVectorDbUsingPoints
             _ => output.WriteLine("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
-
 
         var pointsWithNamedVectors = CreatePointsWithNames();
         var body = new PointsWithNamedVectorsUpsertBody()
@@ -284,16 +345,15 @@ public class TestOfVectorDbUsingPoints
         {
             0.9, 0.1, 0.1, 0.2
         };
-
-        var search = new SearchBody();
-        search.Limit = 3;
         var p = new Dictionary<string, object>()
                 {
                     {"name", "image"},
                     {"vector", vector}
                 };
 
-        search.SetVector(p);
+        var search = new SearchRequest()
+            .Take(3)
+            .SimilarToVector(p);
         output.WriteLine("");
         output.WriteLine(search.ToJson(serializerOptions));
 
@@ -319,7 +379,7 @@ public class TestOfVectorDbUsingPoints
         {
             new()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Vector = new double[] { 0.05f, 0.61f, 0.76f, 0.74f },
                 Payload = new Dictionary<string, object>()
                 {
@@ -328,7 +388,7 @@ public class TestOfVectorDbUsingPoints
             },
             new()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Vector = new double[] { 0.19f, 0.81f, 0.75f, 0.11f },
                 Payload = new Dictionary<string, object>()
                 {
@@ -337,7 +397,7 @@ public class TestOfVectorDbUsingPoints
             },
             new()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Vector = new double[] { 0.36f, 0.55f, 0.47f, 0.94f },
                 Payload = new Dictionary<string, object>()
                 {
@@ -346,7 +406,7 @@ public class TestOfVectorDbUsingPoints
             },
             new ()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Vector = new double[] { 0.18f, 0.01f, 0.85f, 0.80f },
                 Payload = new Dictionary<string, object>()
                 {
@@ -355,7 +415,7 @@ public class TestOfVectorDbUsingPoints
             },
             new ()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Vector = new double[] { 0.24f, 0.18f, 0.22f, 0.44f },
                 Payload = new Dictionary<string, object>()
                 {
@@ -364,12 +424,12 @@ public class TestOfVectorDbUsingPoints
             },
             new ()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Vector = new double[] { 0.35f, 0.08f, 0.11f, 0.44f }
             },
             new ()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Vector = new double[] { 0.35f, 0.08f, 0.11f, 0.44f },
                 Payload = new Dictionary<string, object>()
                 {
@@ -381,63 +441,6 @@ public class TestOfVectorDbUsingPoints
         return points;
     }
 
-    //private IList<PointStruct> CreateImageTextPoints()
-    //{
-    //    IList<PointStruct> points = new List<PointStruct>()
-    //    {
-    //        new()
-    //        {
-    //            Id = Guid.NewGuid(),
-    //            Vector = new double[] { 0.05f, 0.61f, 0.76f, 0.74f },
-    //            Payload = new Dictionary<string, object>()
-    //            {
-    //                { "image", "text" }
-    //            }
-    //        },
-    //         new()
-    //        {
-    //            Id = Guid.NewGuid(),
-    //            Vector = new double[] { 0.2, 0.1, 0.3, 0.9 },
-    //            Payload = new Dictionary<string, object>()
-    //            {
-    //                { "image", "text" }
-    //            }
-    //        },
-
-    //         new()
-    //         {
-    //             Id =Guid.NewGuid(),
-    //             Vector = new double[] { 0.9, 0.1, 0.1, 0.2 },
-    //             Payload = new Dictionary<string, object>()
-    //             {
-    //                 { "image", "text" }
-    //             }
-    //         },
-    //    };
-    //    return points;
-    //}
-
-    /*
-     {
-    "points": [
-        {
-            "id": 1,
-            "vector": {
-                "image": [0.9, 0.1, 0.1, 0.2],
-                "text": [0.4, 0.7, 0.1, 0.8, 0.1, 0.1, 0.9, 0.2]
-            }
-        },
-        {
-            "id": 2,
-            "vector": {
-                "image": [0.2, 0.1, 0.3, 0.9],
-                "text": [0.5, 0.2, 0.7, 0.4, 0.7, 0.2, 0.3, 0.9]
-            }
-        }
-    ]
-}
-
-    */
 
     private IList<PointStructWithNamedVector> CreatePointsWithNames()
     {
@@ -445,7 +448,7 @@ public class TestOfVectorDbUsingPoints
         {
             new ()//If the collection was created with multiple vectors, each vector data can be provided using the vector’s name:
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Vector =
                     new Dictionary<string, double[]>()
                     {
@@ -457,7 +460,7 @@ public class TestOfVectorDbUsingPoints
             new ()
             {
 
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Vector =
                     new Dictionary<string, double[]>()
                     {

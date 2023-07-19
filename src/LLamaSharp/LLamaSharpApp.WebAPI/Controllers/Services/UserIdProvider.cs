@@ -18,15 +18,15 @@ public class UserIdProvider : IUserIdProvider
             var s = identity.FindFirst("sub")!.Value;
             if (Guid.TryParse(s, out var guid))
             {
-                this.UserId = guid.ToString("N");
+                this.UserId = guid.ToString();
             }
             else
             {
-                this.UserId = Guid.NewGuid().ToString("N");
+                this.UserId = Guid.NewGuid().ToString();
             }
         }
     }
 
     /// <inheritdoc />
-    public string UserId { get; set; } = Guid.NewGuid().ToString("N");
+    public string UserId { get; set; } = Guid.NewGuid().ToString();
 }

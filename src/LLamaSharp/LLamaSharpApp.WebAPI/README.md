@@ -9,7 +9,7 @@ Clone the repository and open the solution in Visual Studio 2022.
 
 Download a model like: 
 
-wizardLM-7B.ggmlv3.q4_1.bin (see references)
+- wizardLM-7B.ggmlv3.q4_1.bin (see references)
 
 Add the Model to the 'LlamaModels' folder, and mark it for "Copy If Newer".
 
@@ -17,7 +17,7 @@ If you prefer to locate the model file elsewhere, then modify the appsettings.js
 
 The web controllers are configured to use Authentication. 
 Either fill out the appsettings.json section (Remember not to commit/publish the information).
-Use either Keyvault or UserSecret during development.
+Use either Environment variables, Azure Keyvault or UserSecret during development (or...).
 
 Authentication can be disabled in the Program.cs file, remember to remove the [Authentication] attributes from the controllers.
 
@@ -25,19 +25,17 @@ Authentication can be disabled in the Program.cs file, remember to remove the [A
 
 ### References
 
-https://huggingface.co/TheBloke
-https://huggingface.co/TheBloke/wizardLM-7B-GGML/resolve/main/wizardLM-7B.ggmlv3.q4_1.bin
+1. https://huggingface.co/TheBloke
+2. https://huggingface.co/TheBloke/wizardLM-7B-GGML/resolve/main/wizardLM-7B.ggmlv3.q4_1.bin
+3. https://github.com/SciSharp/LLamaSharp
+4. https://scisharp.github.io/SciSharp/
 
-https://github.com/SciSharp/LLamaSharp
+5. https://blog.maartenballiauw.be/post/2023/06/15/running-large-language-models-locally-your-own-chatgpt-like-ai-in-csharp.html
 
-https://scisharp.github.io/SciSharp/
-
-https://blog.maartenballiauw.be/post/2023/06/15/running-large-language-models-locally-your-own-chatgpt-like-ai-in-csharp.html
-
-https://scisharp.github.io/LLamaSharp/0.4/ContributingGuide/#add-examples
+6. https://scisharp.github.io/LLamaSharp/0.4/ContributingGuide/#add-examples
 
 
 ### Authentication Identity
-https://damienbod.com/
+1. https://damienbod.com/
 
-https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/
+2. https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/

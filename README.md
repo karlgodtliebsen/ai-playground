@@ -6,45 +6,61 @@ The purpose of this repository is to provide a playground for learning about usi
 A dotnet Client 'OpenAI.Client' with a Test project and a WPF application that shows how to use it.
 
 ### Llamasharp:
-A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. This project could be a candidate for a missing feature at Llamasharp.
+A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. This project could be a candidate for a missing Web.Api at Llamasharp.
 
 These models has been testet:
 ```
-wizardLM-7B.ggmlv3.q4_1.bin
-ggml-vic13b-uncensored-q4_1.bin
-ggml-vic13b-uncensored-q5_0.bin
-ggml-vicuna-13B-1.1-q4_0.bin
-ggml-vicuna-13B-1.1-q8_0.bin
-wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
+- wizardLM-7B.ggmlv3.q4_1.bin
+- ggml-vic13b-uncensored-q4_1.bin
+- ggml-vic13b-uncensored-q5_0.bin
+- ggml-vicuna-13B-1.1-q4_0.bin
+- ggml-vicuna-13B-1.1-q8_0.bin
+- wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
 ```
 
 ### Qdrant Vector database:
-A dotnet Web API for Qdrant Vector database 'AI.VectorDatabase.Qdrant' has been implemented and a Test project that show how to use it. A new implementation of the NuGet package 'Qdrant.Client' has been implemented
+A dotnet Web API for Qdrant Vector database. 
+A replacement implementation of the NuGet package 'Qdrant.Client' can be found in 'AI.VectorDatabase.Qdrant' together with a Test project that show how to use it.
+
 
 
 ### Conversation as a Platform:
 A dotnet Web API 'AI.CaaP.WebAPI' + 'AI.CaaP.Repository' + 'AI.CaaP' for working on a Conversation as a Platform experience, with a Test project that show how to use it.
 
 
+### SemanticKernel:
+A dotnet Test Project that uses the Microsoft Semantic Kernel Library (MSKLC) to play around with semantic kernel SDK
+
+
+### Financial Agents:
+A dotnet Test project that uses inspiration from LucidateFinAgent to build specific knowledge for Planner and Execution Concepts, and Building Tools
+The implementation is based the Microsoft Semantic Kernel Library
+
+
 ### Dependencies:
 The projects uses other Open Source project: 
 ```
-Oneof
-Serilog
-SerilogTimings
-Destructurama
-Polly
-NetEscapades.AspNetCore.SecurityHeader 
-Riok.Mapperly
-LLamaSharp
-LLamaSharp.Backend.Cpu
-Llama models from Huggingface.
+> Oneof
+> Serilog
+> SerilogTimings
+> Destructurama
+> Polly
+> NetEscapades.AspNetCore.SecurityHeader
+> Riok.Mapperly
+> LLamaSharp
+> LLamaSharp.Backend.Cpu
+> Llama models from Huggingface
+> Qdrant Vector Db
+> Microsoft Semantic Kerlenl Library (MSKLC)
+> TestContainer
+> Stanford.NLP.CoreNLP
+> TiktokenSharp
 ```
 
 The WEB API projects uses Azure AD for Authentication:
-```
-https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/
-```
+
+> https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/
+
 
 
 ## Inspiration
@@ -53,20 +69,20 @@ Inspiration and resources for working with AI products is found from the followi
 The official OpenAI documentation provides detailed information about the API reference and other relevant resources. You can find it at:
 
 #### OpenAI API Reference:
-https://platform.openai.com/docs/api-reference/
+> https://platform.openai.com/docs/api-reference/
 
 #### OpenAI Documentation: 
-https://platform.openai.com/docs/
+> https://platform.openai.com/docs/
 
 #### Azure OpenAI Services:
 Microsoft Azure Cognitive Services also provide support for OpenAI. 
 You can explore the overview and documentation of Azure OpenAI Services at:
 
-https://learn.microsoft.com/en-us/azure/cognitive-services/openai/overview
-https://devblogs.microsoft.com/dotnet/getting-started-azure-openai-dotnet/
+> https://learn.microsoft.com/en-us/azure/cognitive-services/openai/overview
+> https://devblogs.microsoft.com/dotnet/getting-started-azure-openai-dotnet/
 
 #### Qdrant:
-https://qdrant.github.io/qdrant/redoc/index.html
+> https://qdrant.github.io/qdrant/redoc/index.html
 
 
 ## GitHub Repositories
@@ -77,54 +93,54 @@ Please explore these resources to gain insights and discover more possibilities 
 Here are some repositories worth checking out:
 
 #### ChatGPT by lencx:
-https://github.com/lencx/ChatGPT
+> https://github.com/lencx/ChatGPT
 
 #### Awesome ChatGPT Prompts:
-https://github.com/f/awesome-chatgpt-prompts
+> https://github.com/f/awesome-chatgpt-prompts
 
 #### OpenAI-DotNet by RageAgainstThePixel:
-https://github.com/RageAgainstThePixel/OpenAI-DotNet
+> https://github.com/RageAgainstThePixel/OpenAI-DotNet
 
 #### OpenAI with F# by yazeedobaid:
-https://github.com/yazeedobaid/openai-fsharp
+> https://github.com/yazeedobaid/openai-fsharp
 
 #### Getting Started with Chat GPT Integration with C# Console Application by rmauro.dev:
-https://rmauro.dev/getting-started-with-chat-gpt-integration-with-csharp-console-application/
+> https://rmauro.dev/getting-started-with-chat-gpt-integration-with-csharp-console-application/
 
 #### Integrate OpenAI with .NET Core and C# by dotnetoffice.com:
-https://www.dotnetoffice.com/2023/02/integrate-openai-with-net-core-and.html
+> https://www.dotnetoffice.com/2023/02/integrate-openai-with-net-core-and.html
 
 #### OpenAiNet by Open Source Agenda:
-https://www.opensourceagenda.com/projects/openainet
+> https://www.opensourceagenda.com/projects/openainet
 
 
 #### Azure Authentication/Identity:
-https://damienbod.com/
+> https://damienbod.com/
 
-https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/
+> https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/
 
 ### Llama models (llma.cpp/ggml) from Huggingface:
-https://huggingface.co/TheBloke
+> https://huggingface.co/TheBloke
 
 ```
-wizardLM-7B.ggmlv3.q4_1.bin
-ggml-vic13b-uncensored-q4_1.bin
-ggml-vic13b-uncensored-q5_0.bin
-ggml-vicuna-13B-1.1-q4_0.bin
-ggml-vicuna-13B-1.1-q8_0.bin
-wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
+- wizardLM-7B.ggmlv3.q4_1.bin
+- ggml-vic13b-uncensored-q4_1.bin
+- ggml-vic13b-uncensored-q5_0.bin
+- ggml-vicuna-13B-1.1-q4_0.bin
+- ggml-vicuna-13B-1.1-q8_0.bin
+- wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
 ```
 
 ### Youtube:
 ```
-TheAIGRID
-Microsoft Developer
-Matthew Berman
-Adrian Twarog
-Dave Ebbelaar
-Matt Wolfe
-Obscurious
-ByteByteGo
+- TheAIGRID
+- Microsoft Developer
+- Matthew Berman
+- Adrian Twarog
+- Dave Ebbelaar
+- Matt Wolfe
+- Obscurious
+- ByteByteGo
 ```
 
 ## Configuration
@@ -143,6 +159,10 @@ Add appsettings.json (I recommend using user secrets to avoid having the API key
 }
 ```
 
+However, you can also add *.development.json or *.IntegrationTests.json to the .gitignore if you want to use config files for secret storage.
+
+
+
 #### LlamaSharp:
 Add this section into appsettings.json
 
@@ -151,7 +171,6 @@ Add this section into appsettings.json
   "LlmaModel": {
     "modelPath": "LlmaModels\\wizardLM-7B.ggmlv3.q4_1.bin",
   }
-
 ```
 
 
@@ -162,7 +181,6 @@ Add this section into appsettings.json
   "Qdrant": {
     "Url": "http://localhost:6333/"
   }
-
 ```
 
 ## Tasks

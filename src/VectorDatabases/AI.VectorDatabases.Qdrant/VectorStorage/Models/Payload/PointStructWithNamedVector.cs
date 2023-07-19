@@ -11,7 +11,7 @@ public class PointStructWithNamedVector
     /// <a href="https://qdrant.tech/documentation/concepts/points/" />
     /// </summary>
     [JsonPropertyName("id")]
-    public object Id { get; init; } = default!;
+    public string Id { get; init; } = default!;
 
     /// <summary>
     /// vector with named dimensions

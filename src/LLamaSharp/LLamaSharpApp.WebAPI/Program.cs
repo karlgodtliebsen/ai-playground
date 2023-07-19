@@ -17,11 +17,12 @@ var env = builder.Environment;
 var configuration = builder.Configuration;
 var services = builder.Services;
 IdentityModelEventSource.ShowPII = env.IsDevelopment();
+
+builder.WithLogging();
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.AddServerHeader = false;
 });
-builder.AddLogging();
 services
     .AddWebApiConfiguration(configuration)
     .AddLlamaConfiguration(configuration)

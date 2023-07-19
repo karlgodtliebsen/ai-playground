@@ -6,9 +6,11 @@ public class QdrantOptions
 {    /// <summary>
      /// Configuration Section Name
      /// </summary>
-    public const string ConfigSectionName = "Qdrant";
+    public const string SectionName = "Qdrant";
 
     public string Url { get; set; }
+
+    public int? Port { get; set; } = default;
 
     public string ApiKey { get; set; } = "n/a";
 

@@ -36,6 +36,7 @@ public class ConversationController : ControllerBase
         domainService = service;
         this.conversationService = conversationService;
         this.userProvider = userProvider;
+        this.logger.Information("ConversationController created");
     }
 
     /// <summary>
@@ -44,7 +45,7 @@ public class ConversationController : ControllerBase
     /// <param name="requests">Hold an array of Chat prompt/text</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpPost("conversate")]
+    [HttpPost("converse")]
     public async Task<ConversationResponse> Converse([FromBody] ConversationRequest requests, CancellationToken cancellationToken)
     {
         var userId = userProvider.UserId;

@@ -21,9 +21,8 @@ namespace Qdrant.Tests;
 [Collection("VectorDb Collection")]
 public class TestOfVectorDbUsingBatch
 {
-    private readonly ITestOutputHelper output;
     private readonly ILogger logger;
-    private readonly HostApplicationFactory factory;
+    private readonly HostApplicationFactory hostApplicationFactory;
     private readonly QdrantOptions options;
     private readonly JsonSerializerOptions serializerOptions;
 
@@ -31,8 +30,7 @@ public class TestOfVectorDbUsingBatch
     public TestOfVectorDbUsingBatch(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
         fixture.Output = output;
-        this.output = output;
-        this.factory = fixture.Factory;
+        this.hostApplicationFactory = fixture.Factory;
         this.options = fixture.Options;
         this.logger = fixture.Logger;
         serializerOptions = new JsonSerializerOptions()
@@ -41,15 +39,16 @@ public class TestOfVectorDbUsingBatch
         };
     }
     private const string collectionName = "embeddings-collection";
+    private const int vectorSize = 3;
 
 
     private async Task CleanupCollection()
     {
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.RemoveCollection(collectionName, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine($"{collectionName} deleted"),
+            _ => logger.Information($"{collectionName} deleted", collectionName),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -58,13 +57,13 @@ public class TestOfVectorDbUsingBatch
     private async Task CleanUpAndCreateCollectionInVectorDb(int size)
     {
         await CleanupCollection();
-
-        var client = factory.Services.GetRequiredService<IVectorDb>();
-        var vectorParams = client.CreateParams(size, Distance.COSINE, true);
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
         var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded Creating Collection{collectionName}", collectionName),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -79,18 +78,22 @@ public class TestOfVectorDbUsingBatch
           new double[] {0.1, 0.9, 0.1},
           new double[] {0.1, 0.1, 0.9}
         };
-        var client = factory.Services.GetRequiredService<IVectorDb>();
+
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+
         var batch = CreateBatch(vector);
-        var payLoad = new BatchUpsertBody(batch);
+        var payLoad = new BatchUpsertRequest(batch);
 
         await CleanUpAndCreateCollectionInVectorDb(payLoad.Dimension);
 
-        output.WriteLine(payLoad.ToJson(serializerOptions));
+        logger.Information(payLoad.ToJson(serializerOptions));
 
         var result = await client.Upsert(collectionName, payLoad, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -134,44 +137,36 @@ public class TestOfVectorDbUsingBatch
             new double[] {-0.1296899 , -0.8325752 ,  0.46608321, -0.39436982,  0.12301721, 0.22336377, -0.95403339,  0.30383946,  0.7568641 , -0.91504574, 0.21398519, -0.43977382, -0.07772702,  0.02275247, -0.22655445, -0.02363874, -0.56423764,  0.94943287,  0.26219995,  0.62735642},
         };
 
-        var client = factory.Services.GetRequiredService<IVectorDb>();
         var batch = CreateBatch(vector);
-        var payLoad = new BatchUpsertBody(batch);
-        output.WriteLine(payLoad.ToJson(serializerOptions));
+        var payLoad = new BatchUpsertRequest(batch);
+        logger.Information(payLoad.ToJson(serializerOptions));
 
-        await CleanUpAndCreateCollectionInVectorDb(payLoad.Dimension);
+        var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(payLoad.Dimension, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, cancellationToken: CancellationToken.None);
+
         var result = await client.Upsert(collectionName, payLoad, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
     }
 
-    private BatchStruct CreateBatch(double[][] vectors)
+    private BatchRequestStruct CreateBatch(double[][] vectors)
     {
-        var ids = new List<object>(vectors.Length);
+        var batch = new BatchRequestStruct();
+        uint id = 1;
         for (int i = 0; i < vectors.Length; i++)
         {
-            ids.Add(i);
-        }
-
-        var payloads = new List<Dictionary<string, string>>(vectors.Length);
-        for (int i = 0; i < vectors.Length; i++)
-        {
-            payloads.Add(new Dictionary<string, string>()
+            batch.Vectors.Add(vectors[i]);
+            batch.Ids.Add(Guid.NewGuid().ToString());
+            batch.Payloads.Add(new Dictionary<string, object>()
             {
-                {"color", "red " + i}
+                {"color", "red " +(id)}
             });
+            id++;
         }
-
-        var batch = new BatchStruct()
-        {
-            Ids = ids.ToArray(),
-            Vectors = vectors,
-            Payloads = payloads.ToArray()
-        };
-
         return batch;
     }
 }

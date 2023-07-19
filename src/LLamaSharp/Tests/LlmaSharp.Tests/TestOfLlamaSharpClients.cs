@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 
-using LlamaSharp.Tests.Utils;
+using LlamaSharp.Tests.Fixtures;
 
 using LLamaSharpApp.WebAPI.Controllers.Services;
 

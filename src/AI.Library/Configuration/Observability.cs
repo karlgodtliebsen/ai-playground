@@ -6,7 +6,6 @@ using Destructurama;
 using Microsoft.Extensions.Configuration;
 
 using Serilog;
-using Serilog.Events;
 
 namespace AI.Library.Configuration;
 
@@ -16,7 +15,7 @@ namespace AI.Library.Configuration;
 public static class Observability
 {
     /// <summary>
-    /// 
+    /// A default logger used before the application is wired up
     /// </summary>
     /// <param name="name"></param>
     /// <param name="anchor"></param>
@@ -30,25 +29,29 @@ public static class Observability
     }
 
     /// <summary>
-    /// 
+    /// Creates a logger configuration based on the appsettings.json
     /// </summary>
     /// <param name="name"></param>
     /// <param name="anchor"></param>
-    public static LoggerConfiguration CreateLoggerConfigurationUsingAppConfiguration(IConfiguration configuration)
+    public static LoggerConfiguration CreateLoggerConfigurationUsingAppSettings(IConfiguration configuration)
     {
         var cfg = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            //  .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .Enrich.FromLogContext()
             .ReadFrom.Configuration(configuration)
             .Destructure.UsingAttributes();
         return cfg;
     }
+    /// <summary>
+    /// Creates a minimum configuration
+    /// </summary>
+    /// <returns></returns>
     public static LoggerConfiguration CreateMinimumConfiguration()
     {
         var cfg = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            //.MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .Enrich.FromLogContext()
             .WriteTo.Console()
             //.WriteTo.Trace()
@@ -56,20 +59,20 @@ public static class Observability
             .Destructure.UsingAttributes();
         return cfg;
     }
+
     /// <summary>
-    /// 
+    /// Creates a logger configuration based on the appsettings.json
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="anchor"></param>
-    public static ILogger CreateConfigurationBasedLogger(IConfiguration configuration)
+    /// <param name="configuration"></param>
+    public static ILogger CreateAppSettingsBasedLogger(IConfiguration configuration)
     {
-        var logger = CreateLoggerConfigurationUsingAppConfiguration(configuration).CreateLogger();
+        var logger = CreateLoggerConfigurationUsingAppSettings(configuration).CreateLogger();
         return logger;
     }
 
 
     /// <summary>
-    /// 
+    /// Creates a logger configuration based on minimal bootstrap Configuration
     /// </summary>
     public static ILogger CreateBootstrapLogger()
     {
