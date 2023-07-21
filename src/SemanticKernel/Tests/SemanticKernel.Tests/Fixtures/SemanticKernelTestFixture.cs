@@ -18,9 +18,28 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests.Fixtures;
 
-public sealed class SemanticKernelTestFixture : IDisposable
+public sealed class SemanticKernelTestFixture : SemanticKernelTestFixtureBase, IDisposable
 {
-    public Serilog.ILogger Logger { get; private set; }
+
+
+    public TestContainerDockerLauncher Launcher { get; private set; }
+    public Func<bool> Launch { get; set; }
+
+    public SemanticKernelTestFixture()
+    {
+        Launcher = Factory.Services.GetRequiredService<TestContainerDockerLauncher>();
+        Launcher.Start();
+    }
+
+    public void Dispose()
+    {
+        Launcher.Stop();
+    }
+}
+
+public class SemanticKernelTestFixtureBase
+{
+    public ILogger Logger { get; private set; }
     public Microsoft.Extensions.Logging.ILogger MsLogger { get; set; }
 
 
@@ -28,6 +47,8 @@ public sealed class SemanticKernelTestFixture : IDisposable
     public AzureOpenAIOptions AzureOpenAIOptions { get; private set; }
     public OpenAIOptions OpenAIOptions { get; private set; }
     public QdrantOptions QdrantOptions { get; private set; }
+    public BingOptions BingOptions { get; private set; }
+
     public LlamaModelOptions LlamaModelOptions { get; private set; }
     public IModelRequestFactory RequestFactory { get; private set; }
     public ILlamaModelFactory LlamaModelFactory { get; private set; }
@@ -39,7 +60,7 @@ public sealed class SemanticKernelTestFixture : IDisposable
     public TestContainerDockerLauncher Launcher { get; private set; }
     public Func<bool> Launch { get; set; }
 
-    public SemanticKernelTestFixture()
+    public SemanticKernelTestFixtureBase()
     {
         getOutput = () => Output!;
         Factory = HostApplicationFactory.Build(
@@ -50,7 +71,8 @@ public sealed class SemanticKernelTestFixture : IDisposable
                      .AddQdrant(configuration)
                      .AddQdrantVectorStore()
                      .AddOpenAIConfiguration(configuration)
-                     .AddAzureOpenAIConfiguration(configuration)
+                     .AddAzureOpenAI(configuration)
+                     .AddBing(configuration)
                      .AddLlamaConfiguration(configuration)
                      .AddWebApiConfiguration(configuration)
                      ;
@@ -63,22 +85,15 @@ public sealed class SemanticKernelTestFixture : IDisposable
          );
         Logger = Factory.Logger();
         MsLogger = Factory.MsLogger();
-
-        AzureOpenAIOptions = Factory.Services.GetRequiredService<IOptions<AzureOpenAIOptions>>().Value;
+        AzureOpenAIOptions = Factory.Services.GetRequiredService<IOptions<Configuration.AzureOpenAIOptions>>().Value;
+        BingOptions = Factory.Services.GetRequiredService<IOptions<BingOptions>>().Value;
         OpenAIOptions = Factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         TestFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
         QdrantOptions = Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
         LlamaModelOptions = Factory.Services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
         RequestFactory = Factory.Services.GetRequiredService<IModelRequestFactory>();
         LlamaModelFactory = Factory.Services.GetRequiredService<ILlamaModelFactory>();
-        Launcher = Factory.Services.GetRequiredService<TestContainerDockerLauncher>();
-        Launcher.Start();
     }
 
 
-
-    public void Dispose()
-    {
-        Launcher.Stop();
-    }
 }

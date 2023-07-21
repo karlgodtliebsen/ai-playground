@@ -21,7 +21,7 @@ public sealed class FinancialAgentsTestFixture : IDisposable
     public Microsoft.Extensions.Logging.ILogger MsLogger { get; set; }
 
     public HostApplicationFactory Factory { get; private set; }
-    public AzureOpenAIOptions AzureOpenAIOptions { get; private set; }
+
     public OpenAIOptions OpenAIOptions { get; private set; }
 
     public BingOptions BingOptions { get; private set; }
@@ -45,7 +45,6 @@ public sealed class FinancialAgentsTestFixture : IDisposable
                      .AddConfiguration(configuration)
                      //.AddQdrantVectorStore()
                      .AddOpenAIConfiguration(configuration)
-                     .AddAzureOpenAIConfiguration(configuration)
                      .AddWebApiConfiguration(configuration)
                      ;
              },
@@ -55,7 +54,6 @@ public sealed class FinancialAgentsTestFixture : IDisposable
         Logger = Factory.Logger();
         MsLogger = Factory.MsLogger();
 
-        AzureOpenAIOptions = Factory.Services.GetRequiredService<IOptions<AzureOpenAIOptions>>().Value;
         OpenAIOptions = Factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         BingOptions = Factory.Services.GetRequiredService<IOptions<BingOptions>>().Value;
         GoogleOptions = Factory.Services.GetRequiredService<IOptions<GoogleOptions>>().Value;

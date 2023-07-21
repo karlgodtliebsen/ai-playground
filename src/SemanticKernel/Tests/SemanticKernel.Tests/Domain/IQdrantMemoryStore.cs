@@ -2,7 +2,7 @@
 
 using Microsoft.SemanticKernel.Memory;
 
-namespace SemanticKernel.Tests;
+namespace SemanticKernel.Tests.Domain;
 
 public interface IQdrantMemoryStore : IMemoryStore
 {

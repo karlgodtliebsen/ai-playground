@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel.Memory;
 
+using SemanticKernel.Tests.Domain;
+
 namespace SemanticKernel.Tests.Configuration;
 
 public static class QdrantConfigurator

@@ -1,11 +1,11 @@
 ﻿namespace OpenAI.Client.Configuration;
 
-public class AzureOpenAIOptions
-{
-    /// <summary>
-    /// Configuration ConfigSectionName
-    /// </summary>
-    public const string ConfigSectionName = "AzureOpenAI";
+//public class AzureOpenAIOptions
+//{
+//    /// <summary>
+//    /// Configuration SectionName
+//    /// </summary>
+//    public const string SectionName = "AzureOpenAI";
 
-    public string ApiKey { get; set; } = null!;
-}
+//    public string ApiKey { get; set; } = null!;
+//}

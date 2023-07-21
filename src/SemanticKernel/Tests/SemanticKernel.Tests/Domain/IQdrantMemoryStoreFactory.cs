@@ -1,6 +1,6 @@
 ﻿using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
-namespace SemanticKernel.Tests;
+namespace SemanticKernel.Tests.Domain;
 
 public interface IQdrantMemoryStoreFactory
 {

@@ -63,11 +63,9 @@ public class TestOfQdrantAdministration
     [Fact]
     public async Task VerifyAddCollectionToQdrant()
     {
-        await CleanupCollections();
-
         var vectorParams = new VectorParams(vectorSize, Distance.DOT, true);
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: true, cancellationToken: CancellationToken.None);
         var response = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
         response.Switch(
             _ => { },

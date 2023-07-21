@@ -1,6 +1,7 @@
 ﻿using AI.Test.Support;
 
 using Azure.AI.OpenAI;
+using Azure.OpenAI.Tests.Configuration;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -29,7 +30,7 @@ public class TestOfAzureOpenAI
             environment: () => "IntegrationTests",
             serviceContext: (services, configuration) =>
             {
-                services.AddAzureOpenAIConfiguration(configuration);
+                services.AddAzureOpenAI(configuration);
             },
             fixedDateTime: () => DateTimeOffset.UtcNow,
             output: () => output

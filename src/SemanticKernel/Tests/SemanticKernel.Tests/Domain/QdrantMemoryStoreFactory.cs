@@ -5,7 +5,7 @@ using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace SemanticKernel.Tests;
+namespace SemanticKernel.Tests.Domain;
 
 public class QdrantMemoryStoreFactory : IQdrantMemoryStoreFactory
 {
@@ -27,7 +27,7 @@ public class QdrantMemoryStoreFactory : IQdrantMemoryStoreFactory
         bool recreateCollection = true,
         bool storeOnDisk = false, CancellationToken cancellationToken = default)
     {
-        IQdrantFactory factory = serviceProvider.GetRequiredService<IQdrantFactory>();
+        var factory = serviceProvider.GetRequiredService<IQdrantFactory>();
 
         var f = await factory.Create(collectionName, vectorSize, distance, recreateCollection, storeOnDisk, cancellationToken);
 
