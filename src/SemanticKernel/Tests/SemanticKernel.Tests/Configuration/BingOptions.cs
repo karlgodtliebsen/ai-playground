@@ -8,6 +8,4 @@ public class BingOptions
     public const string SectionName = "Bing";
 
     public string ApiKey { get; set; } = null!;
-
-
 }

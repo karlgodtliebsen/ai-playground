@@ -20,17 +20,17 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Collection")]
+[Collection("SemanticKernel With Docker Collection")]
 public class TestOfSemanticKernelOnUberFilings
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly OpenAIOptions openAIOptions;
-    private readonly SemanticKernelTestFixture fixture;
+    private readonly SemanticKernelWithDockerTestFixture fixture;
     private readonly string testFilesPath;
     private readonly ILlamaModelFactory llamaModelFactory;
 
-    public TestOfSemanticKernelOnUberFilings(SemanticKernelTestFixture fixture, ITestOutputHelper output)
+    public TestOfSemanticKernelOnUberFilings(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
     {
         fixture.Output = output;
         this.logger = fixture.Logger;

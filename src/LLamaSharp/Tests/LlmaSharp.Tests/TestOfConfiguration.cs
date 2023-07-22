@@ -30,10 +30,10 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
     [Fact]
     public void EnsureThatServiceConfigurationIsValid()
     {
-        factory.Services.GetService<Serilog.ILogger>().Should().NotBeNull();
+        factory.Services.GetService<ILogger>().Should().NotBeNull();
 
         factory.Services.GetService<ILoggerFactory>().Should().NotBeNull();
-        factory.Services.GetService<Microsoft.Extensions.Logging.ILogger<object>>().Should().NotBeNull();
+        factory.Services.GetService<ILogger<object>>().Should().NotBeNull();
 
         factory.Services.GetService<IOptions<WebApiOptions>>().Should().NotBeNull();
         factory.Services.GetService<IOptions<LlamaModelOptions>>().Should().NotBeNull();
@@ -45,6 +45,7 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         factory.Services.GetService<IExecutorService>().Should().NotBeNull();
         factory.Services.GetService<IModelStateRepository>().Should().NotBeNull();
         factory.Services.GetService<IUsersStateRepository>().Should().NotBeNull();
+        //Scoped service registrations
         using var scope = factory.Services.CreateScope();
         scope.ServiceProvider.GetService<IUserIdProvider>().Should().NotBeNull();
 

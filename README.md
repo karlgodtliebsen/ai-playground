@@ -11,50 +11,55 @@ A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use
 These models has been testet:
 ```
 - wizardLM-7B.ggmlv3.q4_1.bin
+- llama-2-7b.ggmlv3.q8_0.bin
 - ggml-vic13b-uncensored-q4_1.bin
 - ggml-vic13b-uncensored-q5_0.bin
 - ggml-vicuna-13B-1.1-q4_0.bin
 - ggml-vicuna-13B-1.1-q8_0.bin
 - wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
 ```
+## LlaMa Models
+Download a model like: 
+
+- wizardLM-7B.ggmlv3.q4_1.bin (see references)
+
+Add the Models to the 'LlamaModels' folder in the 'AI.LlaMa.Models' project, and mark them for "Copy If Newer".
+
 
 ### Qdrant Vector database:
 A dotnet Web API for Qdrant Vector database. 
 A replacement implementation of the NuGet package 'Qdrant.Client' can be found in 'AI.VectorDatabase.Qdrant' together with a Test project that show how to use it.
 
 
-
 ### Conversation as a Platform:
 A dotnet Web API 'AI.CaaP.WebAPI' + 'AI.CaaP.Repository' + 'AI.CaaP' for working on a Conversation as a Platform experience, with a Test project that show how to use it.
-
 
 ### SemanticKernel:
 A dotnet Test Project that uses the Microsoft Semantic Kernel Library (MSKLC) to play around with semantic kernel SDK
 
-
 ### Financial Agents:
-A dotnet Test project that uses inspiration from LucidateFinAgent to build specific knowledge for Planner and Execution Concepts, and Building Tools
+The start of a dotnet Test project that uses inspiration from LucidateFinAgent to build specific knowledge for Planner and Execution Concepts, and Building Tools
+Much more work is needed to make this a real project.
 The implementation is based the Microsoft Semantic Kernel Library
 
 
 ### Dependencies:
 The projects uses other Open Source project: 
 ```
-> Oneof
-> Serilog
-> SerilogTimings
-> Destructurama
-> Polly
-> NetEscapades.AspNetCore.SecurityHeader
-> Riok.Mapperly
-> LLamaSharp
-> LLamaSharp.Backend.Cpu
-> Llama models from Huggingface
-> Qdrant Vector Db
-> Microsoft Semantic Kerlenl Library (MSKLC)
-> TestContainer
-> Stanford.NLP.CoreNLP
-> TiktokenSharp
+- Oneof
+- Serilog
+- SerilogTimings
+- Destructurama
+- Polly
+- NetEscapades.AspNetCore.SecurityHeader
+- Riok.Mapperly
+- LLamaSharp
+- LLamaSharp.Backend.Cpu
+- Llama models from Huggingface
+- Qdrant Vector Db
+- Microsoft Semantic Kerlenl Library (MSKLC)
+- TestContainer
+- TiktokenSharp
 ```
 
 The WEB API projects uses Azure AD for Authentication:
@@ -130,6 +135,12 @@ Here are some repositories worth checking out:
 - ggml-vicuna-13B-1.1-q8_0.bin
 - wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
 ```
+
+This model requires MetaAI registration/approval
+```
+- llama-2-7b.ggmlv3.q8_0.bin
+```
+
 
 ### Youtube:
 ```

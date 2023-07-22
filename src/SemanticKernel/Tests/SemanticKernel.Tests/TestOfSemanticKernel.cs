@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Collection")]
+[Collection("SemanticKernel With Docker Collection")]
 public class TestOfSemanticKernel
 {
     private readonly ILogger logger;
@@ -23,9 +23,9 @@ public class TestOfSemanticKernel
     private readonly HostApplicationFactory hostApplicationFactory;
 
     private readonly OpenAIOptions openAIOptions;
-    private readonly SemanticKernelTestFixture fixture;
+    private readonly SemanticKernelWithDockerTestFixture fixture;
 
-    public TestOfSemanticKernel(SemanticKernelTestFixture fixture, ITestOutputHelper output)
+    public TestOfSemanticKernel(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
     {
         fixture.Output = output;
         this.logger = fixture.Logger;
