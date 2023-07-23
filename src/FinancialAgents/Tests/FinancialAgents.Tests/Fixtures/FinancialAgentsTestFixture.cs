@@ -1,6 +1,5 @@
 ﻿using AI.Test.Support;
-
-using Embeddings.Qdrant.Tests.Fixtures;
+using AI.Test.Support.DockerSupport;
 
 using FinancialAgents.Tests.Configuration;
 
@@ -11,11 +10,9 @@ using Microsoft.Extensions.Options;
 
 using OpenAI.Client.Configuration;
 
-using Xunit.Abstractions;
-
 namespace FinancialAgents.Tests.Fixtures;
 
-public sealed class FinancialAgentsTestFixture : IDisposable
+public sealed class FinancialAgentsTestFixture : TestFixtureBase, IDisposable
 {
     public Serilog.ILogger Logger { get; private set; }
     public Microsoft.Extensions.Logging.ILogger MsLogger { get; set; }
@@ -28,15 +25,11 @@ public sealed class FinancialAgentsTestFixture : IDisposable
     public GoogleOptions GoogleOptions { get; private set; }
 
 
-    private readonly Func<ITestOutputHelper>? getOutput;
-    public ITestOutputHelper Output { get; set; }
-
     public TestContainerDockerLauncher Launcher { get; private set; }
     public Func<bool> Launch { get; set; }
 
     public FinancialAgentsTestFixture()
     {
-        getOutput = () => Output!;
         Factory = HostApplicationFactory.Build(
              environment: () => "IntegrationTests",
              serviceContext: (services, configuration) =>
@@ -48,12 +41,8 @@ public sealed class FinancialAgentsTestFixture : IDisposable
                      .AddWebApiConfiguration(configuration)
                      ;
              },
-             fixedDateTime: () => DateTimeOffset.UtcNow,
-             output: getOutput
+             fixedDateTime: () => DateTimeOffset.UtcNow
          );
-        Logger = Factory.Logger();
-        MsLogger = Factory.MsLogger();
-
         OpenAIOptions = Factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         BingOptions = Factory.Services.GetRequiredService<IOptions<BingOptions>>().Value;
         GoogleOptions = Factory.Services.GetRequiredService<IOptions<GoogleOptions>>().Value;

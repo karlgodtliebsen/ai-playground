@@ -30,14 +30,14 @@ public class TestOfSemanticKernelExample31CustomPlanner
 
     public TestOfSemanticKernelExample31CustomPlanner(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.fixture = fixture;
         this.msLogger = fixture.MsLogger;
         this.hostApplicationFactory = fixture.Factory;
     }
-    private const string collectionName = "SemanticKernel-customplanner--test-collection";
-    private const int vectorSize = 1536;
+    private const string CollectionName = "SemanticKernel-customplanner-test-collection";
+    private const int VectorSize = 1536;
 
     const string Model = "gpt-3.5-turbo";
     const string CompletionModel = "text-davinci-003";
@@ -50,17 +50,13 @@ public class TestOfSemanticKernelExample31CustomPlanner
         bool storeOnDisk = false;
 
         var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
-        var memoryStorage = await factory.Create(collectionName, vectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
-
+        var memoryStorage = await factory.Create(CollectionName, VectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         logger.Information("======== Custom Planner - Create and Execute Markup Plan ========");
         IKernel kernel = new KernelBuilder()
             .WithLogger(fixture.MsLogger)
-
-            //.WithOpenAIChatCompletionService(Model, fixture.OpenAIOptions.ApiKey)
             .WithOpenAITextCompletionService(CompletionModel, fixture.OpenAIOptions.ApiKey)
             .WithOpenAITextEmbeddingGenerationService(EmbeddingModel, fixture.OpenAIOptions.ApiKey)
-
             .WithMemoryStorage(memoryStorage)
             .Build();
 
@@ -81,13 +77,14 @@ public class TestOfSemanticKernelExample31CustomPlanner
         plan.AddSteps(skills["ContextQuery"], markup["RunMarkup"]);
 
         // Execute plan
-        context.Variables.Update("Who is my president? Who was president 3 years ago? What should I eat for dinner");
+        context.Variables.Update("Who is my president? Who was president 10 years ago? What should I eat for dinner");
         var result = await plan.InvokeAsync(context);
 
         logger.Information("Result:");
         logger.Information(result.Result);
         logger.Information("");
     }
+
     /* Example Output
     ======== Custom Planner - Create and Execute Markup Plan ========
     Markup:
@@ -100,11 +97,11 @@ public class TestOfSemanticKernelExample31CustomPlanner
         Goal: response
 
         Steps:
-        - bing.SearchAsync INPUT='Who is United States President' => markup.SearchAsync.result    - Microsoft.SemanticKernel.Planning.Plan. INPUT='Joe Biden was president 3 years ago' => markup.fact.result    - Microsoft.SemanticKernel.Planning.Plan. INPUT='For dinner, you might enjoy some sushi with your partner, since you both like it and you only ate it once this month' => markup.opinion.result
+        - bing.SearchAsync INPUT='Who is United States President' => markup.SearchAsync.result    - Microsoft.SemanticKernel.Planning.Plan. INPUT='Joe Biden was president 2 years ago' => markup.fact.result    - Microsoft.SemanticKernel.Planning.Plan. INPUT='For dinner, you might enjoy some sushi with your partner, since you both like it and you only ate it once this month' => markup.opinion.result
 
     Result:
     The president of the United States ( POTUS) [A] is the head of state and head of government of the United States of America. The president directs the executive branch of the federal government and is the commander-in-chief of the United States Armed Forces .
-    Joe Biden was president 3 years ago
+    Joe Biden was president 2 years ago
     For dinner, you might enjoy some sushi with your partner, since you both like it and you only ate it once this month
     */
 
@@ -116,7 +113,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
         context.Variables.Set("city", "Tacoma");
         context.Variables.Set("state", "WA");
         context.Variables.Set("country", "USA");
-        context.Variables.Set("collection", "contextQueryMemories");
+        context.Variables.Set("collection", CollectionName);//contextQueryMemories
         context.Variables.Set("limit", "5");
         context.Variables.Set("relevance", "0.3");
         return context;
@@ -142,7 +139,8 @@ public class TestOfSemanticKernelExample31CustomPlanner
 
         foreach (var memoryToSave in memoriesToSave)
         {
-            await kernel.Memory.SaveInformationAsync("contextQueryMemories", memoryToSave, Guid.NewGuid().ToString());
+            //"contextQueryMemories"
+            await kernel.Memory.SaveInformationAsync(CollectionName, memoryToSave, Guid.NewGuid().ToString());
         }
     }
 

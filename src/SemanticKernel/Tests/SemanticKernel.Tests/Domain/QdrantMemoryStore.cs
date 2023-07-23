@@ -15,7 +15,7 @@ internal class QdrantMemoryStore : IQdrantMemoryStore
     /// <summary>
     /// The Qdrant Vector Database memory store logger.
     /// </summary>
-    private readonly ILogger? logger;
+    private readonly ILogger logger;
     private IQdrantVectorDb? qdrantClient = null;
 
     public QdrantMemoryStore(ILogger logger)

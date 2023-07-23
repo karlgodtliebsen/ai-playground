@@ -2,7 +2,6 @@
 
 using AI.Library.Utils;
 using AI.Test.Support;
-using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
@@ -18,8 +17,6 @@ using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using OpenAI.Client.Domain;
-
 using Xunit.Abstractions;
 
 
@@ -31,32 +28,22 @@ namespace Embeddings.Qdrant.Tests;
 [Collection("EmbeddingsAndVectorDb Collection")]
 public class TestOfSearchScenarioInVectorDbUsingEmbeddings
 {
-    private readonly ITestOutputHelper output;
     private readonly ILogger logger;
 
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly JsonSerializerOptions serializerOptions;
     private readonly EmbeddingsVectorDbTestFixture fixture;
-
     private readonly ILlamaModelFactory llamaModelFactory;
     private string modelFilesPath;
 
-    //private LLamaEmbedder embedder;
-    private readonly QdrantOptions qdrantOptions;
-    private readonly IModelRequestFactory requestFactory;
-    private readonly string testFilesPath;
 
 
     public TestOfSearchScenarioInVectorDbUsingEmbeddings(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
-        this.output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.hostApplicationFactory = fixture.Factory;
-        this.requestFactory = fixture.RequestFactory;
         this.fixture = fixture;
-        this.qdrantOptions = fixture.QdrantOptions;
-        this.testFilesPath = fixture.TestFilesPath;
         this.modelFilesPath = fixture.ModelFilesPath;
         this.llamaModelFactory = fixture.LlamaModelFactory;
         serializerOptions = new JsonSerializerOptions()
@@ -65,17 +52,17 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
         };
     }
 
-    private const string collectionName = "books-search-collection";
-    private const int vectorSize = 3;
+    private const string CollectionName = "books-search-collection";
+    private const int VectorSize = 3;
 
 
     private async Task CleanupCollection()
     {
         var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
-        var result = await client.RemoveCollection(collectionName, CancellationToken.None);
+        var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 
-            _ => logger.Information("{collectionName} deleted", collectionName),
+            _ => logger.Information("{collectionName} deleted", CollectionName),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -84,9 +71,9 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     {
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
         var vectorParams = qdrantFactory.CreateParams(size, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, cancellationToken: CancellationToken.None);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, cancellationToken: CancellationToken.None);
 
-        var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
+        var result = await client.CreateCollection(CollectionName, vectorParams, CancellationToken.None);
         result.Switch(
 
             _ => logger.Information("Succeeded"),
@@ -128,12 +115,12 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
         int numberOfDimensions = points.Dimension;
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
         var vectorParams = qdrantFactory.CreateParams(numberOfDimensions, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, cancellationToken: CancellationToken.None);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, cancellationToken: CancellationToken.None);
 
         await CreateCollectionInVectorDb(numberOfDimensions);
         points.ToJson(serializerOptions);
 
-        var result = await client.Upsert(collectionName, points, CancellationToken.None);
+        var result = await client.Upsert(CollectionName, points, CancellationToken.None);
         result.Switch(
 
             _ => logger.Information("Succeeded"),
@@ -151,7 +138,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
             .SimilarToVector(vector)
             .UseWithPayload(true);
 
-        var searchResult = await client.Search(collectionName, search, CancellationToken.None);
+        var searchResult = await client.Search(CollectionName, search, CancellationToken.None);
         searchResult.Switch(
 
             res =>

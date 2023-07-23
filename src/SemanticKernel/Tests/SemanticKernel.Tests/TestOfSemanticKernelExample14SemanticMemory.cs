@@ -28,18 +28,18 @@ public class TestOfSemanticKernelExample14SemanticMemory
 
     public TestOfSemanticKernelExample14SemanticMemory(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
-        this.logger = fixture.Logger;
         this.fixture = fixture;
+        fixture.Setup(output);
+        this.logger = fixture.Logger;
 
         this.hostApplicationFactory = fixture.Factory;
         this.openAIOptions = fixture.OpenAIOptions;
         this.qdrantOptions = fixture.QdrantOptions;
     }
 
-    private const string collectionName = "SemanticKernel-14-test-collection";
-    private const string embeddingModel = "text-embedding-ada-002";
-    private const int vectorSize = 1536;
+    private const string CollectionName = "SemanticKernel-14-test-collection";
+    private const string EmbeddingModel = "text-embedding-ada-002";
+    private const int VectorSize = 1536;
 
 
     [Fact]
@@ -49,12 +49,12 @@ public class TestOfSemanticKernelExample14SemanticMemory
         bool storeOnDisk = false;
 
         var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
-        var memoryStorage = await factory.Create(collectionName, vectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
+        var memoryStorage = await factory.Create(CollectionName, VectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         /* You can build your own semantic memory combining an Embedding Generator
          * with a Memory storage that supports search by similarity (ie semantic search).
          *
-         * In this example we use a volatile memory, a local simulation of a vector DB.
+         * In this example we use qdrant as a memory storage.
          *
          * You can replace VolatileMemoryStore with Qdrant (see QdrantMemoryStore connector)
          * or implement your connectors for Pinecone, Vespa, Postgres + pgvector, SQLite VSS, etc.
@@ -62,7 +62,7 @@ public class TestOfSemanticKernelExample14SemanticMemory
 
         var kernelWithCustomDb = Kernel.Builder
             .WithLogger(fixture.MsLogger)
-            .WithOpenAITextEmbeddingGenerationService(embeddingModel, fixture.OpenAIOptions.ApiKey)
+            .WithOpenAITextEmbeddingGenerationService(EmbeddingModel, fixture.OpenAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)
             .Build();
 
@@ -112,7 +112,7 @@ public class TestOfSemanticKernelExample14SemanticMemory
     {
         logger.Information("\nQuery: " + query + "\n");
 
-        var memories = kernel.Memory.SearchAsync(collectionName, query, limit: 2, minRelevanceScore: 0.5);
+        var memories = kernel.Memory.SearchAsync(CollectionName, query, limit: 2, minRelevanceScore: 0.5);
 
         int i = 0;
         await foreach (MemoryQueryResult memory in memories)
@@ -143,7 +143,7 @@ public class TestOfSemanticKernelExample14SemanticMemory
         foreach (var entry in githubFiles)
         {
             await kernel.Memory.SaveReferenceAsync(
-                collection: collectionName,
+                collection: CollectionName,
                 externalSourceName: "GitHub",
                 externalId: entry.Key,
                 description: entry.Value,

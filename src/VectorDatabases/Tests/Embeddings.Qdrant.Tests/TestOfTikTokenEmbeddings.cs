@@ -1,18 +1,10 @@
-﻿using System.Text.Json.Serialization;
-
-using AI.Test.Support;
-using AI.VectorDatabase.Qdrant.Configuration;
+﻿using AI.Test.Support;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 
 using Embeddings.Qdrant.Tests.Fixtures;
 
-using LLamaSharpApp.WebAPI.Domain.Services;
-
 using Microsoft.Extensions.DependencyInjection;
-
-using OpenAI.Client.Configuration;
-using OpenAI.Client.Domain;
 
 using TiktokenSharp;
 
@@ -23,44 +15,26 @@ namespace Embeddings.Qdrant.Tests;
 [Collection("EmbeddingsAndVectorDb Collection")]
 public class TestOfTikTokenEmbeddings
 {
-    private readonly ITestOutputHelper output;
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
-    private readonly QdrantOptions qdrantOptions;
-    private readonly OpenAIOptions openAIOptions;
-    private readonly JsonSerializerOptions serializerOptions;
-    private readonly EmbeddingsVectorDbTestFixture fixture;
-    private readonly IModelRequestFactory requestFactory;
     private readonly string testFilesPath;
-    private readonly ILlamaModelFactory llamaModelFactory;
-    private string modelFilesPath;
     public TestOfTikTokenEmbeddings(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
-        this.fixture = fixture;
-
         this.hostApplicationFactory = fixture.Factory;
-        this.requestFactory = fixture.RequestFactory;
-        this.qdrantOptions = fixture.QdrantOptions;
         this.testFilesPath = fixture.TestFilesPath;
-        this.modelFilesPath = fixture.ModelFilesPath;
-        this.llamaModelFactory = fixture.LlamaModelFactory;
-        serializerOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
     }
 
-    private const string collectionName = "tiktoken-embeddings-test-collection";
+    private const string CollectionName = "tiktoken-embeddings-test-collection";
 
     private async Task CleanupCollection()
     {
         var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
-        var result = await client.RemoveCollection(collectionName, CancellationToken.None);
+        var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 
-            _ => logger.Information($"Collection {collectionName} deleted"),
+            _ => logger.Information("Collection {collectionName} deleted", CollectionName),
             error => throw new QdrantException(error.Error)
         );
     }

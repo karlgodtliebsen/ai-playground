@@ -34,7 +34,7 @@ public class TestOfSemanticKernelExample19Qdrant
 
     public TestOfSemanticKernelExample19Qdrant(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.fixture = fixture;
 

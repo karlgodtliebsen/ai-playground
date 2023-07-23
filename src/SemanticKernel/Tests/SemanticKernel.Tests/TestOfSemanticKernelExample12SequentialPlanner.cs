@@ -16,7 +16,7 @@ public class TestOfSemanticKernelExample12SequentialPlanner
 
     public TestOfSemanticKernelExample12SequentialPlanner(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.fixture = fixture;
         this.msLogger = fixture.MsLogger;

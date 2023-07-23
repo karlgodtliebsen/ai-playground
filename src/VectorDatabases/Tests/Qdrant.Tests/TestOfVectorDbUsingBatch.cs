@@ -29,7 +29,7 @@ public class TestOfVectorDbUsingBatch
 
     public TestOfVectorDbUsingBatch(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.hostApplicationFactory = fixture.Factory;
         this.options = fixture.Options;
         this.logger = fixture.Logger;
@@ -38,17 +38,17 @@ public class TestOfVectorDbUsingBatch
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
     }
-    private const string collectionName = "embeddings-collection";
-    private const int vectorSize = 3;
+    private const string CollectionName = "embeddings-collection";
+    private const int VectorSize = 3;
 
 
     private async Task CleanupCollection()
     {
         var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
-        var result = await client.RemoveCollection(collectionName, CancellationToken.None);
+        var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 
-            _ => logger.Information($"{collectionName} deleted", collectionName),
+            _ => logger.Information($"{CollectionName} deleted", CollectionName),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -58,12 +58,12 @@ public class TestOfVectorDbUsingBatch
     {
         await CleanupCollection();
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
-        var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var result = await client.CreateCollection(CollectionName, vectorParams, CancellationToken.None);
         result.Switch(
 
-            _ => logger.Information("Succeeded Creating Collection{collectionName}", collectionName),
+            _ => logger.Information("Succeeded Creating Collection{collectionName}", CollectionName),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -80,8 +80,8 @@ public class TestOfVectorDbUsingBatch
         };
 
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
 
         var batch = CreateBatch(vector);
         var payLoad = new BatchUpsertRequest(batch);
@@ -90,7 +90,7 @@ public class TestOfVectorDbUsingBatch
 
         logger.Information(payLoad.ToJson(serializerOptions));
 
-        var result = await client.Upsert(collectionName, payLoad, CancellationToken.None);
+        var result = await client.Upsert(CollectionName, payLoad, CancellationToken.None);
         result.Switch(
 
             _ => logger.Information("Succeeded"),
@@ -143,9 +143,9 @@ public class TestOfVectorDbUsingBatch
 
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
         var vectorParams = qdrantFactory.CreateParams(payLoad.Dimension, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, cancellationToken: CancellationToken.None);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, cancellationToken: CancellationToken.None);
 
-        var result = await client.Upsert(collectionName, payLoad, CancellationToken.None);
+        var result = await client.Upsert(CollectionName, payLoad, CancellationToken.None);
         result.Switch(
 
             _ => logger.Information("Succeeded"),

@@ -32,9 +32,9 @@ public class TestOfAgentRepository
                     .AddDatabaseContext(configuration)
                     ;
             },
-            fixedDateTime: () => DateTimeOffset.UtcNow,
-            output: () => output
+            fixedDateTime: () => DateTimeOffset.UtcNow
         );
+        factory.ConfigureLogging(output);
         logger = factory.Services.GetRequiredService<ILogger>();
 
         this.factory.Services.DestroyMigration();

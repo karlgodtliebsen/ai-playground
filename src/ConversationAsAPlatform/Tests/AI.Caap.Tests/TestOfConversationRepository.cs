@@ -15,8 +15,6 @@ namespace AI.Caap.Tests;
 public class TestOfConversationRepository
 {
     private readonly ILogger logger;
-
-
     private readonly HostApplicationFactory factory;
     public const string IntegrationTests = "integrationtests";
     public const bool UseRelationelDatabase = true;
@@ -33,9 +31,9 @@ public class TestOfConversationRepository
                     .AddDatabaseContext(configuration)
                     ;
             },
-            fixedDateTime: () => DateTimeOffset.UtcNow,
-            output: () => output
+            fixedDateTime: () => DateTimeOffset.UtcNow
         );
+        factory.ConfigureLogging(output);
         logger = factory.Services.GetRequiredService<ILogger>();
         if (UseRelationelDatabase)
         {

@@ -1,9 +1,11 @@
-﻿using Serilog.Core;
+﻿using System.Diagnostics;
+
+using Serilog.Core;
 using Serilog.Events;
 
 using Xunit.Abstractions;
 
-namespace AI.Test.Support;
+namespace AI.Test.Support.Logging;
 
 public class LazyTestOutputHelperSink : ILogEventSink
 {
@@ -17,6 +19,11 @@ public class LazyTestOutputHelperSink : ILogEventSink
     public void Emit(LogEvent logEvent)
     {
         var writer = outputHelperProvider!();
+        if (writer is null)
+        {
+            Debug.Print(logEvent.RenderMessage());
+            return;
+        }
         writer.WriteLine(logEvent.RenderMessage());
     }
 }

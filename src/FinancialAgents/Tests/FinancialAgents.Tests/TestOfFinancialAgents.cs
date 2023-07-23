@@ -13,9 +13,6 @@ using OpenAI.Client.Configuration;
 
 using Xunit.Abstractions;
 
-//using Azure.Core;
-//using Microsoft.SemanticKernel.Connectors.Memory.AzureCognitiveSearch;
-
 
 // https://github.com/mrspiggot/LucidateFinAgent/blob/master/FinAgentBasic.py
 namespace FinancialAgents.Tests;
@@ -24,8 +21,6 @@ namespace FinancialAgents.Tests;
 public class TestOfFinancialAgents
 {
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
-
     private readonly HostApplicationFactory hostApplicationFactory;
 
     private readonly OpenAIOptions openAIOptions;
@@ -33,14 +28,12 @@ public class TestOfFinancialAgents
 
     public TestOfFinancialAgents(FinancialAgentsTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.fixture = fixture;
-
         this.hostApplicationFactory = fixture.Factory;
         this.openAIOptions = fixture.OpenAIOptions;
     }
-
 
     // uses https://github.com/microsoft/semantic-kernel/tree/main/dotnet/samples/KernelSyntaxExamples
 

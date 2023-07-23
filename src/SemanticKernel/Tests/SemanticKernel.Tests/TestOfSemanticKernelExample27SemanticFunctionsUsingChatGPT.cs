@@ -18,7 +18,7 @@ public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT
 
     public TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.fixture = fixture;
         this.msLogger = fixture.MsLogger;

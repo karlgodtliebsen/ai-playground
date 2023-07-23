@@ -4,6 +4,8 @@ using AI.Test.Support;
 using FluentAssertions;
 
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.AI.TextCompletion;
+using Microsoft.SemanticKernel.Connectors.AI.HuggingFace.TextCompletion;
 
 using SemanticKernel.Tests.Fixtures;
 
@@ -21,14 +23,15 @@ public class TestOfSemanticKernelExample20HuggingFace
 
     public TestOfSemanticKernelExample20HuggingFace(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
-        this.logger = fixture.Logger;
         this.fixture = fixture;
+        fixture.Setup(output);
+        this.logger = fixture.Logger;
         this.msLogger = fixture.MsLogger;
         this.hostApplicationFactory = fixture.Factory;
     }
 
     //"https://api-inference.huggingface.co/models
+    const string endPoint = "https://api-inference.huggingface.co/models";
 
     const string Model = "gpt2-large";
     //Ok    
@@ -69,4 +72,51 @@ public class TestOfSemanticKernelExample20HuggingFace
             logger.Information(answer);
         }
     }
+
+    //Semantic kernel: HuggingFaceTextCompletionTests
+    [Fact]
+    public async Task HuggingFaceLocalAndRemoteTextCompletionAsync()
+    {
+        // Arrange
+        const string Input = "This is test";
+
+        var huggingFaceLocal = new HuggingFaceTextCompletion(Model, endpoint: endPoint);
+        var huggingFaceRemote = new HuggingFaceTextCompletion(Model, apiKey: fixture.HuggingFaceOptions.ApiKey);
+
+        // Act
+        var localResponse = await huggingFaceLocal.CompleteAsync(Input, new CompleteRequestSettings());
+        var remoteResponse = await huggingFaceRemote.CompleteAsync(Input, new CompleteRequestSettings());
+
+        // Assert
+        localResponse.Should().NotBeNullOrEmpty();
+        remoteResponse.Should().NotBeNullOrEmpty();
+        logger.Information(remoteResponse);
+        logger.Information(localResponse);
+
+        Assert.StartsWith(Input, localResponse, StringComparison.Ordinal);
+        Assert.StartsWith(Input, remoteResponse, StringComparison.Ordinal);
+    }
+
+    //Semantic kernel: HuggingFaceTextCompletionTests
+    [Fact]
+    public async Task RemoteHuggingFaceTextCompletionWithCustomHttpClientAsync()
+    {
+        // Arrange
+        const string Input = "This is test";
+
+        using var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(endPoint);
+
+        var huggingFaceRemote = new HuggingFaceTextCompletion(Model, apiKey: fixture.HuggingFaceOptions.ApiKey, httpClient: httpClient);
+
+        // Act
+        var remoteResponse = await huggingFaceRemote.CompleteAsync(Input, new CompleteRequestSettings());
+
+        // Assert
+        remoteResponse.Should().NotBeNullOrEmpty();
+        logger.Information(remoteResponse);
+        Assert.StartsWith(Input, remoteResponse, StringComparison.Ordinal);
+    }
+
+
 }

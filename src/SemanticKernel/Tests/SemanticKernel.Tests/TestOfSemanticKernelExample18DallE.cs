@@ -20,7 +20,7 @@ public class TestOfSemanticKernelExample18DallE
 
     public TestOfSemanticKernelExample18DallE(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.fixture = fixture;
         this.openAIOptions = fixture.OpenAIOptions;
@@ -31,7 +31,6 @@ public class TestOfSemanticKernelExample18DallE
     public async Task UseDallEQdrantMemoryCollectionc_Example18()
     {
         logger.Information("======== OpenAI Dall-E 2 Image Generation ========");
-
 
         //bool recreateCollection = true;
         //bool storeOnDisk = false;

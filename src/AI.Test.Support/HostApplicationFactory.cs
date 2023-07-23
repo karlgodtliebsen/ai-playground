@@ -1,5 +1,6 @@
 ﻿using AI.Library.Configuration;
 using AI.Library.Utils;
+using AI.Test.Support.Logging;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,21 +14,37 @@ using Xunit.Abstractions;
 
 namespace AI.Test.Support;
 
-public class HostApplicationFactory
+public sealed class HostApplicationFactory
 {
     public IDateTimeProvider DateTimeProvider { get; private set; } = null!;
-    public Serilog.ILogger Logger() => Services.GetRequiredService<ILogger>();
-    public Microsoft.Extensions.Logging.ILogger MsLogger() => Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<object>>();
+    public ILogger Logger() => Services.GetRequiredService<ILogger>();
 
-    public IServiceProvider Services { get; private set; } = null!;
+    public Microsoft.Extensions.Logging.ILogger MsLogger() => Services.GetRequiredService<ILogger<object>>();
+    public ILogger<T> MsLogger<T>() => Services.GetRequiredService<ILogger<T>>();
+
+    public void ConfigureLogging(ITestOutputHelper output)
+    {
+        var cfg = Observability.CreateLoggerConfigurationUsingAppSettings(configuration);
+        cfg = cfg.WriteTo.TestOutput(output);
+        Log.Logger = cfg.CreateLogger();
+    }
+
+    private readonly IConfigurationRoot configuration;
+
+    public HostApplicationFactory(IConfigurationRoot configuration, IServiceProvider services)
+    {
+        Services = services;
+        this.configuration = configuration;
+    }
+
+    public IServiceProvider Services { get; private set; }
 
     public static HostApplicationFactory Build(
                                                 Func<string>? environment = null,
                                                 Action<IServiceCollection, IConfigurationRoot>? serviceContext = null,
-                                                Func<DateTimeOffset>? fixedDateTime = null,
-                                                Func<ITestOutputHelper>? output = null)
+                                                Func<DateTimeOffset>? fixedDateTime = null
+                                                )
     {
-        var instance = new HostApplicationFactory();
         var configurationBuilder = new ConfigurationBuilder();
         configurationBuilder.AddJsonFile("appsettings.json", optional: true);
         var env = environment?.Invoke();
@@ -38,27 +55,12 @@ public class HostApplicationFactory
         configurationBuilder.AddEnvironmentVariables();
         configurationBuilder.AddUserSecrets<HostApplicationFactory>();
 
-        IConfigurationRoot configuration = configurationBuilder.Build();
+        var buildConfiguration = configurationBuilder.Build();
         IServiceCollection serviceCollection = new ServiceCollection();
-        serviceContext?.Invoke(serviceCollection, configuration);
-
-        if (output is not null)
-        {
-            var cfg = Observability.CreateLoggerConfigurationUsingAppSettings(configuration);
-            cfg = cfg
-                .MinimumLevel.Debug()
-                .WriteTo.Sink(new LazyTestOutputHelperSink(output));
-            Log.Logger = cfg.CreateLogger();
-        }
-        else
-        {
-            Log.Logger = Observability.CreateAppSettingsBasedLogger(configuration);
-        }
-
-        serviceCollection.AddSingleton(Log.Logger);
+        serviceContext?.Invoke(serviceCollection, buildConfiguration);
+        serviceCollection.AddTransient<ILogger>((_) => Log.Logger);
         serviceCollection.AddSingleton<ILoggerFactory>(new XUnitTestLoggerFactory(Log.Logger));
-
-        instance.Services = serviceCollection.BuildServiceProvider();
+        var instance = new HostApplicationFactory(buildConfiguration, serviceCollection.BuildServiceProvider());
         var fixedDt = fixedDateTime?.Invoke();
         if (fixedDt is not null)
         {

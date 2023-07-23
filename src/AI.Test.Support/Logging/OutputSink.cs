@@ -2,7 +2,7 @@
 using Serilog.Events;
 using Serilog.Formatting;
 
-namespace AI.Test.Support;
+namespace AI.Test.Support.Logging;
 
 public class OutputSink : ILogEventSink
 {

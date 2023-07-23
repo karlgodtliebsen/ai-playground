@@ -34,9 +34,9 @@ public class TestOfOpenAIClients
             {
                 services.AddOpenAIConfiguration(configuration);
             },
-            fixedDateTime: () => DateTimeOffset.UtcNow,
-            output: () => output
+            fixedDateTime: () => DateTimeOffset.UtcNow
         );
+        factory.ConfigureLogging(output);
         logger = factory.Services.GetRequiredService<ILogger>();
         path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
         requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();

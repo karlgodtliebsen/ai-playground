@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace AI.Test.Support;
+namespace AI.Test.Support.Logging;
 
 //TODO: Should look into using Serilog.Sinks.XUnit/serilog-sinks-xunittestoutput
 
@@ -9,12 +9,12 @@ namespace AI.Test.Support;
 /// </summary>
 public class XUnitTestLoggerFactory : ILoggerFactory
 {
-    private readonly Serilog.ILogger logger;
+    private readonly ILogger logger;
 
     /// <summary>
     /// Creates a new <see cref="XUnitTestLoggerFactory"/> instance.
     /// </summary>
-    public XUnitTestLoggerFactory(Serilog.ILogger logger)
+    public XUnitTestLoggerFactory(ILogger logger)
     {
         this.logger = logger;
     }
@@ -45,12 +45,12 @@ public class XUnitTestLoggerFactory : ILoggerFactory
 public class XUnitTestLogger : Microsoft.Extensions.Logging.ILogger
 {
 
-    private readonly Serilog.ILogger? logger;
+    private readonly ILogger? logger;
 
     /// <summary>
     /// Creates a new <see cref="XUnitTestLoggerFactory"/> instance.
     /// </summary>
-    public XUnitTestLogger(Serilog.ILogger logger)
+    public XUnitTestLogger(ILogger logger)
     {
         this.logger = logger;
     }

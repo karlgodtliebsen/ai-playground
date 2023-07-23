@@ -1,4 +1,5 @@
 ﻿using AI.Test.Support;
+using AI.Test.Support.DockerSupport;
 using AI.VectorDatabase.Qdrant.Configuration;
 
 using LLamaSharpApp.WebAPI.Configuration;
@@ -14,21 +15,14 @@ using Xunit.Abstractions;
 
 namespace Embeddings.Qdrant.Tests.Fixtures;
 
-public sealed class EmbeddingsVectorDbTestFixture : IDisposable
+public sealed class EmbeddingsVectorDbTestFixture : TestFixtureBase, IDisposable
 {
-    public Serilog.ILogger Logger { get; private set; }
-    public Microsoft.Extensions.Logging.ILogger MsLogger { get; set; }
-
-    public HostApplicationFactory Factory { get; private set; }
     public QdrantOptions QdrantOptions { get; private set; }
     public OpenAIOptions OpenAIOptions { get; private set; }
     public LlamaModelOptions LlamaModelOptions { get; private set; }
 
     public string TestFilesPath { get; private set; }
     public string ModelFilesPath { get; private set; }
-
-    private readonly Func<ITestOutputHelper>? getOutput;
-    public ITestOutputHelper Output { get; set; }
 
     public IModelRequestFactory RequestFactory { get; private set; }
     public ILlamaModelFactory LlamaModelFactory { get; private set; }
@@ -37,26 +31,22 @@ public sealed class EmbeddingsVectorDbTestFixture : IDisposable
 
     public EmbeddingsVectorDbTestFixture()
     {
-        getOutput = () => Output!;
         Factory = HostApplicationFactory.Build(
-             environment: () => "IntegrationTests",
-             serviceContext: (services, configuration) =>
-             {
-                 services
-                     .AddQdrant(configuration)
-                     .AddOpenAIConfiguration(configuration)
-                     .AddLlamaConfiguration(configuration)
-                     .AddWebApiConfiguration(configuration)
-                     ;
-                 services.AddSingleton<TestContainerDockerLauncher>();
-                 var section = configuration.GetSection(DockerLaunchOptions.SectionName);
-                 services.AddOptions<DockerLaunchOptions>().Bind(section);
-             },
-             fixedDateTime: () => DateTimeOffset.UtcNow,
-             output: getOutput
-         );
-        Logger = Factory.Logger();
-        MsLogger = Factory.MsLogger();
+            environment: () => "IntegrationTests",
+            serviceContext: (services, configuration) =>
+            {
+                services
+                    .AddQdrant(configuration)
+                    .AddOpenAIConfiguration(configuration)
+                    .AddLlamaConfiguration(configuration)
+                    .AddWebApiConfiguration(configuration)
+                    ;
+                services.AddSingleton<TestContainerDockerLauncher>();
+                var section = configuration.GetSection(DockerLaunchOptions.SectionName);
+                services.AddOptions<DockerLaunchOptions>().Bind(section);
+            },
+            fixedDateTime: () => DateTimeOffset.UtcNow
+        );
 
         QdrantOptions = Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
         LlamaModelOptions = Factory.Services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
@@ -65,11 +55,18 @@ public sealed class EmbeddingsVectorDbTestFixture : IDisposable
         ModelFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LlamaModelOptions.ModelPath);
         RequestFactory = Factory.Services.GetRequiredService<IModelRequestFactory>();
         LlamaModelFactory = Factory.Services.GetRequiredService<ILlamaModelFactory>();
+    }
+
+    /// <summary>
+    /// Post Build Setup of Logging and Launcher that depends on ITestOutputHelper
+    /// </summary>
+    /// <param name="output"></param>
+    public override void Setup(ITestOutputHelper output)
+    {
+        base.Setup(output);
         Launcher = Factory.Services.GetRequiredService<TestContainerDockerLauncher>();
         Launcher.Start();
     }
-
-
     public void Dispose()
     {
         Launcher.Stop();

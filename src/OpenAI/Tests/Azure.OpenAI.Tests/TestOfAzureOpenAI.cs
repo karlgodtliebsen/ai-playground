@@ -16,26 +16,24 @@ namespace Azure.OpenAI.Tests;
 
 public class TestOfAzureOpenAI
 {
-    private readonly ITestOutputHelper output;
-    private readonly ILogger logger;
     private readonly OpenAIClient azureOpenAIClient;
     private readonly HostApplicationFactory factory;
     private readonly OpenAIOptions options;
+    private readonly ILogger logger;
 
 
     public TestOfAzureOpenAI(ITestOutputHelper output)
     {
-        this.output = output;
         this.factory = HostApplicationFactory.Build(
             environment: () => "IntegrationTests",
             serviceContext: (services, configuration) =>
             {
                 services.AddAzureOpenAI(configuration);
             },
-            fixedDateTime: () => DateTimeOffset.UtcNow,
-            output: () => output
+            fixedDateTime: () => DateTimeOffset.UtcNow
         );
-        logger = factory.Services.GetRequiredService<ILogger>();
+        factory.ConfigureLogging(output);
+        logger = factory.Logger();
         options = factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         azureOpenAIClient = new OpenAIClient(options.ApiKey);
     }
@@ -50,12 +48,12 @@ public class TestOfAzureOpenAI
         //than the curie, babbage, or ada models. Also supports some additional features such as inserting text.
         string deploymentName = "text-davinci-003"; //text-davinci-003 text-davinci-002
         string prompt = "Tell us something about .NET development.";
-        output.WriteLine($"Input: {prompt}");
+        logger.Information("Input: {prompt}", prompt);
 
         var completionsResponse = await azureOpenAIClient.GetCompletionsAsync(deploymentName, prompt, CancellationToken.None);
         string completion = completionsResponse.Value.Choices[0].Text;
 
-        output.WriteLine(completion);
+        logger.Information(completion);
     }
 
 
@@ -68,12 +66,12 @@ public class TestOfAzureOpenAI
         string deploymentName = "text-davinci-002"; //text-davinci-002 code-davinci-002
 
         string prompt = "\"Tell us something about .NET development.\";";
-        output.WriteLine($"Input: {prompt}");
+        logger.Information("Input: {prompt}", prompt);
 
         var completionsResponse = await azureOpenAIClient.GetCompletionsAsync(deploymentName, prompt, CancellationToken.None);
         string completion = completionsResponse.Value.Choices[0].Text;
 
-        output.WriteLine(completion);
+        logger.Information(completion);
     }
 
     [Fact]
@@ -85,7 +83,7 @@ public class TestOfAzureOpenAI
         string deploymentName = "gpt-3.5-turbo";        //gpt-3.5-turbo-16k gpt-3.5-turbo   
 
         string prompt = "Please show a sample for a 'for loop' in C#";
-        output.WriteLine($"Input: {prompt}");
+        logger.Information("Input: {prompt}", prompt);
 
         var options = new ChatCompletionsOptions()
         {
@@ -98,7 +96,7 @@ public class TestOfAzureOpenAI
 
         var chatResponse = await azureOpenAIClient.GetChatCompletionsAsync(deploymentName, options, CancellationToken.None);
         string message = chatResponse.Value.Choices[0].Message.Content;
-        output.WriteLine(message);
+        logger.Information(message);
     }
 
 
@@ -109,7 +107,7 @@ public class TestOfAzureOpenAI
         //On June 27th, 2023, gpt-4 will be updated to point from gpt-4-0314 to gpt-4-0613, the latest model iteration.
         string deploymentName = "gpt-4";   //gpt-4-0314 gpt-4-32k-0314  gpt-4
         string prompt = "Please show a sample for a 'for loop' in C#";
-        output.WriteLine($"Input: {prompt}");
+        logger.Information("Input: {prompt}", prompt);
 
         var options = new ChatCompletionsOptions()
         {
@@ -117,7 +115,7 @@ public class TestOfAzureOpenAI
         };
         var chatResponse = await azureOpenAIClient.GetChatCompletionsAsync(deploymentName, options, CancellationToken.None);
         string message = chatResponse.Value.Choices[0].Message.Content;
-        output.WriteLine(message);
+        logger.Information(message);
     }
 
 

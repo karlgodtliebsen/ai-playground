@@ -22,7 +22,6 @@ namespace Qdrant.Tests;
 [Collection("VectorDb Collection")]
 public class TestOfVectorDbUsingPoints
 {
-    private readonly ITestOutputHelper output;
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly QdrantOptions options;
@@ -30,8 +29,7 @@ public class TestOfVectorDbUsingPoints
 
     public TestOfVectorDbUsingPoints(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
-        this.output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.hostApplicationFactory = fixture.Factory;
         this.options = fixture.Options;
@@ -42,17 +40,17 @@ public class TestOfVectorDbUsingPoints
         };
     }
 
-    private const int vectorSize = 4;
-    private const string collectionName = "vector-test-collection";
+    private const int VectorSize = 4;
+    private const string CollectionName = "vector-test-collection";
 
 
     private async Task CleanupCollection()
     {
         var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
-        var result = await client.RemoveCollection(collectionName, CancellationToken.None);
+        var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine($"{collectionName} deleted"),
+            _ => logger.Information("{CollectionName} deleted", CollectionName),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -61,12 +59,12 @@ public class TestOfVectorDbUsingPoints
     {
         await CleanupCollection();
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
-        var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var result = await client.CreateCollection(CollectionName, vectorParams, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -77,14 +75,14 @@ public class TestOfVectorDbUsingPoints
     {
         await CleanUpAndCreateCollectionInVectorDb();
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
 
         var points = CreatePoints();
-        var result = await client.Upsert(collectionName, points, cancellationToken: CancellationToken.None);
+        var result = await client.Upsert(CollectionName, points, cancellationToken: CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
 
@@ -99,9 +97,9 @@ public class TestOfVectorDbUsingPoints
             Offset = 0,
         };
         payLoad.SimilarToVector(vector);
-        output.WriteLine(payLoad.ToJson(serializerOptions));
+        logger.Information(payLoad.ToJson(serializerOptions));
 
-        var searchResult = await client.Search(collectionName, vector, cancellationToken: CancellationToken.None);
+        var searchResult = await client.Search(CollectionName, vector, cancellationToken: CancellationToken.None);
         searchResult.Switch(
 
             res =>
@@ -109,7 +107,7 @@ public class TestOfVectorDbUsingPoints
                 res.Length.Should().Be(7);
                 foreach (var r in res)
                 {
-                    output.WriteLine($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
+                    logger.Information($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
                 }
             },
             error => throw new QdrantException(error.Error)
@@ -120,13 +118,13 @@ public class TestOfVectorDbUsingPoints
     {
         await CleanUpAndCreateCollectionInVectorDb();
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
         var points = CreatePoints();
-        var result = await client.Upsert(collectionName, points, cancellationToken: CancellationToken.None);
+        var result = await client.Upsert(CollectionName, points, cancellationToken: CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -136,8 +134,8 @@ public class TestOfVectorDbUsingPoints
     {
         await AddBasicDataToCollection();
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
 
         var vector = new double[]
         {
@@ -148,7 +146,7 @@ public class TestOfVectorDbUsingPoints
         search.SimilarToVector(vector);
         search.UseWithPayload(true);
 
-        var searchResult = await client.Search(collectionName, search, cancellationToken: CancellationToken.None);
+        var searchResult = await client.Search(CollectionName, search, cancellationToken: CancellationToken.None);
         searchResult.Switch(
 
             res =>
@@ -156,7 +154,7 @@ public class TestOfVectorDbUsingPoints
                 res.Length.Should().Be(7);
                 foreach (var r in res)
                 {
-                    output.WriteLine($"Result: {r.Payload!.ToJson()} {+r.Score} {r.Id}");
+                    logger.Information($"Result: {r.Payload!.ToJson()} {+r.Score} {r.Id}");
                 }
             },
             error => throw new QdrantException(error.Error)
@@ -169,35 +167,35 @@ public class TestOfVectorDbUsingPoints
     {
         await CleanUpAndCreateCollectionInVectorDb();
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
 
         var points1 = CreatePoints();
-        var result = await client.Upsert(collectionName, points1, cancellationToken: CancellationToken.None);
+        var result = await client.Upsert(CollectionName, points1, cancellationToken: CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
 
         var points2 = CreatePoints();
-        result = await client.Upsert(collectionName, points2, cancellationToken: CancellationToken.None);
+        result = await client.Upsert(CollectionName, points2, cancellationToken: CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
 
         var points3 = CreatePoints();
-        result = await client.Upsert(collectionName, points3, cancellationToken: CancellationToken.None);
+        result = await client.Upsert(CollectionName, points3, cancellationToken: CancellationToken.None);
         result.Switch(
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
 
         var searchId = points3.First().Id;
-        output.WriteLine(searchId);
-        var searchResult = await client.SearchSingleByPointId(collectionName, searchId, cancellationToken: CancellationToken.None);
+        logger.Information(searchId);
+        var searchResult = await client.SearchSingleByPointId(CollectionName, searchId, cancellationToken: CancellationToken.None);
         searchResult.Switch(
             res =>
             {
@@ -214,8 +212,8 @@ public class TestOfVectorDbUsingPoints
     {
         await AddBasicDataToCollection();
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
 
         var vector = new double[]
         {
@@ -238,9 +236,9 @@ public class TestOfVectorDbUsingPoints
         );
 
         var serialized = JsonSerializer.Serialize(search, serializerOptions);
-        output.WriteLine(serialized);
+        logger.Information(serialized);
 
-        var searchResult = await client.Search(collectionName, search, cancellationToken: CancellationToken.None);
+        var searchResult = await client.Search(CollectionName, search, cancellationToken: CancellationToken.None);
         searchResult.Switch(
 
             res =>
@@ -248,7 +246,7 @@ public class TestOfVectorDbUsingPoints
                 res.Length.Should().Be(4);
                 foreach (var r in res)
                 {
-                    output.WriteLine($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
+                    logger.Information($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
                 }
             },
             error => throw new QdrantException(error.Error)
@@ -260,8 +258,8 @@ public class TestOfVectorDbUsingPoints
     {
         await AddBasicDataToCollection();
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
 
         var vector = new double[]
         {
@@ -284,9 +282,9 @@ public class TestOfVectorDbUsingPoints
         );
 
         var serialized = JsonSerializer.Serialize(search, serializerOptions);
-        output.WriteLine(serialized);
+        logger.Information(serialized);
 
-        var searchResult = await client.Search(collectionName, search, cancellationToken: CancellationToken.None);
+        var searchResult = await client.Search(CollectionName, search, cancellationToken: CancellationToken.None);
         searchResult.Switch(
 
             res =>
@@ -294,7 +292,7 @@ public class TestOfVectorDbUsingPoints
                 res.Length.Should().Be(3);
                 foreach (var r in res)
                 {
-                    output.WriteLine($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
+                    logger.Information($"Result: {r.Payload.ToJson()} {+r.Score} {r.Id}");
                 }
             },
             error => throw new QdrantException(error.Error)
@@ -308,8 +306,8 @@ public class TestOfVectorDbUsingPoints
         await CleanupCollection();
 
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var vectorParams = qdrantFactory.CreateParams(vectorSize, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
+        var vectorParams = qdrantFactory.CreateParams(VectorSize, Distance.DOT, true);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
 
         var vectors = new CreateCollectionWithMultipleNamedVectorsRequest();
         vectors.NamedVectors = new Dictionary<string, VectorParams>()
@@ -317,12 +315,12 @@ public class TestOfVectorDbUsingPoints
             {"image", new VectorParams(4,Distance.DOT)} ,
             {"text", new VectorParams(8,Distance.COSINE)} ,
         };
-        output.WriteLine(vectors.ToJson(serializerOptions));
+        logger.Information(vectors.ToJson(serializerOptions));
 
-        var result1 = await client.CreateCollection(collectionName, vectors, CancellationToken.None);
+        var result1 = await client.CreateCollection(CollectionName, vectors, CancellationToken.None);
         result1.Switch(
 
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
 
@@ -332,12 +330,12 @@ public class TestOfVectorDbUsingPoints
             Points = pointsWithNamedVectors.ToArray()
         };
 
-        output.WriteLine("");
-        output.WriteLine(body.ToJson(serializerOptions));
+        logger.Information("");
+        logger.Information(body.ToJson(serializerOptions));
 
-        var result = await client.Upsert(collectionName, pointsWithNamedVectors, CancellationToken.None);
+        var result = await client.Upsert(CollectionName, pointsWithNamedVectors, CancellationToken.None);
         result.Switch(
-            _ => output.WriteLine("Succeeded"),
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
         );
 
@@ -354,17 +352,17 @@ public class TestOfVectorDbUsingPoints
         var search = new SearchRequest()
             .Take(3)
             .SimilarToVector(p);
-        output.WriteLine("");
-        output.WriteLine(search.ToJson(serializerOptions));
+        logger.Information("");
+        logger.Information(search.ToJson(serializerOptions));
 
-        var searchResult = await client.Search(collectionName, search, CancellationToken.None);
+        var searchResult = await client.Search(CollectionName, search, CancellationToken.None);
         searchResult.Switch(
             res =>
             {
                 res.Length.Should().Be(2);
                 foreach (var r in res)
                 {
-                    output.WriteLine($"Result: {+r.Score} {r.Id}");
+                    logger.Information($"Result: {+r.Score} {r.Id}");
                 }
             },
             error => throw new QdrantException(error.Error)

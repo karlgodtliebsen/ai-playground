@@ -43,6 +43,7 @@ public static class Observability
             .Destructure.UsingAttributes();
         return cfg;
     }
+
     /// <summary>
     /// Creates a minimum configuration
     /// </summary>

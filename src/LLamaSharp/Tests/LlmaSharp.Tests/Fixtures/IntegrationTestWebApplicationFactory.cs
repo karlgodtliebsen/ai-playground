@@ -1,7 +1,5 @@
 ﻿using System.Security.Claims;
-
-using AI.Test.Support;
-
+using AI.Test.Support.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;

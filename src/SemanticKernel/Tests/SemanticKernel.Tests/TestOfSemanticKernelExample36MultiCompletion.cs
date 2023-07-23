@@ -19,7 +19,7 @@ public class TestOfSemanticKernelExample36MultiCompletion
 
     public TestOfSemanticKernelExample36MultiCompletion(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.fixture = fixture;
         this.msLogger = fixture.MsLogger;

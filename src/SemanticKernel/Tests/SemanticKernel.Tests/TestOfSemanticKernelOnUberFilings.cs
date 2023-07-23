@@ -32,7 +32,7 @@ public class TestOfSemanticKernelOnUberFilings
 
     public TestOfSemanticKernelOnUberFilings(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.fixture = fixture;
         this.hostApplicationFactory = fixture.Factory;
@@ -41,8 +41,8 @@ public class TestOfSemanticKernelOnUberFilings
         this.llamaModelFactory = fixture.LlamaModelFactory;
     }
 
-    private const string collectionName = "SemanticKernel-uber--test-collection";
-    private const int vectorSize = 1536;
+    private const string CollectionName = "SemanticKernel-uber--test-collection";
+    private const int VectorSize = 1536;
 
     [Fact(Skip = "To many requests error")]
     //[Fact]
@@ -58,7 +58,7 @@ public class TestOfSemanticKernelOnUberFilings
         bool storeOnDisk = false;
 
         var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
-        var memoryStorage = await factory.Create(collectionName, vectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
+        var memoryStorage = await factory.Create(CollectionName, VectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         IKernel kernel = Kernel.Builder
             .WithLogger(fixture.MsLogger)
@@ -71,7 +71,7 @@ public class TestOfSemanticKernelOnUberFilings
         await foreach (var file in files)
         {
             await kernel.Memory.SaveReferenceAsync(
-                collection: collectionName,
+                collection: CollectionName,
                 //description: file.Content,
                 text: file.Summary,
                 externalId: file.Id.ToString(),
@@ -84,9 +84,9 @@ public class TestOfSemanticKernelOnUberFilings
     [Fact(Skip = "Performance")]
     public async Task RunUberFilesSampleUsingPointsLlama()
     {
-        var vectorParams = new VectorParams(vectorSize, Distance.DOT, true);
+        var vectorParams = new VectorParams(VectorSize, Distance.DOT, true);
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
-        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: true, cancellationToken: CancellationToken.None);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, recreateCollection: true, cancellationToken: CancellationToken.None);
 
         var files = LoadUberFiles(CancellationToken.None);
         var pointStructs = CreateUberFilesPoints(files);
@@ -94,7 +94,7 @@ public class TestOfSemanticKernelOnUberFilings
         await foreach (var pointStruct in pointStructs)
         {
             var points = new List<PointStruct>() { pointStruct };
-            var result = await client.Upsert(collectionName, points, CancellationToken.None);
+            var result = await client.Upsert(CollectionName, points, CancellationToken.None);
             result.Switch(
                 _ => logger.Information("Succeeded"),
                 error => throw new QdrantException(error.Error)

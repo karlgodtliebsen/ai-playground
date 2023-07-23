@@ -38,8 +38,9 @@
 
 		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.9" />
 		<PackageReference Include="Testcontainers" Version="3.3.0" />
+    <PackageReference Include="Serilog.Sinks.XUnit" Version="3.0.5" />
 
-		<PackageReference Include="xunit" Version="2.5.0" />
+    <PackageReference Include="xunit" Version="2.5.0" />
 		<PackageReference Include="xunit.abstractions" Version="2.0.3" />
 	</ItemGroup>
 

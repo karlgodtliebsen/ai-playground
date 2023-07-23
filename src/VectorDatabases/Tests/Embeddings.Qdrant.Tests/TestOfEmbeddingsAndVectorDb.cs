@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-using AI.Test.Support;
-using AI.VectorDatabase.Qdrant.Configuration;
+﻿using AI.Test.Support;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
@@ -15,7 +12,6 @@ using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
 using OpenAI.Client.OpenAI.HttpClients;
 using OpenAI.Client.OpenAI.Models.Requests;
@@ -27,44 +23,30 @@ namespace Embeddings.Qdrant.Tests;
 [Collection("EmbeddingsAndVectorDb Collection")]
 public class TestOfEmbeddingsAndVectorDb
 {
-    private readonly ITestOutputHelper output;
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
-    private readonly QdrantOptions qdrantOptions;
-    private readonly OpenAIOptions openAIOptions;
-    private readonly JsonSerializerOptions serializerOptions;
-    private readonly EmbeddingsVectorDbTestFixture fixture;
     private readonly IModelRequestFactory requestFactory;
     private readonly string testFilesPath;
 
     public TestOfEmbeddingsAndVectorDb(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
-        this.output = output;
+        fixture.Setup(output);
         this.hostApplicationFactory = fixture.Factory;
         this.requestFactory = fixture.RequestFactory;
-        this.fixture = fixture;
-        this.qdrantOptions = fixture.QdrantOptions;
-        this.openAIOptions = fixture.OpenAIOptions;
         this.testFilesPath = fixture.TestFilesPath;
-
         this.logger = fixture.Logger;
-        serializerOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
     }
 
-    private const string collectionName = "embeddings-test-collection";
-    private const int vectorSize = 4;
+    private const string CollectionName = "embeddings-test-collection";
+    private const int VectorSize = 4;
 
     private async Task CleanupCollection()
     {
         var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
-        var result = await client.RemoveCollection(collectionName, CancellationToken.None);
+        var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine($"Collection {collectionName} deleted"),
+            _ => logger.Information("Collection {collectionName} deleted", CollectionName),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -129,7 +111,7 @@ public class TestOfEmbeddingsAndVectorDb
                 embeddings.Data.Count.Should().Be(1);
                 var data = embeddings.Data[0];
                 //data.Embedding.Length.Should().Be(1536);
-                output.WriteLine(data.Embedding.Length.ToString());
+                logger.Information(data.Embedding.Length.ToString());
                 return data;
 
             },
@@ -148,12 +130,12 @@ public class TestOfEmbeddingsAndVectorDb
 
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();
         var vectorParams = qdrantFactory.CreateParams(size, Distance.DOT, true);
-        var client = await qdrantFactory.Create(collectionName, vectorParams, cancellationToken: CancellationToken.None);
+        var client = await qdrantFactory.Create(CollectionName, vectorParams, cancellationToken: CancellationToken.None);
 
-        var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
+        var result = await client.CreateCollection(CollectionName, vectorParams, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine($"Succeeded creating Collection: {collectionName}"),
+            _ => logger.Information("Succeeded creating Collection: {CollectionName}", CollectionName),
             error => throw new QdrantException(error.Error)
         );
     }
@@ -162,10 +144,10 @@ public class TestOfEmbeddingsAndVectorDb
     {
         var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
         var points = CreatePoints(index, embeddings);
-        var result = await client.Upsert(collectionName, points, CancellationToken.None);
+        var result = await client.Upsert(CollectionName, points, CancellationToken.None);
         result.Switch(
 
-            _ => output.WriteLine("Succeeded adding vector to qdrant: "),
+            _ => logger.Information("Succeeded adding vector to qdrant: "),
             error => throw new QdrantException(error.Error)
         );
     }

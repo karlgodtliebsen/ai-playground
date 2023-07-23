@@ -1,7 +1,7 @@
 ﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 
-namespace AI.Test.Support;
+namespace AI.Test.Support.DockerSupport;
 
 public static class TestContainerFactory
 {

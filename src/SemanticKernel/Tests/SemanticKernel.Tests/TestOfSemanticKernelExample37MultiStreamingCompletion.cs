@@ -20,7 +20,7 @@ public class TestOfSemanticKernelExample37MultiStreamingCompletion
 
     public TestOfSemanticKernelExample37MultiStreamingCompletion(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
     {
-        fixture.Output = output;
+        fixture.Setup(output);
         this.logger = fixture.Logger;
         this.fixture = fixture;
         this.msLogger = fixture.MsLogger;

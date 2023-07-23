@@ -1,8 +1,9 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
+
 using Xunit.Abstractions;
 
-namespace AI.Test.Support;
+namespace AI.Test.Support.Logging;
 
 public class TestOutputHelperSink : ILogEventSink
 {
@@ -18,6 +19,13 @@ public class TestOutputHelperSink : ILogEventSink
 
     public void Emit(LogEvent logEvent)
     {
-        writer.WriteLine(logEvent.RenderMessage());
+        try
+        {
+            writer.WriteLine(logEvent.RenderMessage());
+        }
+        catch (Exception)
+        {
+            Console.WriteLine(logEvent.RenderMessage());
+        }
     }
 }

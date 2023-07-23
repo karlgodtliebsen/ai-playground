@@ -24,9 +24,7 @@ namespace AI.Caap.Tests;
 
 public class TestOfConversation
 {
-    private readonly ITestOutputHelper output;
     private readonly ILogger logger;
-
 
     private readonly HostApplicationFactory factory;
     public const string IntegrationTests = "integrationtests";
@@ -36,7 +34,6 @@ public class TestOfConversation
 
     public TestOfConversation(ITestOutputHelper output)
     {
-        this.output = output;
         this.factory = HostApplicationFactory.Build(
             environment: () => IntegrationTests,
             serviceContext: (services, configuration) =>
@@ -57,9 +54,9 @@ public class TestOfConversation
                     options.UseInMemoryDatabase("Conversations");
                 });
             },
-            fixedDateTime: () => DateTimeOffset.UtcNow,
-            output: () => output
+            fixedDateTime: () => DateTimeOffset.UtcNow
         );
+        factory.ConfigureLogging(output);
         logger = factory.Services.GetRequiredService<ILogger>();
         requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();
     }
@@ -99,7 +96,7 @@ public class TestOfConversation
                 completions.Choices.Count.Should().Be(1);
                 string completion = completions.Choices.First().Message!.Content!.Trim();
                 completion.Should().Contain("The 2020 World Series was played at Globe Life Field in Arlington, Texas");
-                output.WriteLine(completion);
+                logger.Information(completion);
             },
             error => throw new AIException(error.Error)
         );
@@ -144,7 +141,7 @@ public class TestOfConversation
             {
                 var content = r.response.Message!.Content;
                 content.Should().Contain("Arthur");
-                output.WriteLine(content);
+                logger.Information(content);
             },
             error => throw new AIException(error.Error)
         );
@@ -193,7 +190,7 @@ public class TestOfConversation
             {
                 var content = r.response.Message!.Content;
                 content.Should().Contain("Arthur");
-                output.WriteLine(content);
+                logger.Information(content);
             },
             error => throw new AIException(error.Error)
         );
