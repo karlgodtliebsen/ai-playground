@@ -7,7 +7,7 @@ using Serilog;
 
 namespace ML.Net.ImageClassification.Tests.Domain;
 
-public static class OutputHelper
+public static class ReportGenerator
 {
     public static void PrintPrediction(string prediction)
     {
@@ -73,9 +73,20 @@ public static class OutputHelper
         Log.Logger.Information($"    AccuracyMacro = {metrics.MacroAccuracy:0.####}, a value between 0 and 1, the closer to 1, the better");
         Log.Logger.Information($"    AccuracyMicro = {metrics.MicroAccuracy:0.####}, a value between 0 and 1, the closer to 1, the better");
         Log.Logger.Information($"    LogLoss = {metrics.LogLoss:0.####}, the closer to 0, the better");
-        Log.Logger.Information($"    LogLoss for class 1 = {metrics.PerClassLogLoss[0]:0.####}, the closer to 0, the better");
-        Log.Logger.Information($"    LogLoss for class 2 = {metrics.PerClassLogLoss[1]:0.####}, the closer to 0, the better");
-        Log.Logger.Information($"    LogLoss for class 3 = {metrics.PerClassLogLoss[2]:0.####}, the closer to 0, the better");
+        if (metrics.PerClassLogLoss.Count >= 1)
+        {
+            Log.Logger.Information($"    LogLoss for class 1 = {metrics.PerClassLogLoss[0]:0.####}, the closer to 0, the better");
+        }
+
+        if (metrics.PerClassLogLoss.Count >= 2)
+        {
+            Log.Logger.Information($"    LogLoss for class 2 = {metrics.PerClassLogLoss[1]:0.####}, the closer to 0, the better");
+        }
+
+        if (metrics.PerClassLogLoss.Count >= 3)
+        {
+            Log.Logger.Information($"    LogLoss for class 3 = {metrics.PerClassLogLoss[2]:0.####}, the closer to 0, the better");
+        }
         Log.Logger.Information($"************************************************************");
     }
 
@@ -162,16 +173,16 @@ public static class OutputHelper
 
     public static void ShowDataViewInConsole(MLContext mlContext, IDataView dataView, int numberOfRows = 4)
     {
-        var msg = string.Format("Show data in DataView: Showing {0} rows with the columns", numberOfRows.ToString());
+        var msg = $"Show data in DataView: Showing {numberOfRows.ToString()} rows with the columns";
         WriteHeader(msg);
 
         var preViewTransformedData = dataView.Preview(maxRows: numberOfRows);
 
         foreach (var row in preViewTransformedData.RowView)
         {
-            var ColumnCollection = row.Values;
+            var columnCollection = row.Values;
             var lineToPrint = "Row--> ";
-            foreach (var column in ColumnCollection)
+            foreach (var column in columnCollection)
             {
                 lineToPrint += $"| {column.Key}:{column.Value}";
             }
@@ -183,7 +194,7 @@ public static class OutputHelper
     // This method using 'DebuggerExtensions.Preview()' should only be used when debugging/developing, not for release/production trainings
     public static void PeekDataViewInConsole(MLContext mlContext, IDataView dataView, IEstimator<ITransformer> pipeline, int numberOfRows = 4)
     {
-        var msg = string.Format("Peek data in DataView: Showing {0} rows with the columns", numberOfRows.ToString());
+        var msg = $"Peek data in DataView: Showing {numberOfRows.ToString()} rows with the columns";
         WriteHeader(msg);
 
         //https://github.com/dotnet/machinelearning/blob/main/docs/code/MlNetCookBook.md#how-do-i-look-at-the-intermediate-data
@@ -211,7 +222,7 @@ public static class OutputHelper
     // This method using 'DebuggerExtensions.Preview()' should only be used when debugging/developing, not for release/production trainings
     public static void PeekVectorColumnDataInConsole(MLContext mlContext, string columnName, IDataView dataView, IEstimator<ITransformer> pipeline, int numberOfRows = 4)
     {
-        var msg = string.Format("Peek data in DataView: : Show {0} rows with just the '{1}' column", numberOfRows, columnName);
+        var msg = $"Peek data in DataView: : Show {numberOfRows} rows with just the '{columnName}' column";
         WriteHeader(msg);
 
         var transformer = pipeline.Fit(dataView);

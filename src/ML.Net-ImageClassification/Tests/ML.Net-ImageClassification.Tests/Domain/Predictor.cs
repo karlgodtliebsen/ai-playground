@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.ML;
 
 using ML.Net.ImageClassification.Tests.Configuration;
@@ -41,18 +39,16 @@ public class Predictor : IPredictor
         var predictionEngine = mlContext.Model.CreatePredictionEngine<InMemoryImageData, ImagePrediction>(loadedModel);
 
         var imagesToPredict = FileUtils.LoadInMemoryImagesFromDirectory(imageSetForPredictions, false);
-
+        int hitCount = 0;
+        int missCount = 0;
         foreach (var imageToPredict in imagesToPredict)
         {
-            var watch = Stopwatch.StartNew();
-            //var imageToPredict = imagesToPredict.First();        //TODO: all
             var prediction = predictionEngine.Predict(imageToPredict);
-            string s = "coming up"; //string.Join(",",prediction.Score.Select(r=>r.ToString()));
-            logger.Information("Image Filename : [{fileName}] Scores : [{scores}], Predicted Label : {predictedLabel}", imageToPredict.ImageFileName, s, prediction.PredictedLabel);
+            var isHit = imageToPredict.FullName.Contains(prediction.PredictedLabel);
+            if (isHit) hitCount++; else missCount++;
 
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-            logger.Information("Prediction took: {elapsed} seconds", elapsedMs / 1000);
+            logger.Information("\nImage Filename : [{fileName}] \nScores : [{scores}]\nPredicted Label : {predictedLabel}\nHit: {hit}", imageToPredict.FullName, prediction.Scores, prediction.PredictedLabel, isHit);
         }
+        logger.Information("Hit [{fileName}] Miss: [{scores}]", hitCount, missCount);
     }
 }

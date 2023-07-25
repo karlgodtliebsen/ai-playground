@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace ML.Net.ImageClassification.Tests.Domain;
+﻿namespace ML.Net.ImageClassification.Tests.Domain;
 
 public class FileUtils
 {
@@ -51,14 +49,9 @@ public class FileUtils
     public static IEnumerable<InMemoryImageData> LoadInMemoryImagesFromDirectory(string folder, bool useFolderNameAsLabel = true)
         => LoadImagesFromDirectory(folder, useFolderNameAsLabel)
             .Select(x => new InMemoryImageData(
-                image: File.ReadAllBytes(x.imagePath),
-                label: x.label,
-                imageFileName: Path.GetFileName(x.imagePath)));
-
-    public static string GetAbsolutePath(Assembly assembly, string relativePath)
-    {
-        var assemblyFolderPath = new FileInfo(assembly.Location).Directory.FullName;
-
-        return Path.Combine(assemblyFolderPath, relativePath);
-    }
+                    image: File.ReadAllBytes(x.imagePath),
+                    label: x.label,
+                    imageFileName: Path.GetFileName(x.imagePath),
+                    fullName: x.imagePath
+                ));
 }

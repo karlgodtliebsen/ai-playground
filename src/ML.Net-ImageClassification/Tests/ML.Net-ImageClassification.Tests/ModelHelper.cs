@@ -1,12 +1,15 @@
 ﻿using System.Diagnostics;
 using System.Text;
+
 using Microsoft.ML;
+
 using ML.Net.ImageClassification.Tests.Domain;
+
 using Serilog;
 
 namespace ML.Net.ImageClassification.Tests;
 
-public class TestHelper
+public class ModelHelper
 {
 
     public static void EvaluateModel(MLContext mlContext, IDataView testDataset, ITransformer trainedModel)
@@ -17,7 +20,7 @@ public class TestHelper
         var watch = Stopwatch.StartNew();
         var predictionsDataView = trainedModel.Transform(testDataset);
         var metrics = mlContext.MulticlassClassification.Evaluate(predictionsDataView, labelColumnName: "LabelAsKey", predictedLabelColumnName: "PredictedLabel");
-        OutputHelper.PrintMultiClassClassificationMetrics("TensorFlow DNN Transfer Learning", metrics);
+        ReportGenerator.PrintMultiClassClassificationMetrics("TensorFlow DNN Transfer Learning", metrics);
 
         watch.Stop();
         var elapsed2Ms = watch.ElapsedMilliseconds;

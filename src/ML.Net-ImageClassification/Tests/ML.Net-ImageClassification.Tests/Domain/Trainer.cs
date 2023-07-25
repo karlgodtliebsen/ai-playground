@@ -77,12 +77,12 @@ public class Trainer : ITrainer
         var elapsedMs = watch.ElapsedMilliseconds;
         logger.Information("Training with transfer learning took: {elapsed} seconds", elapsedMs / 1000);
 
-        // 7. Get the quality metrics (accuracy, etc.)
-        TestHelper.EvaluateModel(mlContext, testDataView, trainedModel);
-
         // 8. Save the model to assets/outputs (You get ML.NET .zip model file and TensorFlow .pb model file)
         mlContext.Model.Save(trainedModel, trainDataView.Schema, mlNetModelFilePath);
         logger.Information("Model saved to: {mlNetModelFilePath}", mlNetModelFilePath);
+
+        // 7. Get the quality metrics (accuracy, etc.)
+        ModelHelper.EvaluateModel(mlContext, testDataView, trainedModel);
     }
 
 }
