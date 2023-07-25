@@ -22,19 +22,12 @@ public class TestOfFlowerImageClassification : TestFixtureBase
     private readonly ImageClassificationFixture fixture;
     private readonly ILogger logger;
 
-    //private string mlNetModelFilePath;
-    //private string imageSetFolderPath;
-    //private string imageSetForPredictions;
 
     public TestOfFlowerImageClassification(ImageClassificationFixture fixture, ITestOutputHelper output)
     {
         this.fixture = fixture;
         fixture.Setup(output);
         this.logger = fixture.Logger;
-
-        //imageSetFolderPath = Path.GetFullPath(fixture.ImageClassificationOptions.ImageFilePath.Replace("{path}", "flower_photos"));
-        //mlNetModelFilePath = Path.Combine(Path.GetFullPath(fixture.ImageClassificationOptions.OutputFilePath.Replace("{path}", "flower_photos")), "ImageClassifier.zip");
-        //imageSetForPredictions = Path.Combine(Path.GetFullPath(fixture.ImageClassificationOptions.InputFilePath.Replace("{path}", "flower_photos")), "test-images");
     }
 
     [Fact]
