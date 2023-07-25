@@ -27,10 +27,9 @@ public class TestOfSemanticKernel
 
     public TestOfSemanticKernel(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
     {
+        this.fixture = fixture;
         fixture.Setup(output);
         this.logger = fixture.Logger;
-        this.fixture = fixture;
-
         this.hostApplicationFactory = fixture.Factory;
         this.openAIOptions = fixture.OpenAIOptions;
     }

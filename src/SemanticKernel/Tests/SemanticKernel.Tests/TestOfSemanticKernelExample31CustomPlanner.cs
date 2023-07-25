@@ -71,7 +71,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
         // MarkupSkill named "markup"
         var markup = kernel.ImportSkill(new MarkupSkill(logger), "markup");
 
-        // contextQuery "Who is my president? Who was president 3 years ago? What should I eat for dinner" | markup
+        // contextQuery "Who is my president? Who was president 10 years ago? What should I eat for dinner" | markup
         // Create a plan to execute the ContextQuery and then run the markup skill on the output
         var plan = new Plan("Execute ContextQuery and then RunMarkup");
         plan.AddSteps(skills["ContextQuery"], markup["RunMarkup"]);
@@ -88,7 +88,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
     /* Example Output
     ======== Custom Planner - Create and Execute Markup Plan ========
     Markup:
-    <response><lookup>Who is United States President</lookup><fact>Joe Biden was president 3 years ago</fact><opinion>For dinner, you might enjoy some sushi with your partner, since you both like it and you only ate it once this month</opinion></response>
+    <response><lookup>Who is United States President</lookup><fact>Joe Biden was president 2 years ago</fact><opinion>For dinner, you might enjoy some sushi with your partner, since you both like it and you only ate it once this month</opinion></response>
 
     Original plan:
         Goal: Run a piece of xml markup

@@ -56,11 +56,26 @@ public sealed class HostApplicationFactory
         configurationBuilder.AddUserSecrets<HostApplicationFactory>();
 
         var buildConfiguration = configurationBuilder.Build();
-        IServiceCollection serviceCollection = new ServiceCollection();
+        var serviceCollection = new ServiceCollection();
         serviceContext?.Invoke(serviceCollection, buildConfiguration);
-        serviceCollection.AddTransient<ILogger>((_) => Log.Logger);
-        serviceCollection.AddSingleton<ILoggerFactory>(new XUnitTestLoggerFactory(Log.Logger));
+        serviceCollection
+        .AddTransient<ILogger>((_) => Log.Logger)
+        .AddSingleton<ILoggerFactory>(new XUnitTestLoggerFactory(Log.Logger))
+        .AddLogging(logging =>
+        {
+            logging.AddConsole();
+            logging.AddDebug();
+        });
+
         var instance = new HostApplicationFactory(buildConfiguration, serviceCollection.BuildServiceProvider());
+
+        SetupDateTimeProvider(fixedDateTime, instance);
+
+        return instance;
+    }
+
+    private static void SetupDateTimeProvider(Func<DateTimeOffset>? fixedDateTime, HostApplicationFactory instance)
+    {
         var fixedDt = fixedDateTime?.Invoke();
         if (fixedDt is not null)
         {
@@ -78,7 +93,5 @@ public sealed class HostApplicationFactory
         {
             instance.DateTimeProvider = new DateTimeProvider();
         }
-
-        return instance;
     }
 }

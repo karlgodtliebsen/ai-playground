@@ -5,8 +5,6 @@ using FinancialAgents.Tests.Fixtures;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.SkillDefinition;
 using Microsoft.SemanticKernel.Skills.Web;
-using Microsoft.SemanticKernel.Skills.Web.Bing;
-using Microsoft.SemanticKernel.Skills.Web.Google;
 using Microsoft.SemanticKernel.TemplateEngine;
 
 using OpenAI.Client.Configuration;
@@ -70,15 +68,15 @@ public class TestOfFinancialAgents
             .Build();
 
         //// Load Bing skill
-        using var bingConnector = new BingConnector(fixture.BingOptions.ApiKey);
-        kernel.ImportSkill(new WebSearchEngineSkill(bingConnector), "bing");
+        //using var bingConnector = new BingConnector(fixture.BingOptions.ApiKey);
+        //kernel.ImportSkill(new WebSearchEngineSkill(bingConnector), "bing");
 
-        //// Load Google skill
-        using var googleConnector = new GoogleConnector(fixture.GoogleOptions.ApiKey, fixture.GoogleOptions.SearchEngineId);
-        kernel.ImportSkill(new WebSearchEngineSkill(googleConnector), "google");
+        ////// Load Google skill
+        //using var googleConnector = new GoogleConnector(fixture.GoogleOptions.ApiKey, fixture.GoogleOptions.SearchEngineId);
+        //kernel.ImportSkill(new WebSearchEngineSkill(googleConnector), "google");
 
-        await Example1Async(kernel);
-        await Example2Async(kernel);
+        //await Example1Async(kernel);
+        //await Example2Async(kernel);
     }
 
 
@@ -184,9 +182,9 @@ Answer: ";
              .Build();
 
         // Load native skill
-        using var bingConnector = new BingConnector(fixture.BingOptions.ApiKey);
-        var bing = new WebSearchEngineSkill(bingConnector);
-        var search = kernel.ImportSkill(bing, "bing");
+        //using var bingConnector = new BingConnector(fixture.BingOptions.ApiKey);
+        //var bing = new WebSearchEngineSkill(bingConnector);
+        //var search = kernel.ImportSkill(bing, "bing");
 
         // Load semantic skill defined with prompt templates
         //string folder = RepoFiles.SampleSkillsPath();

@@ -6,6 +6,7 @@ public abstract class TestFixtureBase
 {
     public ITestOutputHelper Output { get; protected set; }
     public ILogger Logger { get; protected set; }
+
     public Microsoft.Extensions.Logging.ILogger MsLogger { get; protected set; }
 
     public HostApplicationFactory Factory { get; protected set; }

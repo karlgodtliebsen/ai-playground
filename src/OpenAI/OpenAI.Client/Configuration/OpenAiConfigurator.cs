@@ -121,23 +121,4 @@ public static class OpenAIConfigurator
         ArgumentNullException.ThrowIfNull(configuredOptions);
         return services.AddOpenAIConfiguration(configuredOptions);
     }
-
-
-    //public static IServiceCollection AddAzureOpenAIConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
-    //{
-    //    Log.Logger.Information("Starting Adding Azure OpenAI Configuration to Applications Configuration");
-
-    //    if (sectionName is null)
-    //    {
-    //        sectionName = AzureOpenAIOptions.SectionName;
-    //    }
-    //    var configuredOptions = configuration.GetSection(sectionName).Get<AzureOpenAIOptions>()!;
-    //    ArgumentNullException.ThrowIfNull(configuredOptions);
-    //    services.AddSingleton<IOptions<AzureOpenAIOptions>>(new OptionsWrapper<AzureOpenAIOptions>(configuredOptions));
-
-    //    Log.Logger.Information("Completed Adding Azure OpenAI Configuration to Applications Configuration");
-    //    return services;
-    //}
-
-
 }

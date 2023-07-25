@@ -3,15 +3,21 @@ An ASP.NET Core WebAPI (v7.0) using LlamaSCharp.
 
 
 #### How to download the source and build:
-
-```
 Clone the repository and open the solution in Visual Studio 2022.
 
 Download a model like: 
+```
+- wizardLM-7B.ggmlv3.q4_1.bin
+- llama-2-7b.ggmlv3.q8_0.bin
+- ggml-vic13b-uncensored-q4_1.bin
+- ggml-vic13b-uncensored-q5_0.bin
+- ggml-vicuna-13B-1.1-q4_0.bin
+- ggml-vicuna-13B-1.1-q8_0.bin
+- wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin (see references)
 
-- wizardLM-7B.ggmlv3.q4_1.bin (see references)
+```
 
-Add the Model to the 'LlamaModels' folder in the 'AI.LlaMa.Models' project, and mark it for "Copy If Newer".
+Add the Model to the 'LlamaModels' folder in the 'AI.LlaMa.Models' project, and mark it as "Copy If Newer".
 
 If you prefer to locate the model file elsewhere, then modify the appsettings.json to point to the model and update .gitignore.
 
@@ -21,7 +27,6 @@ Use either Environment variables, Azure Keyvault or UserSecret during developmen
 
 Authentication can be disabled in the Program.cs file, remember to remove the [Authentication] attributes from the controllers.
 
-```
 
 ### References
 1. https://huggingface.co/TheBloke

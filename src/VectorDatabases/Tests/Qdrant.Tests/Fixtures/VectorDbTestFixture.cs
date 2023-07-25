@@ -2,7 +2,6 @@
 using AI.Test.Support.DockerSupport;
 using AI.VectorDatabase.Qdrant.Configuration;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
