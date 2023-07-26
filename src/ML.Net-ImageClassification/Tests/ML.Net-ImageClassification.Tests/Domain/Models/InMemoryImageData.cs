@@ -1,4 +1,4 @@
-﻿namespace ML.Net.ImageClassification.Tests.Domain;
+﻿namespace ML.Net.ImageClassification.Tests.Domain.Models;
 
 public class InMemoryImageData
 {
@@ -10,9 +10,8 @@ public class InMemoryImageData
         FullName = fullName;
     }
 
-    public readonly byte[] Image;
-    public readonly string Label;
-    public readonly string ImageFileName;
-    public readonly string FullName;
-
+    public byte[] Image { get; init; }
+    public string Label { get; init; }
+    public string ImageFileName { get; init; }
+    public string FullName { get; init; }
 }

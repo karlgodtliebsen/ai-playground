@@ -14,7 +14,10 @@ public static class ImageClassificationConfigurator
 
         services
             .AddTransient<IPredictor, Predictor>()
-            .AddTransient<ITrainer, Trainer>();
+            .AddTransient<ITrainer, Trainer>()
+            .AddTransient<IImageLoader, ImageLoader>()
+            .AddTransient<IModelEvaluator, ModelEvaluator>()
+            ;
         return services;
     }
 

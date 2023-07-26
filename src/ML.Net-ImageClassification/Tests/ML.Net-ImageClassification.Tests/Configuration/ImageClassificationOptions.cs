@@ -6,8 +6,13 @@ public class ImageClassificationOptions
      /// </summary>
     public const string SectionName = "ImageClassification";
 
-    public string ImageFilePath { get; set; }
+    public string TrainImagesFilePath { get; set; } = default!;
+    public string TestImagesFilePath { get; set; } = default!;
 
-    public string OutputFilePath { get; set; }
-    public string InputFilePath { get; set; }
+    public string OutputFilePath { get; set; } = default!;
+
+    public string InputFilePath { get; set; } = default!;
+
+    public string ModelName { get; set; } = default!;
+
 }

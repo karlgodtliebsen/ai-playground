@@ -2,53 +2,51 @@
 using Microsoft.ML;
 
 using ML.Net.ImageClassification.Tests.Configuration;
+using ML.Net.ImageClassification.Tests.Domain.Models;
 
 using Serilog;
 
+using SerilogTimings.Extensions;
+
 namespace ML.Net.ImageClassification.Tests.Domain;
 
-public interface IPredictor
+public sealed class Predictor : IPredictor
 {
-    void PredictImages(string imageSetPath);
-}
-
-public class Predictor : IPredictor
-{
+    private readonly IImageLoader imageLoader;
     private readonly ILogger logger;
     private readonly ImageClassificationOptions options;
-    public Predictor(IOptions<ImageClassificationOptions> options, ILogger logger)
+    public Predictor(IOptions<ImageClassificationOptions> options, IImageLoader imageLoader, ILogger logger)
     {
         this.options = options.Value;
+        this.imageLoader = imageLoader;
         this.logger = logger;
     }
 
     public void PredictImages(string imageSetPath)
     {
-        var mlNetModelFilePath = Path.Combine(Path.GetFullPath(options.OutputFilePath.Replace("{imageSetPath}", imageSetPath)), "ImageClassifierModel.zip");
-        var imageSetForPredictions = Path.Combine(Path.GetFullPath(options.InputFilePath.Replace("{imageSetPath}", imageSetPath)), "test-images");
-
+        var mlNetModelFilePath = PathUtils.GetPath(options.OutputFilePath, imageSetPath, options.ModelName);
+        var imageSetForPredictions = PathUtils.GetPath(options.TestImagesFilePath, imageSetPath);
         if (!File.Exists(mlNetModelFilePath))
         {
             logger.Information("Could not find Model: {mlNetModelFilePath}", mlNetModelFilePath);
-            return;
+            throw new FileNotFoundException(mlNetModelFilePath);
         }
-
-        MLContext mlContext = new MLContext(seed: 1);
+        var mlContext = new MLContext(seed: 1);
         ITransformer loadedModel = mlContext.Model.Load(mlNetModelFilePath, out var modelInputSchema);
-
         var predictionEngine = mlContext.Model.CreatePredictionEngine<InMemoryImageData, ImagePrediction>(loadedModel);
-
-        var imagesToPredict = FileUtils.LoadInMemoryImagesFromDirectory(imageSetForPredictions, false);
+        var imagesToPredict = imageLoader.LoadInMemoryImagesFromDirectory(imageSetForPredictions, false);
         int hitCount = 0;
         int missCount = 0;
         foreach (var imageToPredict in imagesToPredict)
         {
+            using var op = logger.BeginOperation("Predicting {imageToPredict}...", imageToPredict.ImageFileName);
             var prediction = predictionEngine.Predict(imageToPredict);
             var isHit = imageToPredict.FullName.Contains(prediction.PredictedLabel);
             if (isHit) hitCount++; else missCount++;
 
-            logger.Information("\nImage Filename : [{fileName}] \nScores : [{scores}]\nPredicted Label : {predictedLabel}\nHit: {hit}", imageToPredict.FullName, prediction.Scores, prediction.PredictedLabel, isHit);
+            op.Complete();
+            logger.Information("\nResult:\n\tImage Filename : [{fileName}] \n\tScores : [{scores}]\n\tPredicted Label : {predictedLabel}\n\tHit: {hit}", imageToPredict.FullName, prediction.Scores, prediction.PredictedLabel, isHit);
         }
-        logger.Information("Hit [{fileName}] Miss: [{scores}]", hitCount, missCount);
+        logger.Information("Hit [{hitCount}] Miss: {missCount}", hitCount, missCount);
     }
 }
