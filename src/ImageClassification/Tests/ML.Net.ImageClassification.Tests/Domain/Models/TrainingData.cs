@@ -33,4 +33,22 @@ public sealed class TrainingData
 
         return false;
     }
+    public bool FindMatchingLabelForImage(InMemoryImageData imageData)
+    {
+        if (FileName == imageData.ImageFileName)
+            return true;
+        if (FileNameParts.Length <= 1)
+            return false;
+
+        //0.0,train/ABBOTTS BABBLER/001.jpg,ABBOTTS BABBLER,train,MALACOCINCLA ABBOTTI
+        //Image_1.jpg,SOUTHERN DOGFACE
+        if (
+            FileNameParts[^1] == imageData.FileNameParts()[^1]
+            &&
+            FileNameParts[^2] == imageData.FileNameParts()[^2]
+        )
+            return true;
+
+        return false;
+    }
 }

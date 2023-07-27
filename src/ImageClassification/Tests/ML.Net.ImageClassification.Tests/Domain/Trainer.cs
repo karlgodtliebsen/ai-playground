@@ -37,9 +37,9 @@ public sealed class Trainer : ITrainer
         var inputFolderPath = PathUtils.GetPath(options.InputFilePath, imageSetPath);
 
         logger.Information("Starting Training of [{imageSetPath}]...", imageSetPath);
-        using Operation op0 = logger.BeginOperation("Training of {imageSetPath}...", imageSetPath);
+        using Operation op0 = logger.BeginOperation("Load Images for {imageSetPath}...", imageSetPath);
         var mlContext = new MLContext(seed: 1);
-        var images = imageLoader.MapImagesToLabelCategory(imageSetFolderPath, inputFolderPath, mapper).ToList();
+        var images = imageLoader.LoadImagesMappedToLabelCategory(imageSetFolderPath, inputFolderPath, mapper).ToList();
         op0.Complete();
 
         using Operation op1 = logger.BeginOperation("Shuffling Training Set and Loading Views");

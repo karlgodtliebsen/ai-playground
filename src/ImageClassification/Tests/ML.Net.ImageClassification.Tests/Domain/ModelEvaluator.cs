@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Text;
 
 using Microsoft.ML;
-using ML.Net.ImageClassification.Tests.Domain.Models;
+
 using Serilog;
 
 namespace ML.Net.ImageClassification.Tests.Domain;
@@ -33,17 +33,17 @@ public sealed class ModelEvaluator : IModelEvaluator
         logger.Information("Predicting and Evaluation took: {elapsed} seconds", elapsed2Ms / 1000);
     }
 
-    public void TrySinglePrediction(string imagesFolderPathForPredictions, MLContext mlContext, ITransformer trainedModel, IImageLoader imageLoader)
-    {
-        // Create prediction function to try one prediction
-        var predictionEngine = mlContext.Model.CreatePredictionEngine<InMemoryImageData, ImagePrediction>(trainedModel);
+    //public void TrySinglePrediction(string imagesFolderPathForPredictions, MLContext mlContext, ITransformer trainedModel, IImageLoader imageLoader)
+    //{
+    //    // Create prediction function to try one prediction
+    //    var predictionEngine = mlContext.Model.CreatePredictionEngine<InMemoryImageData, ImagePrediction>(trainedModel);
 
-        var testImages = imageLoader.LoadInMemoryImagesFromDirectory(imagesFolderPathForPredictions, false);
+    //    var testImages = imageLoader.LoadInMemoryImagesFromDirectory(imagesFolderPathForPredictions, false);
 
-        var imageToPredict = testImages.First();
-        var prediction = predictionEngine.Predict(imageToPredict);
-        logger.Information("Image Filename : [{fileName}] Scores : [{scores}], Predicted Label : {predictedLabel}", imageToPredict.ImageFileName, prediction.Scores, prediction.PredictedLabel);
-    }
+    //    var imageToPredict = testImages.First();
+    //    var prediction = predictionEngine.Predict(imageToPredict);
+    //    logger.Information("Image Filename : [{fileName}] Scores : [{scores}], Predicted Label : {predictedLabel}", imageToPredict.ImageFileName, prediction.Scores, prediction.PredictedLabel);
+    //}
 
     public void WriteImagePrediction(string imagePath, string label, string predictedLabel, float probability)
     {

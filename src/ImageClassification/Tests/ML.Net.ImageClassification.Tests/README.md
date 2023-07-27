@@ -16,12 +16,32 @@ This project contains some test Implementation of ML.Net Image Classification, u
 > Meat Quality Assessment Dataset:
 - https://www.kaggle.com/datasets/crowww/meat-quality-assessment-based-on-deep-learning
 
+> Butterfly Image Classification:
+- https://www.kaggle.com/datasets/phucthaiv02/butterfly-image-classification
+- https://s3.us-west-1.wasabisys.com/dphi/public-datasets/Data_Sprint_107_Butterfly_Classification/butterflies.zip
+> Food Image Classification Dataset: 
+- https://www.kaggle.com/datasets/harishkumardatalab/food-image-classification-dataset
+> Stanford Cars Dataset:
+- https://www.kaggle.com/datasets/jessicali9530/stanford-cars-dataset
+- https://github.com/BotechEngineering/StanfordCarsDatasetCSV/tree/main
+> Animals-10
+- https://www.kaggle.com/datasets/alessiocorrado99/animals10
+> Cats and Dogs
+- https://www.kaggle.com/datasets/samuelcortinhas/cats-and-dogs-image-classification
+> Animal Image Dataset (90 Different Animals)
+- https://www.kaggle.com/datasets/iamsouravbanerjee/animal-image-dataset-90-different-animals
+> Fashion Product Images (Small)
+- https://www.kaggle.com/paramaggarwal/fashion-product-images-small
 
-- ..more from Kaggle...
+### Citations  
 
-
-    
 ```
+Cars:
+- 3D Object Representations for Fine-Grained Categorization
+- Jonathan Krause, Michael Stark, Jia Deng, Li Fei-Fei
+- 4th IEEE Workshop on 3D Representation and Recognition, at ICCV 2013 (3dRR-13). Sydney, Australia. Dec. 8, 2013.
+
+Meat:
 @inproceedings{
      ulucan2019meat,
       title={Meat quality assessment based on deep learning},

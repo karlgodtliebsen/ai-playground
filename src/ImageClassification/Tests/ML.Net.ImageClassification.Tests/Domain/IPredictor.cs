@@ -2,5 +2,5 @@
 
 public interface IPredictor
 {
-    void PredictImages(string imageSetPath);
+    void PredictImages(string imageSetPath, ImageLabelMapper? mapper);
 }
