@@ -173,14 +173,12 @@ Add appsettings.json (I recommend using user secrets to avoid having the API key
 However, you can also add *.development.json or *.IntegrationTests.json to the .gitignore if you want to use config files for secret storage.
 
 
-
 #### LlamaSharp:
 Add this section into appsettings.json
 
-
 ```json
   "LlmaModel": {
-    "modelPath": "LlmaModels\\wizardLM-7B.ggmlv3.q4_1.bin",
+     "modelPath": "/projects/AI/LlamaModels/llama-2-7b.ggmlv3.q8_0.bin"
   }
 ```
 

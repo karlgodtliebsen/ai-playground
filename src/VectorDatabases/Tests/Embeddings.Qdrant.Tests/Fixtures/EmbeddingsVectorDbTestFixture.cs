@@ -52,7 +52,7 @@ public sealed class EmbeddingsVectorDbTestFixture : TestFixtureBase, IDisposable
         LlamaModelOptions = Factory.Services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
         OpenAIOptions = Factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         TestFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
-        ModelFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LlamaModelOptions.ModelPath);
+        ModelFilesPath = Path.GetFullPath(LlamaModelOptions.ModelPath);
         RequestFactory = Factory.Services.GetRequiredService<IModelRequestFactory>();
         LlamaModelFactory = Factory.Services.GetRequiredService<ILlamaModelFactory>();
     }
@@ -69,6 +69,6 @@ public sealed class EmbeddingsVectorDbTestFixture : TestFixtureBase, IDisposable
     }
     public void Dispose()
     {
-        Launcher.Stop();
+        Launcher?.Stop();
     }
 }

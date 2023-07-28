@@ -9,6 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Configuration\**" />
+    <Compile Remove="Domain\**" />
+    <EmbeddedResource Remove="Configuration\**" />
+    <EmbeddedResource Remove="Domain\**" />
+    <None Remove="Configuration\**" />
+    <None Remove="Domain\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="appsettings.IntegrationTests.json" />
   </ItemGroup>
 
@@ -21,16 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-
     <PackageReference Include="Microsoft.ML" Version="2.0.1" />
-
     <PackageReference Include="Microsoft.ML.DataView" Version="2.0.1" />
-
     <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="2.0.1" />
-
     <PackageReference Include="Microsoft.ML.Vision" Version="2.0.1" />
-
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.3.1" />
+
 
     <PackageReference Include="SerilogTimings" Version="3.0.1" />
 
@@ -79,6 +84,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\AI.Library\AI.Library.csproj" />
     <ProjectReference Include="..\..\..\AI.Test.Support\AI.Test.Support.csproj" />
+    <ProjectReference Include="..\..\ImageClassification.Domain\ImageClassification.Domain.csproj" />
+    <ProjectReference Include="..\..\Ml.Net.ImageClassification.Domain\Ml.Net.ImageClassification.Domain.csproj" />
   </ItemGroup>
 
 </Project>

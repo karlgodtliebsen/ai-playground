@@ -1,9 +1,7 @@
 ﻿using AI.Test.Support;
-
+using ImageClassification.Domain.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-using ML.Net.ImageClassification.Tests.Configuration;
 
 namespace ML.Net.ImageClassification.Tests.Fixtures;
 

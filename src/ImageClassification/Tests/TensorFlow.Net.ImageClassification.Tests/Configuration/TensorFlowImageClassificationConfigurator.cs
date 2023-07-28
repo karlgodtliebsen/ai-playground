@@ -2,6 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+using ML.Net.ImageClassification.Tests.Domain;
+using ML.Net.ImageClassification.Tests.Domain.Trainers;
+
 namespace ML.Net.ImageClassification.Tests.Configuration;
 
 public static class TensorFlowImageClassificationConfigurator
@@ -9,13 +12,12 @@ public static class TensorFlowImageClassificationConfigurator
     public static IServiceCollection AddTensorFlowImageClassification(this IServiceCollection services, TensorFlowImageClassificationOptions options)
     {
         services.AddSingleton<IOptions<TensorFlowImageClassificationOptions>>(new OptionsWrapper<TensorFlowImageClassificationOptions>(options));
-
-        //services
+        services
         //    .AddTransient<IPredictor, Predictor>()
-        //    .AddTransient<ITrainer, Trainer>()
-        //    .AddTransient<IImageLoader, ImageLoader>()
-        //    .AddTransient<IModelEvaluator, ModelEvaluator>()
-        //    ;
+            .AddTransient<IKerasTrainer, KerasImageClassificationTrainer>()
+            .AddTransient<ITensorFlowTrainer, ImageRecognitionInceptionTrainer>()
+            .AddTransient<IImageLoader, ImageLoader>()
+            ;
         return services;
     }
 

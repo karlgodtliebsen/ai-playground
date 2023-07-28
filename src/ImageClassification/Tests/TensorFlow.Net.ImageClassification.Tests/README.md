@@ -3,12 +3,27 @@ This project contains some test Implementation of TensorFlow.Net and TensorFlow.
 
 ### Based on :
 - https://github.com/SciSharp/TensorFlow.NET
+- https://github.com/dotnet/samples/
  
+https://scisharp.github.io/tensorflow-net-docs/#/tutorials/ImageRecognition?id=_1-prepare-data
 
-### Dataset used are:
 
+### Dataset used are from:
+
+- https://www.tensorflow.org/datasets
+- https://www.tensorflow.org/datasets/catalog/overview
+- https://github.com/tensorflow/datasets/tree/master/tensorflow_datasets/datasets
+- http://www.vision.caltech.edu/datasets/
+
+>Caltect101:
+- https://data.caltech.edu/records/mzrjq-6wc02
+> Stanford dogs:
+- http://vision.stanford.edu/aditya86/ImageNetDogs/main.html
+- 
 >Flowers:
 - http://download.tensorflow.org/example_images/flower_photos.tgz
+- https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz
+- https://www.robots.ox.ac.uk/~vgg/data/flowers/102/
 
 > Meat Quality Assessment Dataset:
 - https://www.kaggle.com/datasets/crowww/meat-quality-assessment-based-on-deep-learning

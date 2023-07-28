@@ -3,6 +3,7 @@ using Microsoft.ML;
 using Microsoft.ML.Transforms;
 
 using ML.Net.ImageClassification.Tests.Configuration;
+using ML.Net.ImageClassification.Tests.Domain.Models;
 
 using Serilog;
 
@@ -41,6 +42,7 @@ public sealed class Trainer : ITrainer
         var mlContext = new MLContext(seed: 1);
         var images = imageLoader.LoadImagesMappedToLabelCategory(imageSetFolderPath, inputFolderPath, mapper).ToList();
         op0.Complete();
+        logger.Information("Number of Images in Training set {set}: {count}", imageSetPath, images.Count);
 
         using Operation op1 = logger.BeginOperation("Shuffling Training Set and Loading Views");
         var fullImagesDataset = mlContext.Data.LoadFromEnumerable(images);
@@ -64,7 +66,7 @@ public sealed class Trainer : ITrainer
             .Append(mlContext.Transforms.Conversion.MapKeyToValue(outputColumnName: "PredictedLabel", inputColumnName: "PredictedLabel"));
         op1.Complete();
 
-        logger.Information("Started training with transfer learning");
+        logger.Information("Started training with transfer learning for {set}", imageSetPath);
         using var op2 = logger.BeginOperation("Training with transfer learning", imageSetPath);
         ITransformer trainedModel = pipeline.Fit(trainDataView);
         op2.Complete();

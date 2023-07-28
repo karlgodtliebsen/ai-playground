@@ -1,15 +1,13 @@
 ﻿using AI.Test.Support;
-
+using ImageClassification.Domain.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-using ML.Net.ImageClassification.Tests.Configuration;
 
 namespace ML.Net.ImageClassification.Tests.Fixtures;
 
 public class ImageClassificationFixture : TestFixtureBase
 {
-    public ImageClassificationOptions ImageClassificationOptions { get; private set; }
+    public MlImageClassificationOptions MlImageClassificationOptions { get; private set; }
 
     public ImageClassificationFixture()
     {
@@ -18,11 +16,11 @@ public class ImageClassificationFixture : TestFixtureBase
             serviceContext: (services, configuration) =>
             {
                 services
-                    .AddImageClassification(configuration)
+                    .AddMlnetImageClassification(configuration)
                     ;
             },
             fixedDateTime: () => DateTimeOffset.UtcNow
         );
-        ImageClassificationOptions = Factory.Services.GetRequiredService<IOptions<ImageClassificationOptions>>().Value;
+        MlImageClassificationOptions = Factory.Services.GetRequiredService<IOptions<MlImageClassificationOptions>>().Value;
     }
 }

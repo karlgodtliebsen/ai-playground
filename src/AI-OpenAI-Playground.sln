@@ -74,6 +74,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ML.Net.ImageClassification.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TensorFlow.Net.ImageClassification.Tests", "ImageClassification\Tests\TensorFlow.Net.ImageClassification.Tests\TensorFlow.Net.ImageClassification.Tests.csproj", "{FE12F1DB-14B2-4A2D-8A7B-87F8A553E09C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ml.Net.ImageClassification.Domain", "ImageClassification\Ml.Net.ImageClassification.Domain\Ml.Net.ImageClassification.Domain.csproj", "{42B05CF2-F76E-46FF-8115-53F196BFE7BC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TensorFlow.ImageClassification.Domain", "ImageClassification\TensorFlow.ImageClassification.Domain\TensorFlow.ImageClassification.Domain.csproj", "{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageClassification.Domain", "ImageClassification\ImageClassification.Domain\ImageClassification.Domain.csproj", "{429A468B-BEFD-472D-ABF4-B47ECAE356E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,6 +162,18 @@ Global
 		{FE12F1DB-14B2-4A2D-8A7B-87F8A553E09C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE12F1DB-14B2-4A2D-8A7B-87F8A553E09C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE12F1DB-14B2-4A2D-8A7B-87F8A553E09C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42B05CF2-F76E-46FF-8115-53F196BFE7BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B05CF2-F76E-46FF-8115-53F196BFE7BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B05CF2-F76E-46FF-8115-53F196BFE7BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B05CF2-F76E-46FF-8115-53F196BFE7BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -184,6 +202,9 @@ Global
 		{0C0EFC44-80E3-4A52-AD67-F6EFE846E7C8} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
 		{CDB46E5E-37CE-4AF0-B66E-1ED5888F2DDB} = {0C0EFC44-80E3-4A52-AD67-F6EFE846E7C8}
 		{FE12F1DB-14B2-4A2D-8A7B-87F8A553E09C} = {0C0EFC44-80E3-4A52-AD67-F6EFE846E7C8}
+		{42B05CF2-F76E-46FF-8115-53F196BFE7BC} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
+		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
+		{429A468B-BEFD-472D-ABF4-B47ECAE356E4} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A365742-464F-4F92-BCF0-6F080A5C398C}

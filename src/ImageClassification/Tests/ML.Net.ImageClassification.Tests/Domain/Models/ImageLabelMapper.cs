@@ -1,4 +1,4 @@
-﻿namespace ML.Net.ImageClassification.Tests.Domain;
+﻿namespace ML.Net.ImageClassification.Tests.Domain.Models;
 
 public class ImageLabelMapper
 {

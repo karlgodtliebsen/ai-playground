@@ -82,17 +82,18 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     }
 
     //NOTE: uses all the downloaded models. This is very time consuming, so...
-
+    //[Theory]
     [Theory(Skip = "Very time consuming. Download the models before running this test")]
-    [InlineData("LlamaModels/wizardLM-7B.ggmlv3.q4_1.bin")]
-    [InlineData("LlamaModels/ggml-vic13b-uncensored-q4_1.bin")]
-    [InlineData("LlamaModels/ggml-vic13b-uncensored-q5_0.bin")]
-    [InlineData("LlamaModels/ggml-vicuna-13B-1.1-q4_0.bin")]
-    [InlineData("LlamaModels/ggml-vicuna-13B-1.1-q8_0.bin")]
-    [InlineData("LlamaModels/wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin")]
+    [InlineData("wizardLM-7B.ggmlv3.q4_1.bin")]
+    [InlineData("ggml-vic13b-uncensored-q4_1.bin")]
+    [InlineData("ggml-vic13b-uncensored-q5_0.bin")]
+    [InlineData("ggml-vicuna-13B-1.1-q4_0.bin")]
+    [InlineData("ggml-vicuna-13B-1.1-q8_0.bin")]
+    [InlineData("wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin")]
     public async Task UseDifferentModels(string model)
     {
-        modelFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, model);
+        //fi to point at folder for all the models, outside of this solution
+        modelFilesPath = Path.Combine(Path.GetDirectoryName(modelFilesPath), model);
         var modelParams = llamaModelFactory.CreateModelParams();
         modelParams.ModelPath = modelFilesPath;
         var embedder = llamaModelFactory.CreateEmbedder(modelParams);

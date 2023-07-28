@@ -1,4 +1,6 @@
-﻿namespace ML.Net.ImageClassification.Tests.Domain;
+﻿using ML.Net.ImageClassification.Tests.Domain.Models;
+
+namespace ML.Net.ImageClassification.Tests.Domain;
 
 public interface ITrainer
 {

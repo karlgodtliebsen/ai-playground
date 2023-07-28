@@ -58,8 +58,10 @@ public sealed class ImageLoader : IImageLoader
         }
     }
 
+    static readonly char[] CsvSeparator = new[] { ',', '\t' };
 
-    public IEnumerable<TrainingData> LoadTrainingImageToLabelsMap(string inputFolderPath, ImageLabelMapper? mapper)
+
+    public IEnumerable<TrainingData> LoadTrainingImageToLabelsMap(string inputFolderPath, ImageLabelMapper? mapper, string defaultExtension = ".jpg")
     {
         if (mapper is null)
         {
@@ -72,16 +74,17 @@ public sealed class ImageLoader : IImageLoader
             logger.Error("Mapping file {file} does not exist", file);
             yield break;
         }
-        logger.Information("Selecting CSV mapping file {file}", file);
+        logger.Information("Selecting CSV/TSV mapping file {file}", file);
+
         var trainingData = File.ReadAllLines(file!);
         foreach (var s in trainingData)
         {
-            var data = s.Split(',');
+            var data = s.Split(CsvSeparator);
             var fileName = data[mapper.ImageIndex];
             //check extension for filename
             if (Path.GetExtension(fileName) is not ".jpg" and not ".png")
             {
-                fileName = $"{fileName}.jpg";           //Qualified guess
+                fileName = $"{fileName}{defaultExtension}";           //extension jpg? Qualified guess
             }
             string? label = default;
             if (mapper.LabelIndex.HasValue)
@@ -142,45 +145,6 @@ public sealed class ImageLoader : IImageLoader
             }
         }
     }
-
-    //var trainingData = data!.FirstOrDefault(x => x.FindMatchingLabelForImage(imageData));
-    //if (trainingData is not null)
-    //{
-    //    imageData.MergeDetails(trainingData, sourceParts, imageSetFolderPath);
-    //    if (VerifyFile(imageSetFolderPath, imageData))
-    //    {
-    //        yield return imageData;
-    //    }
-    //}
-    //else
-    //{
-    //    var imageFile = imageData.FullFileName();
-    //    if (File.Exists(imageFile))
-    //    {
-    //        var parentDirectory = Directory.GetParent(imageData.FullFileName());
-    //        var diff = imageFile.Substring(imageSetFolderPath.Length);
-    //        imageData.ImagePath = diff.TrimStart(Path.DirectorySeparatorChar);
-    //        if (VerifyFile(imageSetFolderPath, imageData))
-    //        {
-    //            yield return imageData;
-    //        }
-    //    }
-    //    else
-    //    {
-
-    //        logger.Warning("No matching label found for image {@imageData}", imageData);
-    //    }
-    //}
-    //private bool VerifyFile(string imageSetFolderPath, ImageData imageData)
-    //{
-    //    var imageFile = Path.Combine(imageSetFolderPath, imageData.ImagePath);
-    //    if (File.Exists(imageFile))
-    //    {
-    //        return true;
-    //    }
-    //    logger.Warning("Incorrect Directory/File Level for Label Generation found for image {@imageData}", imageData);
-    //    return false;
-    //}
 
     public IEnumerable<InMemoryImageData> LoadInMemoryImagesFromDirectory(string inputFolderPath, string imageSetFolderPath, ImageLabelMapper? mapper)
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 
 using ML.Net.ImageClassification.Tests.Configuration;
-
+using ML.Net.ImageClassification.Tests.Domain.Models;
 using Serilog;
 
 namespace ML.Net.ImageClassification.Tests.Domain;

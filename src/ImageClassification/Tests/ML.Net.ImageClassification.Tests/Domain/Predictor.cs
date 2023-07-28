@@ -38,6 +38,8 @@ public sealed class Predictor : IPredictor
         ITransformer loadedModel = mlContext.Model.Load(mlNetModelFilePath, out var modelInputSchema);
         var predictionEngine = mlContext.Model.CreatePredictionEngine<InMemoryImageData, ImagePrediction>(loadedModel);
         var imagesToPredict = imageLoader.LoadInMemoryImagesFromDirectory(inputFolderPath, imageSetForPredictions, mapper).ToList();
+        logger.Information("Number of Images in Prediction set: {set} is {count}", imageSetPath, imagesToPredict.Count);
+
         int hitCount = 0;
         int missCount = 0;
         foreach (var imageToPredict in imagesToPredict)
@@ -46,10 +48,8 @@ public sealed class Predictor : IPredictor
             var prediction = predictionEngine.Predict(imageToPredict);
             var isHit = imageToPredict.FullName.Contains(prediction.PredictedLabel);
             if (isHit) hitCount++; else missCount++;
-
             op.Complete();
             logger.Information("\nResult:\n\tImage Filename : [{fileName}] \n\tScores : [{scores}]\n\tPredicted Label : {predictedLabel}\n\tHit: {hit}", imageToPredict.FullName, prediction.Scores, prediction.PredictedLabel, isHit);
-
             string content = $"{imageToPredict.FullName},{prediction.PredictedLabel}\n";
             File.AppendAllText(csvFilePath, content);
 

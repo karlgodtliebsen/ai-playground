@@ -1,4 +1,4 @@
-﻿namespace ML.Net.ImageClassification.Tests.Domain;
+﻿namespace ImageClassification.Domain.Models;
 
 public class ImageLabelMapper
 {
@@ -12,7 +12,7 @@ public class ImageLabelMapper
 
     public int? LabelIndex { get; init; }
     public (int from, int to)? LabelIndexRange { get; init; }
-
+    public string LabelFileName { get; set; }
     public string FileName { get; init; }
     public int ImageIndex { get; init; }
 }
