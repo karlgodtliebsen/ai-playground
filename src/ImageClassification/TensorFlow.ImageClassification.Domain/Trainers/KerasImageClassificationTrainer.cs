@@ -19,8 +19,8 @@ public sealed class KerasImageClassificationTrainer : IKerasTrainer
     private readonly IImageLoader imageLoader;
     private readonly ILogger logger;
 
-    private readonly TensorFlowImageClassificationOptions options;
-    public KerasImageClassificationTrainer(IOptions<TensorFlowImageClassificationOptions> options, IImageLoader imageLoader, ILogger logger)
+    private readonly TensorFlowOptions options;
+    public KerasImageClassificationTrainer(IOptions<TensorFlowOptions> options, IImageLoader imageLoader, ILogger logger)
     {
         this.options = options.Value;
         this.imageLoader = imageLoader;

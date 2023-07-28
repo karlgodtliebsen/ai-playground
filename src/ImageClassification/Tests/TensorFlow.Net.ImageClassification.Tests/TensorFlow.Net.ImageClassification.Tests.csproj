@@ -30,15 +30,14 @@
   </ItemGroup>
 
   <ItemGroup>
-
-
+    <PackageReference Include="SciSharp.Models.ImageClassification" Version="0.6.1" />
+    <PackageReference Include="SciSharp.Models.ObjectDetection" Version="0.3.1" />
+    <PackageReference Include="SciSharp.Models.TimeSeries" Version="0.4.2" />
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.11.4" />
+    <PackageReference Include="TensorFlow.Keras" Version="0.11.2" />
+    <PackageReference Include="TensorFlow.NET" Version="0.110.2" />
 
     <PackageReference Include="SerilogTimings" Version="3.0.1" />
-
-    <PackageReference Include="TensorFlow.Keras" Version="0.11.2" />
-
-    <PackageReference Include="TensorFlow.NET" Version="0.110.2" />
 
     <PackageReference Include="xunit" Version="2.5.0" />
     <PackageReference Include="xunit.abstractions" Version="2.0.3" />

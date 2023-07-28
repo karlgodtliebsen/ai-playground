@@ -24,8 +24,8 @@ public sealed class TensorFlowInceptionTrainer : ITensorFlowTrainer
     private readonly IImageLoader imageLoader;
     private readonly ILogger logger;
 
-    private readonly TensorFlowImageClassificationOptions options;
-    public TensorFlowInceptionTrainer(IOptions<TensorFlowImageClassificationOptions> options, IImageLoader imageLoader, ILogger logger)
+    private readonly TensorFlowOptions options;
+    public TensorFlowInceptionTrainer(IOptions<TensorFlowOptions> options, IImageLoader imageLoader, ILogger logger)
     {
         this.options = options.Value;
         this.imageLoader = imageLoader;

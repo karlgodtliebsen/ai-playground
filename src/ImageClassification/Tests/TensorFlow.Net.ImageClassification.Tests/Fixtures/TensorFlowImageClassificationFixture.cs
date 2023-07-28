@@ -7,7 +7,7 @@ namespace ML.Net.ImageClassification.Tests.Fixtures;
 
 public class TensorFlowImageClassificationFixture : TestFixtureBase
 {
-    public TensorFlowImageClassificationOptions TensorFlowImageClassificationOptions { get; private set; }
+    public TensorFlowOptions TensorFlowOptions { get; private set; }
 
     public TensorFlowImageClassificationFixture()
     {
@@ -21,6 +21,6 @@ public class TensorFlowImageClassificationFixture : TestFixtureBase
             },
             fixedDateTime: () => DateTimeOffset.UtcNow
         );
-        TensorFlowImageClassificationOptions = Factory.Services.GetRequiredService<IOptions<TensorFlowImageClassificationOptions>>().Value;
+        TensorFlowOptions = Factory.Services.GetRequiredService<IOptions<TensorFlowOptions>>().Value;
     }
 }
