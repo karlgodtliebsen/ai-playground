@@ -1,4 +1,5 @@
-﻿using ImageClassification.Domain.Trainers;
+﻿using ImageClassification.Domain.Predictors;
+using ImageClassification.Domain.Trainers;
 using ImageClassification.Domain.TransferLearning;
 using ImageClassification.Domain.Utils;
 
@@ -18,6 +19,7 @@ public static class TensorFlowImageClassificationConfigurator
             .AddTransient<IKerasTrainer, KerasImageClassificationTrainer>()
             .AddTransient<ITensorFlowTrainer, TensorFlowInceptionTrainer>()
             .AddTransient<ITensorFlowTransferLearningInception, TensorFlowTransferLearningInception>()
+            .AddTransient<IPredictor, TensorFlowPredictForTransferLearningInception>()
             .AddTransient<IImageLoader, ImageLoader>()
             .AddTransient<ExtendedModelFactory>()
             .AddTransient<ExtendedTransferLearning>()

@@ -21,10 +21,17 @@ public sealed class TensorFlowTransferLearningInception : ITensorFlowTransferLea
     private readonly IImageLoader imageLoader;
     private readonly ILogger logger;
 
-    private readonly TensorFlowOptions options;
-    public TensorFlowTransferLearningInception(ExtendedModelFactory factory, IOptions<TensorFlowOptions> options, IImageLoader imageLoader, ILogger logger)
+    private readonly TensorFlowOptions tensorFlowOptions;
+    private readonly ExtendedTaskOptions taskOptions;
+
+
+    public TensorFlowTransferLearningInception(ExtendedModelFactory factory,
+        IOptions<TensorFlowOptions> tensorFlowOptions,
+        IOptions<ExtendedTaskOptions> taskOptions,
+        IImageLoader imageLoader, ILogger logger)
     {
-        this.options = options.Value;
+        this.tensorFlowOptions = tensorFlowOptions.Value;
+        this.taskOptions = taskOptions.Value;
         this.factory = factory;
         this.imageLoader = imageLoader;
         this.logger = logger;
@@ -34,14 +41,15 @@ public sealed class TensorFlowTransferLearningInception : ITensorFlowTransferLea
 
     public string TrainModel(string imageSetPath, ImageLabelMapper? mapper)
     {
-        var imageSetFolderPath = PathUtils.GetPath(options.TrainImagesFilePath, imageSetPath);
-        //var inputFolderPath = PathUtils.GetPath(options.InputFilePath, imageSetPath);
-        var outputFolderPath = PathUtils.GetPath(options.OutputFilePath, imageSetPath);
+        var imageSetFolderPath = PathUtils.GetPath(tensorFlowOptions.TrainImagesFilePath, imageSetPath);
+        var outputFolderPath = PathUtils.GetPath(tensorFlowOptions.OutputFilePath, imageSetPath);
         var task = factory.AddImageClassificationTask<ExtendedTransferLearning>(
             (opt) =>
             {
                 opt.DataDir = imageSetFolderPath;
-                opt.TaskPath = Path.Combine(outputFolderPath, options.ClassificationModelPath);
+                opt.TaskPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath);
+                opt.ModelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.ModelName);
+                opt.LabelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.LabelFile);
             }
         );
 
@@ -69,7 +77,10 @@ public sealed class TensorFlowTransferLearningInception : ITensorFlowTransferLea
         // predict image
         var task = factory.AddImageClassificationTask<ExtendedTransferLearning>((opt) =>
         {
-            opt.ModelPath = Path.Combine(outputFolderPath, options.SavedModelName);
+            opt.DataDir = imageSetFolderPath;
+            opt.TaskPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath);
+            opt.ModelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.ModelName);
+            opt.LabelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.LabelFile);
         });
 
         //TODO: fix path and hardcoded names
@@ -83,7 +94,9 @@ public sealed class TensorFlowTransferLearningInception : ITensorFlowTransferLea
         var task = factory.AddImageClassificationTask<ExtendedTransferLearning>((opt) =>
         {
             opt.DataDir = imageSetFolderPath;
-            opt.ModelPath = Path.Combine(outputFolderPath, options.SavedModelName);
+            opt.TaskPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath);
+            opt.ModelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.ModelName);
+            opt.LabelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.LabelFile);
         });
 
         var result = task.Test(new TestingOptions

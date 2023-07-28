@@ -39,14 +39,14 @@ namespace ImageClassification.Domain.TransferLearning
 
         public void Configure(Action<ExtendedTaskOptions>? injectOptions)
         {
+            options.ModelPath = Path.Combine(options.TaskPath, options.ModelName!);
+            options.LabelPath = Path.Combine(options.TaskPath, options.LabelFile!);
             injectOptions?.Invoke(options);
             taskDir = options.TaskPath;
             if (!Directory.Exists(taskDir))
             {
                 Directory.CreateDirectory(taskDir);
             }
-            options.ModelPath = Path.Combine(taskDir, options.ModelName!);
-            options.LabelPath = Path.Combine(taskDir, options.LabelFile!);
 
             // download graph meta data
             if (!File.Exists(Path.Combine(taskDir, options.MetaDataPath, options.MetaDataFilename)))

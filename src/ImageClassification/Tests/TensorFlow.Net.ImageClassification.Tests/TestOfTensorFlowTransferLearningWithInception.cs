@@ -3,6 +3,7 @@
 using FluentAssertions;
 
 using ImageClassification.Domain.Models;
+using ImageClassification.Domain.Predictors;
 using ImageClassification.Domain.Trainers;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -40,13 +41,29 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
         if (fileName is not null)
         {
             mapper = MapImageLabels.CrateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
-            // mapper.LabelFileName = "imagenet_comp_graph_label_strings.txt";
         }
 
         logger.Information("Training [{set}]", dataSet);
         ITrainer trainer = fixture.Factory.Services.GetRequiredService<ITensorFlowTransferLearningInception>();
-        var model = trainer.TrainModel(dataSet, mapper);
-        model.Should().NotBeNull();
+        var result = trainer.TrainModel(dataSet, mapper);
+        result.Should().NotBeNull();
+        logger.Information("Training [{set}] model returned {result}", dataSet, result);
+    }
+
+    [Theory]
+    [InlineData("flowers")]
+    public void PredictModelForTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
+    {
+        ImageLabelMapper? mapper = null;
+        if (fileName is not null)
+        {
+            mapper = MapImageLabels.CrateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
+        }
+        logger.Information("Prediction on [{set}]", dataSet);
+        IPredictor predictor = fixture.Factory.Services.GetRequiredService<IPredictor>();
+        predictor.PredictImages(dataSet, mapper);
+        //result.Should().NotBeNull();
+        //logger.Information("Training [{set}] model returned {result}", dataSet, result);
     }
 }
 
