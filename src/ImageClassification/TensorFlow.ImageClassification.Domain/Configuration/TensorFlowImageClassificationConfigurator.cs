@@ -15,7 +15,7 @@ public static class TensorFlowImageClassificationConfigurator
         services
         //    .AddTransient<IPredictor, Predictor>()
             .AddTransient<IKerasTrainer, KerasImageClassificationTrainer>()
-            .AddTransient<ITensorFlowTrainer, ImageRecognitionInceptionTrainer>()
+            .AddTransient<ITensorFlowTrainer, TensorFlowInceptionTrainer>()
             .AddTransient<IImageLoader, ImageLoader>()
             ;
         return services;

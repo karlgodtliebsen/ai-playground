@@ -12,7 +12,7 @@ public class TensorFlowImageClassificationOptions
     public string OutputFilePath { get; set; } = default!;
 
     public string InputFilePath { get; set; } = default!;
-
+    public string ModelFilePath { get; set; } = default!;
     public string ModelName { get; set; } = default!;
 
 }
