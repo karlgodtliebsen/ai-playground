@@ -1,5 +1,7 @@
 ﻿using System.Text;
+
 using ImageClassification.Domain.Models;
+
 using Serilog;
 
 namespace ImageClassification.Domain.Utils;
@@ -182,6 +184,5 @@ public sealed class ImageLoader : IImageLoader
                 yield return imageData;
             }
         }
-
     }
 }

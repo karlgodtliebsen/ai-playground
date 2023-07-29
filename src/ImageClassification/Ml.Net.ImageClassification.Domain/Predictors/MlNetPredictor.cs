@@ -29,6 +29,23 @@ public sealed class MlNetPredictor : IPredictor
         this.logger = logger;
     }
 
+    public string PredictImage(InMemoryImage image, string imageSetPath)
+    {
+        var mlNetModelFilePath = PathUtils.GetPath(options.OutputFilePath, imageSetPath, options.ModelName);
+        if (!File.Exists(mlNetModelFilePath))
+        {
+            logger.Information("Could not find Model: {mlNetModelFilePath}", mlNetModelFilePath);
+            throw new FileNotFoundException(mlNetModelFilePath);
+        }
+        var mlContext = new MLContext(seed: 1);
+        var loadedModel = mlContext.Model.Load(mlNetModelFilePath, out var modelInputSchema);
+        using var op = logger.BeginOperation("Predicting Image using {imageSetPath}...", imageSetPath);
+        var predictionEngine = mlContext.Model.CreatePredictionEngine<InMemoryImage, ImagePrediction>(loadedModel);
+        ImagePrediction? prediction = predictionEngine.Predict(image);
+        op.Complete();
+        return prediction.PredictedLabel;//TODO: expand with more information
+    }
+
     public void PredictImages(string imageSetPath, ImageLabelMapper? mapper)
     {
         var csvFilePath = PathUtils.GetPath(options.OutputFilePath, imageSetPath, "score.csv");
