@@ -1,4 +1,4 @@
-﻿using static Tensorflow.Binding;
+﻿using ImageClassification.Domain.Models;
 
 namespace ImageClassification.Domain.TransferLearning
 {
@@ -11,41 +11,45 @@ namespace ImageClassification.Domain.TransferLearning
         /// <param name="testingPercentage"></param>
         /// <param name="validationPercentage"></param>
         /// <returns></returns>
-        Dictionary<string, Dictionary<string, string[]>> LoadDataFromDir(string imagesDir, float testingPercentage = 0.2f, float validationPercentage = 0.1f)
+        void LoadDataFromDir(string imagesDir, float testingPercentage = 0.2f, float validationPercentage = 0.1f)
         {
-            // Look at the folder structure, and create lists of all the images.
-            var sub_dirs = tf.gfile.Walk(imagesDir)
-                .Select(x => x.Item1)
-                .OrderBy(x => x)
-                .ToArray();
+            var images = imageLoader.LoadImagesMappedToLabelCategory(options.DataDir, options.InputFolderPath!, options.Mapper).ToList();
+            var subDirs = images.Select(x => x.Label).Distinct().ToList();
+            var imageDataSet = new Dictionary<string, IDictionary<string, ImageData[]>>();
 
-            var imageDataset = new Dictionary<string, Dictionary<string, string[]>>();
-
-            foreach (var sub_dir in sub_dirs)
+            foreach (var subDir in subDirs)
             {
-                var dir_name = sub_dir.Split(Path.DirectorySeparatorChar).Last();
-                logger.Information($"Looking for images in '{dir_name}'");
-                var file_list = Directory.GetFiles(sub_dir);
-                if (len(file_list) < 20)
-                    logger.Information($"WARNING: Folder has less than 20 images, which may cause issues.");
+                var dirName = subDir.Split(Path.DirectorySeparatorChar).Last();
+                logger.Information("Looking for images in '{dirName}'", dirName);
+                var fileList = images.Where(x => x.Label == subDir).ToList();
+                var fileCount = fileList.Count;
+                if (fileCount < 20)
+                {
+                    logger.Warning("WARNING: Folder {dirName} has less than 20 images, which may cause issues.", dirName);
+                }
 
-                var label_name = dir_name.ToLower();
-                imageDataset[label_name] = new Dictionary<string, string[]>();
-                int testing_count = (int)Math.Floor(file_list.Length * testingPercentage);
-                int validation_count = (int)Math.Floor(file_list.Length * validationPercentage);
-                imageDataset[label_name]["testing"] = file_list.Take(testing_count).ToArray();
-                imageDataset[label_name]["validation"] = file_list.Skip(testing_count).Take(validation_count).ToArray();
-                imageDataset[label_name]["training"] = file_list.Skip(testing_count + validation_count).ToArray();
+                var labelName = dirName.ToLower();
+                int testingCount = (int)Math.Floor(fileCount * testingPercentage);
+                int validationCount = (int)Math.Floor(fileCount * validationPercentage);
+
+                imageDataSet[labelName] = new Dictionary<string, ImageData[]>();
+                imageDataSet[labelName]["testing"] = fileList.Take(testingCount).ToArray();
+                imageDataSet[labelName]["validation"] = fileList.Skip(testingCount).Take(validationCount).ToArray();
+                imageDataSet[labelName]["training"] = fileList.Skip(testingCount + validationCount).ToArray();
             }
 
-            var classCount = len(imageDataset);
+            var classCount = imageDataSet.Count;
             if (classCount == 0)
-                logger.Information($"No valid folders of images found at {imagesDir}");
+            {
+                logger.Information("No valid folders of images found at {imagesDir}", imagesDir);
+            }
+
             if (classCount == 1)
-                logger.Information("Only one valid folder of images found at " +
-                     imagesDir +
-                     " - multiple classes are needed for classification.");
-            return imageDataset;
+            {
+                logger.Information("Only one valid folder of images found at {imagesDir} - multiple classes are needed for classification.", imagesDir);
+            }
+
+            image_dataset = imageDataSet;
         }
     }
 }

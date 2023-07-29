@@ -17,12 +17,12 @@ namespace ImageClassification.Domain.Predictors;
 //use the PredictionEnginePool service, which creates an ObjectPool of
 //PredictionEngine objects for use throughout your application.
 //See this guide on how to use PredictionEnginePool in an ASP.NET Core Web API.
-public sealed class Predictor : IPredictor
+public sealed class MlNetPredictor : IPredictor
 {
     private readonly IImageLoader imageLoader;
     private readonly ILogger logger;
     private readonly MlImageClassificationOptions options;
-    public Predictor(IOptions<MlImageClassificationOptions> options, IImageLoader imageLoader, ILogger logger)
+    public MlNetPredictor(IOptions<MlImageClassificationOptions> options, IImageLoader imageLoader, ILogger logger)
     {
         this.options = options.Value;
         this.imageLoader = imageLoader;

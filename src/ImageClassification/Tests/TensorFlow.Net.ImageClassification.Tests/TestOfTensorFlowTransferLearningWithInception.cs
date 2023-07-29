@@ -34,36 +34,83 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
 
 
     [Theory]
-    [InlineData("flowers")]
-    public void TrainOfTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
+    //[InlineData("flowers")]
+    [InlineData("meat")]
+    [InlineData("food")]
+    [InlineData("animals")]
+    [InlineData("animals-90")]
+    //[InlineData("catsdogs")]
+    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
+    //[InlineData("butterfly", 0, 1, "Training_set.csv")]
+    [InlineData("birds", 1, 2, "birds.csv")]
+    [InlineData("fashionproducts", 0, "1-9", "styles.csv")]
+    //[InlineData("TensorFlowTransferLearning", 0, 1, "tags.tsv")]
+    public void TestOfTrainingForTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
     {
         ImageLabelMapper? mapper = null;
         if (fileName is not null)
         {
-            mapper = MapImageLabels.CrateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
+            mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
         }
-
         logger.Information("Training [{set}]", dataSet);
         ITrainer trainer = fixture.Factory.Services.GetRequiredService<ITensorFlowTransferLearningInception>();
         var result = trainer.TrainModel(dataSet, mapper);
-        result.Should().NotBeNull();
+        result.Should().NotBeNullOrEmpty();
         logger.Information("Training [{set}] model returned {result}", dataSet, result);
     }
 
     [Theory]
-    [InlineData("flowers")]
-    public void PredictModelForTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
+    //[InlineData("flowers")]
+    //[InlineData("meat")]
+    //[InlineData("food")]
+    //[InlineData("animals")]
+    //[InlineData("animals-90")]
+    //[InlineData("catsdogs")]
+    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
+    [InlineData("butterfly", 0, 1, "Testing_set.csv")]
+    //[InlineData("birds", 1, 2, "birds.csv")]
+    //[InlineData("fashionproducts", 0, "1-9", "styles.csv")]
+    //[InlineData("TensorFlowTransferLearning", 0, 1, "tags.tsv")]
+    public void TestOfModelTestingForTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
     {
         ImageLabelMapper? mapper = null;
         if (fileName is not null)
         {
-            mapper = MapImageLabels.CrateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
+            mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
+        }
+
+        logger.Information("Training [{set}]", dataSet);
+        ITester tester = fixture.Factory.Services.GetRequiredService<ITester>();
+        var accuracy = tester.TestModel(dataSet, mapper);
+        accuracy.Should().BeGreaterThan(0.75f);
+        var result = $"Result: ({accuracy} > {0.75f})";
+        logger.Information("Training [{set}] model returned {result}", dataSet, result);
+    }
+
+
+    [Theory]
+    //[InlineData("flowers")]
+    //[InlineData("meat")]
+    //[InlineData("food")]
+    //[InlineData("animals")]
+    //[InlineData("animals-90")]
+    //[InlineData("catsdogs")]
+    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
+    [InlineData("butterfly", 0, 1, "Testing_set.csv")]
+    //[InlineData("birds", 1, 2, "birds.csv")]
+    //[InlineData("fashionproducts", 0, "1-9", "styles.csv")]
+    //[InlineData("TensorFlowTransferLearning", 0, 1, "tags.tsv")]
+    public void TestOfModelPredictionForTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
+    {
+        ImageLabelMapper? mapper = null;
+        if (fileName is not null)
+        {
+            mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
         }
         logger.Information("Prediction on [{set}]", dataSet);
         IPredictor predictor = fixture.Factory.Services.GetRequiredService<IPredictor>();
         predictor.PredictImages(dataSet, mapper);
-        //result.Should().NotBeNull();
-        //logger.Information("Training [{set}] model returned {result}", dataSet, result);
+        logger.Information("Predicting [{set}] model", dataSet);
     }
 }
 

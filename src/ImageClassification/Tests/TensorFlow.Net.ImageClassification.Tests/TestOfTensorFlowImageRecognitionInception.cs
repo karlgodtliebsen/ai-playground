@@ -44,13 +44,12 @@ public class TestOfTensorFlowImageRecognitionInception : TestFixtureBase
     //[InlineData("animals-90")]
     //[InlineData("catsdogs")]
     //[InlineData("fashionproducts", 0, "1-9", "styles.csv")]
-    public void TrainImageClassificationAndPersistModel(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
+    public void TestOfTensorFlowImageClassification(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
     {
         ImageLabelMapper? mapper = null;
         if (fileName is not null)
         {
-            mapper = MapImageLabels.CrateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
-            // mapper.LabelFileName = "imagenet_comp_graph_label_strings.txt";
+            mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
         }
 
         logger.Information("Training [{set}]", dataSet);

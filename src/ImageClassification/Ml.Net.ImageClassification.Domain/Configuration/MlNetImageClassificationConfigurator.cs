@@ -14,7 +14,7 @@ public static class MlNetImageClassificationConfigurator
         services.AddSingleton<IOptions<MlImageClassificationOptions>>(new OptionsWrapper<MlImageClassificationOptions>(options));
 
         services
-            .AddTransient<IPredictor, Predictor>()
+            .AddTransient<IPredictor, MlNetPredictor>()
             .AddTransient<IMlNetTrainer, MlNetTrainer>()
             .AddTransient<IImageLoader, ImageLoader>()
             .AddTransient<IModelEvaluator, ModelEvaluator>()

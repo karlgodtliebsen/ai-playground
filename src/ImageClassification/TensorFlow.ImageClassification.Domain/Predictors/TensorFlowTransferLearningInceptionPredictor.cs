@@ -17,7 +17,7 @@ namespace ImageClassification.Domain.Predictors;
 //use the PredictionEnginePool service, which creates an ObjectPool of
 //PredictionEngine objects for use throughout your application.
 //See this guide on how to use PredictionEnginePool in an ASP.NET Core Web API.
-public sealed class TensorFlowPredictForTransferLearningInception : IPredictor
+public sealed class TensorFlowTransferLearningInceptionPredictor : IPredictor
 {
     private readonly ExtendedModelFactory factory;
     private readonly IImageLoader imageLoader;
@@ -26,7 +26,7 @@ public sealed class TensorFlowPredictForTransferLearningInception : IPredictor
     private readonly ExtendedTaskOptions taskOptions;
 
 
-    public TensorFlowPredictForTransferLearningInception(ExtendedModelFactory factory,
+    public TensorFlowTransferLearningInceptionPredictor(ExtendedModelFactory factory,
           IOptions<TensorFlowOptions> tensorFlowOptions,
           IOptions<ExtendedTaskOptions> taskOptions,
           IImageLoader imageLoader, ILogger logger)
@@ -40,27 +40,34 @@ public sealed class TensorFlowPredictForTransferLearningInception : IPredictor
 
     public void PredictImages(string imageSetPath, ImageLabelMapper? mapper)
     {
-        var imageSetFolderPath = PathUtils.GetPath(tensorFlowOptions.TrainImagesFilePath, imageSetPath);
         var outputFolderPath = PathUtils.GetPath(tensorFlowOptions.OutputFilePath, imageSetPath);
+        var options = new ExtendedTaskOptions()
+        {
+            InputFolderPath = PathUtils.GetPath(tensorFlowOptions.InputFilePath, imageSetPath),
+            DataDir = PathUtils.GetPath(tensorFlowOptions.TestImagesFilePath, imageSetPath),
+            TaskPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath),
+            ModelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.ModelName),
+            LabelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.LabelFile),
+        };
+
         //load model and use it for prediction
-        // predict image
         var task = factory.AddImageClassificationTask<ExtendedTransferLearning>((opt) =>
         {
-            opt.DataDir = imageSetFolderPath;
-            opt.TaskPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath);
-            opt.ModelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.ModelName);
-            opt.LabelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.LabelFile);
+            opt.InputFolderPath = options.InputFolderPath;
+            opt.DataDir = options.DataDir;
+            opt.TaskPath = options.TaskPath;
+            opt.ModelPath = options.ModelPath;
+            opt.LabelPath = options.LabelPath;
+            opt.Mapper = mapper;
         });
 
-        //TODO: fix path and hardcoded names
-        var imgPath = Path.Join(imageSetFolderPath, "daisy", "5547758_eea9edfd54_n.jpg");
-        var input = ImageUtil.ReadImageFromFile(imgPath);
-        var result = task.Predict(input);
-
-        logger.Information("Prediction on [{set}] Result: {result}", imageSetPath, result);
-
-        //return result;
-        //$"Result: ({accuracy} > {0.75f})";
+        var images = imageLoader.LoadImagesMappedToLabelCategory(options.DataDir, options.InputFolderPath!, options.Mapper).ToList();
+        foreach (var imageData in images)
+        {
+            var input = ImageUtil.ReadImageFromFile(imageData.FullFileName());
+            var result = task.Predict(input);
+            logger.Information("Prediction on [{set}] {image} Result: {result}", imageSetPath, imageData.ImagePath, result);
+        }
     }
 }
 

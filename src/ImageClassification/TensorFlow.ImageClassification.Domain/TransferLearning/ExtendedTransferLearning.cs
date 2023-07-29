@@ -1,4 +1,5 @@
 ﻿using ImageClassification.Domain.Configuration;
+using ImageClassification.Domain.Utils;
 
 using Microsoft.Extensions.Options;
 
@@ -19,16 +20,18 @@ namespace ImageClassification.Domain.TransferLearning
     /// </summary>
     public partial class ExtendedTransferLearning : IImageClassificationExtendedTask
     {
+        private readonly IImageLoader imageLoader;
         private readonly ILogger logger;
         private string taskDir = null!;
         private string summariesDir = null!;
         private string bottleneckDir = null!;
         private readonly bool isImportingGraph = true;
         private readonly ExtendedTaskOptions options;
-        private string[] labels = null!;
+        private string[]? labels = null!;
 
-        public ExtendedTransferLearning(IOptions<ExtendedTaskOptions> injectedOptions, ILogger logger)
+        public ExtendedTransferLearning(IImageLoader imageLoader, IOptions<ExtendedTaskOptions> injectedOptions, ILogger logger)
         {
+            this.imageLoader = imageLoader;
             this.logger = logger;
             this.options = injectedOptions.Value;
         }
@@ -54,7 +57,7 @@ namespace ImageClassification.Domain.TransferLearning
                 Web.Download(options.MetaDataUrl, Path.Combine(taskDir, options.MetaDataPath), options.MetaDataFilename);
             }
 
-            if (!File.Exists(Path.Combine(taskDir, options.TfModules, options.TfModulesZipFile)))
+            if (!File.Exists(Path.Combine(taskDir, options.TfModulesZipFile)))
             {
                 Web.Download(options.CheckpointDataUrl, taskDir, options.TfModulesZipFile);
                 Compress.UnZip(Path.Combine(taskDir, options.TfModulesZipFile), Path.Combine(taskDir, options.TfModules));
@@ -65,7 +68,6 @@ namespace ImageClassification.Domain.TransferLearning
             Directory.CreateDirectory(summariesDir);
             bottleneckDir = Path.Combine(taskDir, options.Bottleneck);
             Directory.CreateDirectory(bottleneckDir);
-
         }
 
         public void SetModelArgs<T>(T args)

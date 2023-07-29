@@ -10,17 +10,17 @@ namespace ImageClassification.Domain.TransferLearning
 {
     public partial class ExtendedTransferLearning
     {
-        Session predictSession = null!;
+        private Session? predictSession = null!;
+
         public ModelPredictResult Predict(Tensor input)
         {
             if (!File.Exists(options.ModelPath))
                 throw new FreezedGraphNotFoundException();
 
-            if (labels == null)
-                labels = File.ReadAllLines(options.LabelPath);
+            labels ??= File.ReadAllLines(options.LabelPath);
 
             // import graph and variables
-            if (predictSession == null)
+            if (predictSession is null)
             {
                 var graph = tf.Graph().as_default();
                 graph.Import(options.ModelPath);
@@ -28,15 +28,12 @@ namespace ImageClassification.Domain.TransferLearning
                 tf.Context.restore_mode();
             }
 
-            var (input_tensor, output_tensor) = GetInputOutputTensors();
-            var result = predictSession.run(output_tensor, (input_tensor, input));
+            var (inputTensor, outputTensor) = GetInputOutputTensors();
+            var result = predictSession.run(outputTensor, (inputTensor, input));
 
             var prob = np.squeeze(result);
             var idx = np.argmax(prob);
-
-            logger.Information($"Predicted result: {labels[idx]} - {(float)prob[idx] / 100:P}");
-
-
+            logger.Information("Predicted result: {label} - {p:P}", labels[idx], (float)prob[idx] / 100);
             return new ModelPredictResult
             {
                 Label = labels[idx],
@@ -44,10 +41,10 @@ namespace ImageClassification.Domain.TransferLearning
             };
         }
 
-        (Tensor, Tensor) GetInputOutputTensors()
+        private (Tensor, Tensor) GetInputOutputTensors()
         {
-            Tensor input_tensor = predictSession.graph.OperationByName(input_tensor_name);
-            Tensor output_tensor = predictSession.graph.OperationByName(final_tensor_name);
+            Tensor input_tensor = predictSession!.graph.OperationByName(input_tensor_name);
+            Tensor output_tensor = predictSession!.graph.OperationByName(final_tensor_name);
             return (input_tensor, output_tensor);
         }
     }

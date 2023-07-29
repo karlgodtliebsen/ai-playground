@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 
+using ImageClassification.Domain.Models;
+
 using SciSharp.Models;
 
 using Tensorflow;
@@ -10,7 +12,7 @@ namespace ImageClassification.Domain.TransferLearning
 {
     public partial class ExtendedTransferLearning
     {
-        Dictionary<string, Dictionary<string, string[]>> image_dataset = null!;
+        IDictionary<string, IDictionary<string, ImageData[]>> image_dataset = null!;
         Tensor resized_image_tensor = null!;
         Tensor bottleneck_tensor = null!;
         string tfhub_module = "https://tfhub.dev/google/imagenet/inception_v3/feature_vector/3";
@@ -36,9 +38,7 @@ namespace ImageClassification.Domain.TransferLearning
 
         public void Train(TrainingOptions options)
         {
-            image_dataset = LoadDataFromDir(this.options.DataDir,
-                testingPercentage: this.options.TestingPercentage,
-                validationPercentage: this.options.ValidationPercentage);
+            LoadDataFromDir(this.options.DataDir, testingPercentage: this.options.TestingPercentage, validationPercentage: this.options.ValidationPercentage);
 
             var sw = new Stopwatch();
             var graph = isImportingGraph ? ImportGraph() : BuildGraph();
@@ -53,10 +53,7 @@ namespace ImageClassification.Domain.TransferLearning
 
             // We'll make sure we've calculated the 'bottleneck' image summaries and
             // cached them on disk.
-            cache_bottlenecks(sess, image_dataset,
-                    bottleneckDir, jpeg_data_tensor,
-                    decoded_image_tensor, resized_image_tensor,
-                    bottleneck_tensor, tfhub_module);
+            cache_bottlenecks(sess, image_dataset, bottleneckDir, jpeg_data_tensor, decoded_image_tensor, resized_image_tensor, bottleneck_tensor, tfhub_module);
 
             // Create the operations we need to evaluate the accuracy of our new layer.
             var (evaluation_step, _) = add_evaluation_step(final_tensor, ground_truth_input);
@@ -76,7 +73,7 @@ namespace ImageClassification.Domain.TransferLearning
 
             for (int i = 0; i < options.TrainingSteps; i++)
             {
-                var (train_bottlenecks, train_ground_truth, _) = get_random_cached_bottlenecks(
+                var (trainBottlenecks, trainGroundTruth, _) = get_random_cached_bottlenecks(
                         sess, image_dataset, options.BatchSize, "training",
                         bottleneckDir, jpeg_data_tensor,
                         decoded_image_tensor, resized_image_tensor, bottleneck_tensor,
@@ -86,8 +83,8 @@ namespace ImageClassification.Domain.TransferLearning
                 // step. Capture training summaries for TensorBoard with the `merged` op.
                 var results = sess.run(
                         new ITensorOrOperation[] { merged, train_step },
-                        new FeedItem(bottleneck_input, train_bottlenecks),
-                        new FeedItem(ground_truth_input, train_ground_truth));
+                        new FeedItem(bottleneck_input, trainBottlenecks),
+                        new FeedItem(ground_truth_input, trainGroundTruth));
                 var train_summary = results[0];
 
                 // TODO
@@ -98,8 +95,8 @@ namespace ImageClassification.Domain.TransferLearning
                 if ((i % eval_step_interval) == 0 || is_last_step)
                 {
                     (float train_accuracy, float cross_entropy_value) = sess.run((evaluation_step, cross_entropy),
-                        (bottleneck_input, train_bottlenecks),
-                        (ground_truth_input, train_ground_truth));
+                        (bottleneck_input, trainBottlenecks),
+                        (ground_truth_input, trainGroundTruth));
 
                     var (validation_bottlenecks, validation_ground_truth, _) = get_random_cached_bottlenecks(
                         sess, image_dataset, validation_batch_size, "validation",
@@ -114,20 +111,21 @@ namespace ImageClassification.Domain.TransferLearning
                         (ground_truth_input, validation_ground_truth));
 
                     // validation_writer.add_summary(validation_summary, i);
-                    logger.Information($"Step {i}: Training accuracy = {train_accuracy * 100}%, Cross entropy = {cross_entropy_value.ToString("G4")}, Validation accuracy = {validation_accuracy * 100}% (N={len(validation_bottlenecks)}) {sw.ElapsedMilliseconds}ms");
+                    logger.Information("Step {i}: Training accuracy = {train_accuracy}%, Cross entropy = {cross_entropy_value}, Validation accuracy = {validation_accuracy}% (N={validation_bottlenecks}) {elapsedMilliseconds}ms"
+                                    , i, train_accuracy * 100, cross_entropy_value.ToString("G4"), validation_accuracy * 100, len(validation_bottlenecks), sw.ElapsedMilliseconds);
                     sw.Restart();
                 }
 
                 // Store intermediate results
-                int intermediate_frequency = intermediate_store_frequency;
-                if (intermediate_frequency > 0 && i % intermediate_frequency == 0 && i > 0)
+                int intermediateFrequency = intermediate_store_frequency;
+                if (intermediateFrequency > 0 && i % intermediateFrequency == 0 && i > 0)
                 {
 
                 }
             }
 
             // After training is complete, force one last save of the train checkpoint.
-            logger.Information($"Saving checkpoint to {checkpoint}");
+            logger.Information("Saving checkpoint to {checkpoint}", checkpoint);
             train_saver.save(sess, checkpoint);
 
             SaveModel();
@@ -150,7 +148,7 @@ namespace ImageClassification.Domain.TransferLearning
 
         (Tensor, Tensor, bool) create_module_graph(Graph graph)
         {
-            tf.train.import_meta_graph("graph/InceptionV3.meta");
+            tf.train.import_meta_graph($"{options.MetaDataPath}/{options.MetaDataFilename}");
             Tensor resized_image_tensor = graph.OperationByName(input_tensor_name);
             Tensor bottleneck_tensor = graph.OperationByName("module_apply_default/hub_output/feature_vector/SpatialSqueeze");
             var wants_quantization = false;

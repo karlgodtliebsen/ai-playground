@@ -2,7 +2,7 @@
 
 public static class MapImageLabels
 {
-    public static ImageLabelMapper? CrateImageToLabelMapper(int imageIndex, object? labelIndex, string fileName)
+    public static ImageLabelMapper? CreateImageToLabelMapper(int imageIndex, object? labelIndex, string fileName)
     {
         int? index = default;
         (int from, int to) labelIndexRange = default;

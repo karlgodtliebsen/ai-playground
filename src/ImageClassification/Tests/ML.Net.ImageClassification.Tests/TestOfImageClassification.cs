@@ -54,7 +54,7 @@ public class TestOfImageClassification : TestFixtureBase
         ImageLabelMapper? mapper = null;
         if (fileName is not null)
         {
-            mapper = MapImageLabels.CrateImageToLabelMapper(imageIndex, labelIndex, fileName);
+            mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName);
         }
         logger.Information("Training [{set}]", dataSet);
         ITrainer trainer = fixture.Factory.Services.GetRequiredService<IMlNetTrainer>();
@@ -80,7 +80,7 @@ public class TestOfImageClassification : TestFixtureBase
         ImageLabelMapper? mapper = null;
         if (fileName is not null)
         {
-            mapper = MapImageLabels.CrateImageToLabelMapper(imageIndex, labelIndex, fileName);
+            mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName);
         }
         logger.Information("Verifying [{set}]", dataSet);
         IPredictor predictor = fixture.Factory.Services.GetRequiredService<IPredictor>();

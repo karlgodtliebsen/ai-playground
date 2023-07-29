@@ -1,4 +1,6 @@
-﻿using SciSharp.Models;
+﻿using ImageClassification.Domain.Models;
+
+using SciSharp.Models;
 using SciSharp.Models.Exceptions;
 
 using Tensorflow;
@@ -15,7 +17,7 @@ namespace ImageClassification.Domain.TransferLearning
             if (!File.Exists(this.options.ModelPath))
                 throw new FreezedGraphNotFoundException();
 
-            image_dataset = LoadDataFromDir(this.options.DataDir, testingPercentage: 1.0f, validationPercentage: 0);
+            LoadDataFromDir(this.options.DataDir, testingPercentage: 1.0f, validationPercentage: 0);
 
             var graph = tf.Graph().as_default();
             graph.Import(this.options.ModelPath);
@@ -28,9 +30,7 @@ namespace ImageClassification.Domain.TransferLearning
 
             var sess = tf.Session(graph);
 
-            var (test_accuracy, predictions) = run_final_eval(sess, image_dataset,
-                           jpeg_data_tensor, decoded_image_tensor, resized_image_tensor,
-                           bottleneck_tensor);
+            var (test_accuracy, predictions) = run_final_eval(sess, image_dataset, jpeg_data_tensor, decoded_image_tensor, resized_image_tensor, bottleneck_tensor);
 
             return new ModelTestResult
             {
@@ -43,31 +43,20 @@ namespace ImageClassification.Domain.TransferLearning
         /// Runs a final evaluation on an eval graph using the test data set.
         /// </summary>
         /// <param name="train_session"></param>
-        /// <param name="module_spec"></param>
-        /// <param name="class_count"></param>
         /// <param name="image_lists"></param>
         /// <param name="jpeg_data_tensor"></param>
         /// <param name="decoded_image_tensor"></param>
         /// <param name="resized_image_tensor"></param>
         /// <param name="bottleneck_tensor"></param>
-        (float, NDArray) run_final_eval(Session train_session,
-            Dictionary<string, Dictionary<string, string[]>> image_lists,
-            Tensor jpeg_data_tensor, Tensor decoded_image_tensor,
-            Tensor resized_image_tensor, Tensor bottleneck_tensor)
+        (float, NDArray) run_final_eval(Session train_session, IDictionary<string, IDictionary<string, ImageData[]>> image_lists, Tensor jpeg_data_tensor, Tensor decoded_image_tensor, Tensor resized_image_tensor, Tensor bottleneck_tensor)
         {
-            var (test_bottlenecks, test_ground_truth, test_filenames) = get_random_cached_bottlenecks(train_session, image_lists,
-                                    test_batch_size, "testing", bottleneckDir, jpeg_data_tensor,
-                                    decoded_image_tensor, resized_image_tensor, bottleneck_tensor, tfhub_module);
+            var (test_bottlenecks, test_ground_truth, test_filenames) =
+                get_random_cached_bottlenecks(train_session, image_lists, test_batch_size, "testing", bottleneckDir, jpeg_data_tensor, decoded_image_tensor, resized_image_tensor, bottleneck_tensor, tfhub_module);
 
-            var (eval_session, _, bottleneck_input, ground_truth_input, evaluation_step,
-                prediction) = build_eval_session();
+            var (eval_session, _, bottleneck_input, ground_truth_input, evaluation_step, prediction) = build_eval_session();
 
-            (float accuracy, NDArray prediction1) = eval_session.run((evaluation_step, prediction),
-                  (bottleneck_input, test_bottlenecks),
-                  (ground_truth_input, test_ground_truth));
-
-            logger.Information($"final test accuracy: {(accuracy * 100).ToString("G4")}% (N={len(test_bottlenecks)})");
-
+            (float accuracy, NDArray prediction1) = eval_session.run((evaluation_step, prediction), (bottleneck_input, test_bottlenecks), (ground_truth_input, test_ground_truth));
+            logger.Information($"final test accuracy: {accuracy}% (N={test_bottlenecks})", (accuracy * 100).ToString("G4"), len(test_bottlenecks));
             return (accuracy, prediction1);
         }
 
@@ -78,19 +67,14 @@ namespace ImageClassification.Domain.TransferLearning
             var (bottleneck_tensor, resized_input_tensor, wants_quantization) = create_module_graph(graph);
             var eval_sess = tf.Session(graph);
             // Add the new layer for exporting.
-            var (_, _, bottleneck_input, ground_truth_input, final_tensor) =
-                add_final_retrain_ops(len(image_dataset), final_tensor_name, bottleneck_tensor,
-                    wants_quantization, is_training: false);
+            var (_, _, bottleneck_input, ground_truth_input, final_tensor) = add_final_retrain_ops(len(image_dataset), final_tensor_name, bottleneck_tensor, wants_quantization, is_training: false);
 
             // Now we need to restore the values from the training graph to the eval
             // graph.
             tf.train.Saver().restore(eval_sess, Path.Combine(taskDir, "checkpoint"));
 
-            var (evaluation_step, prediction) = add_evaluation_step(final_tensor,
-                                                    ground_truth_input);
-
-            return (eval_sess, resized_input_tensor, bottleneck_input, ground_truth_input,
-                evaluation_step, prediction);
+            var (evaluation_step, prediction) = add_evaluation_step(final_tensor, ground_truth_input);
+            return (eval_sess, resized_input_tensor, bottleneck_input, ground_truth_input, evaluation_step, prediction);
         }
 
         /// <summary>

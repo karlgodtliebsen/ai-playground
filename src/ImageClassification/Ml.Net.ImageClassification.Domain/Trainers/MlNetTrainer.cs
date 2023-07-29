@@ -1,6 +1,7 @@
 ﻿using ImageClassification.Domain.Configuration;
 using ImageClassification.Domain.Models;
 using ImageClassification.Domain.Utils;
+
 using Microsoft.Extensions.Options;
 using Microsoft.ML;
 using Microsoft.ML.Transforms;
@@ -38,12 +39,12 @@ public sealed class MlNetTrainer : IMlNetTrainer
 
         logger.Information("Starting Training of [{imageSetPath}]...", imageSetPath);
         using var op0 = logger.BeginOperation("Load Images for {imageSetPath}...", imageSetPath);
-        var mlContext = new MLContext(seed: 1);
         var images = imageLoader.LoadImagesMappedToLabelCategory(imageSetFolderPath, inputFolderPath, mapper).ToList();
         op0.Complete();
         logger.Information("Number of Images in Training set {set}: {count}", imageSetPath, images.Count);
 
         using var op1 = logger.BeginOperation("Shuffling Training Set and Loading Views");
+        var mlContext = new MLContext(seed: 1);
         var fullImagesDataSet = mlContext.Data.LoadFromEnumerable(images);
         var shuffledFullImageFilePathsDataSet = mlContext.Data.ShuffleRows(fullImagesDataSet);
 

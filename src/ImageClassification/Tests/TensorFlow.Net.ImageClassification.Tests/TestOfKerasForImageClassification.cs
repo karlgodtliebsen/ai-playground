@@ -40,7 +40,7 @@ public class TestOfKerasForImageClassification : TestFixtureBase
         ImageLabelMapper? mapper = null;
         if (fileName is not null)
         {
-            mapper = MapImageLabels.CrateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
+            mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
             mapper.LabelFileName = "imagenet_comp_graph_label_strings.txt";
         }
         logger.Information("Training [{set}]", dataSet);
