@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace ChatGPTClient.Converters;
+namespace ChatGPT.Wpf.App.Converters;
 
 public class KindToVisibilityConverter : IValueConverter
 {

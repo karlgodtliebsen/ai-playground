@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-
 using MaterialDesignThemes.Wpf;
 
-namespace ChatGPTClient.Converters;
+namespace ChatGPT.Wpf.App.Converters;
 public class IconKindConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

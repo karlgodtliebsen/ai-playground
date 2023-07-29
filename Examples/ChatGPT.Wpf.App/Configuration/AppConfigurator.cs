@@ -1,12 +1,10 @@
-﻿using ChatGPTClient.Models;
-
+﻿using ChatGPT.Wpf.App.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using OpenAI.Client.Configuration;
 
-namespace ChatGPTClient.Configuration;
+namespace ChatGPT.Wpf.App.Configuration;
 
 /// <summary>
 /// 

@@ -1,17 +1,4 @@
-﻿using ChatGPTClient.Models;
-
-using Microsoft.Extensions.Options;
-
-using OneOf;
-
-using OpenAI.Client.Configuration;
-using OpenAI.Client.Domain;
-using OpenAI.Client.OpenAI.HttpClients;
-using OpenAI.Client.OpenAI.Models.ChatCompletion;
-using OpenAI.Client.OpenAI.Models.Requests;
-using OpenAI.Client.OpenAI.Models.Responses;
-
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,8 +6,16 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ChatGPT.Wpf.App.Models;
+using Microsoft.Extensions.Options;
+using OneOf;
+using OpenAI.Client.Configuration;
+using OpenAI.Client.Domain;
+using OpenAI.Client.OpenAI.HttpClients;
+using OpenAI.Client.OpenAI.Models.Requests;
+using OpenAI.Client.OpenAI.Models.Responses;
 
-namespace ChatGPTClient;
+namespace ChatGPT.Wpf.App.TabPages.Edits;
 
 
 /// <summary>
@@ -106,7 +101,7 @@ public partial class EditsControl : UserControl
         viewModel.IsReady = true;
     }
 
-    private void ProcessAnswer(OneOf<Completions, ErrorResponse> completionsResponse)
+    private void ProcessAnswer(OneOf<OpenAI.Client.OpenAI.Models.ChatCompletion.Completions, ErrorResponse> completionsResponse)
     {
         completionsResponse.Switch(
             completions =>

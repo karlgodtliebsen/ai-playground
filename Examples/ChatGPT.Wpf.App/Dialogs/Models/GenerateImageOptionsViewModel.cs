@@ -1,9 +1,8 @@
-﻿using OpenAI.Client.OpenAI.Models.Images;
-
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using OpenAI.Client.OpenAI.Models.Images;
 
-namespace ChatGPTClient.Dialogs.Models;
+namespace ChatGPT.Wpf.App.Dialogs.Models;
 
 public class GenerateImageOptionsViewModel : INotifyPropertyChanged
 {

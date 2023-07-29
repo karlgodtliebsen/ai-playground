@@ -33,7 +33,7 @@ Console.ReadLine();
 Observability.StartLogging(applicationName);
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.AddLogging();
+builder.WithLogging();
 builder.AddSecrets<Program>();
 builder.Services
     .AddAppConfiguration(builder.Configuration);
@@ -74,10 +74,11 @@ public partial class Program
         //Vector database run
         Console.WriteLine($"Attempting to Create a Collection {collectionName} in Qdrant");
 
-        var client = services.GetRequiredService<IVectorDb>();
+        var qdrantFactory = services.GetRequiredService<IQdrantFactory>();
+        var vectorParams = qdrantFactory.CreateParams(4, Distance.DOT, true);
+        var client = await qdrantFactory.Create(collectionName, vectorParams, recreateCollection: false, cancellationToken: CancellationToken.None);
         await client.RemoveCollection(collectionName, CancellationToken.None);
 
-        var vectorParams = client.CreateParams(4, Distance.DOT, true);
         var result = await client.CreateCollection(collectionName, vectorParams, CancellationToken.None);
         result.Switch(
 

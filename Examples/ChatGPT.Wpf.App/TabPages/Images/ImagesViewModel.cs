@@ -1,4 +1,6 @@
-﻿namespace ChatGPTClient.TabPages;
+﻿using ChatGPT.Wpf.App.Models;
+
+namespace ChatGPT.Wpf.App.TabPages.Images;
 
 public sealed class ImagesViewModel : BaseViewModel
 {

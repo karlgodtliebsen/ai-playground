@@ -1,10 +1,9 @@
-﻿using OpenAI.Client.OpenAI.Models.Images;
-
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using OpenAI.Client.OpenAI.Models.Images;
 
-namespace ChatGPTClient.Converters;
+namespace ChatGPT.Wpf.App.Converters;
 
 public class ResponseFormatConverter : IValueConverter
 {

@@ -1,22 +1,4 @@
-﻿using System.ComponentModel;
-
-using ChatGPTClient.Models;
-
-namespace ChatGPTClient;
-
-
-
-public abstract class BaseModel : INotifyPropertyChanged
-{
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-}
+﻿namespace ChatGPT.Wpf.App.Models;
 
 public abstract class BaseViewModel : BaseModel
 {

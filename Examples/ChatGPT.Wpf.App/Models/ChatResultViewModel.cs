@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace ChatGPTClient.Models;
+namespace ChatGPT.Wpf.App.Models;
 
 public sealed class ChatResultViewModel
 {

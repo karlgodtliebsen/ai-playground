@@ -1,8 +1,10 @@
 ﻿using AI.Library.Configuration;
 
-using ChatGPTClient;
-using ChatGPTClient.Configuration;
-using ChatGPTClient.TabPages;
+using ChatGPT.Wpf.App.Configuration;
+using ChatGPT.Wpf.App.TabPages.ChatCompletions;
+using ChatGPT.Wpf.App.TabPages.Completions;
+using ChatGPT.Wpf.App.TabPages.Edits;
+using ChatGPT.Wpf.App.TabPages.Images;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,7 +29,7 @@ public partial class App : Application
     {
         base.OnStartup(e);
         IHostBuilder builder = Host.CreateDefaultBuilder();
-        builder.AddLogging();
+        builder.WithLogging();
         builder.AddSecrets<App>();
         builder.ConfigureServices((context, services) =>
         {

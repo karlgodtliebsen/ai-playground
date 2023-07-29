@@ -15,7 +15,7 @@ public static class OpenAiModelMap
     /// /// </summary>
     static OpenAiModelMap()
     {
-        Map.Add("chat/completions", "gpt-4, gpt-4-0613, gpt-4-32k, gpt-4-32k-0613, gpt-3.5-turbo, gpt-3.5-turbo-0613, gpt-3.5-turbo-16k, gpt-3.5-turbo-16k-0613".Split(','));
+        Map.Add("chat/completions", "gpt-4, gpt-3.5-turbo".Split(','));
         Map.Add("completions", "text-davinci-003, text-davinci-002, text-curie-001, text-babbage-001, text-ada-001".Split(','));
         Map.Add("edits", "text-davinci-edit-001, code-davinci-edit-001".Split(','));
         Map.Add("audio/transcriptions", "whisper-1".Split(','));

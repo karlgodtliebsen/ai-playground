@@ -1,7 +1,7 @@
-﻿using ChatGPTClient.Dialogs.Models;
-using ChatGPTClient.Models;
+﻿using ChatGPT.Wpf.App.Dialogs.Models;
+using ChatGPT.Wpf.App.Models;
 
-namespace ChatGPTClient;
+namespace ChatGPT.Wpf.App.TabPages.ChatCompletions;
 
 public class ChatCompletionViewModel : BaseViewModel
 {

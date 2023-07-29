@@ -1,10 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using ChatGPT.Wpf.App.Dialogs.Models;
+using ChatGPT.Wpf.App.Models;
 
-using ChatGPTClient.Dialogs.Models;
-using ChatGPTClient.Models;
-
-namespace ChatGPTClient.TabPages;
+namespace ChatGPT.Wpf.App.TabPages.Images;
 
 public class CreateImageViewModel : INotifyPropertyChanged
 {

@@ -1,11 +1,10 @@
-﻿using ChatGPTClient.Models;
-
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ChatGPT.Wpf.App.Models;
 
-namespace ChatGPTClient.UserControls
+namespace ChatGPT.Wpf.App.UserControls
 {
     /// <summary>
     /// Interaction logic for PromptUserControl.xaml

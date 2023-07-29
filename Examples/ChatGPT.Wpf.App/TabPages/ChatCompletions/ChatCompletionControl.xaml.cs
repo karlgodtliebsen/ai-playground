@@ -1,17 +1,4 @@
-﻿using ChatGPTClient.Models;
-
-using Microsoft.Extensions.Options;
-
-using OneOf;
-
-using OpenAI.Client.Configuration;
-using OpenAI.Client.Domain;
-using OpenAI.Client.OpenAI.HttpClients;
-using OpenAI.Client.OpenAI.Models.ChatCompletion;
-using OpenAI.Client.OpenAI.Models.Requests;
-using OpenAI.Client.OpenAI.Models.Responses;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,10 +8,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ChatGPT.Wpf.App.Models;
+using Microsoft.Extensions.Options;
+using OneOf;
+using OpenAI.Client.Configuration;
+using OpenAI.Client.Domain;
+using OpenAI.Client.OpenAI.HttpClients;
+using OpenAI.Client.OpenAI.Models.ChatCompletion;
+using OpenAI.Client.OpenAI.Models.Requests;
+using OpenAI.Client.OpenAI.Models.Responses;
+using Model = ChatGPT.Wpf.App.Models.Model;
 
-using Model = ChatGPTClient.Models.Model;
-
-namespace ChatGPTClient;
+namespace ChatGPT.Wpf.App.TabPages.ChatCompletions;
 
 /// <summary>
 /// Interaction logic for ChatGPTControl.xaml
@@ -113,7 +108,7 @@ public partial class ChatCompletionControl : UserControl
         viewModel.IsReady = true;
     }
 
-    private void ProcessAnswer(OneOf<ChatCompletions, ErrorResponse> response)
+    private void ProcessAnswer(OneOf<OpenAI.Client.OpenAI.Models.ChatCompletion.ChatCompletions, ErrorResponse> response)
     {
         response.Switch(
             completions =>
@@ -144,7 +139,7 @@ public partial class ChatCompletionControl : UserControl
         );
     }
 
-    private async Task ProcessStreamedAnswer(IAsyncEnumerable<OneOf<ChatCompletions, ErrorResponse>> responseCollection)
+    private async Task ProcessStreamedAnswer(IAsyncEnumerable<OneOf<OpenAI.Client.OpenAI.Models.ChatCompletion.ChatCompletions, ErrorResponse>> responseCollection)
     {
         await foreach (var response in responseCollection)
         {

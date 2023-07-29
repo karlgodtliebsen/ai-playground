@@ -1,9 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using ChatGPT.Wpf.App.Models;
 
-using ChatGPTClient.Models;
-
-namespace ChatGPTClient.UserControls
+namespace ChatGPT.Wpf.App.UserControls
 {
     /// <summary>
     /// Interaction logic for the UserControl.xaml

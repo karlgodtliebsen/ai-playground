@@ -1,6 +1,4 @@
-﻿using ChatGPTClient.Dialogs.Models;
-
-using OpenAI.Client.OpenAI.Models.ChatCompletion;
+﻿using OpenAI.Client.OpenAI.Models.ChatCompletion;
 
 namespace ChatGPT.Wpf.App.Dialogs.Models;
 

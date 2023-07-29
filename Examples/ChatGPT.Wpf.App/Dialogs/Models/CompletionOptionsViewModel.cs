@@ -1,4 +1,4 @@
-﻿namespace ChatGPTClient.Dialogs.Models;
+﻿namespace ChatGPT.Wpf.App.Dialogs.Models;
 
 public class CompletionOptionsViewModel : OptionsViewModelBase
 {

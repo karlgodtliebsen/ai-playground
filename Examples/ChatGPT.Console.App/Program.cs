@@ -18,7 +18,7 @@ const string applicationName = "AI-playground";
 Observability.StartLogging(applicationName);
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.AddLogging();
+builder.WithLogging();
 builder.AddSecrets<Program>();
 builder.Services.AddAppConfiguration(builder.Configuration);
 

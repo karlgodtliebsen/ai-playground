@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace ChatGPTClient.Models;
+namespace ChatGPT.Wpf.App.Models;
 
 public sealed class ViewState : INotifyPropertyChanged
 {

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace ChatGPTClient.Dialogs
+namespace ChatGPT.Wpf.App.Dialogs
 {
     /// <summary>
     /// Interaction logic for ChatCompletionUserControl.xaml

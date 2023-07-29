@@ -2,14 +2,11 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-
-using ChatGPTClient.Models;
-
+using ChatGPT.Wpf.App.Models;
 using Microsoft.Extensions.Options;
-
 using OpenAI.Client.Configuration;
 
-namespace ChatGPTClient;
+namespace ChatGPT.Wpf.App;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
