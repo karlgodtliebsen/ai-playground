@@ -46,7 +46,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\AI.Library\AI.Library.csproj" />
-	  <ProjectReference Include="..\..\..\AI.LlaMa.Models\AI.LlaMa.Models.csproj" />
 	  <ProjectReference Include="..\..\..\AI.Test.Support\AI.Test.Support.csproj" />
 	  <ProjectReference Include="..\..\..\LLamaSharp\LLamaSharpApp.WebAPI\LLamaSharpApp.WebAPI.csproj" />
 	  <ProjectReference Include="..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />

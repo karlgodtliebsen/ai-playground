@@ -19,7 +19,7 @@ public sealed class ImageLoader : IImageLoader
     {
         var imagesPath = Directory
             .GetFiles(folder, "*", searchOption: SearchOption.AllDirectories)
-            .Where(x => Path.GetExtension(x) == ".jpg" || Path.GetExtension(x) == ".png");
+            .Where(x => Path.GetExtension(x) == ".jpg" || Path.GetExtension(x) == ".png" || Path.GetExtension(x) == ".jpeg");
 
         return useFolderNameAsLabel
             ? imagesPath.Select(imagePath => (imagePath, Directory.GetParent(imagePath)!.Name))
@@ -44,7 +44,7 @@ public sealed class ImageLoader : IImageLoader
         foreach (var file in files)
         {
             var extension = Path.GetExtension(file);
-            if (extension != ".jpg" && extension != ".png")
+            if (extension is not ".jpg" and not ".png" and not ".jpeg")
                 continue;
 
             var imageName = Path.GetFileName(file);
@@ -61,7 +61,7 @@ public sealed class ImageLoader : IImageLoader
     static readonly char[] CsvSeparator = new[] { ',', '\t' };
 
 
-    public IEnumerable<TrainingData> LoadTrainingImageToLabelsMap(string inputFolderPath, ImageLabelMapper? mapper, string defaultExtension = ".jpg")
+    public IEnumerable<TrainingData> LoadTrainingImageToLabelsMap(string inputFolderPath, ImageLabelMapper? mapper = null, string defaultExtension = ".jpg")
     {
         if (mapper is null)
         {
@@ -82,7 +82,7 @@ public sealed class ImageLoader : IImageLoader
             var data = s.Split(CsvSeparator);
             var fileName = data[mapper.ImageIndex];
             //check extension for filename
-            if (Path.GetExtension(fileName) is not ".jpg" and not ".png")
+            if (Path.GetExtension(fileName) is not ".jpg" and not ".png" and not ".jpeg")
             {
                 fileName = $"{fileName}{defaultExtension}";           //extension jpg? Qualified guess
             }
@@ -108,7 +108,7 @@ public sealed class ImageLoader : IImageLoader
     }
 
 
-    public IEnumerable<ImageData> LoadImagesMappedToLabelCategory(string imageSetFolderPath, string inputFolderPath, ImageLabelMapper? mapper)
+    public IEnumerable<ImageData> LoadImagesMappedToLabelCategory(string imageSetFolderPath, string inputFolderPath, ImageLabelMapper? mapper = null)
     {
         var useFolderNameAsLabel = true;
         IList<TrainingData>? data = null;
@@ -134,7 +134,7 @@ public sealed class ImageLoader : IImageLoader
             var sourceParts = imageSetFolderPath.Split(Path.DirectorySeparatorChar);
             foreach (var imageData in images)
             {
-                if (imageData.FindMatchingLabelForImage(data, sourceParts, imageSetFolderPath))
+                if (imageData.FindMatchingLabelForImage(data!, sourceParts, imageSetFolderPath))
                 {
                     yield return imageData;
                 }
@@ -146,7 +146,7 @@ public sealed class ImageLoader : IImageLoader
         }
     }
 
-    public IEnumerable<InMemoryImageData> LoadInMemoryImagesFromDirectory(string inputFolderPath, string imageSetFolderPath, ImageLabelMapper? mapper)
+    public IEnumerable<InMemoryImageData> LoadInMemoryImagesFromDirectory(string inputFolderPath, string imageSetFolderPath, ImageLabelMapper? mapper = null)
     {
         var useFolderNameAsLabel = true;
         IList<TrainingData>? data = null;

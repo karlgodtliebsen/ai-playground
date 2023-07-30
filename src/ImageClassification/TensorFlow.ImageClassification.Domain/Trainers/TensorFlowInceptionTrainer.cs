@@ -69,14 +69,14 @@ public sealed class TensorFlowInceptionTrainer : ITensorFlowTrainer
         var resultLabels = new List<string>();
         foreach (var data in dataFiles)
         {
-            logger.Information("Training using {data} - {label}...", data.ImageData.ImagePath, data.ImageData.Label);
+            logger.Information("Training using {data} - {label}...", data.ImageData.ImagePath, data.ImageData.LabelAsDir);
             sw.Restart();
             using var op = logger.BeginOperation("Process Image Tensor");
             var results = session.run(outputOperation.outputs[0], (inputOperation.outputs[0], data.NdArray));
             results = np.squeeze(results);
             int idx = np.argmax(results);
             var label = GetLabel(labels, idx, data);
-            logger.Information("{label} {name} in {lapsedMilliseconds}ms", data.ImageData.Label, label, sw.ElapsedMilliseconds);
+            logger.Information("{label} {name} in {lapsedMilliseconds}ms", data.ImageData.LabelAsDir, label, sw.ElapsedMilliseconds);
             resultLabels.Add(label);
             op.Complete();
         }

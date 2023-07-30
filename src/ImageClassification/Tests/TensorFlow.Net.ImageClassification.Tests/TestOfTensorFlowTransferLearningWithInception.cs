@@ -2,11 +2,14 @@
 
 using FluentAssertions;
 
+using ImageClassification.Domain.Configuration;
 using ImageClassification.Domain.Models;
 using ImageClassification.Domain.Predictors;
 using ImageClassification.Domain.Trainers;
+using ImageClassification.Domain.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using ML.Net.ImageClassification.Tests.Fixtures;
 
@@ -34,16 +37,17 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
 
 
     [Theory]
-    //[InlineData("flowers")]
     [InlineData("meat")]
-    [InlineData("food")]
-    [InlineData("animals")]
-    [InlineData("animals-90")]
+    //[InlineData("food")]
+    //[InlineData("birds", 1, 2, "birds.csv")]
+    //[InlineData("fashionproducts", 0, "1-4", "styles.csv")]
+
+    //[InlineData("flowers")]
+    //[InlineData("animals-10")]
+    //[InlineData("animals-90")]
     //[InlineData("catsdogs")]
-    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
     //[InlineData("butterfly", 0, 1, "Training_set.csv")]
-    [InlineData("birds", 1, 2, "birds.csv")]
-    [InlineData("fashionproducts", 0, "1-9", "styles.csv")]
+    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
     //[InlineData("TensorFlowTransferLearning", 0, 1, "tags.tsv")]
     public void TestOfTrainingForTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
     {
@@ -60,17 +64,7 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
     }
 
     [Theory]
-    //[InlineData("flowers")]
-    //[InlineData("meat")]
-    //[InlineData("food")]
-    //[InlineData("animals")]
-    //[InlineData("animals-90")]
-    //[InlineData("catsdogs")]
-    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
-    [InlineData("butterfly", 0, 1, "Testing_set.csv")]
-    //[InlineData("birds", 1, 2, "birds.csv")]
-    //[InlineData("fashionproducts", 0, "1-9", "styles.csv")]
-    //[InlineData("TensorFlowTransferLearning", 0, 1, "tags.tsv")]
+    [InlineData("flowers")]
     public void TestOfModelTestingForTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
     {
         ImageLabelMapper? mapper = null;
@@ -89,29 +83,26 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
 
 
     [Theory]
-    //[InlineData("flowers")]
-    //[InlineData("meat")]
-    //[InlineData("food")]
-    //[InlineData("animals")]
-    //[InlineData("animals-90")]
-    //[InlineData("catsdogs")]
-    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
-    [InlineData("butterfly", 0, 1, "Testing_set.csv")]
-    //[InlineData("birds", 1, 2, "birds.csv")]
-    //[InlineData("fashionproducts", 0, "1-9", "styles.csv")]
-    //[InlineData("TensorFlowTransferLearning", 0, 1, "tags.tsv")]
-    public void TestOfModelPredictionForTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
+    [InlineData("flowers")]
+    public void TestOfModelPredictionForTransferLearningWithInception(string imageSetPath)
     {
-        ImageLabelMapper? mapper = null;
-        if (fileName is not null)
-        {
-            mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
-        }
-        logger.Information("Prediction on [{set}]", dataSet);
         IPredictor predictor = fixture.Factory.Services.GetRequiredService<IPredictor>();
-        predictor.PredictImages(dataSet, mapper);
-        logger.Information("Predicting [{set}] model", dataSet);
+        IImageLoader loader = fixture.Factory.Services.GetRequiredService<IImageLoader>();
+        var options = fixture.Factory.Services.GetRequiredService<IOptions<TensorFlowOptions>>().Value;
+
+        var imageSetForPredictions = PathUtils.GetPath(options.TestImagesFilePath, imageSetPath);
+        var inputFolderPath = PathUtils.GetPath(options.InputFilePath, imageSetPath);
+
+        var images = loader.LoadInMemoryImagesFromDirectory(inputFolderPath, imageSetForPredictions);
+
+        InMemoryImage image = images.First();
+
+        logger.Information("Prediction on [{set}]", imageSetPath);
+
+        predictor.PredictImage(image, imageSetPath);
+        logger.Information("Predicting [{set}] model", imageSetPath);
     }
+
 }
 
 

@@ -30,7 +30,7 @@ namespace ImageClassification.Domain.TransferLearning
             for (var i = 0; i < kvs.Length; i++)
             {
                 var (label_name, label_lists) = (kvs[i].Key, kvs[i].Value);
-                var sub_dir_path = Path.Combine(bottleneck_dir, label_name);
+                var sub_dir_path = Path.Combine(bottleneck_dir, label_name.Replace("\n", "").Replace(" ", "-").Replace("\r", ""));
                 Directory.CreateDirectory(sub_dir_path);
 
                 for (var j = 0; j < categories.Length; j++)
@@ -52,16 +52,16 @@ namespace ImageClassification.Domain.TransferLearning
             }
         }
 
-        float[] get_or_create_bottleneck(Session sess, IDictionary<string, IDictionary<string, ImageData[]>> image_lists,
-            string label_name, int index, string category, string bottleneck_dir,
-            Tensor jpeg_data_tensor, Tensor decoded_image_tensor, Tensor resized_input_tensor,
-            Tensor bottleneck_tensor, string module_name)
+        float[] get_or_create_bottleneck(Session session, IDictionary<string, IDictionary<string, ImageData[]>> image_lists,
+                                            string label_name, int index, string category, string bottleneck_dir,
+                                            Tensor jpeg_data_tensor, Tensor decoded_image_tensor, Tensor resized_input_tensor,
+                                            Tensor bottleneck_tensor, string module_name)
         {
             var label_lists = image_lists[label_name];
             string bottleneck_path = get_bottleneck_path(image_lists, label_name, bottleneck_dir, index, category, module_name);
             if (!File.Exists(bottleneck_path))
                 return create_bottleneck_file(bottleneck_path, image_lists, label_name, index,
-                                       category, sess, jpeg_data_tensor,
+                                       category, session, jpeg_data_tensor,
                                        decoded_image_tensor, resized_input_tensor,
                                        bottleneck_tensor);
             var bottleneck_string = File.ReadAllText(bottleneck_path);
@@ -125,21 +125,26 @@ namespace ImageClassification.Domain.TransferLearning
             {
                 logger.Information("Label {label_name} has no images in the category {category}.", label_name, category);
             }
-
             var mod_index = index % len(category_list);
-            var full_path = category_list[mod_index].FullFileName();
+            var full_path = Path.Combine(image_dir, category_list[mod_index].ImagePath);
             return full_path;
         }
 
-        string get_bottleneck_path(IDictionary<string, IDictionary<string, ImageData[]>> image_lists, string label_name,
-            string image_dir, int index, string category, string module_name)
+        string get_bottleneck_path(IDictionary<string, IDictionary<string, ImageData[]>> image_lists, string label_name, string bottleneck_dir, int index, string category, string module_name)
         {
-            module_name = (module_name.Replace("://", "~")  // URL scheme.
-                 .Replace('/', '~')  // URL and Unix paths.
-                 .Replace(':', '~').Replace('\\', '~'));  // Windows paths.
-            return get_image_path(image_lists, label_name, image_dir, index, category) + "_" + module_name + ".txt";
+            module_name = module_name
+                        .Replace("://", "~")  // URL scheme.
+                        .Replace('/', '~')    // URL and Unix paths.
+                        .Replace(':', '~')
+                        .Replace('\\', '~')   // Windows paths.
+                        ;
+            var imagePath = get_image_path(image_lists, label_name, bottleneck_dir, index, category);
+            imagePath = imagePath.Replace(' ', '_');
+            var fullName = imagePath + "_" + module_name + ".txt";
+            return fullName;
         }
-        (NDArray, long[], string[]) get_random_cached_bottlenecks(Session sess, IDictionary<string, IDictionary<string, ImageData[]>> image_lists,
+
+        (NDArray, long[], string[]) get_random_cached_bottlenecks(Session session, IDictionary<string, IDictionary<string, ImageData[]>> image_lists,
             int how_many, string category, string bottleneck_dir,
             Tensor jpeg_data_tensor, Tensor decoded_image_tensor, Tensor resized_input_tensor,
             Tensor bottleneck_tensor, string module_name)
@@ -159,11 +164,13 @@ namespace ImageClassification.Domain.TransferLearning
                     int image_index = new Random().Next(MAX_NUM_IMAGES_PER_CLASS);
                     string image_name = get_image_path(image_lists, label_name, bottleneck_dir, image_index, category);
                     var bottleneck = get_or_create_bottleneck(
-                      sess, image_lists, label_name, image_index, category,
-                      bottleneck_dir, jpeg_data_tensor, decoded_image_tensor,
-                      resized_input_tensor, bottleneck_tensor, module_name);
+                                                              session, image_lists, label_name, image_index, category,
+                                                              bottleneck_dir, jpeg_data_tensor, decoded_image_tensor,
+                                                              resized_input_tensor, bottleneck_tensor, module_name);
                     for (int col = 0; col < bottleneck.Length; col++)
+                    {
                         bottlenecks[unused_i, col] = bottleneck[col];
+                    }
                     ground_truths.Add(label_index);
                     filenames.Add(image_name);
                 }
@@ -183,12 +190,14 @@ namespace ImageClassification.Domain.TransferLearning
                     foreach (var (image_index, imageData) in enumerate(image_lists[label_name][category]))
                     {
                         var bottleneck = get_or_create_bottleneck(
-                            sess, image_lists, label_name, image_index, category,
+                            session, image_lists, label_name, image_index, category,
                             bottleneck_dir, jpeg_data_tensor, decoded_image_tensor,
                             resized_input_tensor, bottleneck_tensor, module_name);
 
                         for (int col = 0; col < bottleneck.Length; col++)
+                        {
                             bottlenecks[row, col] = bottleneck[col];
+                        }
                         row++;
                         ground_truths.Add(label_index);
                         filenames.Add(imageData.FullFileName());

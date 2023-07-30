@@ -39,11 +39,11 @@ public class TestOfTensorFlowImageRecognitionInception : TestFixtureBase
     //[InlineData("butterfly", 0, 1, "Training_set.csv")]
     //[InlineData("birds", 1, 2, "birds.csv")]
     //[InlineData("food")]
-    //[InlineData("animals")]
+    //[InlineData("animals-10")]
     //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
     //[InlineData("animals-90")]
     //[InlineData("catsdogs")]
-    //[InlineData("fashionproducts", 0, "1-9", "styles.csv")]
+    //[InlineData("fashionproducts", 0, "1-4", "styles.csv")]
     public void TestOfTensorFlowImageClassification(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
     {
         ImageLabelMapper? mapper = null;

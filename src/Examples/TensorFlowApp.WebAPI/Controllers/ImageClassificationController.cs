@@ -3,10 +3,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using ML.TensorFlowApp.WebAPI.Controllers.Requests;
-using ML.TensorFlowApp.WebAPI.Domain.Services;
+using TensorFlowApp.WebAPI.Controllers.Requests;
+using TensorFlowApp.WebAPI.Domain.Services;
 
-namespace ML.TensorFlowApp.WebAPI.Controllers;
+namespace TensorFlowApp.WebAPI.Controllers;
 
 /// <summary>
 /// ML TensorFlow Image Classification
@@ -36,26 +36,18 @@ public class ImageClassificationController : ControllerBase
         //this.userProvider = userProvider;
     }
 
-
-    //[InlineData("flowers")]
-    //[InlineData("meat")]
-    //[InlineData("butterfly", 0, 0, "Testing_set.csv")]
-
     /// <summary>
     /// Invokes a classification of the uploaded Image
     /// </summary>
-    /// <param name="request">Hold the Chat prompt/text</param>
+    /// <param name="file"></param>
+    /// <param name="dataSet"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpPost("upload")]
-    //[ValidateAntiForgeryToken]
-    //IFormFile 
-    public async Task<IActionResult> Upload([FromForm] IFormFile file, CancellationToken cancellationToken)
+    [HttpPost("upload/{dataSet}")]
+    public async Task<IActionResult> Upload([FromForm] IFormFile? file, string dataSet, CancellationToken cancellationToken)
     {
         // UserId = userProvider.UserId
-        //[FromBody] ImageClassificationRequest request
-
-        if (file == null || file.Length == 0)
+        if (file is null || file.Length == 0)
             return BadRequest("file not selected");
 
         if (file.Length > int.MaxValue)
@@ -67,11 +59,15 @@ public class ImageClassificationController : ControllerBase
         var image = new InMemoryImage(ms.ToArray());
         var request = new ImageClassificationRequest()
         {
-            DataSet = "flowers"
+            DataSet = dataSet
         };
-
-
         return Ok(await domainService.Classify(image, request.DataSet, cancellationToken));
     }
 
+
+    [HttpGet("models")]
+    public string[] GetModels(CancellationToken cancellationToken)
+    {
+        return domainService.GetModels(cancellationToken);
+    }
 }

@@ -42,10 +42,17 @@ public sealed class ImageData
     }
 
     public string Label { get; set; }
+    public string LabelAsDir
+    {
+        get
+        {
+            return Label.Replace("\n", "").Replace(" ", "-").Replace("\r", "");
+        }
+    }
 
     public string ImagePath { get; set; }
 
-    public bool FindMatchingLabelForImage(IList<TrainingData>? data, string[] sourceParts, string folder)
+    public bool FindMatchingLabelForImage(IEnumerable<TrainingData> data, string[] sourceParts, string folder)
     {
         var trainingData = data!.FirstOrDefault(x => x.FindMatchingLabelForImage(this));
         if (trainingData is not null)

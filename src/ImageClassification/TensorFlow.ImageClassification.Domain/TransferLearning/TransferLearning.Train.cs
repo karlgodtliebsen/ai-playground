@@ -42,46 +42,46 @@ namespace ImageClassification.Domain.TransferLearning
 
             var sw = new Stopwatch();
             var graph = isImportingGraph ? ImportGraph() : BuildGraph();
-            var sess = tf.Session(graph);
+            var session = tf.Session(graph);
 
             // Initialize all weights: for the module to their pretrained values,
             // and for the newly added retraining layer to random initial values.
             var init = tf.global_variables_initializer();
-            sess.run(init);
+            session.run(init);
 
             var (jpeg_data_tensor, decoded_image_tensor) = add_jpeg_decoding();
 
             // We'll make sure we've calculated the 'bottleneck' image summaries and
             // cached them on disk.
-            cache_bottlenecks(sess, image_dataset, bottleneckDir, jpeg_data_tensor, decoded_image_tensor, resized_image_tensor, bottleneck_tensor, tfhub_module);
+            cache_bottlenecks(session, image_dataset, bottleneckDir, jpeg_data_tensor, decoded_image_tensor, resized_image_tensor, bottleneck_tensor, tfhub_module);
 
             // Create the operations we need to evaluate the accuracy of our new layer.
             var (evaluation_step, _) = add_evaluation_step(final_tensor, ground_truth_input);
 
             // Merge all the summaries and write them out to the summaries_dir
             var merged = tf.summary.merge_all();
-            var train_writer = tf.summary.FileWriter(summariesDir + "/train", sess.graph);
-            var validation_writer = tf.summary.FileWriter(summariesDir + "/validation", sess.graph);
+            var train_writer = tf.summary.FileWriter(summariesDir + "/train", session.graph);
+            var validation_writer = tf.summary.FileWriter(summariesDir + "/validation", session.graph);
 
             // Create a train saver that is used to restore values into an eval graph
             // when exporting models.
             var train_saver = tf.train.Saver();
             var checkpoint = Path.Combine(taskDir, "checkpoint");
-            train_saver.save(sess, checkpoint);
+            train_saver.save(session, checkpoint);
 
             sw.Restart();
 
             for (int i = 0; i < options.TrainingSteps; i++)
             {
                 var (trainBottlenecks, trainGroundTruth, _) = get_random_cached_bottlenecks(
-                        sess, image_dataset, options.BatchSize, "training",
+                        session, image_dataset, options.BatchSize, "training",
                         bottleneckDir, jpeg_data_tensor,
                         decoded_image_tensor, resized_image_tensor, bottleneck_tensor,
                         tfhub_module);
 
                 // Feed the bottlenecks and ground truth into the graph, and run a training
                 // step. Capture training summaries for TensorBoard with the `merged` op.
-                var results = sess.run(
+                var results = session.run(
                         new ITensorOrOperation[] { merged, train_step },
                         new FeedItem(bottleneck_input, trainBottlenecks),
                         new FeedItem(ground_truth_input, trainGroundTruth));
@@ -94,19 +94,19 @@ namespace ImageClassification.Domain.TransferLearning
                 bool is_last_step = (i + 1 == options.TrainingSteps);
                 if ((i % eval_step_interval) == 0 || is_last_step)
                 {
-                    (float train_accuracy, float cross_entropy_value) = sess.run((evaluation_step, cross_entropy),
+                    (float train_accuracy, float cross_entropy_value) = session.run((evaluation_step, cross_entropy),
                         (bottleneck_input, trainBottlenecks),
                         (ground_truth_input, trainGroundTruth));
 
                     var (validation_bottlenecks, validation_ground_truth, _) = get_random_cached_bottlenecks(
-                        sess, image_dataset, validation_batch_size, "validation",
+                        session, image_dataset, validation_batch_size, "validation",
                         bottleneckDir, jpeg_data_tensor,
                         decoded_image_tensor, resized_image_tensor, bottleneck_tensor,
                         tfhub_module);
 
                     // Run a validation step and capture training summaries for TensorBoard
                     // with the `merged` op.
-                    (_, float validation_accuracy) = sess.run((merged, evaluation_step),
+                    (_, float validation_accuracy) = session.run((merged, evaluation_step),
                         (bottleneck_input, validation_bottlenecks),
                         (ground_truth_input, validation_ground_truth));
 
@@ -126,7 +126,7 @@ namespace ImageClassification.Domain.TransferLearning
 
             // After training is complete, force one last save of the train checkpoint.
             logger.Information("Saving checkpoint to {checkpoint}", checkpoint);
-            train_saver.save(sess, checkpoint);
+            train_saver.save(session, checkpoint);
 
             SaveModel();
         }

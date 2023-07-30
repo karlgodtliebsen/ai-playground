@@ -101,17 +101,15 @@ public sealed class TensorFlowTransferLearningInceptionPredictor : IPredictor
 
     public class ImageUtilByte
     {
-        public static Tensor ReadImage(byte[] image,
-            int input_height = 299,
-            int input_width = 299,
-            int channels = 3,
-            int input_mean = 0,
-            int input_std = 255)
+        public static Tensor ReadImage(byte[] image, int input_height = 299, int input_width = 299, int channels = 3, int input_mean = 0, int input_std = 255)
         {
             tf.enable_eager_execution();
 
-            Tensor file_reader = new Tensor(image);
+            //look into png etc.
+
+            Tensor file_reader = new Tensor(image, shape: Shape.Scalar);
             var image_reader = tf.image.decode_jpeg(file_reader, channels: channels, name: "jpeg_reader");
+
             var caster = tf.cast(image_reader, tf.float32);
             var dims_expander = tf.expand_dims(caster, 0);
             var resize = tf.constant(new int[] { input_height, input_width });

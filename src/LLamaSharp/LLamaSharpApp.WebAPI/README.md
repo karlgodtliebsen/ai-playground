@@ -1,25 +1,23 @@
 # LlamaSharp WebAPI
-An ASP.NET Core WebAPI (v7.0) using LlamaSCharp.
+An ASP.NET Core WebAPI (v7.0) using LlamaSCharp and LlaMa version 1 and 2 models.
 
 
 #### How to download the source and build:
 Clone the repository and open the solution in Visual Studio 2022.
 
-Download a model like: 
+Download a version 1 or version 2 model like: 
 ```
-- wizardLM-7B.ggmlv3.q4_1.bin
 - llama-2-7b.ggmlv3.q8_0.bin
+- wizardLM-7B.ggmlv3.q4_1.bin
 - ggml-vic13b-uncensored-q4_1.bin
 - ggml-vic13b-uncensored-q5_0.bin
 - ggml-vicuna-13B-1.1-q4_0.bin
 - ggml-vicuna-13B-1.1-q8_0.bin
 - wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin (see references)
-
 ```
 
-Add the Model to the 'LlamaModels' folder in the 'AI.LlaMa.Models' project, and mark it as "Copy If Newer".
-
-If you prefer to locate the model file elsewhere, then modify the appsettings.json to point to the model and update .gitignore.
+Add the models to a folder and update the appsettings.json files with the path to the folder.
+I use: '/projects/AI/LlamaModels' to store the models.
 
 The web controllers are configured to use Authentication. 
 Either fill out the appsettings.json section (Remember not to commit/publish the information).

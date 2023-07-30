@@ -1,6 +1,6 @@
 ﻿using ImageClassification.Domain.Models;
 
-namespace TensorFlowApp.WebAPI.Domain.Services;
+namespace ML.TensorFlowApp.WebAPI.Domain.Services;
 
 /// <summary>
 /// Interface for Image Classification Service
@@ -15,4 +15,7 @@ public interface IImageClassifierService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<string> Classify(InMemoryImage image, string dataSet, CancellationToken cancellationToken);
+
+
+    string[] GetModels(CancellationToken cancellationToken);
 }

@@ -14,20 +14,19 @@ namespace ImageClassification.Domain.TransferLearning
         void LoadDataFromDir(string imagesDir, float testingPercentage = 0.2f, float validationPercentage = 0.1f)
         {
             var images = imageLoader.LoadImagesMappedToLabelCategory(options.DataDir, options.InputFolderPath!, options.Mapper).ToList();
-            var subDirs = images.Select(x => x.Label).Distinct().ToList();
+            var subDirs = images.Select(x => x.LabelAsDir).Distinct().ToList();
             var imageDataSet = new Dictionary<string, IDictionary<string, ImageData[]>>();
 
             foreach (var subDir in subDirs)
             {
                 var dirName = subDir.Split(Path.DirectorySeparatorChar).Last();
                 logger.Information("Looking for images in '{dirName}'", dirName);
-                var fileList = images.Where(x => x.Label == subDir).ToList();
+                var fileList = images.Where(x => x.LabelAsDir == subDir).ToList();
                 var fileCount = fileList.Count;
                 if (fileCount < 20)
                 {
                     logger.Warning("WARNING: Folder {dirName} has less than 20 images, which may cause issues.", dirName);
                 }
-
                 var labelName = dirName.ToLower();
                 int testingCount = (int)Math.Floor(fileCount * testingPercentage);
                 int validationCount = (int)Math.Floor(fileCount * validationPercentage);

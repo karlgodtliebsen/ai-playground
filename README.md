@@ -5,8 +5,9 @@ The purpose of this repository is to provide a playground for learning about usi
 ### OpenAI:
 A dotnet Client 'OpenAI.Client' with a Test project and a WPF application that shows how to use it.
 
-### Llamasharp:
-A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. This project could be a candidate for a missing Web.Api at Llamasharp.
+### Llamasharp (Models version 1 and 2):
+A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. 
+This project could be a candidate for a missing Web.Api at Llamasharp.
 
 These models has been testet:
 ```
@@ -18,12 +19,16 @@ These models has been testet:
 - ggml-vicuna-13B-1.1-q8_0.bin
 - wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
 ```
-## LlaMa Models
+
+## LlaMa Models - 2
 Download a model like: 
 
-- wizardLM-7B.ggmlv3.q4_1.bin (see references)
+- llama-2-7b.ggmlv3.q8_0.bin (see references)
 
-Add the Models to the 'LlamaModels' folder in the 'AI.LlaMa.Models' project, and mark them for "Copy If Newer".
+Add the Models to a folder and update the appsettings.json files with the path to the folder.
+I use: '/projects/AI/LlamaModels' to store the models.
+
+More info in the README.md file in the LlamaSharpApp.WebAPI project.
 
 
 ### Qdrant Vector database:
@@ -34,13 +39,18 @@ A replacement implementation of the NuGet package 'Qdrant.Client' can be found i
 ### Conversation as a Platform:
 A dotnet Web API 'AI.CaaP.WebAPI' + 'AI.CaaP.Repository' + 'AI.CaaP' for working on a Conversation as a Platform experience, with a Test project that show how to use it.
 
-### SemanticKernel:
+### Microsoft.SemanticKernel:
 A dotnet Test Project that uses the Microsoft Semantic Kernel Library (MSKLC) to play around with semantic kernel SDK
 
 ### Financial Agents:
 The start of a dotnet Test project that uses inspiration from LucidateFinAgent to build specific knowledge for Planner and Execution Concepts, and Building Tools
 Much more work is needed to make this a real project.
 The implementation is based the Microsoft Semantic Kernel Library
+
+### ImageClassification
+A set of Dotnet projects that uses Microsoft.ML for dotnet and TensorFlow.Net + TensorFlow.Keras to classify images. 
+I use: '/projects/AI/image-dataSets' to store the images and the models.
+More info in the README.md file in ML.Net.ImageClassification.Tests folder 
 
 
 ### Dependencies:
@@ -60,6 +70,14 @@ The projects uses other Open Source project:
 - Microsoft Semantic Kerlenl Library (MSKLC)
 - TestContainer
 - TiktokenSharp
+- TensorFlow.Net
+- TensorFlow.Keras
+- Microsoft.ML
+- Microsoft.ML.DataView
+- Microsoft.ML.ImageAnalytics
+- Microsoft.ML.Vision
+- SciSharp.TensorFlow.Redist
+- Microsoft.SemanticKernel.xxx preview versions
 ```
 
 The WEB API projects uses Azure AD for Authentication:

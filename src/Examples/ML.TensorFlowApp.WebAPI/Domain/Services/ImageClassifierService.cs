@@ -1,7 +1,7 @@
 ﻿using ImageClassification.Domain.Models;
 using ImageClassification.Domain.Predictors;
 
-namespace TensorFlowApp.WebAPI.Domain.Services;
+namespace ML.TensorFlowApp.WebAPI.Domain.Services;
 
 /// <summary>
 /// Chat Domain Service
@@ -9,7 +9,7 @@ namespace TensorFlowApp.WebAPI.Domain.Services;
 public class ImageClassifierService : IImageClassifierService
 {
     private readonly IPredictor predictor;
-    private readonly ILogger logger;
+    private readonly Serilog.ILogger logger;
 
 
     /// <summary>
@@ -17,7 +17,7 @@ public class ImageClassifierService : IImageClassifierService
     /// </summary>
     /// <param name="predictor"></param>
     /// <param name="logger"></param>
-    public ImageClassifierService(IPredictor predictor, ILogger logger)
+    public ImageClassifierService(IPredictor predictor, Serilog.ILogger logger)
     {
         this.predictor = predictor;
         this.logger = logger;
@@ -26,7 +26,17 @@ public class ImageClassifierService : IImageClassifierService
     /// <inheritdoc />
     public Task<string> Classify(InMemoryImage image, string dataSet, CancellationToken cancellationToken)
     {
+        var isModelValid = TrainedModels.Models.Contains(dataSet);
+        if (!isModelValid)
+        {
+            throw new ArgumentException($"Model {dataSet} is not valid. Use one of [{string.Join(',', TrainedModels.Models)}]", nameof(dataSet));
+        }
         var result = predictor.PredictImage(image, dataSet);
         return Task.FromResult(result);
+    }
+
+    public string[] GetModels(CancellationToken cancellationToken)
+    {
+        return TrainedModels.Models;
     }
 }

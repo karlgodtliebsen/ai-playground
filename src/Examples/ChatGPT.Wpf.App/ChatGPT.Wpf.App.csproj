@@ -1,23 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<TargetFramework>net7.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net7.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
 	</PropertyGroup>
 
-
 	<ItemGroup>
-	  <Content Include="appsettings.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	  </Content>
-	</ItemGroup>
 
-	<ItemGroup>
+		<PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
 
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
@@ -45,11 +38,36 @@
 
 	</ItemGroup>
 
+
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\AI.Library\AI.Library.csproj" />
-	  <ProjectReference Include="..\..\src\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
+		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Dialogs\EditsDialogUserControl.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="TabPages\ChatCompletions\ChatCompletionControl.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="UserControls\TextInstructionUserControl.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="TabPages\Audio\" />
+		<Folder Include="TabPages\Moderations\" />
+		<Folder Include="TabPages\Embeddings\" />
+		<Folder Include="TabPages\FileUploads\" />
+	</ItemGroup>
 
 </Project>
-
