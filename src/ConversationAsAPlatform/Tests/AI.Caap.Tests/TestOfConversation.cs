@@ -5,6 +5,7 @@ using AI.CaaP.Domain;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
 using AI.CaaP.Repository.DatabaseContexts;
+using AI.Library.Utils;
 using AI.Test.Support;
 
 using FluentAssertions;

@@ -1,3 +1,5 @@
+namespace AI.Library.Utils;
+
 [Serializable]
 public class AIException : Exception
 {

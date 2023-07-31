@@ -1,15 +1,16 @@
-﻿using AI.Library.Configuration;
+﻿using System.Net;
+
+using AI.Library.Configuration;
+using AI.Library.Utils;
 
 using Microsoft.IdentityModel.Logging;
 
 using TensorFlowApp.WebAPI.Configuration;
 using TensorFlowApp.WebAPI.Configuration.LibraryConfiguration;
 
-const string Origins = "AllowedOrigins";
 const string ApplicationName = "TensorFlowApp.WebAPI";
 
-
-Observability.StartLogging(ApplicationName);
+Observability.UseBootstrapLogger(ApplicationName);
 var builder = WebApplication.CreateBuilder(args);
 var env = builder.Environment;
 var configuration = builder.Configuration;
@@ -17,26 +18,25 @@ var services = builder.Services;
 IdentityModelEventSource.ShowPII = env.IsDevelopment();
 
 builder.WithLogging();
-builder.WebHost.ConfigureKestrel(serverOptions =>
+if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
 {
-    serverOptions.AddServerHeader = false;
-});
+    builder.WebHost.ConfigureKestrel(serverOptions =>
+    {
+        serverOptions.AddServerHeader = false;
+    });
+}
+
 services
-    .AddWebApiConfiguration(configuration)
-    //.AddAzureAdConfiguration(configuration, (string?)null)
-    //.AddCorsConfig(configuration, options =>
-    //{
-    //    options.Policy = Origins;
-    //    options.Origins = new[] { "https://localhost:7043" };
-    //})
-    //.AddControllers(options =>
-    //{
-    //    var policy = new AuthorizationPolicyBuilder()
-    //        .RequireAuthenticatedUser()
-    //        .Build();
-    //    options.Filters.Add(new AuthorizeFilter(policy));
-    //})
-    ;
+    .AddWebApiConfiguration(configuration);
+
+if (!env.IsDevelopment() && !env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
+{
+    services.AddHttpsRedirection(options =>
+    {
+        options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
+        options.HttpsPort = 443;
+    });
+}
 
 services
     .AddControllers();
@@ -47,16 +47,17 @@ services
 var app = builder.Build();
 await using (app)
 {
-    //app.UseSecurityHeaders(SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));
-    //app.UseCors(Origins);
-
+    if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
+    {
+        if (!env.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Error");
+            app.UseHsts();
+        }
+        app.UseHttpsRedirection();
+    }
     app.UseRouting();
     app.UseOpenApi();
-    app.UseHttpsRedirection();
-
-    //app.UseAuthentication();
-    //app.UseAuthorization();
-
     app.MapHealthCheckAnonymous();
     app.MapControllers();
     Observability.LogFinalizedConfiguration(ApplicationName);

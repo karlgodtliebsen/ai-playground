@@ -19,7 +19,7 @@ public static class Observability
     /// </summary>
     /// <param name="name"></param>
     /// <param name="anchor"></param>
-    public static void StartLogging(string name, Type? anchor = null)
+    public static void UseBootstrapLogger(string name, Type? anchor = null)
     {
         if (anchor is null) anchor = typeof(Observability);
         Activity.DefaultIdFormat = ActivityIdFormat.W3C;

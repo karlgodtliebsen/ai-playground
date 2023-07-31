@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Logging;
 const string Origins = "AllowedOrigins";
 const string ApplicationName = "AI.CaaP.WebAPI";
 
-Observability.StartLogging(ApplicationName);
+Observability.UseBootstrapLogger(ApplicationName);
 
 var builder = WebApplication.CreateBuilder(args);
 var env = builder.Environment;

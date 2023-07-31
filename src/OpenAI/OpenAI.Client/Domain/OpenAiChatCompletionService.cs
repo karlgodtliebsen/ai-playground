@@ -1,4 +1,5 @@
-﻿using OneOf;
+﻿using AI.Library.Utils;
+using OneOf;
 
 using OpenAI.Client.OpenAI.HttpClients;
 using OpenAI.Client.OpenAI.Models.Chat;

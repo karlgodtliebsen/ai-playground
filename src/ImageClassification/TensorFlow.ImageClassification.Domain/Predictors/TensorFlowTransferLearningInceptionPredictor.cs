@@ -1,4 +1,6 @@
-﻿using ImageClassification.Domain.Configuration;
+﻿using AI.Library.Utils;
+
+using ImageClassification.Domain.Configuration;
 using ImageClassification.Domain.Models;
 using ImageClassification.Domain.TransferLearning;
 using ImageClassification.Domain.Utils;
@@ -9,9 +11,9 @@ using SciSharp.Models;
 
 using Serilog;
 
-using Tensorflow;
+using SerilogTimings.Extensions;
 
-using static Tensorflow.Binding;
+using Tensorflow;
 
 namespace ImageClassification.Domain.Predictors;
 
@@ -61,10 +63,26 @@ public sealed class TensorFlowTransferLearningInceptionPredictor : IPredictor
             opt.ModelPath = options.ModelPath;
             opt.LabelPath = options.LabelPath;
         });
-        var input = ImageUtilByte.ReadImage(image.Image);
+
+        //having tried to get TensorFlow to read from a byte array, I gave up and wrote the image to a temp file
+        var fileName = Path.GetRandomFileName();
+        Tensor? input;
+        try
+        {
+            File.WriteAllBytes(fileName, image.Image);
+            input = ImageUtil.ReadImageFromFile(fileName);
+        }
+        finally
+        {
+            File.Delete(fileName);
+        }
+
+        using var op = logger.BeginOperation("Measure of Image Prediction using {imageSetPath}...", imageSetPath);
         var result = task.Predict(input);
+        op.Complete();
+
         logger.Information("Prediction on [{set}] Result: {result}", imageSetPath, result);
-        return result.Label;
+        return result.ToJson();
     }
 
     public void PredictImages(string imageSetPath, ImageLabelMapper? mapper)
@@ -98,29 +116,6 @@ public sealed class TensorFlowTransferLearningInceptionPredictor : IPredictor
             logger.Information("Prediction on [{set}] {image} Result: {result}", imageSetPath, imageData.ImagePath, result);
         }
     }
-
-    public class ImageUtilByte
-    {
-        public static Tensor ReadImage(byte[] image, int input_height = 299, int input_width = 299, int channels = 3, int input_mean = 0, int input_std = 255)
-        {
-            tf.enable_eager_execution();
-
-            //look into png etc.
-
-            Tensor file_reader = new Tensor(image, shape: Shape.Scalar);
-            var image_reader = tf.image.decode_jpeg(file_reader, channels: channels, name: "jpeg_reader");
-
-            var caster = tf.cast(image_reader, tf.float32);
-            var dims_expander = tf.expand_dims(caster, 0);
-            var resize = tf.constant(new int[] { input_height, input_width });
-            var bilinear = tf.image.resize_bilinear(dims_expander, resize);
-            var sub = tf.subtract(bilinear, new float[] { input_mean });
-            var normalized = tf.divide(sub, new float[] { input_std });
-            tf.Context.restore_mode();
-            return normalized;
-        }
-    }
-
 }
 
 

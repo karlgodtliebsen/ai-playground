@@ -1,6 +1,6 @@
 ﻿using AI.CaaP.AgentsDomain;
 using AI.CaaP.Repositories;
-
+using AI.Library.Utils;
 using OpenAI.Client.Domain;
 using OpenAI.Client.OpenAI.Models.Chat;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;

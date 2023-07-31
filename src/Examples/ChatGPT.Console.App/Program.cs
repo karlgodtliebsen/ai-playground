@@ -15,7 +15,7 @@ using System.Diagnostics;
 
 const string applicationName = "AI-playground";
 
-Observability.StartLogging(applicationName);
+Observability.UseBootstrapLogger(applicationName);
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.WithLogging();

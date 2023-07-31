@@ -1,6 +1,11 @@
 # Microsoft ML.TensorFlow App WebAPI
 An ASP.NET Core WebAPI (v7.0) using ML.TensorFlow.
 
+Look at the test project: ML.Net.ImageClassification.Tests
+
+Some sane configuration is missing from the Program.cs and Appsettings file, look at LLamaSharpApp.WebAPI for details
+
+
 
 #### How to download the source and build:
 

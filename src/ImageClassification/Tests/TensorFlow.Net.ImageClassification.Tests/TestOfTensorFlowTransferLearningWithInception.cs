@@ -95,12 +95,10 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
 
         var images = loader.LoadInMemoryImagesFromDirectory(inputFolderPath, imageSetForPredictions);
 
-        InMemoryImage image = images.First();
-
-        logger.Information("Prediction on [{set}]", imageSetPath);
-
-        predictor.PredictImage(image, imageSetPath);
-        logger.Information("Predicting [{set}] model", imageSetPath);
+        InMemoryImageData image = images.First();
+        logger.Information("Running prediction on [{set}] {imageFile} ", imageSetPath, image.ImageFileName);
+        var result = predictor.PredictImage(image, imageSetPath);
+        logger.Information("Predicting result is: {result}", result);
     }
 
 }

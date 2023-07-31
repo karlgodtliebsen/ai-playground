@@ -1,4 +1,6 @@
-﻿using ImageClassification.Domain.Configuration;
+﻿using AI.Library.Utils;
+
+using ImageClassification.Domain.Configuration;
 using ImageClassification.Domain.Models;
 using ImageClassification.Domain.Utils;
 
@@ -39,11 +41,15 @@ public sealed class MlNetPredictor : IPredictor
         }
         var mlContext = new MLContext(seed: 1);
         var loadedModel = mlContext.Model.Load(mlNetModelFilePath, out var modelInputSchema);
-        using var op = logger.BeginOperation("Predicting Image using {imageSetPath}...", imageSetPath);
+        using var op = logger.BeginOperation("Measure of Image Prediction using {imageSetPath}...", imageSetPath);
         var predictionEngine = mlContext.Model.CreatePredictionEngine<InMemoryImage, ImagePrediction>(loadedModel);
         ImagePrediction? prediction = predictionEngine.Predict(image);
         op.Complete();
-        return prediction.PredictedLabel;//TODO: expand with more information
+
+        logger.Information("Prediction on [{set}] Result: {result}", imageSetPath, prediction);
+        return prediction.ToJson();
+
+        //return $"{prediction.PredictedLabel} : {prediction.Scores}"; //.ToJson();
     }
 
     public void PredictImages(string imageSetPath, ImageLabelMapper? mapper)

@@ -3,6 +3,7 @@ using AI.CaaP.Domain;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
 using AI.Library.Configuration;
+using AI.Library.Utils;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
@@ -30,7 +31,7 @@ Console.WriteLine("Press any key to continue");
 Console.ReadLine();
 
 
-Observability.StartLogging(applicationName);
+Observability.UseBootstrapLogger(applicationName);
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.WithLogging();

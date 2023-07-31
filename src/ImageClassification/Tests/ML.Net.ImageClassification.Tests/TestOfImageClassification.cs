@@ -2,11 +2,14 @@
 
 using FluentAssertions;
 
+using ImageClassification.Domain.Configuration;
 using ImageClassification.Domain.Models;
 using ImageClassification.Domain.Predictors;
 using ImageClassification.Domain.Trainers;
+using ImageClassification.Domain.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using ML.Net.ImageClassification.Tests.Fixtures;
 
@@ -86,4 +89,26 @@ public class TestOfImageClassification : TestFixtureBase
         IPredictor predictor = fixture.Factory.Services.GetRequiredService<IPredictor>();
         predictor.PredictImages(dataSet, mapper);
     }
+
+
+    [Theory]
+    [InlineData("flowers")]
+    public void TestOfModelPredictionForMlImageClassificationModel(string imageSetPath)
+    {
+        IPredictor predictor = fixture.Factory.Services.GetRequiredService<IPredictor>();
+        IImageLoader loader = fixture.Factory.Services.GetRequiredService<IImageLoader>();
+        var options = fixture.Factory.Services.GetRequiredService<IOptions<MlImageClassificationOptions>>().Value;
+
+        var imageSetForPredictions = PathUtils.GetPath(options.TestImagesFilePath, imageSetPath);
+        var inputFolderPath = PathUtils.GetPath(options.InputFilePath, imageSetPath);
+
+        var images = loader.LoadInMemoryImagesFromDirectory(inputFolderPath, imageSetForPredictions);
+
+        InMemoryImageData image = images.First();
+
+        logger.Information("Running prediction on [{set}] {imageFile} ", imageSetPath, image.ImageFileName);
+        var result = predictor.PredictImage(image, imageSetPath);
+        logger.Information("Predicting result is: {result}", result);
+    }
+
 }

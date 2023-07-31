@@ -11,7 +11,7 @@ const string Origins = "AllowedOrigins";
 const string ApplicationName = "LLamaSharpApp.WebAPI";
 
 
-Observability.StartLogging(ApplicationName);
+Observability.UseBootstrapLogger(ApplicationName);
 var builder = WebApplication.CreateBuilder(args);
 var env = builder.Environment;
 var configuration = builder.Configuration;
