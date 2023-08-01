@@ -18,6 +18,11 @@ public class LlamaModelOptions : ModelParams
     {
     }
 
+    public string[] AntiPrompt { get; set; }
+
+    public string PromptFile { get; set; }
+
+
     /// <summary>
     /// Constructor for LlamaModelOptions
     /// </summary>

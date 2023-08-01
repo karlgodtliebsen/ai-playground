@@ -18,20 +18,17 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 [Authorize]
 public class EmbeddingsController : ControllerBase
 {
-    private readonly IEmbeddingsService domainService;
     private readonly IUserIdProvider userProvider;
     private readonly ILogger<EmbeddingsController> logger;
 
     /// <summary>
     /// Constructor for EmbeddingsController
     /// </summary>
-    /// <param name="service"></param>
     /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public EmbeddingsController(IEmbeddingsService service, IUserIdProvider userProvider, ILogger<EmbeddingsController> logger)
+    public EmbeddingsController(IUserIdProvider userProvider, ILogger<EmbeddingsController> logger)
     {
         this.logger = logger;
-        domainService = service;
         this.userProvider = userProvider;
     }
 
@@ -39,10 +36,11 @@ public class EmbeddingsController : ControllerBase
     /// Get the embeddings of a text in LLM, for example, to train other MLP models.
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="domainService"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("embeddings")]
-    public async Task<float[]> Embeddings([FromBody] EmbeddingsRequest request, CancellationToken cancellationToken)
+    public async Task<float[]> Embeddings([FromBody] EmbeddingsRequest request, [FromServices] IEmbeddingsService domainService, CancellationToken cancellationToken)
     {
         var model = new EmbeddingsMessage(request.Text)
         {

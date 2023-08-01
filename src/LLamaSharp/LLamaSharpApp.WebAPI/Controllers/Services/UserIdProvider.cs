@@ -15,18 +15,16 @@ public class UserIdProvider : IUserIdProvider
     {
         if (httpContextAccessor!.HttpContext!.User.Identity is ClaimsIdentity identity)
         {
-            var s = identity.FindFirst("sub")!.Value;
-            if (Guid.TryParse(s, out var guid))
+            var sId = identity.FindFirst("sub");
+            if (sId is null)
             {
-                this.UserId = guid.ToString();
+                this.UserId = Guid.Empty.ToString();
+                return;
             }
-            else
-            {
-                this.UserId = Guid.NewGuid().ToString();
-            }
+            this.UserId = Guid.TryParse(sId!.Value, out var guid) ? guid.ToString() : Guid.NewGuid().ToString();
         }
     }
 
     /// <inheritdoc />
-    public string UserId { get; set; } = Guid.NewGuid().ToString();
+    public string UserId { get; set; } = default!;
 }

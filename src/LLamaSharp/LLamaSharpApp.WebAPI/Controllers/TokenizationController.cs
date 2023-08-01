@@ -19,20 +19,17 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 [Authorize]
 public class TokenizationController : ControllerBase
 {
-    private readonly ITokenizationService domainService;
     private readonly IUserIdProvider userProvider;
     private readonly ILogger<TokenizationController> logger;
 
     /// <summary>
-    /// Construcor for TokenizationController
+    /// Constructor for TokenizationController
     /// </summary>
-    /// <param name="service"></param>
     /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public TokenizationController(ITokenizationService service, IUserIdProvider userProvider, ILogger<TokenizationController> logger)
+    public TokenizationController(IUserIdProvider userProvider, ILogger<TokenizationController> logger)
     {
         this.logger = logger;
-        domainService = service;
         this.userProvider = userProvider;
     }
 
@@ -40,10 +37,11 @@ public class TokenizationController : ControllerBase
     /// Tokenize a text
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="domainService"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("tokenize")]
-    public async Task<int[]> Tokenizen([FromBody] TokenizeMessageRequest request, CancellationToken cancellationToken)
+    public async Task<int[]> Tokenize([FromBody] TokenizeMessageRequest request, [FromServices] ITokenizationService domainService, CancellationToken cancellationToken)
     {
         var requestModel = new TokenizeMessage(request.Text)
         {
@@ -58,10 +56,11 @@ public class TokenizationController : ControllerBase
     /// DeTokenize an array of tokens to create a text
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="domainService"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("detokenize")]
-    public async Task<string> DeTokenize([FromBody] DeTokenizeMessageRequest request, CancellationToken cancellationToken)
+    public async Task<string> DeTokenize([FromBody] DeTokenizeMessageRequest request, [FromServices] ITokenizationService domainService, CancellationToken cancellationToken)
     {
         var requestModel = new DeTokenizeMessage(request.Tokens)
         {

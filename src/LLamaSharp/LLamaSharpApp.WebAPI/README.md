@@ -5,7 +5,7 @@ An ASP.NET Core WebAPI (v7.0) using LlamaSCharp and LlaMa version 1 and 2 models
 #### How to download the source and build:
 Clone the repository and open the solution in Visual Studio 2022.
 
-Download a version 1 or version 2 model like: 
+Download a Llama model version 1 or version 2 like: 
 ```
 - llama-2-7b.ggmlv3.q8_0.bin
 - wizardLM-7B.ggmlv3.q4_1.bin

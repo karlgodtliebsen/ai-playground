@@ -86,7 +86,7 @@ public static class WebApiConfigurator
         services
             .AddTransient<ILlamaModelFactory, LlamaModelFactory>()
             .AddTransient<IOptionsService, OptionsService>()
-            .AddTransient<IChatService, ChatService>()
+            .AddTransient<IChatDomainService, ChatDomainDomainService>()
             .AddTransient<IEmbeddingsService, EmbeddingsService>()
             .AddTransient<IExecutorService, ExecutorService>()
             .AddTransient<ITokenizationService, TokenizationService>()

@@ -39,10 +39,10 @@ public class OptionsService : IOptionsService
     /// <inheritdoc />
     public async Task PersistInferenceOptions(InferenceOptions? options, string userId, CancellationToken cancellationToken)
     {
-        //if (options for the user does not exist  then use default options
+        //if options for the user does not exist  then use default options
         if (options is null)
         {
-            options = JsonSerializer.Deserialize<InferenceOptions>(JsonSerializer.Serialize(inferenceOptions));
+            options = inferenceOptions.ToJson().FromJson<InferenceOptions>();
         }
         await stateRepository.PersistInferenceOptions(options!, userId, cancellationToken);
     }
@@ -50,10 +50,10 @@ public class OptionsService : IOptionsService
     /// <inheritdoc />
     public async Task PersistLlamaModelOptions(LlamaModelOptions? options, string userId, CancellationToken cancellationToken)
     {
-        //if (options for the user does not exist  then use default options
+        //if options for the user does not exist then use default options
         if (options is null)
         {
-            options = JsonSerializer.Deserialize<LlamaModelOptions>(JsonSerializer.Serialize(llamaModelOptions));
+            options = llamaModelOptions.ToJson().FromJson<LlamaModelOptions>();
         }
         await stateRepository.PersistLlamaModelOptions(options!, userId, cancellationToken);
     }
@@ -61,7 +61,7 @@ public class OptionsService : IOptionsService
     /// <inheritdoc />
     public async Task<InferenceOptions> CoalsceInferenceOptions(InferenceOptions? queryOptions, string userId, CancellationToken cancellationToken)
     {
-        //if (options for the user does not exist  then return snapshot of default options
+        //if options for the user does not exist then return snapshot of default options
         if (queryOptions is not null)
         {
             return queryOptions;
@@ -70,7 +70,7 @@ public class OptionsService : IOptionsService
         var options = await stateRepository.GetInferenceOptions(userId, cancellationToken);
         if (options is null)
         {
-            options = JsonSerializer.Deserialize<InferenceOptions>(JsonSerializer.Serialize(inferenceOptions));
+            options = inferenceOptions.ToJson().FromJson<InferenceOptions>();
         }
         return options!;
     }
@@ -78,16 +78,16 @@ public class OptionsService : IOptionsService
     /// <inheritdoc />
     public async Task<LlamaModelOptions> CoalsceLlamaModelOptions(LlamaModelOptions? queryOptions, string userId, CancellationToken cancellationToken)
     {
-        //if (options for the user does not exist  then return snapshot of default options
+        //if options for the user does not exist then return snapshot of default options
         if (queryOptions is not null)
         {
             return queryOptions;
         }
-        //if (options for the user does not exist  then return snapshot of  default options
+        //if options for the user does not exist then return snapshot of default options
         var options = await stateRepository.GetLlamaModelOptions(userId, cancellationToken);
         if (options is null)
         {
-            options = JsonSerializer.Deserialize<LlamaModelOptions>(JsonSerializer.Serialize(llamaModelOptions));
+            options = llamaModelOptions.ToJson().FromJson<LlamaModelOptions>();
         }
         return options!;
     }
@@ -95,11 +95,11 @@ public class OptionsService : IOptionsService
     /// <inheritdoc />
     public async Task<InferenceOptions> GetInferenceOptions(string userId, CancellationToken cancellationToken)
     {
-        //if (options for the user does not exist  then return snapshot of  default options
+        //if options for the user does not exist then return snapshot of default options
         var options = await stateRepository.GetInferenceOptions(userId, cancellationToken);
         if (options is null)
         {
-            options = JsonSerializer.Deserialize<InferenceOptions>(JsonSerializer.Serialize(inferenceOptions));
+            options = inferenceOptions.ToJson().FromJson<InferenceOptions>();//snapshot
         }
         return options!;
     }
@@ -107,12 +107,41 @@ public class OptionsService : IOptionsService
     /// <inheritdoc />
     public async Task<LlamaModelOptions> GetLlamaModelOptions(string userId, CancellationToken cancellationToken)
     {
-        //if (options for the user does not exist  then return snapshot of  default options
+        //if options for the user does not exist then return snapshot of default options
         var options = await stateRepository.GetLlamaModelOptions(userId, cancellationToken);
         if (options is null)
         {
-            options = JsonSerializer.Deserialize<LlamaModelOptions>(JsonSerializer.Serialize(llamaModelOptions));
+            options = llamaModelOptions.ToJson().FromJson<LlamaModelOptions>();//snapshot
         }
         return options!;
+    }
+}
+
+internal static class JsonExtensions
+{
+
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+
+    public static string ToJson(this object obj, JsonSerializerOptions? serializerOptions = null)
+    {
+        if (serializerOptions is not null)
+        {
+            return JsonSerializer.Serialize(obj, serializerOptions!);
+        }
+        return JsonSerializer.Serialize(obj, JsonOptions);
+    }
+
+    public static string AsJson(this object obj, JsonSerializerOptions? serializerOptions = null)
+    {
+        return ToJson(obj, serializerOptions);
+    }
+
+    public static T? FromJson<T>(this string json, JsonSerializerOptions? serializerOptions = null)
+    {
+        if (serializerOptions is not null)
+        {
+            return JsonSerializer.Deserialize<T>(json, serializerOptions);
+        }
+        return JsonSerializer.Deserialize<T>(json);
     }
 }

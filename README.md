@@ -7,7 +7,7 @@ A dotnet Client 'OpenAI.Client' with a Test project and a WPF application that s
 
 ### Llamasharp (Models version 1 and 2):
 A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. 
-This project could be a candidate for a missing Web.Api at Llamasharp.
+
 
 These models has been testet:
 ```

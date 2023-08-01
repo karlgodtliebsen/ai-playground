@@ -20,20 +20,17 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 //[AllowAnonymous]
 public class ChatController : ControllerBase
 {
-    private readonly IChatService domainService;
     private readonly IUserIdProvider userProvider;
     private readonly ILogger<ChatController> logger;
 
     /// <summary>
     /// Controller for Chat
     /// </summary>
-    /// <param name="service"></param>
     /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public ChatController(IChatService service, IUserIdProvider userProvider, ILogger<ChatController> logger)
+    public ChatController(IUserIdProvider userProvider, ILogger<ChatController> logger)
     {
         this.logger = logger;
-        domainService = service;
         this.userProvider = userProvider;
     }
 
@@ -41,10 +38,11 @@ public class ChatController : ControllerBase
     /// Invokes a chat with the prompt text, using the model parameters.
     /// </summary>
     /// <param name="request">Hold the Chat prompt/text</param>
+    /// <param name="domainService"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("chat")]
-    public async Task<string> Chat([FromBody] ChatMessageRequest request, CancellationToken cancellationToken)
+    public async Task<string> Chat([FromBody] ChatMessageRequest request, [FromServices] IChatDomainService domainService, CancellationToken cancellationToken)
     {
         var requestModel = new ChatMessage(request.Text)
         {
@@ -54,4 +52,38 @@ public class ChatController : ControllerBase
         };
         return await domainService.Chat(requestModel, cancellationToken);
     }
+
+
+    [HttpPost("chat/stream")]
+    public async Task ChatUsingStream([FromBody] ChatMessageRequest request, [FromServices] IChatDomainService domainService, CancellationToken cancellationToken)
+    {
+        var requestModel = new ChatMessage(request.Text)
+        {
+            UsePersistedModelState = request.UsePersistedModelState,
+            LlamaModelOptions = request.LlamaModelOptions,
+            UserId = userProvider.UserId
+        };
+
+        Response.ContentType = "text/event-stream";
+        await foreach (var r in domainService.ChatStream(requestModel, cancellationToken))
+        {
+            await Response.WriteAsync($"data:{r}\n\n", cancellationToken);
+            await Response.Body.FlushAsync(cancellationToken);
+        }
+
+        await Response.CompleteAsync();
+    }
+
+    //[HttpPost("History")]
+    //public async Task<string> SendHistory([FromBody] HistoryInput input, [FromServices] IChatService domainService / StatelessChatService _service)
+    //{
+    //    var history = new ChatHistory();
+
+    //    var messages = input.Messages.Select(m => new ChatHistory.Message(Enum.Parse<AuthorRole>(m.Role), m.Content));
+
+    //    history.Messages.AddRange(messages);
+
+    //    return await _service.SendAsync(history);
+    //}
+
 }

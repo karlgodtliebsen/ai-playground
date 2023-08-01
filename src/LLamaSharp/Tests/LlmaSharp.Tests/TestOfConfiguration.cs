@@ -40,7 +40,7 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         factory.Services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
         factory.Services.GetService<ILlamaModelFactory>().Should().NotBeNull();
         factory.Services.GetService<IOptionsService>().Should().NotBeNull();
-        factory.Services.GetService<IChatService>().Should().NotBeNull();
+        factory.Services.GetService<IChatDomainService>().Should().NotBeNull();
         factory.Services.GetService<IEmbeddingsService>().Should().NotBeNull();
         factory.Services.GetService<IExecutorService>().Should().NotBeNull();
         factory.Services.GetService<IModelStateRepository>().Should().NotBeNull();

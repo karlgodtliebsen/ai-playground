@@ -25,7 +25,6 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 [Authorize]
 public class ExecutorController : ControllerBase
 {
-    private readonly IExecutorService domainService;
     private readonly IUserIdProvider userProvider;
     private readonly ILogger<ExecutorController> logger;
 
@@ -35,10 +34,9 @@ public class ExecutorController : ControllerBase
     /// <param name="service"></param>
     /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public ExecutorController(IExecutorService service, IUserIdProvider userProvider, ILogger<ExecutorController> logger)
+    public ExecutorController(IUserIdProvider userProvider, ILogger<ExecutorController> logger)
     {
         this.logger = logger;
-        domainService = service;
         this.userProvider = userProvider;
     }
 
@@ -54,10 +52,11 @@ public class ExecutorController : ControllerBase
     /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/Examples/InstructModeExecute.md"/>
     /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/Examples/InteractiveModeExecute.md"/>
     /// </param>
+    /// <param name="domainService"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>Inferred text</returns>
     [HttpPost("executor")]
-    public async Task<string> ExecutorAsync([FromBody] ExecutorInferRequest request, CancellationToken cancellationToken)
+    public async Task<string> ExecutorAsync([FromBody] ExecutorInferRequest request, [FromServices] IExecutorService domainService, CancellationToken cancellationToken)
     {
         var requestModel = new ExecutorInferMessage(request.Text)
         {

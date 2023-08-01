@@ -17,6 +17,7 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 [ApiController]
 [Route("api/llama")]
 [Authorize]
+//[AllowAnonymous]
 public class ConfigurationController : ControllerBase
 {
     private readonly IOptionsService domainService;

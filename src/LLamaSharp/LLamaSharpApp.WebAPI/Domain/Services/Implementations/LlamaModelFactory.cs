@@ -3,7 +3,6 @@ using LLama.Abstractions;
 using LLama.Common;
 
 using LLamaSharpApp.WebAPI.Configuration;
-using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.Extensions.Options;
 
@@ -34,7 +33,6 @@ public class LlamaModelFactory : ILlamaModelFactory
     {
         return llamaModelOptions;
     }
-    //default value points at "models/lamma-7B/ggml-model.bin",. Since this is located in 'models' folder that is often dedicated to code models, we override it here
 
     /// <summary>
     /// Creates a default llama model 
@@ -43,16 +41,17 @@ public class LlamaModelFactory : ILlamaModelFactory
     public LLamaModel CreateModel()
     {
         var parameters = CreateModelParams();
-        return new LLamaModel(parameters);
+        return CreateModel(parameters);
     }
+
     /// <summary>
-    /// Creates a llama model with specified parameters
+    /// Creates a llama model with specified parameters (ResettableLLamaModel)
     /// </summary>
     /// <param name="parameters"></param>
     /// <returns></returns>
     public LLamaModel CreateModel(ModelParams parameters)
     {
-        return new LLamaModel(parameters);
+        return new LLamaModel(parameters);    //LLamaModel
     }
 
     /// <summary>
