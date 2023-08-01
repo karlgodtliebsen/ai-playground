@@ -23,6 +23,12 @@ public interface ILlamaModelFactory
     LLamaModel CreateModel(ModelParams parameters);
 
     /// <summary>
+    /// Creates a LLamaModel with default ModelParams
+    /// </summary>
+    /// <returns></returns>
+    LLamaModel CreateModel();
+
+    /// <summary>
     /// Creates a LLamaEmbedder with the given ModelParams
     /// </summary>
     /// <param name="parameters"></param>

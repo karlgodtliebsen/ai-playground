@@ -14,6 +14,7 @@ public interface IModelStateRepository
     /// <param name="userId"></param>
     /// <param name="save"></param>
     void SaveState(LLamaModel model, string userId, bool save);
+
     /// <summary>
     /// Saves the state of the executor
     /// </summary>
@@ -23,14 +24,15 @@ public interface IModelStateRepository
     void SaveState(StatefulExecutorBase executor, string userId, bool save);
 
     /// <summary>
-    /// Saves the state of the model
+    /// Loads the state of the model
     /// </summary>
     /// <param name="model"></param>
     /// <param name="userId"></param>
     /// <param name="load"></param>
     void LoadState(LLamaModel model, string userId, bool load);
+
     /// <summary>
-    /// Saves the state of the executor
+    /// Loads the state of the executor
     /// </summary>
     /// <param name="executor"></param>
     /// <param name="userId"></param>

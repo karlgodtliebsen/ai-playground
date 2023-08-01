@@ -6,6 +6,8 @@ using LLamaSharpApp.WebAPI.Configuration;
 
 using Microsoft.Extensions.Options;
 
+using SerilogTimings.Extensions;
+
 namespace LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 
 /// <summary>
@@ -13,14 +15,17 @@ namespace LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 /// </summary>
 public class LlamaModelFactory : ILlamaModelFactory
 {
+    private readonly ILogger logger;
     private readonly LlamaModelOptions llamaModelOptions;
 
     /// <summary>
     /// Constructor for LLama Model Factory
     /// </summary>
     /// <param name="options"></param>
-    public LlamaModelFactory(IOptions<LlamaModelOptions> options)
+    /// <param name="logger"></param>
+    public LlamaModelFactory(IOptions<LlamaModelOptions> options, ILogger logger)
     {
+        this.logger = logger;
         ArgumentNullException.ThrowIfNull(options.Value);
         llamaModelOptions = options.Value;
     }
@@ -51,7 +56,10 @@ public class LlamaModelFactory : ILlamaModelFactory
     /// <returns></returns>
     public LLamaModel CreateModel(ModelParams parameters)
     {
-        return new LLamaModel(parameters);    //LLamaModel
+        using var op = logger.BeginOperation("Creating LlaMa Model");
+        var model = new LLamaModel(parameters);    //LLamaModel
+        op.Complete();
+        return model;
     }
 
     /// <summary>
@@ -61,7 +69,10 @@ public class LlamaModelFactory : ILlamaModelFactory
     /// <returns></returns>
     public LLamaEmbedder CreateEmbedder(ModelParams parameters)
     {
-        return new LLamaEmbedder(parameters);
+        using var op = logger.BeginOperation("Creating Embedder");
+        var model = new LLamaEmbedder(parameters);
+        op.Complete();
+        return model;
     }
 
     /// <summary>
@@ -97,8 +108,10 @@ public class LlamaModelFactory : ILlamaModelFactory
     /// <returns></returns>
     public ChatSession CreateChatSession<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
+        using var op = logger.BeginOperation("Creating Chat Session");
         ILLamaExecutor executor = CreateStatefulExecutor<TExecutor>(model);
         var chatSession = new ChatSession(executor);
+        op.Complete();
         return chatSession;
     }
 

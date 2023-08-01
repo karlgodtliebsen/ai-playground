@@ -4,6 +4,8 @@ using LLamaSharpApp.WebAPI.Configuration;
 
 using Microsoft.Extensions.Options;
 
+using SerilogTimings.Extensions;
+
 namespace LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 
 /// <summary>
@@ -12,18 +14,22 @@ namespace LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 /// </summary>
 public class ModelStateFileRepository : IModelStateRepository
 {
+    private readonly ILogger logger;
     private readonly WebApiOptions webApiOptions;
 
     private const string ModelFile = "model.bin";
     private const string ExecutorFile = "executor.bin";
 
     private readonly string fullPath;
+
     /// <summary>
     /// Constructor for the Model State File Repository
     /// </summary>
     /// <param name="options"></param>
-    public ModelStateFileRepository(IOptions<WebApiOptions> options)
+    /// <param name="logger">Serilog</param>
+    public ModelStateFileRepository(IOptions<WebApiOptions> options, ILogger logger)
     {
+        this.logger = logger;
         webApiOptions = options.Value;
         fullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
 
@@ -51,8 +57,10 @@ public class ModelStateFileRepository : IModelStateRepository
     {
         if (save)
         {
+            using var op = logger.BeginOperation("Saving Model State for {userId}...", userId);
             var fileName = GetFileName(userId, ModelFile);
             model.SaveState(fileName!);
+            op.Complete();
         }
     }
 
@@ -66,8 +74,10 @@ public class ModelStateFileRepository : IModelStateRepository
     {
         if (save)
         {
+            using var op = logger.BeginOperation("Saving Model State for {userId}...", userId);
             var fileName = GetFileName(userId, ExecutorFile);
             executor.SaveState(fileName!);
+            op.Complete();
         }
     }
 
@@ -81,11 +91,13 @@ public class ModelStateFileRepository : IModelStateRepository
     {
         if (load)
         {
+            using var op = logger.BeginOperation("Loading Model State for {userId}...", userId);
             var fileName = GetFileName(userId, ExecutorFile);
             if (File.Exists(fileName))
             {
                 model.LoadState(fileName!);
             }
+            op.Complete();
         }
     }
 
@@ -99,11 +111,13 @@ public class ModelStateFileRepository : IModelStateRepository
     {
         if (load)
         {
+            using var op = logger.BeginOperation("Loading Model State for {userId}...", userId);
             var fileName = GetFileName(userId, ExecutorFile);
             if (File.Exists(fileName))
             {
                 executor.LoadState(fileName!);
             }
+            op.Complete();
         }
     }
 }

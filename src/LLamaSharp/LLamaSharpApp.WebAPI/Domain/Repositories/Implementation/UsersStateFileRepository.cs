@@ -1,11 +1,10 @@
-﻿using System.Text.Json;
-
-using LLamaSharpApp.WebAPI.Configuration;
+﻿using LLamaSharpApp.WebAPI.Configuration;
 
 using Microsoft.Extensions.Options;
 
-namespace LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
+using SerilogTimings.Extensions;
 
+namespace LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 
 
 /// <summary>
@@ -13,6 +12,7 @@ namespace LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 /// </summary>
 public class UsersStateFileRepository : IUsersStateRepository
 {
+    private readonly ILogger logger;
     private const string InferenceFile = "inference-options.json";
     private const string LlamaModelFile = "llamamodel-options.json";
     private readonly WebApiOptions webApiOptions;
@@ -22,17 +22,21 @@ public class UsersStateFileRepository : IUsersStateRepository
     /// Constructor for the User State File Repository
     /// </summary>
     /// <param name="webApiOptions"></param>
-    public UsersStateFileRepository(IOptions<WebApiOptions> webApiOptions)
+    /// <param name="logger"></param>
+    public UsersStateFileRepository(IOptions<WebApiOptions> webApiOptions, ILogger logger)
     {
+        this.logger = logger;
         this.webApiOptions = webApiOptions.Value;
         fullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
     }
 
     private async Task PersistObject(object options, string fileName, CancellationToken cancellationToken)
     {
+        using var op = logger.BeginOperation("Saving Options");
         if (File.Exists(fileName)) File.Delete(fileName); //Can be improved to make it more resilient by creating a copy and so on
         await using var stream = File.OpenWrite(fileName);
         await JsonSerializer.SerializeAsync(stream, options, cancellationToken: cancellationToken);
+        op.Complete();
     }
 
     private string GetFullPath(string userId)
@@ -81,8 +85,11 @@ public class UsersStateFileRepository : IUsersStateRepository
     {
         var fileName = GetFileName(userId, InferenceFile);
         if (!File.Exists(fileName)) return null;
+
+        using var op = logger.BeginOperation("Loading Inference Options for {userId}...", userId);
         await using var stream = File.OpenRead(fileName);
         var options = await JsonSerializer.DeserializeAsync<InferenceOptions>(stream, cancellationToken: cancellationToken);
+        op.Complete();
         return options;
     }
 
@@ -96,8 +103,10 @@ public class UsersStateFileRepository : IUsersStateRepository
     {
         var fileName = GetFileName(userId, LlamaModelFile);
         if (!File.Exists(fileName)) return null;
+        using var op = logger.BeginOperation("Loading Llama Model Options for {userId}...", userId);
         await using var stream = File.OpenRead(fileName);
         var options = await JsonSerializer.DeserializeAsync<LlamaModelOptions>(stream, cancellationToken: cancellationToken);
+        op.Complete();
         return options;
     }
 }

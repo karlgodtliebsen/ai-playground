@@ -6,6 +6,8 @@ using LLamaSharpApp.WebAPI.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using SerilogTimings.Extensions;
+
 namespace LLamaSharpApp.WebAPI.Controllers;
 
 /// <summary>
@@ -21,14 +23,14 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 public class ChatController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
-    private readonly ILogger<ChatController> logger;
+    private readonly ILogger logger;
 
     /// <summary>
     /// Controller for Chat
     /// </summary>
     /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public ChatController(IUserIdProvider userProvider, ILogger<ChatController> logger)
+    public ChatController(IUserIdProvider userProvider, ILogger logger)
     {
         this.logger = logger;
         this.userProvider = userProvider;
@@ -44,19 +46,23 @@ public class ChatController : ControllerBase
     [HttpPost("chat")]
     public async Task<string> Chat([FromBody] ChatMessageRequest request, [FromServices] IChatDomainService domainService, CancellationToken cancellationToken)
     {
+        using var op = logger.BeginOperation("Running Chat for {userId}...", userProvider.UserId);
         var requestModel = new ChatMessage(request.Text)
         {
             UsePersistedModelState = request.UsePersistedModelState,
             LlamaModelOptions = request.LlamaModelOptions,
             UserId = userProvider.UserId
         };
-        return await domainService.Chat(requestModel, cancellationToken);
+        var result = await domainService.Chat(requestModel, cancellationToken);
+        op.Complete();
+        return result;
     }
-
 
     [HttpPost("chat/stream")]
     public async Task ChatUsingStream([FromBody] ChatMessageRequest request, [FromServices] IChatDomainService domainService, CancellationToken cancellationToken)
     {
+        using var op = logger.BeginOperation("Running Streamed Chat for {userId}...", userProvider.UserId);
+
         var requestModel = new ChatMessage(request.Text)
         {
             UsePersistedModelState = request.UsePersistedModelState,
@@ -72,6 +78,7 @@ public class ChatController : ControllerBase
         }
 
         await Response.CompleteAsync();
+        op.Complete();
     }
 
     //[HttpPost("History")]

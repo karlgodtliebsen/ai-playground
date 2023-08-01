@@ -45,10 +45,15 @@ public class ChatDomainDomainService : IChatDomainService
     {
         var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
         var (chatSession, model) = factory.CreateChatSession<InstructExecutor>(modelOptions);
+        var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
+        inferenceOptions.AntiPrompts = modelOptions.AntiPrompt;
+
 
         modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
-        var outputs = chatSession.Chat(input.Text);
+        var userInput = await CreateUserInput(input, modelOptions, cancellationToken);
+        var outputs = chatSession.Chat(userInput, inferenceOptions, cancellationToken);
         var result = string.Join("", outputs);
+
         modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
         //model.Dispose();
         return result;
@@ -57,18 +62,15 @@ public class ChatDomainDomainService : IChatDomainService
     /// <inheritdoc />
     public async IAsyncEnumerable<string> ChatStream(ChatMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var inferenceParams = new InferenceOptions()
-        {
-            RepeatPenalty = 1.0f,
-            //AntiPrompts = new string[] { "User:" },
-        };
+
         var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
-        var inferenceOptions = await optionsService.CoalsceInferenceOptions(inferenceParams, input.UserId, cancellationToken);
         var (chatSession, model) = factory.CreateChatSession<InstructExecutor>(modelOptions);
+        var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
+        inferenceOptions.AntiPrompts = modelOptions.AntiPrompt;
 
         modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
 
-        var userInput = await File.ReadAllTextAsync(modelOptions.PromptFile, cancellationToken) + input.Text;
+        var userInput = await CreateUserInput(input, modelOptions, cancellationToken);
 
         var results = chatSession.ChatAsync(userInput, inferenceOptions, cancellationToken);
 
@@ -77,5 +79,16 @@ public class ChatDomainDomainService : IChatDomainService
             yield return result;
         }
         //model.Dispose();
+    }
+
+    private async Task<string> CreateUserInput(SimpleTextMessage input, LlamaModelOptions modelOptions, CancellationToken cancellationToken)
+    {
+        string userInput = input.Text;
+        if (File.Exists(modelOptions.PromptFile))
+        {
+            userInput = await File.ReadAllTextAsync(modelOptions.PromptFile, cancellationToken) + input.Text;
+        }
+
+        return userInput;
     }
 }
