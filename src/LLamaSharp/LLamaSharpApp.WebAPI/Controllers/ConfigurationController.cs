@@ -22,7 +22,7 @@ public class ConfigurationController : ControllerBase
 {
     private readonly IOptionsService domainService;
     private readonly IUserIdProvider userProvider;
-    private readonly ILogger<ConfigurationController> logger;
+    private readonly ILogger logger;
 
     /// <summary>
     /// Constructor for ConfigurationController
@@ -30,7 +30,7 @@ public class ConfigurationController : ControllerBase
     /// <param name="domainService"></param>
     /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public ConfigurationController(IOptionsService domainService, IUserIdProvider userProvider, ILogger<ConfigurationController> logger)
+    public ConfigurationController(IOptionsService domainService, IUserIdProvider userProvider, ILogger logger)
     {
         this.logger = logger;
         this.domainService = domainService;
@@ -58,6 +58,23 @@ public class ConfigurationController : ControllerBase
     public async Task<InferenceOptions> GetUsersInferenceModelConfiguration(CancellationToken cancellationToken)
     {
         return await domainService.GetInferenceOptions(userProvider.UserId, cancellationToken);
+    }
+
+    /// <summary>
+    /// Returns the Systems Prompt/chat Templates
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet("configuration/chat-templates")]
+    public async Task GetChatTemplates(CancellationToken cancellationToken)
+    {
+        Response.ContentType = "text/plain";
+        await foreach (var template in domainService.GetSystemChatTemplates(cancellationToken))
+        {
+            await Response.WriteAsync(template, cancellationToken);
+            await Response.Body.FlushAsync(cancellationToken);
+        }
+        await Response.CompleteAsync();
     }
 
 

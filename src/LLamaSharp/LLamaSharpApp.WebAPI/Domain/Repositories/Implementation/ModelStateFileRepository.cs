@@ -12,7 +12,7 @@ namespace LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 /// Centralized handling for model state persist and load
 /// Will probably evolve into something like repository to support both file systems and dbs
 /// </summary>
-public class ModelStateFileRepository : IModelStateRepository
+public sealed class ModelStateFileRepository : IModelStateRepository
 {
     private readonly ILogger logger;
     private readonly WebApiOptions webApiOptions;
@@ -20,7 +20,8 @@ public class ModelStateFileRepository : IModelStateRepository
     private const string ModelFile = "model.bin";
     private const string ExecutorFile = "executor.bin";
 
-    private readonly string fullPath;
+    private static readonly string FullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
+
 
     /// <summary>
     /// Constructor for the Model State File Repository
@@ -31,12 +32,12 @@ public class ModelStateFileRepository : IModelStateRepository
     {
         this.logger = logger;
         webApiOptions = options.Value;
-        fullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
 
     }
+
     private string GetFullPath(string userId)
     {
-        var path = Path.GetFullPath(Path.Combine(fullPath, webApiOptions.StatePersistencePath, userId));
+        var path = Path.GetFullPath(Path.Combine(FullPath, webApiOptions.StatePersistencePath, userId));
         Directory.CreateDirectory(path!);
         return path;
     }

@@ -9,6 +9,13 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7039/"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger/index.html",
+      "publishAllPorts": true,
+      "useSSL": true
     }
   },
   "iisSettings": {

@@ -19,14 +19,14 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 public class EmbeddingsController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
-    private readonly ILogger<EmbeddingsController> logger;
+    private readonly ILogger logger;
 
     /// <summary>
     /// Constructor for EmbeddingsController
     /// </summary>
     /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public EmbeddingsController(IUserIdProvider userProvider, ILogger<EmbeddingsController> logger)
+    public EmbeddingsController(IUserIdProvider userProvider, ILogger logger)
     {
         this.logger = logger;
         this.userProvider = userProvider;

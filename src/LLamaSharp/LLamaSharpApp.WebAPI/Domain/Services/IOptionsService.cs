@@ -59,4 +59,7 @@ public interface IOptionsService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<LlamaModelOptions> CoalsceLlamaModelOptions(LlamaModelOptions? queryOptions, string userId, CancellationToken cancellationToken);
+
+
+    IAsyncEnumerable<string> GetSystemChatTemplates(CancellationToken cancellationToken);
 }

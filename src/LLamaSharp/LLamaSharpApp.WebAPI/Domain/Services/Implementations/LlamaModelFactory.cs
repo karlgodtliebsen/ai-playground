@@ -56,7 +56,7 @@ public class LlamaModelFactory : ILlamaModelFactory
     /// <returns></returns>
     public LLamaModel CreateModel(ModelParams parameters)
     {
-        using var op = logger.BeginOperation("Creating LlaMa Model");
+        using var op = logger.BeginOperation("Creating LLama Model");
         var model = new LLamaModel(parameters);    //LLamaModel
         op.Complete();
         return model;

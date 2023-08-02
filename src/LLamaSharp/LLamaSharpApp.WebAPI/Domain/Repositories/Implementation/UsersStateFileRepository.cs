@@ -1,6 +1,11 @@
-﻿using LLamaSharpApp.WebAPI.Configuration;
+﻿using System.Runtime.CompilerServices;
+
+using LLamaSharpApp.WebAPI.Configuration;
 
 using Microsoft.Extensions.Options;
+
+using OneOf;
+using OneOf.Types;
 
 using SerilogTimings.Extensions;
 
@@ -10,13 +15,15 @@ namespace LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 /// <summary>
 /// Handles the users state
 /// </summary>
-public class UsersStateFileRepository : IUsersStateRepository
+public sealed class UsersStateFileRepository : IUsersStateRepository
 {
     private readonly ILogger logger;
     private const string InferenceFile = "inference-options.json";
     private const string LlamaModelFile = "llamamodel-options.json";
+    private const string AssetsPath = "Assets";
     private readonly WebApiOptions webApiOptions;
-    private readonly string fullPath;
+    private static readonly string FullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
+
 
     /// <summary>
     /// Constructor for the User State File Repository
@@ -27,7 +34,6 @@ public class UsersStateFileRepository : IUsersStateRepository
     {
         this.logger = logger;
         this.webApiOptions = webApiOptions.Value;
-        fullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
     }
 
     private async Task PersistObject(object options, string fileName, CancellationToken cancellationToken)
@@ -41,7 +47,7 @@ public class UsersStateFileRepository : IUsersStateRepository
 
     private string GetFullPath(string userId)
     {
-        var path = Path.GetFullPath(Path.Combine(fullPath, webApiOptions.StatePersistencePath, userId));
+        var path = Path.GetFullPath(Path.Combine(FullPath, webApiOptions.StatePersistencePath, userId));
         Directory.CreateDirectory(path!);
         return path;
     }
@@ -81,16 +87,16 @@ public class UsersStateFileRepository : IUsersStateRepository
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<InferenceOptions?> GetInferenceOptions(string userId, CancellationToken cancellationToken)
+    public async Task<OneOf<InferenceOptions, None>> GetInferenceOptions(string userId, CancellationToken cancellationToken)
     {
         var fileName = GetFileName(userId, InferenceFile);
-        if (!File.Exists(fileName)) return null;
+        if (!File.Exists(fileName)) return new None();
 
         using var op = logger.BeginOperation("Loading Inference Options for {userId}...", userId);
         await using var stream = File.OpenRead(fileName);
         var options = await JsonSerializer.DeserializeAsync<InferenceOptions>(stream, cancellationToken: cancellationToken);
         op.Complete();
-        return options;
+        return options!;
     }
 
     /// <summary>
@@ -99,14 +105,25 @@ public class UsersStateFileRepository : IUsersStateRepository
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<LlamaModelOptions?> GetLlamaModelOptions(string userId, CancellationToken cancellationToken)
+    public async Task<OneOf<LlamaModelOptions, None>> GetLlamaModelOptions(string userId, CancellationToken cancellationToken)
     {
         var fileName = GetFileName(userId, LlamaModelFile);
-        if (!File.Exists(fileName)) return null;
+        if (!File.Exists(fileName)) return new None();
         using var op = logger.BeginOperation("Loading Llama Model Options for {userId}...", userId);
         await using var stream = File.OpenRead(fileName);
         var options = await JsonSerializer.DeserializeAsync<LlamaModelOptions>(stream, cancellationToken: cancellationToken);
         op.Complete();
-        return options;
+        return options!;
+    }
+
+
+    /// <inheritdoc />
+    public async IAsyncEnumerable<string> GetSystemChatTemplates([EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        var directory = Path.Combine(FullPath, AssetsPath);
+        foreach (var file in Directory.EnumerateFiles(directory, "*.txt"))
+        {
+            yield return await File.ReadAllTextAsync(file, cancellationToken);
+        }
     }
 }

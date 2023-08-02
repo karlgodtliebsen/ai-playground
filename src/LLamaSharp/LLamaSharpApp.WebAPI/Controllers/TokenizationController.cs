@@ -20,14 +20,14 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 public class TokenizationController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
-    private readonly ILogger<TokenizationController> logger;
+    private readonly ILogger logger;
 
     /// <summary>
     /// Constructor for TokenizationController
     /// </summary>
     /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public TokenizationController(IUserIdProvider userProvider, ILogger<TokenizationController> logger)
+    public TokenizationController(IUserIdProvider userProvider, ILogger logger)
     {
         this.logger = logger;
         this.userProvider = userProvider;

@@ -1,5 +1,8 @@
 ﻿using LLamaSharpApp.WebAPI.Configuration;
 
+using OneOf;
+using OneOf.Types;
+
 namespace LLamaSharpApp.WebAPI.Domain.Repositories;
 
 /// <summary>
@@ -29,7 +32,7 @@ public interface IUsersStateRepository
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<InferenceOptions?> GetInferenceOptions(string userId, CancellationToken cancellationToken);
+    Task<OneOf<InferenceOptions, None>> GetInferenceOptions(string userId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get Llma Model Options
@@ -37,5 +40,17 @@ public interface IUsersStateRepository
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<LlamaModelOptions?> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
+    Task<OneOf<LlamaModelOptions, None>> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
+
+
+    /// <summary>
+    /// Returns the system chat configuration from the assets files
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<string> GetSystemChatTemplates(CancellationToken cancellationToken);
+
+
+
+
 }

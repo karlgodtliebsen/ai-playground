@@ -1,4 +1,5 @@
 ﻿using AI.Library.Utils;
+
 using OneOf;
 
 using OpenAI.Client.OpenAI.HttpClients;
@@ -106,9 +107,8 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
     /// <param name="deploymentName"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>Response from the OpenAI model along with tokens for the prompt and response.</returns>
-    public async Task<OneOf<(ChatChoice response, int promptTokens, int responseTokens), ErrorResponse>> GetChatCompletion(
-    IList<ChatCompletionMessage> messages,
-    Guid sessionId, string deploymentName, CancellationToken cancellationToken)
+    public async Task<OneOf<(ChatChoice response, int promptTokens, int responseTokens), ErrorResponse>>
+        GetChatCompletion(IList<ChatCompletionMessage> messages, Guid sessionId, string deploymentName, CancellationToken cancellationToken)
     {
 
         var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
@@ -141,9 +141,9 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
     /// Sends the existing conversation to the OpenAI model and returns a two word summary.
     /// </summary>
     /// <param name="sessionId">Chat session identifier for the current conversation.</param>
-    /// <param name="conversation">Prompt conversation to send to the deployment.</param>
+    /// <param name="userPrompt">Prompt conversation to send to the deployment.</param>
     /// <param name="cancellationToken"></param>
-    /// <returns>Summarization response from the OpenAI model deployment.</returns>
+    /// <returns>Summarized response from the OpenAI model deployment.</returns>
     public async Task<string> Summarize(Guid sessionId, string userPrompt, CancellationToken cancellationToken)
     {
         string deploymentName = "gpt-3.5-turbo";
@@ -168,11 +168,7 @@ public class OpenAiChatCompletionService : IOpenAiChatCompletionService
 
         var response = await aiClient.GetChatCompletionsAsync(payload, cancellationToken);
         return response.Match(
-            completions =>
-            {
-                string summary = completions.Choices.First().Message!.Content!;
-                return summary;
-            },
+            completions => completions.Choices.First().Message!.Content!,
             error => throw new AIException(error.Error)
         );
     }

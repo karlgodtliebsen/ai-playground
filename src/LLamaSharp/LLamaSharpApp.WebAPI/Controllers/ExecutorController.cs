@@ -8,6 +8,8 @@ using LLamaSharpApp.WebAPI.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using SerilogTimings.Extensions;
+
 namespace LLamaSharpApp.WebAPI.Controllers;
 
 /// <summary>
@@ -26,15 +28,14 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 public class ExecutorController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
-    private readonly ILogger<ExecutorController> logger;
+    private readonly ILogger logger;
 
     /// <summary>
     /// Constructor for ExecutorController
     /// </summary>
-    /// <param name="service"></param>
     /// <param name="userProvider"></param>
     /// <param name="logger"></param>
-    public ExecutorController(IUserIdProvider userProvider, ILogger<ExecutorController> logger)
+    public ExecutorController(IUserIdProvider userProvider, ILogger logger)
     {
         this.logger = logger;
         this.userProvider = userProvider;
@@ -58,6 +59,20 @@ public class ExecutorController : ControllerBase
     [HttpPost("executor")]
     public async Task<string> ExecutorAsync([FromBody] ExecutorInferRequest request, [FromServices] IExecutorService domainService, CancellationToken cancellationToken)
     {
+        using var op = logger.BeginOperation("Running Executor for {userId}...", userProvider.UserId);
+        var requestModel = CreateRequestModel(request);
+        var sb = new StringBuilder();
+        var result = domainService.Executor(requestModel, cancellationToken);
+        await foreach (var s in result.WithCancellation(cancellationToken))
+        {
+            sb.Append(s);
+        }
+        op.Complete();
+        return sb.ToString();
+    }
+
+    private ExecutorInferMessage CreateRequestModel(ExecutorInferRequest request)
+    {
         var requestModel = new ExecutorInferMessage(request.Text)
         {
             InferenceType = request.InferenceType,
@@ -68,13 +83,6 @@ public class ExecutorController : ControllerBase
         if (request.UsePersistedModelState.HasValue) requestModel.UsePersistedModelState = request.UsePersistedModelState.Value;
         if (request.UsePersistedExecutorState.HasValue) requestModel.UsePersistedExecutorState = request.UsePersistedExecutorState.Value;
         if (request.UseStatelessExecutor.HasValue) requestModel.UseStatelessExecutor = request.UseStatelessExecutor.Value;
-
-        var sb = new StringBuilder();
-        var result = domainService.Executor(requestModel, CancellationToken.None);
-        await foreach (var s in result.WithCancellation(cancellationToken))
-        {
-            sb.Append(s);
-        }
-        return sb.ToString();
+        return requestModel;
     }
 }

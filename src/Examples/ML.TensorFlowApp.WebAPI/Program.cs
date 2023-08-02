@@ -26,7 +26,6 @@ if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
                 serverOptions.AddServerHeader = false;
             });
 }
-
 services
     .AddWebApiConfiguration(configuration);
 
@@ -48,8 +47,10 @@ services
 var app = builder.Build();
 await using (app)
 {
+    app.UseMiddleware<ExceptionMiddleware>();
     if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
     {
+        app.UseSecurityHeaders(SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));
         if (!env.IsDevelopment())
         {
             app.UseExceptionHandler("/Error");

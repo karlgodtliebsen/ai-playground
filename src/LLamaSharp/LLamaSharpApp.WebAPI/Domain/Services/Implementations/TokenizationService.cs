@@ -1,6 +1,7 @@
 ﻿using LLamaSharpApp.WebAPI.Domain.Models;
 using LLamaSharpApp.WebAPI.Domain.Repositories;
-using LLamaSharpApp.WebAPI.Domain.Services;
+
+using SerilogTimings.Extensions;
 
 namespace LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 
@@ -10,7 +11,7 @@ public class TokenizationService : ITokenizationService
     private readonly ILlamaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
     private readonly IOptionsService optionsService;
-    private readonly ILogger<TokenizationService> logger;
+    private readonly ILogger logger;
 
     /// <summary>
     /// Constructor for Tokenization Service
@@ -19,7 +20,7 @@ public class TokenizationService : ITokenizationService
     /// <param name="modelStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public TokenizationService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger<TokenizationService> logger)
+    public TokenizationService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;
@@ -35,11 +36,14 @@ public class TokenizationService : ITokenizationService
     /// <returns></returns>
     public async Task<int[]> Tokenize(TokenizeMessage input, CancellationToken cancellationToken)
     {
+        using var op = logger.BeginOperation("Running Tokenize");
+
         var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
         var model = factory.CreateModel(modelOptions);
         modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var tokens = model.Tokenize(input.Text).ToArray();
         modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
+        op.Complete();
         return tokens;
     }
 
@@ -51,11 +55,13 @@ public class TokenizationService : ITokenizationService
     /// <returns></returns>
     public async Task<string> DeTokenize(DeTokenizeMessage input, CancellationToken cancellationToken)
     {
+        using var op = logger.BeginOperation("Running DeTokenize");
         var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
         var model = factory.CreateModel(modelOptions);
         modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var text = model.DeTokenize(input.Tokens);
         modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
+        op.Complete();
         return text;
     }
 }

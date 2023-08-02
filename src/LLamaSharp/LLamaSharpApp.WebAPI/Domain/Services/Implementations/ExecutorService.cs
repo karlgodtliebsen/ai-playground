@@ -2,9 +2,9 @@
 
 using LLama;
 using LLama.Abstractions;
+
 using LLamaSharpApp.WebAPI.Domain.Models;
 using LLamaSharpApp.WebAPI.Domain.Repositories;
-using LLamaSharpApp.WebAPI.Domain.Services;
 
 namespace LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 
@@ -17,7 +17,7 @@ public class ExecutorService : IExecutorService
     private readonly IModelStateRepository modelStateRepository;
 
     private readonly IOptionsService optionsService;
-    private readonly ILogger<ExecutorService> logger;
+    private readonly ILogger logger;
 
     /// <summary>
     /// Constructor for the Executor Service
@@ -26,7 +26,7 @@ public class ExecutorService : IExecutorService
     /// <param name="modelStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public ExecutorService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger<ExecutorService> logger)
+    public ExecutorService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;
@@ -42,15 +42,7 @@ public class ExecutorService : IExecutorService
     /// <returns></returns>
     public async IAsyncEnumerable<string> Executor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        IAsyncEnumerable<string> res;
-        if (input.UseStatelessExecutor)
-        {
-            res = UseStatelessExecutor(input, cancellationToken);
-        }
-        else
-        {
-            res = UseStatefulExecutor(input, cancellationToken);
-        }
+        var res = input.UseStatelessExecutor ? UseStatelessExecutor(input, cancellationToken) : UseStatefulExecutor(input, cancellationToken);
         await foreach (var result in res.WithCancellation(cancellationToken))
         {
             yield return result;
@@ -70,7 +62,7 @@ public class ExecutorService : IExecutorService
             yield return result;
         }
         SaveState(input, executor);
-        //model.Dispose();
+        //model.Dispose();  //TODO: must be solved
     }
 
     private async IAsyncEnumerable<string> UseStatelessExecutor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -86,7 +78,7 @@ public class ExecutorService : IExecutorService
         {
             yield return result;
         }
-        //model.Dispose();
+        //model.Dispose();  //TODO: must be solved
     }
 
     private ILLamaExecutor GetStatelessExecutor(LLamaModel model)

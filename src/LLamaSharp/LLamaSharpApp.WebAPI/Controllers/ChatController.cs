@@ -12,7 +12,7 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 
 /// <summary>
 /// Chat API Controller
-/// <a href="https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/parameters/"/>
+/// <a href="https://scisharp.github.io/LLamaSharp/0.4/LLamaModel/parameters/">LLamaModel Parameters</a>
 /// </summary>
 [ApiVersion("1")]
 [ApiExplorerSettings(GroupName = "v1")]
@@ -73,6 +73,7 @@ public class ChatController : ControllerBase
         Response.ContentType = "text/event-stream";
         await foreach (var r in domainService.ChatStream(requestModel, cancellationToken))
         {
+            logger.Information("Sending SSE: {r}", r);
             await Response.WriteAsync($"data:{r}\n\n", cancellationToken);
             await Response.Body.FlushAsync(cancellationToken);
         }
