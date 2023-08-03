@@ -10,5 +10,5 @@ public class BaseRequest
     /// <summary>
     /// Request specific LlamaModelOptions
     /// </summary>
-    public LlamaModelOptions? LlamaModelOptions { get; set; } = default!;
+    public LlamaModelOptions? ModelOptions { get; set; } = default!;
 }

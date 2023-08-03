@@ -1,0 +1,7 @@
+Comparative prompts
+
+These are used to compare or evaluate different options given to the model to help the user make an appropriate decision. 
+
+Sample:
+
+- "What are the strengths and weaknesses of Option A compared to Option B?"

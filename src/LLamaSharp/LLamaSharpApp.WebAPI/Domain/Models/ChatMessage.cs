@@ -12,8 +12,17 @@ public class ChatMessage : SimpleTextMessage
     public ChatMessage(string? text) : base(text) { }
 
     /// <summary>
-    /// The user id
+    /// The user id. Obtained from Security Infrastructure
     /// </summary>
-    public string UserId { get; set; } = default!;
+    public string UserId { get; init; } = default!;
 
+    /// <summary>
+    /// Use the systems build in AntiPrompt like  [ "User:" ]
+    /// </summary>
+    public bool UseDefaultAntiPrompt { get; init; } = false;
+
+    /// <summary>
+    /// Use the systems build in Prompt
+    /// </summary>
+    public bool UseDefaultPrompt { get; init; } = false;
 }

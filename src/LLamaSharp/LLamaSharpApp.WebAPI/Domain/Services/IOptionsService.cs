@@ -39,6 +39,11 @@ public interface IOptionsService
     /// <returns></returns>
     Task<LlamaModelOptions> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// get default Llama model options
+    /// </summary>
+    /// <returns></returns>
+    LlamaModelOptions GetDefaultLlamaModelOptions();
 
     /// <summary>
     /// This method unites the options that might be submitted for this specific call, or that might be stored for this specific user,
@@ -61,5 +66,5 @@ public interface IOptionsService
     Task<LlamaModelOptions> CoalsceLlamaModelOptions(LlamaModelOptions? queryOptions, string userId, CancellationToken cancellationToken);
 
 
-    IAsyncEnumerable<string> GetSystemChatTemplates(CancellationToken cancellationToken);
+    IAsyncEnumerable<string> GetSystemPromptTemplates(CancellationToken cancellationToken);
 }

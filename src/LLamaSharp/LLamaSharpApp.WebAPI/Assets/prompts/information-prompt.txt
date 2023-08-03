@@ -1,0 +1,9 @@
+Information-seeking prompts
+
+These prompts are specifically designed to gather information. 
+The prompts mostly answer the question What and How. 
+
+Examples of such prompts: 
+
+ -"What are the most popular tourist attractions in Kenya?", 
+ -"How do I prepare for a job interview?"

@@ -35,9 +35,6 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         factory.Services.GetService<ILoggerFactory>().Should().NotBeNull();
         factory.Services.GetService<ILogger<object>>().Should().NotBeNull();
 
-        factory.Services.GetService<IOptions<WebApiOptions>>().Should().NotBeNull();
-        factory.Services.GetService<IOptions<LlamaModelOptions>>().Should().NotBeNull();
-        factory.Services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
         factory.Services.GetService<ILlamaModelFactory>().Should().NotBeNull();
         factory.Services.GetService<IOptionsService>().Should().NotBeNull();
         factory.Services.GetService<IChatDomainService>().Should().NotBeNull();
@@ -48,6 +45,18 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         //Scoped service registrations
         using var scope = factory.Services.CreateScope();
         scope.ServiceProvider.GetService<IUserIdProvider>().Should().NotBeNull();
+
+        //Options
+        factory.Services.GetService<IOptions<WebApiOptions>>().Should().NotBeNull();
+        factory.Services.GetService<IOptions<LlamaModelOptions>>().Should().NotBeNull();
+        factory.Services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
+
+        var options = factory.Services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
+        options.ModelPath.Should().Be("/projects/AI/LlamaModels/llama-2-7b.ggmlv3.q8_0.bin");
+
+        var iOptions = factory.Services.GetRequiredService<IOptions<InferenceOptions>>().Value;
+        iOptions.AntiPrompts.Single().Should().Be("User:");
+        iOptions.MaxTokens.Should().Be(1024);
 
     }
 

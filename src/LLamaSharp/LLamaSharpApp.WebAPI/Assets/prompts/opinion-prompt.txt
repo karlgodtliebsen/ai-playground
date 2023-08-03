@@ -1,0 +1,6 @@
+Opinion-seeking prompts
+
+These are designed to get the AI's opinion on a given topic. 
+
+Sample: 
+ - "What would happen if we could travel back in time?"

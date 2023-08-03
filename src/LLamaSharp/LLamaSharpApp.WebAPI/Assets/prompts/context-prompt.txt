@@ -1,0 +1,7 @@
+Context-providing prompts
+
+Just as the name suggests, these prompts provide information to the AI to help it better understand what the user needs as a response. 
+
+For example, if you are planning a party and need some decoration ideas and activities for attendees, you can structure your prompt like so: 
+
+ -"I am planning a party for my child, what are some decoration ideas and activities that the attendees might do to make it enjoyable and memorable?"

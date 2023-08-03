@@ -13,7 +13,6 @@ using Microsoft.IdentityModel.Logging;
 const string Origins = "AllowedOrigins";
 const string ApplicationName = "LLamaSharpApp.WebAPI";
 
-
 Observability.UseBootstrapLogger(ApplicationName);
 var builder = WebApplication.CreateBuilder(args);
 var env = builder.Environment;
@@ -32,6 +31,7 @@ if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
 services
     .AddWebApiConfiguration(configuration)
     .AddLlamaConfiguration(configuration)
+    .AddInferenceConfiguration(configuration)
     .AddAzureAdConfiguration(configuration, (string?)null)
     //TODO: Add CORS configuration
     //.AddCorsConfig(configuration, options =>

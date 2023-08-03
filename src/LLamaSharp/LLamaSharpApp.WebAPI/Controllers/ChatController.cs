@@ -47,29 +47,18 @@ public class ChatController : ControllerBase
     public async Task<string> Chat([FromBody] ChatMessageRequest request, [FromServices] IChatDomainService domainService, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("Running Chat for {userId}...", userProvider.UserId);
-        var requestModel = new ChatMessage(request.Text)
-        {
-            UsePersistedModelState = request.UsePersistedModelState,
-            LlamaModelOptions = request.LlamaModelOptions,
-            UserId = userProvider.UserId
-        };
+        var requestModel = BuildChat(request);
         var result = await domainService.Chat(requestModel, cancellationToken);
         op.Complete();
         return result;
     }
 
+
     [HttpPost("chat/stream")]
     public async Task ChatUsingStream([FromBody] ChatMessageRequest request, [FromServices] IChatDomainService domainService, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("Running Streamed Chat for {userId}...", userProvider.UserId);
-
-        var requestModel = new ChatMessage(request.Text)
-        {
-            UsePersistedModelState = request.UsePersistedModelState,
-            LlamaModelOptions = request.LlamaModelOptions,
-            UserId = userProvider.UserId
-        };
-
+        var requestModel = BuildChat(request);
         Response.ContentType = "text/event-stream";
         await foreach (var r in domainService.ChatStream(requestModel, cancellationToken))
         {
@@ -77,10 +66,24 @@ public class ChatController : ControllerBase
             await Response.WriteAsync($"data:{r}\n\n", cancellationToken);
             await Response.Body.FlushAsync(cancellationToken);
         }
-
         await Response.CompleteAsync();
         op.Complete();
     }
+
+    private ChatMessage BuildChat(ChatMessageRequest request)   //TODO: mapping using mapperly
+    {
+        var requestModel = new ChatMessage(request.Text)
+        {
+            UsePersistedModelState = request.UsePersistedModelState,
+            ModelOptions = request.ModelOptions,
+            UserId = userProvider.UserId,
+            UseDefaultPrompt = request.UseDefaultPrompt,
+            UseDefaultAntiPrompt = request.UseDefaultAntiPrompt,
+        };
+
+        return requestModel;
+    }
+
 
     //[HttpPost("History")]
     //public async Task<string> SendHistory([FromBody] HistoryInput input, [FromServices] IChatService domainService / StatelessChatService _service)

@@ -1,4 +1,5 @@
-﻿using LLamaSharpApp.WebAPI.Controllers.Services;
+﻿using LLamaSharpApp.WebAPI.Controllers;
+using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Repositories;
 using LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 using LLamaSharpApp.WebAPI.Domain.Services;
@@ -77,6 +78,7 @@ public static class WebApiConfigurator
         services
             .AddHttpContextAccessor()
             .AddScoped<IUserIdProvider, UserIdProvider>()
+            .AddTransient<OptionsMapper>()
             ;
         return services;
     }
@@ -86,7 +88,7 @@ public static class WebApiConfigurator
         services
             .AddTransient<ILlamaModelFactory, LlamaModelFactory>()
             .AddTransient<IOptionsService, OptionsService>()
-            .AddTransient<IChatDomainService, ChatDomainDomainService>()
+            .AddTransient<IChatDomainService, ChatDomainService>()
             .AddTransient<IEmbeddingsService, EmbeddingsService>()
             .AddTransient<IExecutorService, ExecutorService>()
             .AddTransient<ITokenizationService, TokenizationService>()
