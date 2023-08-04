@@ -1,10 +1,10 @@
 ﻿using System.Net;
 
 using AI.Library.Configuration;
+using AI.Library.HttpUtils.LibraryConfiguration;
 using AI.Library.Utils;
 
 using LLamaSharpApp.WebAPI.Configuration;
-using LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;

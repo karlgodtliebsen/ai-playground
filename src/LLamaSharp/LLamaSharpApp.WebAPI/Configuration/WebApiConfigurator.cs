@@ -15,7 +15,7 @@ namespace LLamaSharpApp.WebAPI.Configuration;
 public static class WebApiConfigurator
 {
     /// <summary>
-    /// WebAPI options
+    /// Add WebAPI options
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
@@ -30,7 +30,7 @@ public static class WebApiConfigurator
         return services;
     }
     /// <summary>
-    /// Add configuration from appsettings.json for the WebAPI parts (ie the not llama model parts)
+    /// Add programmatically customizable configuration for the WebAPI parts (ie the not llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
@@ -43,7 +43,8 @@ public static class WebApiConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the WebAPI parts (ie the not llama model parts)
+    /// Add configuration from configuration using default section name (WebApi) or the provided section name
+    /// for the WebAPI parts (ie the not llama model parts)
     /// If validation is not required, then just bind the options directly
     /// IConfigurationSection section = configuration.GetSection(sectionName);
     /// var section = section.GetSection(sectionName);

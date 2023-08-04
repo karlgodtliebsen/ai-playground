@@ -27,7 +27,7 @@ public static class InferenceConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add programmatically customizable configuration for the Inference Options
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
@@ -40,7 +40,8 @@ public static class InferenceConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from configuration using default section name (inference) or the provided section name
+    /// for the Inference Options
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
@@ -58,14 +59,16 @@ public static class InferenceConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from configuration using default section name (inference) or the provided section name
+    /// and add programmatically customizable configuration for the Inference Options
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <param name="options"></param>
     /// <param name="sectionName"></param>
     /// <returns></returns>
-    public static IServiceCollection AddInferenceConfiguration(this IServiceCollection services, IConfiguration configuration, Action<InferenceOptions> options, string? sectionName = null)
+    public static IServiceCollection AddInferenceConfiguration(this IServiceCollection services, IConfiguration configuration,
+        Action<InferenceOptions> options, string? sectionName = null)
     {
         sectionName ??= InferenceOptions.SectionName;
         var inferenceOptions = configuration.GetSection(sectionName).Get<InferenceOptions>();

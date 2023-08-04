@@ -1,12 +1,12 @@
 ﻿using System.Net;
 
 using AI.Library.Configuration;
+using AI.Library.HttpUtils.LibraryConfiguration;
 using AI.Library.Utils;
 
 using Microsoft.IdentityModel.Logging;
 
 using TensorFlowApp.WebAPI.Configuration;
-using TensorFlowApp.WebAPI.Configuration.LibraryConfiguration;
 
 const string ApplicationName = "TensorFlowApp.WebAPI";
 

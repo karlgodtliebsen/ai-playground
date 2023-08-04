@@ -1,9 +1,10 @@
-﻿using FluentAssertions;
+﻿using AI.Library.HttpUtils.LibraryConfiguration;
+
+using FluentAssertions;
 
 using LlamaSharp.Tests.Fixtures;
 
 using LLamaSharpApp.WebAPI.Configuration;
-using LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
 using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Repositories;
 using LLamaSharpApp.WebAPI.Domain.Services;

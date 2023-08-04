@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
+namespace AI.Library.HttpUtils.LibraryConfiguration;
 
 internal sealed class EnumSchemaFilter : ISchemaFilter
 {

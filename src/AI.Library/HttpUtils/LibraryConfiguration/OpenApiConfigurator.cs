@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Swashbuckle.AspNetCore.SwaggerUI;
 
-namespace LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
+namespace AI.Library.HttpUtils.LibraryConfiguration;
 
 /// <summary>
 /// Handles OpenAPI (Swagger) configuration.
@@ -12,7 +15,7 @@ public static class OpenApiConfigurator
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
     /// <summary>
-    /// Add OpenAPI (Swagger support) to the pipeline. 
+    /// Add OpenAPI (Swagger support)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="openApiOptions"></param>
@@ -41,8 +44,6 @@ public static class OpenApiConfigurator
                     xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
                 }
             }
-
-
         });
         return services;
     }

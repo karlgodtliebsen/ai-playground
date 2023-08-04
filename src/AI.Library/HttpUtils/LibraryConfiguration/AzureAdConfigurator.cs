@@ -1,8 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
 
-namespace LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
+namespace AI.Library.HttpUtils.LibraryConfiguration;
 
 /// <summary>
 /// Azure AD Configurator
@@ -29,6 +31,7 @@ public static class AzureAdConfigurator
 
     /// <summary>
     /// Configure Azure AD  Bearer Token
+    /// Add Default configuration for programmatic configuration
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
@@ -43,6 +46,7 @@ public static class AzureAdConfigurator
 
     /// <summary>
     /// Configure Azure AD Bearer Token
+    /// Add configuration from configuration using default sectio nname (OpenApi) or the provided section name
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
@@ -56,7 +60,8 @@ public static class AzureAdConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from configuration using default section name (OpenApi) or the provided section name
+    /// and allows for overriding of the configuration
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>

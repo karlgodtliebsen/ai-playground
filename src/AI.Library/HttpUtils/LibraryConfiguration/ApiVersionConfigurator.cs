@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
+namespace AI.Library.HttpUtils.LibraryConfiguration;
 
 /// <summary>
 /// Extension for Api Version Configuration

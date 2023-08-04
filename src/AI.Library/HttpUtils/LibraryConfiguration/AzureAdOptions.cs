@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 
-namespace ML.TensorFlowApp.WebAPI.Configuration.LibraryConfiguration;
+namespace AI.Library.HttpUtils.LibraryConfiguration;
 
 /// <summary>
 /// Azure Ad Options
@@ -11,12 +11,8 @@ public class AzureAdOptions
     /// <summary>
     /// DefaultSectionName
     /// </summary>
-    public const string DefaultSectionName = Constants.AzureAd;
+    public const string SectionName = Constants.AzureAd;
 
-    /// <summary>
-    /// Configuration SectionName
-    /// </summary>
-    public string SectionName { get; set; } = DefaultSectionName;
 
     /// <summary>
     /// 

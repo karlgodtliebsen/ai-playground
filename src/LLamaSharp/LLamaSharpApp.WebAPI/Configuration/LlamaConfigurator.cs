@@ -29,7 +29,7 @@ public static class LlamaConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add programmatically customizable configuration for the Llma parts (ie the llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
@@ -42,7 +42,8 @@ public static class LlamaConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from configuration using default section name (LlamaModel) or the provided section name
+    /// for the Llma parts (ie the llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
@@ -60,14 +61,16 @@ public static class LlamaConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from configuration using default section name (LlamaModel) or the provided section name
+    /// and supports programmatically customizable configuration options for the Llma parts (ie the llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <param name="options"></param>
     /// <param name="sectionName"></param>
     /// <returns></returns>
-    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, IConfiguration configuration, Action<LlamaModelOptions> options, string? sectionName = null)
+    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, IConfiguration configuration,
+        Action<LlamaModelOptions> options, string? sectionName = null)
     {
         sectionName ??= LlamaModelOptions.SectionName;
         var modelOptions = configuration.GetSection(sectionName).Get<LlamaModelOptions>();

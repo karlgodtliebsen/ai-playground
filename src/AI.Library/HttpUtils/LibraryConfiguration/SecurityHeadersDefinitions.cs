@@ -1,4 +1,6 @@
-﻿namespace ML.TensorFlowApp.WebAPI.Configuration.LibraryConfiguration;
+﻿using Microsoft.AspNetCore.Builder;
+
+namespace AI.Library.HttpUtils.LibraryConfiguration;
 
 /// <summary>
 /// <a href ="https://github.com/damienbod/AzureAD-Auth-MyUI-with-MyAPI/blob/main/MyApi/SecurityHeadersDefinitions.cs">Security Headers</a>

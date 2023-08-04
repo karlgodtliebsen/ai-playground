@@ -1,4 +1,7 @@
-﻿namespace LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace AI.Library.HttpUtils.LibraryConfiguration;
 
 /// <summary>
 /// Cors Configurator

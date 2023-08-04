@@ -1,4 +1,8 @@
-﻿namespace ML.TensorFlowApp.WebAPI.Configuration.LibraryConfiguration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace AI.Library.HttpUtils.LibraryConfiguration;
 
 /// <summary>
 /// HealthCheck Configurator
