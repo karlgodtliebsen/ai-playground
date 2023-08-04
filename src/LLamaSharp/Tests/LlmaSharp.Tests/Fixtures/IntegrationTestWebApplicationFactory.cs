@@ -6,6 +6,7 @@ using AI.Test.Support.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -34,7 +35,7 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
         builder.UseContentRoot(path);
         builder.UseEnvironment("IntegrationTests");
         base.ConfigureWebHost(builder);
-        builder.ConfigureServices(services =>
+        builder.ConfigureTestServices(services =>
         {
             services.AddSingleton<IHttpContextAccessor>(CreateHttpContext().Object);
             services.AddSingleton<ILoggerFactory, XUnitTestLoggerFactory>();
@@ -43,7 +44,6 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
             {
                 Endpoint = endpointUrl,
             };
-
             services.AddSingleton<IOptions<LlamaClientOptions>>(new OptionsWrapper<LlamaClientOptions>(options));
             services.AddScoped(_ => TestClaimsProvider.WithAdministratorClaims());
             Func<HttpClient, IServiceProvider, LLamaClient> f = (c, sp) =>

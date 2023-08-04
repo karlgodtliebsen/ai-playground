@@ -19,7 +19,7 @@ public class TestOfLlamaSharpClients : IClassFixture<IntegrationTestWebApplicati
 
     public void Dispose()
     {
-        //factory.Dispose();//really annoying that this messes up the test runner
+        //factory.Dispose();//Code smell: really annoying that this messes up the test runner
     }
 
 
