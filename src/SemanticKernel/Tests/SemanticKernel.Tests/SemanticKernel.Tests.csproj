@@ -20,7 +20,7 @@
 		<PackageReference Include="FluentAssertions" Version="6.11.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.9" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
 		<PackageReference Include="Microsoft.SemanticKernel" Version="0.17.230718.1-preview" />
 		<PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="0.17.230718.1-preview" />
 		<PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.HuggingFace" Version="0.17.230718.1-preview" />
