@@ -83,7 +83,8 @@
 //Request model
 //https://github.com/OkGoDoIt/OpenAI-API-dotnet/blob/master/OpenAI_API/Completions/CompletionRequest.cs
 
-//var chatCompletion = await CreateChatCompletion(model: "gpt-3.5-turbo", messages: new[] { new ChatCompletionMessage { Name = "test", Role = "user", Content = "Hello!" } });
+//var chatCompletion = await CreateChatCompletion(model: "gpt-3.5-turbo", messages: new[] { new ChatCompletionMessage
+{ Name = "test", Role = "user", Content = "Hello!" } });
 
 
 //var chatMessage = new ChatMessage { Name = "test", Role = ChatMessageRole.FromString("user"), Content = prompt };
@@ -101,5 +102,6 @@ curl https://api.openai.com/v1/completions \
     "temperature": 0
   }'
 
-curl https://api.openai.com/v1/completions   -H "Content-Type: application/json"  -H "Authorization: Bearer <ApiToken>"  -d '{    "model": "text-davinci-003",    "prompt": "Say this is a test",    "max_tokens": 7,    "temperature": 0  }'
+curl https://api.openai.com/v1/completions   -H "Content-Type: application/json"  -H "Authorization: Bearer <ApiToken>"  
+-d '{    "model": "text-davinci-003",    "prompt": "Say this is a test",    "max_tokens": 7,    "temperature": 0  }'
 

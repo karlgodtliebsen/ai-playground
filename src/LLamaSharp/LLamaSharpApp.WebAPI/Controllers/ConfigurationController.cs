@@ -40,6 +40,7 @@ public class ConfigurationController : ControllerBase
     /// <summary>
     /// Finds the Users LlamaModel Options
     /// </summary>
+    /// <param name="mapper"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet("configuration/modelparams")]
@@ -91,6 +92,7 @@ public class ConfigurationController : ControllerBase
     /// Update the model options for the user
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="mapper"></param>
     /// <param name="cancellationToken"></param>
     [HttpPut("configuration/modelparams")]
     public async Task UpdateLlamaModelOptions([FromBody] LlamaModelRequestResponse request, [FromServices] OptionsMapper mapper, CancellationToken cancellationToken)
@@ -106,6 +108,7 @@ public class ConfigurationController : ControllerBase
     /// Update the inference options for the user
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="mapper"></param>
     /// <param name="cancellationToken"></param>
     [HttpPut("configuration/inference")]
     public async Task UpdateInferenceOptions([FromBody] InferenceRequestResponse request, [FromServices] OptionsMapper mapper, CancellationToken cancellationToken)

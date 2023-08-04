@@ -1,0 +1,23 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+# https://learn.microsoft.com/da-dk/aspnet/core/test/http-files?view=aspnetcore-8.0
+# look into https://learn.microsoft.com/da-dk/aspnet/core/web-api/http-repl/?view=aspnetcore-8.0&tabs=windows
+# https://learn.microsoft.com/da-dk/aspnet/core/test/integration-tests?view=aspnetcore-8.0
+#
+# can we start the host from here?
+
+
+@hostname=localhost
+@port=7039
+@token = [add token]
+
+
+#get health status from anonymous healthcontroller
+GET https://{{hostname}}:{{port}}/health HTTP/1.1
+
+
+###
+
+#get prompt template
+GET https://{{hostname}}:{{port}}/api/llama/configuration/prompt-templates HTTP/1.1
+Authorization: Bearer {{token}}
+

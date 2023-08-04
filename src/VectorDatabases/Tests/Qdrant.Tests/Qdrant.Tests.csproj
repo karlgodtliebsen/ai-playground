@@ -22,10 +22,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" Version="6.11.0" />
-		<PackageReference Include="LLamaSharp" Version="0.4.0" />
+		<PackageReference Include="LLamaSharp" Version="0.4.1-preview" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.9" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
 		<PackageReference Include="Moq" Version="4.18.4" />
 		<PackageReference Include="OneOf" Version="3.0.255" />
 		<PackageReference Include="OneOf.Extended" Version="3.0.255" />

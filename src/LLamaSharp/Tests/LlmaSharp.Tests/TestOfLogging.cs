@@ -8,11 +8,11 @@ using Serilog;
 
 namespace LlamaSharp.Tests;
 
-public sealed class LoggingTests : IClassFixture<WebApplicationFactory<Program>>, IDisposable
+public sealed class TestOfLogging : IClassFixture<WebApplicationFactory<Program>>, IDisposable
 {
     private readonly WebApplicationFactory<Program> factory;
 
-    public LoggingTests(WebApplicationFactory<Program> factory)
+    public TestOfLogging(WebApplicationFactory<Program> factory)
     {
         this.factory = factory;
     }

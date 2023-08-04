@@ -16,9 +16,10 @@ public class TestOfLlamaSharpClients : IClassFixture<IntegrationTestWebApplicati
     {
         this.factory = factory;
     }
+
     public void Dispose()
     {
-        factory.Dispose();
+        //factory.Dispose();//Code smell: really annoying that this messes up the test runner
     }
 
 
@@ -30,6 +31,48 @@ public class TestOfLlamaSharpClients : IClassFixture<IntegrationTestWebApplicati
         userProvider.UserId.Should().Be(factory.UserId);
     }
 
-    //TODO: extend the tests to verify that the clients work as expected
+    [Fact]
+    public async Task VerifyThatHttpClientCanHealthCheckController()
+    {
+        var claimsProvider = TestClaimsProvider.WithAdministratorClaims();
+        using var client = factory.CreateClientWithTestAuth(claimsProvider);
+        var response = await client.GetAsync("https://localhost/health");
+        response.EnsureSuccessStatusCode();
+        var status = await response.Content.ReadAsStringAsync();
+        status.Should().NotBeNull();
+        status.Should().Be("Healthy");
+    }
 
+    [Fact]
+    public async Task VerifyThatHttpClientCanCallControllerAndFetchPromptTemplates()
+    {
+        var claimsProvider = TestClaimsProvider.WithAdministratorClaims();
+        using var client = factory.CreateClientWithTestAuth(claimsProvider);
+        var response = await client.GetAsync($"https://localhost/api/llama/configuration/prompt-templates", CancellationToken.None);
+        response.EnsureSuccessStatusCode();
+        var text = await response.Content.ReadAsStringAsync(CancellationToken.None);
+        text.Should().NotBeNull();
+    }
+
+    [Fact]
+
+    public async Task VerifyThatLLamaClientCanCallControllerAndFetchPromptTemplates()
+    {
+        var client = factory.Services.GetRequiredService<ILLamaClient>();
+        var response = await client.GetPromptTemplatesAsync(CancellationToken.None);
+        response.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task VerifyThatLLamaClientCanHealthCheckController()
+    {
+        var client = factory.Services.GetRequiredService<ILLamaClient>();
+        var status = await client.CheckHealthEndpoint(CancellationToken.None);
+        status.Should().NotBeNull();
+        status.Should().Be("Healthy");
+    }
 }
+
+
+
+

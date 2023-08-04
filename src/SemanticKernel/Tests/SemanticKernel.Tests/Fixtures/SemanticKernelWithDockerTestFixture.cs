@@ -6,14 +6,13 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests.Fixtures;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class SemanticKernelWithDockerTestFixture : SemanticKernelTestFixtureBase, IDisposable
 {
-    public TestContainerDockerLauncher Launcher { get; private set; }
-    public Func<bool> Launch { get; set; }
+    // ReSharper disable once MemberCanBePrivate.Global
+    public TestContainerDockerLauncher? Launcher { get; private set; } = default;
 
-    public SemanticKernelWithDockerTestFixture()
-    {
-    }
+    public Func<bool> Launch { get; set; }
 
     /// <summary>
     /// Post Build Setup of Logging and Launcher that depends on ITestOutputHelper
@@ -27,6 +26,6 @@ public sealed class SemanticKernelWithDockerTestFixture : SemanticKernelTestFixt
     }
     public void Dispose()
     {
-        Launcher.Stop();
+        Launcher?.Stop();
     }
 }
