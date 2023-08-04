@@ -8,8 +8,10 @@ An ASP.NET Core WebAPI (v7.0) using TensorFlow.Net and TensorFlow.Keras  Image C
 
 Look at the test project: TensorFlow.Net.ImageClassification.Tests
 
-Some sane configuration is missing from the Program.cs and Appsettings file, look at LLamaSharpApp.WebAPI for details
 
+Temp:
+Some sane configuration is missing from the Program.cs and Appsettings file, look at LLamaSharpApp.WebAPI for details
+Fix by using this: https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-7.0
 
 
 #### How to download the source and build:

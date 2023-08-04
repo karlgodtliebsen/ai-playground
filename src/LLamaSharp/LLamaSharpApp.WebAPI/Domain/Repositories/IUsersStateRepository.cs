@@ -48,7 +48,7 @@ public interface IUsersStateRepository
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    IAsyncEnumerable<string> GetSystemChatTemplates(CancellationToken cancellationToken);
+    IAsyncEnumerable<string> GetSystemPromptTemplates(CancellationToken cancellationToken);
 
 
 

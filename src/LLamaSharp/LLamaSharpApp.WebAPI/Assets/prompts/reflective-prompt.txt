@@ -1,0 +1,7 @@
+Reflective prompts
+
+These prompts are designed to help individuals gain a deeper understanding of themselves, their beliefs, and their actions. 
+
+They are more like encouragement/self-growth prompts based on a topic or personal experience. 
+
+You might be required to give the model a bit of info before getting a desirable response.

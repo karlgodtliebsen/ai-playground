@@ -1,4 +1,5 @@
-﻿using LLamaSharpApp.WebAPI.Controllers.Services;
+﻿using LLamaSharpApp.WebAPI.Controllers;
+using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Repositories;
 using LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 using LLamaSharpApp.WebAPI.Domain.Services;
@@ -14,7 +15,7 @@ namespace LLamaSharpApp.WebAPI.Configuration;
 public static class WebApiConfigurator
 {
     /// <summary>
-    /// WebAPI options
+    /// Add WebAPI options
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
@@ -29,7 +30,7 @@ public static class WebApiConfigurator
         return services;
     }
     /// <summary>
-    /// Add configuration from appsettings.json for the WebAPI parts (ie the not llama model parts)
+    /// Add programmatically customizable configuration for the WebAPI parts (ie the not llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
@@ -42,7 +43,8 @@ public static class WebApiConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the WebAPI parts (ie the not llama model parts)
+    /// Add configuration from configuration using default section name (WebApi) or the provided section name
+    /// for the WebAPI parts (ie the not llama model parts)
     /// If validation is not required, then just bind the options directly
     /// IConfigurationSection section = configuration.GetSection(sectionName);
     /// var section = section.GetSection(sectionName);
@@ -77,6 +79,7 @@ public static class WebApiConfigurator
         services
             .AddHttpContextAccessor()
             .AddScoped<IUserIdProvider, UserIdProvider>()
+            .AddTransient<OptionsMapper>()
             ;
         return services;
     }
@@ -86,7 +89,7 @@ public static class WebApiConfigurator
         services
             .AddTransient<ILlamaModelFactory, LlamaModelFactory>()
             .AddTransient<IOptionsService, OptionsService>()
-            .AddTransient<IChatDomainService, ChatDomainDomainService>()
+            .AddTransient<IChatDomainService, ChatDomainService>()
             .AddTransient<IEmbeddingsService, EmbeddingsService>()
             .AddTransient<IExecutorService, ExecutorService>()
             .AddTransient<ITokenizationService, TokenizationService>()

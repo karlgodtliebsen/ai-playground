@@ -3,7 +3,7 @@
 namespace LLamaSharpApp.WebAPI.Configuration;
 
 /// <summary>
-/// Llma model Configuration like ModelParams and InferenceOptions
+/// Llma model Configuration like ModelParams
 /// </summary>
 public static class LlamaConfigurator
 {
@@ -13,73 +13,72 @@ public static class LlamaConfigurator
     ///  WizardLM  maps to wizardLM-7B.ggmlv3.q4_1.bin
     ///  </summary>
     ///  <param name="services"></param>
-    ///  <param name="llamaModelOptions"></param>
-    ///  <param name="inferenceOptions"></param>
+    ///  <param name="modelOptions"></param>
     ///  <returns></returns>
-    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, LlamaModelOptions llamaModelOptions, InferenceOptions inferenceOptions)
+    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, LlamaModelOptions modelOptions)
     {
-        VerifyAndAddOptions(services, llamaModelOptions);
-        VerifyAndAddOptions(services, inferenceOptions);
+        VerifyOptions(modelOptions);
+        services.AddSingleton<IOptions<LlamaModelOptions>>(new OptionsWrapper<LlamaModelOptions>(modelOptions));
         return services;
     }
 
-    private static void VerifyAndAddOptions(IServiceCollection services, LlamaModelOptions modelOptions)
+    private static void VerifyOptions(LlamaModelOptions modelOptions)
     {
         ArgumentNullException.ThrowIfNull(modelOptions);
         ArgumentNullException.ThrowIfNull(modelOptions.ModelPath);
-        services.AddSingleton<IOptions<LlamaModelOptions>>(new OptionsWrapper<LlamaModelOptions>(modelOptions));
-    }
-
-    private static void VerifyAndAddOptions(IServiceCollection services, InferenceOptions options)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-        services.AddSingleton<IOptions<InferenceOptions>>(new OptionsWrapper<InferenceOptions>(options));
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add programmatically customizable configuration for the Llma parts (ie the llama model parts)
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="llmaOptions"></param>
-    /// <param name="inferenceOptions"></param>
+    /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services,
-        Action<LlamaModelOptions>? llmaOptions = null,
-        Action<InferenceOptions>? inferenceOptions = null)
+    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, Action<LlamaModelOptions>? options = null)
     {
-        var configuredLlmaOptions = new LlamaModelOptions();
-        llmaOptions?.Invoke(configuredLlmaOptions);
-        var configuredInferenceOptions = new InferenceOptions();
-        inferenceOptions?.Invoke(configuredInferenceOptions);
-        return services.AddLlamaConfiguration(configuredLlmaOptions, configuredInferenceOptions);
+        var modelOptions = new LlamaModelOptions();
+        options?.Invoke(modelOptions);
+        return services.AddLlamaConfiguration(modelOptions);
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from configuration using default section name (LlamaModel) or the provided section name
+    /// for the Llma parts (ie the llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
-    /// <param name="llmaOptionsSectionName"></param>
-    /// <param name="inferenceOptionsSectionName"></param>
+    /// <param name="sectionName"></param>
     /// <returns></returns>
-    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services,
-        IConfiguration configuration,
-        string? llmaOptionsSectionName = null,
-        string? inferenceOptionsSectionName = null
-        )
+    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
-        if (llmaOptionsSectionName is null)
+        sectionName ??= LlamaModelOptions.SectionName;
+        var modelOptions = configuration.GetSection(sectionName).Get<LlamaModelOptions>();
+        if (modelOptions is null)
         {
-            llmaOptionsSectionName = LlamaModelOptions.SectionName;
+            modelOptions = new LlamaModelOptions();
         }
-        if (inferenceOptionsSectionName is null)
+        return services.AddLlamaConfiguration(modelOptions);
+    }
+
+    /// <summary>
+    /// Add configuration from configuration using default section name (LlamaModel) or the provided section name
+    /// and supports programmatically customizable configuration options for the Llma parts (ie the llama model parts)
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="options"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, IConfiguration configuration,
+        Action<LlamaModelOptions> options, string? sectionName = null)
+    {
+        sectionName ??= LlamaModelOptions.SectionName;
+        var modelOptions = configuration.GetSection(sectionName).Get<LlamaModelOptions>();
+        if (modelOptions is null)
         {
-            inferenceOptionsSectionName = InferenceOptions.SectionName;
+            modelOptions = new LlamaModelOptions();
         }
-        var configuredLlmaOptions = configuration.GetSection(llmaOptionsSectionName).Get<LlamaModelOptions>()!;
-        var configuredInferenceOptions = configuration.GetSection(inferenceOptionsSectionName).Get<InferenceOptions>()!;
-        if (configuredLlmaOptions is null) configuredLlmaOptions = new LlamaModelOptions();
-        if (configuredInferenceOptions is null) configuredInferenceOptions = new InferenceOptions();
-        return services.AddLlamaConfiguration(configuredLlmaOptions, configuredInferenceOptions);
+        options.Invoke(modelOptions);
+        return services.AddLlamaConfiguration(modelOptions);
     }
 }

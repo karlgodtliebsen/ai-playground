@@ -12,22 +12,37 @@ public class LlamaModelOptions : ModelParams
     public const string SectionName = "LlamaModel";
 
     /// <summary>
-    /// Constructor for LlamaModelOptions
+    /// Constructor for LlamaModelOptions with default ModelPath
     /// </summary>
-    public LlamaModelOptions() : this("./LlamaModels")
+    public LlamaModelOptions() : base("./LlamaModels") { }
+
+    public string GetSanitizeSensitiveData()
     {
+        var path = Path.GetFullPath(ModelPath);
+        return path.Split(Path.DirectorySeparatorChar).LastOrDefault()!;
     }
 
-    public string[] AntiPrompt { get; set; }
-
-    public string PromptFile { get; set; }
+    public void RestoreSanitizedSensitiveData(string? modelName)
+    {
+        if (modelName is null || ModelPath!.EndsWith(modelName))
+        {
+            return;
+        }
+        var path = Path.GetFullPath(ModelPath);
+        var r = path.Split(Path.DirectorySeparatorChar).LastOrDefault()!;
+        ModelPath = path.Replace(r, modelName);
+    }
 
 
     /// <summary>
-    /// Constructor for LlamaModelOptions
+    /// 
     /// </summary>
-    /// <param name="modelPath"></param>
-    public LlamaModelOptions(string modelPath) : base(modelPath)
-    {
-    }
+    public string[]? AntiPrompt { get; set; }
+
+    /// <summary>
+    /// Path to the promptFile
+    /// </summary>
+    public string? Prompt { get; set; }
+
+
 }

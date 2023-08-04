@@ -2,6 +2,11 @@
 An ASP.NET Core WebAPI (v7.0) using LlamaSCharp and LlaMa version 1 and 2 models.
 
 
+Temp:
+Some sane configuration is missing from the Program.cs and Appsettings file, look at LLamaSharpApp.WebAPI for details
+Fix by using this: https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-7.0
+
+
 #### How to download the source and build:
 Clone the repository and open the solution in Visual Studio 2022.
 

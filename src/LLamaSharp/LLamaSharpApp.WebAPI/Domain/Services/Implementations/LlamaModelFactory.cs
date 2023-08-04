@@ -8,6 +8,9 @@ using Microsoft.Extensions.Options;
 
 using SerilogTimings.Extensions;
 
+using LLamaEmbedder = LLama.LLamaEmbedder;
+using LLamaModel = LLama.LLamaModel;
+
 namespace LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 
 /// <summary>
@@ -57,10 +60,11 @@ public class LlamaModelFactory : ILlamaModelFactory
     public LLamaModel CreateModel(ModelParams parameters)
     {
         using var op = logger.BeginOperation("Creating LLama Model");
-        var model = new LLamaModel(parameters);    //LLamaModel
+        var model = new LLamaModel(parameters);    //LLamaModel   ResettableLLamaModel
         op.Complete();
         return model;
     }
+
 
     /// <summary>
     /// Creates an embedder with specified parameters 
@@ -75,30 +79,29 @@ public class LlamaModelFactory : ILlamaModelFactory
         return model;
     }
 
-    /// <summary>
-    /// Creates a default ChatSession
-    /// </summary>
-    /// <typeparam name="TExecutor"></typeparam>
-    /// <returns></returns>
-    public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>() where TExecutor : StatefulExecutorBase, ILLamaExecutor
+    /// <inheritdoc />
+    public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(Action<LLamaModel>? model = default, Action<ChatSession>? chatSession = default)
+       where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
-        var model = CreateModel();
-        var chatSession = CreateChatSession<TExecutor>(model);
-        return (chatSession, model);
+        var lModel = CreateModel();
+        model?.Invoke(lModel);
+        var session = CreateChatSession<TExecutor>(lModel);
+        chatSession?.Invoke(session);
+        return (session, lModel);
     }
 
-    /// <summary>
-    /// Creates a ChatSession with specified model parameters
-    /// </summary>
-    /// <param name="parameters"></param>
-    /// <typeparam name="TExecutor"></typeparam>
-    /// <returns></returns>
-    public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(ModelParams parameters) where TExecutor : StatefulExecutorBase, ILLamaExecutor
+
+    /// <inheritdoc />
+    public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(ModelParams parameters, Action<ChatSession>? chatSession = default)
+        where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
         var model = CreateModel(parameters);
-        var chatSession = CreateChatSession<TExecutor>(model);
-        return (chatSession, model);
+        var session = CreateChatSession<TExecutor>(model);
+        chatSession?.Invoke(session);
+        return (session, model);
     }
+
+
 
     /// <summary>
     /// Creates a ChatSession with specified model

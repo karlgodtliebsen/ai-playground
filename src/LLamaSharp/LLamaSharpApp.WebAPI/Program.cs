@@ -1,10 +1,10 @@
 ﻿using System.Net;
 
 using AI.Library.Configuration;
+using AI.Library.HttpUtils.LibraryConfiguration;
 using AI.Library.Utils;
 
 using LLamaSharpApp.WebAPI.Configuration;
-using LLamaSharpApp.WebAPI.Configuration.LibraryConfiguration;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -12,7 +12,6 @@ using Microsoft.IdentityModel.Logging;
 
 const string Origins = "AllowedOrigins";
 const string ApplicationName = "LLamaSharpApp.WebAPI";
-
 
 Observability.UseBootstrapLogger(ApplicationName);
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +31,7 @@ if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
 services
     .AddWebApiConfiguration(configuration)
     .AddLlamaConfiguration(configuration)
+    .AddInferenceConfiguration(configuration)
     .AddAzureAdConfiguration(configuration, (string?)null)
     //TODO: Add CORS configuration
     //.AddCorsConfig(configuration, options =>
@@ -58,7 +58,7 @@ if (!env.IsDevelopment() && !env.IsEnvironment(HostingEnvironments.UsingReverseP
 
 
 services
-    .AddOpenApi()
+    .AddOpenApi(configuration)
     .AddHealthCheck();
 
 var app = builder.Build();

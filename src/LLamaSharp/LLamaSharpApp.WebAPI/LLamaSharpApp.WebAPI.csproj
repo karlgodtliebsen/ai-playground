@@ -8,6 +8,7 @@
     <UserSecretsId>1d76ad94-9d95-4720-bece-3691c77c0376</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.20" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
+    <PackageReference Include="Riok.Mapperly" Version="2.8.0" />
     <PackageReference Include="SerilogTimings" Version="3.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 
@@ -36,28 +38,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\alpaca.txt">
+    <None Update="Assets\prompts\comparative-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\chat-assistant.txt">
+    <None Update="Assets\prompts\context-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\chat-with-bob.txt">
+    <None Update="Assets\prompts\information-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\chat-with-vicuna-v0.txt">
+    <None Update="Assets\prompts\instruction-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\chat-with-vicuna-v1.txt">
+    <None Update="Assets\prompts\opinion-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\chat.txt">
+    <None Update="Assets\prompts\reflective-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\dan.txt">
+    <None Update="Assets\prompts\role-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\reason-act.txt">
+    <None Update="Assets\prompts\user-interact-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 

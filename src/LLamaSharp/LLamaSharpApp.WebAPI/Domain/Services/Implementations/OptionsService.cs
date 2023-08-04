@@ -60,6 +60,11 @@ public class OptionsService : IOptionsService
         await stateRepository.PersistLlamaModelOptions(options!, userId, cancellationToken);
     }
 
+    public LlamaModelOptions GetDefaultLlamaModelOptions()
+    {
+        return llamaModelOptions;
+    }
+
     /// <inheritdoc />
     public async Task<InferenceOptions> CoalsceInferenceOptions(InferenceOptions? queryOptions, string userId, CancellationToken cancellationToken)
     {
@@ -91,9 +96,9 @@ public class OptionsService : IOptionsService
     }
 
     /// <inheritdoc />
-    public async IAsyncEnumerable<string> GetSystemChatTemplates([EnumeratorCancellation] CancellationToken cancellationToken)
+    public async IAsyncEnumerable<string> GetSystemPromptTemplates([EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var templates = stateRepository.GetSystemChatTemplates(cancellationToken);
+        var templates = stateRepository.GetSystemPromptTemplates(cancellationToken);
         await foreach (var template in templates.WithCancellation(cancellationToken))
         {
             yield return template;

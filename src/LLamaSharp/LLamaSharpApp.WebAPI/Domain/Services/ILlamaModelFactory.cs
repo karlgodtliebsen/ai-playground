@@ -44,13 +44,24 @@ public interface ILlamaModelFactory
     /// <returns></returns>
     ChatSession CreateChatSession<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor;
 
+
     /// <summary>
-    /// Creates a ChatSession with a custom ILLamaExecutor and specified ModelParams
+    /// Creates a ChatSession with a custom ILLamaExecutor and specified ModelParams, and the ability to extend the chat session 
     /// </summary>
     /// <typeparam name="TExecutor"></typeparam>
     /// <param name="parameters"></param>
+    /// <param name="chatSession"></param>
     /// <returns></returns>
-    (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(ModelParams parameters) where TExecutor : StatefulExecutorBase, ILLamaExecutor;
+    (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(ModelParams parameters, Action<ChatSession>? chatSession = default) where TExecutor : StatefulExecutorBase, ILLamaExecutor;
+
+    /// <summary>
+    /// Creates a ChatSession with a custom ILLamaExecutor and default ModelParams, and the ability to extend the chat session 
+    /// </summary>
+    /// <typeparam name="TExecutor"></typeparam>
+    /// <param name="chatSession"></param>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(Action<LLamaModel>? model = default, Action<ChatSession>? chatSession = default) where TExecutor : StatefulExecutorBase, ILLamaExecutor;
 
     /// <summary>
     /// Creates a stateful ILLamaExecutor using the specified LLamaModel

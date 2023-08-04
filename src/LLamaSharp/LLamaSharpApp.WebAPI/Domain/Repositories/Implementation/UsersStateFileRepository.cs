@@ -118,10 +118,10 @@ public sealed class UsersStateFileRepository : IUsersStateRepository
 
 
     /// <inheritdoc />
-    public async IAsyncEnumerable<string> GetSystemChatTemplates([EnumeratorCancellation] CancellationToken cancellationToken)
+    public async IAsyncEnumerable<string> GetSystemPromptTemplates([EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var directory = Path.Combine(FullPath, AssetsPath);
-        foreach (var file in Directory.EnumerateFiles(directory, "*.txt"))
+        var directory = Path.Combine(FullPath, AssetsPath, "prompts");
+        foreach (var file in Directory.EnumerateFiles(directory, "*-prompt.txt"))
         {
             yield return await File.ReadAllTextAsync(file, cancellationToken);
         }

@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
+
 using AI.Test.Support.Logging;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -24,7 +26,7 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
     {
         var path = AppDomain.CurrentDomain.BaseDirectory;
         builder.UseContentRoot(path);
-        builder.UseEnvironment(Environments.Development);
+        builder.UseEnvironment("IntegrationTests");
         base.ConfigureWebHost(builder);
         builder.ConfigureServices(services =>
         {
