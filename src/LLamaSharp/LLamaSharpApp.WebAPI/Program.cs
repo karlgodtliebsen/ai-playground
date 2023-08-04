@@ -33,12 +33,25 @@ services
     .AddLlamaConfiguration(configuration)
     .AddInferenceConfiguration(configuration)
     .AddAzureAdConfiguration(configuration, (string?)null)
-    //TODO: Add CORS configuration
     //.AddCorsConfig(configuration, options =>
-    //{
+    //{   //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
     //    options.Policy = Origins;
-    //    options.Origins = new[] { "https://localhost:7039" };
+    //    //options.Origins = new[] { "https://localhost:7039" };
     //})
+    //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
+    .AddCors(options =>
+    {
+        options.AddPolicy(Origins,
+            policy =>
+            {
+                policy
+                    .AllowCredentials()
+                    .WithOrigins()
+                    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    })
     .AddControllers(options =>
     {
         var policy = new AuthorizationPolicyBuilder()
@@ -68,8 +81,8 @@ await using (app)
     app.UseMiddleware<ExceptionMiddleware>();
     app.UseRouting();
     app.UseOpenApi();
+    app.UseCors(Origins);
 
-    //app.UseCors(Origins);
     if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
     {
         app.UseSecurityHeaders(SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));
