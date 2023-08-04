@@ -22,12 +22,26 @@ public static class AzureOpenAIConfigurator
 
     public static IServiceCollection AddAzureOpenAI(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
-        if (sectionName is null)
-        {
-            sectionName = AzureOpenAIOptions.SectionName;
-        }
+        sectionName ??= AzureOpenAIOptions.SectionName;
         var configuredOptions = configuration.GetSection(sectionName).Get<AzureOpenAIOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
+        return services.AddAzureOpenAI(configuredOptions);
+    }
+
+    /// <summary>
+    /// Add configuration from configuration using default section name (Azure) or the provided section name
+    /// and add programmatically customizable configuration for the Inference Options
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="options"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddAzureOpenAI(this IServiceCollection services, IConfiguration configuration, Action<AzureOpenAIOptions> options, string? sectionName = null)
+    {
+        sectionName ??= AzureOpenAIOptions.SectionName;
+        var configuredOptions = configuration.GetSection(sectionName).Get<AzureOpenAIOptions>() ?? new AzureOpenAIOptions();
+        options.Invoke(configuredOptions);
         return services.AddAzureOpenAI(configuredOptions);
     }
 }

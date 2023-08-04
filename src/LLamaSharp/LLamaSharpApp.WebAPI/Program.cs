@@ -45,7 +45,8 @@ services
             .RequireAuthenticatedUser()
             .Build();
         options.Filters.Add(new AuthorizeFilter(policy));
-    });
+    })
+    ;
 
 if (!env.IsDevelopment() && !env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
 {
@@ -65,9 +66,10 @@ var app = builder.Build();
 await using (app)
 {
     app.UseMiddleware<ExceptionMiddleware>();
-    //app.UseCors(Origins);
     app.UseRouting();
     app.UseOpenApi();
+
+    //app.UseCors(Origins);
     if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
     {
         app.UseSecurityHeaders(SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));
