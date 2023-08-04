@@ -69,7 +69,7 @@ public class TestOfSemanticKernelExample14SemanticMemory
         await RunExampleAsync(kernelWithCustomDb);
     }
 
-    public async Task RunExampleAsync(IKernel kernel)
+    private async Task RunExampleAsync(IKernel kernel)
     {
         await StoreMemoryAsync(kernel);
 

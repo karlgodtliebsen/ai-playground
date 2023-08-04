@@ -58,7 +58,7 @@ if (!env.IsDevelopment() && !env.IsEnvironment(HostingEnvironments.UsingReverseP
 
 
 services
-    .AddOpenApi()
+    .AddOpenApi(configuration)
     .AddHealthCheck();
 
 var app = builder.Build();

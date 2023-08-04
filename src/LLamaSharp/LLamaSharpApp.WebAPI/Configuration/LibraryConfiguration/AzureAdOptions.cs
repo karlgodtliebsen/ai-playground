@@ -11,12 +11,8 @@ public class AzureAdOptions
     /// <summary>
     /// DefaultSectionName
     /// </summary>
-    public const string DefaultSectionName = Constants.AzureAd;
+    public const string SectionName = Constants.AzureAd;
 
-    /// <summary>
-    /// Configuration SectionName
-    /// </summary>
-    public string SectionName { get; set; } = DefaultSectionName;
 
     /// <summary>
     /// 

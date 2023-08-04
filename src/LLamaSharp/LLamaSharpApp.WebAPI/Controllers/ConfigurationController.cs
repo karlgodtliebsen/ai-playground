@@ -46,7 +46,6 @@ public class ConfigurationController : ControllerBase
     public async Task<LlamaModelRequestResponse> GetUsersLlamaModelConfiguration([FromServices] OptionsMapper mapper, CancellationToken cancellationToken)
     {
         var options = await domainService.GetLlamaModelOptions(userProvider.UserId, cancellationToken);
-        //options.SanitizeSensitiveData();
         var response = mapper.Map(options);
         response.ModelName = options.GetSanitizeSensitiveData();
         return response;

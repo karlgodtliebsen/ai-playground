@@ -8,7 +8,12 @@ namespace AI.VectorDatabase.Qdrant.Configuration;
 
 public static class QdrantConfigurator
 {
-
+    /// <summary>
+    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
     public static IServiceCollection AddQdrant(this IServiceCollection services, QdrantOptions options)
     {
         services.AddTransient<IQdrantFactory, QdrantFactory>();
@@ -22,6 +27,12 @@ public static class QdrantConfigurator
         return services;
     }
 
+    /// <summary>
+    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
     public static IServiceCollection AddQdrant(this IServiceCollection services, Action<QdrantOptions>? options = null)
     {
         var configuredOptions = new QdrantOptions();
@@ -29,15 +40,35 @@ public static class QdrantConfigurator
         return services.AddQdrant(configuredOptions);
     }
 
+    /// <summary>
+    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
     public static IServiceCollection AddQdrant(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
-        if (sectionName is null)
-        {
-            sectionName = QdrantOptions.SectionName;
-        }
+        sectionName ??= QdrantOptions.SectionName;
         var configuredOptions = configuration.GetSection(sectionName).Get<QdrantOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
         return services.AddQdrant(configuredOptions);
+    }
+
+    /// <summary>
+    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="options"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddQdrant(this IServiceCollection services, IConfiguration configuration, Action<QdrantOptions> options, string? sectionName = null)
+    {
+        sectionName ??= QdrantOptions.SectionName;
+        var modelOptions = configuration.GetSection(sectionName).Get<QdrantOptions>() ?? new QdrantOptions();
+        options.Invoke(modelOptions);
+        return services.AddQdrant(modelOptions);
     }
 
 }

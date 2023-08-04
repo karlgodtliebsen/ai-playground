@@ -8,12 +8,7 @@ public class CorsOptions
     /// <summary>
     /// DefaultSectionName (const)
     /// </summary>
-    public const string DefaultSectionName = "Cors";
-
-    /// <summary>
-    /// Configuration SectionName - modifiable
-    /// </summary>
-    public string SectionName { get; set; } = DefaultSectionName;
+    public const string SectionName = "Cors";
 
 
     /// <summary>

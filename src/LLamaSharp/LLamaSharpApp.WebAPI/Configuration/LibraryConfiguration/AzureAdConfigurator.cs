@@ -15,12 +15,14 @@ public static class AzureAdConfigurator
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <param name="options"></param>
+    /// <param name="sectionName"></param>
     /// <returns></returns>
-    public static IServiceCollection AddAzureAdConfiguration(this IServiceCollection services, IConfiguration configuration, AzureAdOptions options)
+    public static IServiceCollection AddAzureAdConfiguration(this IServiceCollection services, IConfiguration configuration, AzureAdOptions options, string? sectionName = default)
     {
+        sectionName ??= AzureAdOptions.SectionName;
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-        //this part is a little overengineered. But it proves usage of the configuration pattern
-        services.AddMicrosoftIdentityWebApiAuthentication(configuration, jwtBearerScheme: options.JwtBearerScheme, configSectionName: options.SectionName,
+        //this part is a little over engineered. But it proves usage of the configuration pattern
+        services.AddMicrosoftIdentityWebApiAuthentication(configuration, jwtBearerScheme: options.JwtBearerScheme, configSectionName: sectionName,
             subscribeToJwtBearerMiddlewareDiagnosticsEvents: options.SubscribeToJwtBearerMiddlewareDiagnosticsEvents);
         return services;
     }
@@ -40,7 +42,7 @@ public static class AzureAdConfigurator
     }
 
     /// <summary>
-    /// Configure Azure AD  Bearer Token
+    /// Configure Azure AD Bearer Token
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
@@ -48,12 +50,24 @@ public static class AzureAdConfigurator
     /// <returns></returns>
     public static IServiceCollection AddAzureAdConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = default)
     {
-        if (sectionName is null)
-        {
-            sectionName = AzureAdOptions.DefaultSectionName;
-        }
+        sectionName ??= AzureAdOptions.SectionName;
         var options = configuration.GetSection(sectionName).Get<AzureAdOptions>()!;
         return services.AddAzureAdConfiguration(configuration, options);
     }
 
+    /// <summary>
+    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="options"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddAzureAdConfiguration(this IServiceCollection services, IConfiguration configuration, Action<AzureAdOptions> options, string? sectionName = null)
+    {
+        sectionName ??= AzureAdOptions.SectionName;
+        var modelOptions = configuration.GetSection(sectionName).Get<AzureAdOptions>() ?? new AzureAdOptions();
+        options.Invoke(modelOptions);
+        return services.AddAzureAdConfiguration(configuration, modelOptions);
+    }
 }

@@ -54,12 +54,25 @@ public static class CorsConfigurator
     /// <returns></returns>
     public static IServiceCollection AddCorsConfig(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
-        if (sectionName is null)
-        {
-            sectionName = CorsOptions.DefaultSectionName;
-        }
+        sectionName ??= CorsOptions.SectionName;
         var options = configuration.GetSection(sectionName).Get<CorsOptions>()!;
         return services.AddCorsConfig(configuration, options);
+    }
+
+    /// <summary>
+    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="options"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddAzureAdAddCorsConfigConfiguration(this IServiceCollection services, IConfiguration configuration, Action<CorsOptions> options, string? sectionName = null)
+    {
+        sectionName ??= CorsOptions.SectionName;
+        var modelOptions = configuration.GetSection(sectionName).Get<CorsOptions>() ?? new CorsOptions();
+        options.Invoke(modelOptions);
+        return services.AddCorsConfig(configuration, modelOptions);
     }
 
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.Extensions.Options;
 
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -13,59 +12,87 @@ public static class OpenApiConfigurator
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
     /// <summary>
-    /// Add OpenAPI (Swagger support) to the pipeline. This implementation is quite application specific as it hold names
+    /// Add OpenAPI (Swagger support) to the pipeline. 
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="openApiOptions"></param>
     /// <returns></returns>
-    public static IServiceCollection AddOpenApi(this IServiceCollection services)
+    public static IServiceCollection AddOpenApi(this IServiceCollection services, OpenApiOptions openApiOptions)
     {
+        services.AddSingleton<IOptions<OpenApiOptions>>(new OptionsWrapper<OpenApiOptions>(openApiOptions));
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo
+            if (openApiOptions.SecurityDefinition is not null)
             {
-                Version = "v1",
-                Title = "Llama csharp model requests",
-                Description = "ASP.NET Web API handling Llama csharp model requests",
-            });
+                openApiOptions.Info ??= OpenApiOptions.DefaultOpenApiInfo();
+                openApiOptions.SecurityScheme ??= OpenApiOptions.DefaultSecurityScheme();
+                openApiOptions.SecurityRequirement ??= OpenApiOptions.DefaultSecurityRequirement();
 
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                In = ParameterLocation.Header,
-                Name = "JWT Authentication",
-                Type = SecuritySchemeType.Http,
-                Description = "Enter JWT Bearer token **_only_**",
-                BearerFormat = "JWT",
-                Scheme = "bearer", // must be lower case
-                Reference = new OpenApiReference
+                options.SwaggerDoc(openApiOptions!.Info!.Version, openApiOptions.Info);
+                options.AddSecurityDefinition(openApiOptions.SecurityDefinitionName, openApiOptions.SecurityScheme);
+                options.AddSecurityRequirement(openApiOptions.SecurityRequirement);
+                options.CustomSchemaIds(type => type.FullName);
+                options.SchemaFilter<EnumSchemaFilter>();
+                if (openApiOptions.UseXml)
                 {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
+                    var name = AppDomain.CurrentDomain.FriendlyName;
+                    var xmlFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, $"{name}.xml", SearchOption.TopDirectoryOnly).ToList();
+                    xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
                 }
-            });
+            }
 
-            var requirement = new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        },
-                    }, new string[] { }
-                }
-            };
-            options.AddSecurityRequirement(requirement);
-            options.CustomSchemaIds(type => type.FullName);
-            options.SchemaFilter<EnumSchemaFilter>();
-            var name = AppDomain.CurrentDomain.FriendlyName;
-            var xmlFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, $"{name}.xml", SearchOption.TopDirectoryOnly).ToList();
-            xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
+
         });
         return services;
     }
+
+
+    /// <summary>
+    /// Add Default configuration 
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddOpenApi(this IServiceCollection services, Action<OpenApiOptions>? options = null)
+    {
+        var configuredOptions = new OpenApiOptions();
+        options?.Invoke(configuredOptions);
+        return services.AddOpenApi(configuredOptions);
+    }
+
+    /// <summary>
+    /// Add configuration from configuration using default sectionname (OpenApi) or the provided sectionname
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddOpenApi(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
+    {
+        sectionName ??= OpenApiOptions.SectionName;
+        var configuredOptions = configuration.GetSection(sectionName).Get<OpenApiOptions>()!;
+        ArgumentNullException.ThrowIfNull(configuredOptions);
+        return services.AddOpenApi(configuredOptions);
+    }
+
+    /// <summary>
+    /// Add configuration from configuration using default sectionname (OpenApi) or the provided sectionname
+    /// and allows for overriding of the configuration
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <param name="options"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddOpenApi(this IServiceCollection services, IConfiguration configuration, Action<OpenApiOptions> options, string? sectionName = null)
+    {
+        sectionName ??= OpenApiOptions.SectionName;
+        var modelOptions = configuration.GetSection(sectionName).Get<OpenApiOptions>() ?? new OpenApiOptions();
+        options.Invoke(modelOptions);
+        return services.AddOpenApi(modelOptions);
+    }
+
 
     /// <summary>
     /// Adds Swagger and SwaggerUI to the pipeline.

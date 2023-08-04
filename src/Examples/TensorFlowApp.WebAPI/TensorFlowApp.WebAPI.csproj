@@ -8,6 +8,7 @@
     <UserSecretsId>1d76ad94-9d95-4720-bece-3691c77c0376</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
