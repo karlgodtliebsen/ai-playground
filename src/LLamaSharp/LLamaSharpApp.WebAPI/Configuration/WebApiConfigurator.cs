@@ -1,11 +1,17 @@
+<<<<<<< HEAD
+﻿using LLamaSharp.Domain.Configuration;
+
+using LLamaSharpApp.WebAPI.Controllers.Mappers;
+using LLamaSharpApp.WebAPI.Controllers.Services;
+=======
 ﻿using LLamaSharpApp.WebAPI.Controllers.Mappers;
 using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Repositories;
 using LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 using LLamaSharpApp.WebAPI.Domain.Services;
 using LLamaSharpApp.WebAPI.Domain.Services.Implementations;
+>>>>>>> main
 
-using Microsoft.Extensions.Options;
 
 using OptionsMapper = LLamaSharpApp.WebAPI.Controllers.Mappers.OptionsMapper;
 
@@ -20,62 +26,17 @@ public static class WebApiConfigurator
     /// Add WebAPI options
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="options"></param>
+    /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, WebApiOptions options)
+    public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .VerifyAndAddOptions(options)
-            .AddDomain()
-            .AddUtilities()
-            .AddRepository();
+            .AddLLamaDomain(configuration)
+            .AddUtilities();
         return services;
     }
-    /// <summary>
-    /// Add programmatically customizable configuration for the WebAPI parts (ie the not llama model parts)
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, Action<WebApiOptions>? options = null)
-    {
-        var configuredOptions = new WebApiOptions();
-        options?.Invoke(configuredOptions);
-        return services.AddWebApiConfiguration(configuredOptions);
-    }
 
-    /// <summary>
-    /// Add configuration from configuration using default section name (WebApi) or the provided section name
-    /// for the WebAPI parts (ie the not llama model parts)
-    /// If validation is not required, then just bind the options directly
-    /// IConfigurationSection section = configuration.GetSection(sectionName);
-    /// var section = section.GetSection(sectionName);
-    ///services.AddOptions&lt;WebApiOptions&gt;().Bind(section);
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configuration"></param>
-    /// <param name="webApiOptionsSectionName"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, IConfiguration configuration, string? webApiOptionsSectionName = null)
-    {
-        if (webApiOptionsSectionName is null)
-        {
-            webApiOptionsSectionName = WebApiOptions.SectionName;
-        }
 
-        var options = configuration.GetSection(webApiOptionsSectionName).Get<WebApiOptions>()!;
-        ArgumentNullException.ThrowIfNull(options);
-        return services.AddWebApiConfiguration(options);
-    }
-
-    private static IServiceCollection VerifyAndAddOptions(this IServiceCollection services, WebApiOptions options)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-        ArgumentNullException.ThrowIfNull(options.ModelStatePersistencePath);
-        ArgumentNullException.ThrowIfNull(options.StatePersistencePath);
-        services.AddSingleton<IOptions<WebApiOptions>>(new OptionsWrapper<WebApiOptions>(options));
-        return services;
-    }
     private static IServiceCollection AddUtilities(this IServiceCollection services)
     {
         services
@@ -86,27 +47,4 @@ public static class WebApiConfigurator
             ;
         return services;
     }
-
-    private static IServiceCollection AddDomain(this IServiceCollection services)
-    {
-        services
-            .AddTransient<ILlamaModelFactory, LlamaModelFactory>()
-            .AddTransient<IOptionsService, OptionsService>()
-            .AddTransient<IChatDomainService, ChatDomainService>()
-            .AddTransient<IEmbeddingsService, EmbeddingsService>()
-            .AddTransient<IExecutorService, ExecutorService>()
-            .AddTransient<ITokenizationService, TokenizationService>()
-            ;
-
-        return services;
-    }
-
-    private static IServiceCollection AddRepository(this IServiceCollection services)//might be moved to repository project later on 
-    {
-        services
-            .AddTransient<IModelStateRepository, ModelStateFileRepository>()
-            .AddTransient<IUsersStateRepository, UsersStateFileRepository>();
-        return services;
-    }
-
 }

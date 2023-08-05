@@ -7,22 +7,28 @@ This is early work.
 
 ### Select a Llma.cpp/ggml model
 
-Download a model like: wizardLM-7B.ggmlv3.q4_1.bin
+Download a model like: llama-2-7b.ggmlv3.q8_0.bin
 
 https://huggingface.co/TheBloke
 
 https://huggingface.co/TheBloke/wizardLM-7B-GGML/resolve/main/wizardLM-7B.ggmlv3.q4_1.bin
 
 
+### Llamasharp (Models version 1 and 2):
+A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. 
+
+
 These models has been testet:
 ```
-wizardLM-7B.ggmlv3.q4_1.bin
-ggml-vic13b-uncensored-q4_1.bin
-ggml-vic13b-uncensored-q5_0.bin
-ggml-vicuna-13B-1.1-q4_0.bin
-ggml-vicuna-13B-1.1-q8_0.bin
-wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
+- wizardLM-7B.ggmlv3.q4_1.bin
+- llama-2-7b.ggmlv3.q8_0.bin
+- ggml-vic13b-uncensored-q4_1.bin
+- ggml-vic13b-uncensored-q5_0.bin
+- ggml-vicuna-13B-1.1-q4_0.bin
+- ggml-vicuna-13B-1.1-q8_0.bin
+- wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
 ```
+
 
 To build and use the projects, two projects with 'LlmaModels' folders need to be updated with the model of your choice:
 ```   
@@ -37,7 +43,7 @@ Add this section into appsettings.json
 
 ```json
   "LlmaModel": {
-    "modelPath": "LlmaModels\\wizardLM-7B.ggmlv3.q4_1.bin",
+    "modelPath": "/somepath/location/wizardLM-7B.ggmlv3.q4_1.bin",
   }
 
 ```

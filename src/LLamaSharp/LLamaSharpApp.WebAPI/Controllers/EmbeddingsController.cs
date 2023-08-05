@@ -1,8 +1,15 @@
+<<<<<<< HEAD
+﻿using LLamaSharp.Domain.Domain.Services;
+using LLamaSharpApp.WebAPI.Controllers.Mappers;
+using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
+using LLamaSharpApp.WebAPI.Controllers.Services;
+=======
 ﻿using LLamaSharpApp.WebAPI.Controllers.Mappers;
 using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Services;
 
+>>>>>>> main
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

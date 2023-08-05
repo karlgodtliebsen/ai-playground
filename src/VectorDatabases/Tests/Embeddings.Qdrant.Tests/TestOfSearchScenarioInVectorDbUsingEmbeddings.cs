@@ -12,9 +12,7 @@ using Embeddings.Qdrant.Tests.Fixtures;
 using FluentAssertions;
 
 using LLama;
-
-using LLamaSharpApp.WebAPI.Domain.Services;
-
+using LLamaSharp.Domain.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 using Xunit.Abstractions;

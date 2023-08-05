@@ -1,4 +1,5 @@
-﻿using LLamaSharpApp.WebAPI.Configuration;
+﻿using LLamaSharp.Domain.Configuration;
+using LLamaSharpApp.WebAPI.Configuration;
 using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 using Riok.Mapperly.Abstractions;

@@ -4,6 +4,8 @@ using AI.Library.Configuration;
 using AI.Library.HttpUtils.LibraryConfiguration;
 using AI.Library.Utils;
 
+using LLamaSharp.Domain.Configuration;
+
 using LLamaSharpApp.WebAPI.Configuration;
 
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +36,9 @@ services
     .AddInferenceConfiguration(configuration)
     .AddAzureAdConfiguration(configuration, (string?)null)
 <<<<<<< HEAD
+    .AddCors(Origins)
+=======
+<<<<<<< HEAD
     //.AddCorsConfig(configuration, options =>
     //{   //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
     //    options.Policy = Origins;
@@ -56,6 +61,7 @@ services
 =======
     .AddCors(Origins)
 >>>>>>> d62e532bfa0c737a9d82e682b2014f678dcc2d7e
+>>>>>>> main
     .AddControllers(options =>
     {
         var policy = new AuthorizationPolicyBuilder()
@@ -86,6 +92,10 @@ await using (app)
     app.UseRouting();
     app.UseOpenApi();
 <<<<<<< HEAD
+    app.UseCors(Origins);
+
+=======
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     //app.UseCors(Origins);
@@ -97,6 +107,7 @@ await using (app)
     app.UseCors(Origins);
 
 >>>>>>> d62e532bfa0c737a9d82e682b2014f678dcc2d7e
+>>>>>>> main
     if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
     {
         app.UseSecurityHeaders(SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));

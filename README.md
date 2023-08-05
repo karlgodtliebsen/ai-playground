@@ -47,7 +47,7 @@ The start of a dotnet Test project that uses inspiration from LucidateFinAgent t
 Much more work is needed to make this a real project.
 The implementation is based the Microsoft Semantic Kernel Library
 
-### ImageClassification
+### ImageClassification - TensorFlow.Net:
 A set of Dotnet projects that uses Microsoft.ML for dotnet and TensorFlow.Net + TensorFlow.Keras to classify images. 
 I use: '/projects/AI/image-dataSets' to store the images and the models.
 More info in the README.md file in ML.Net.ImageClassification.Tests folder 
