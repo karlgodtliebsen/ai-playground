@@ -51,7 +51,10 @@
     <None Update="Assets\prompts\information-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\prompts\instruction-prompt.txt">
+    <None Update="Assets\prompts\instruction-prompt-2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\prompts\instruction-prompt-1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\prompts\opinion-prompt.txt">

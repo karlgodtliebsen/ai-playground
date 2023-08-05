@@ -33,6 +33,7 @@ services
     .AddLlamaConfiguration(configuration)
     .AddInferenceConfiguration(configuration)
     .AddAzureAdConfiguration(configuration, (string?)null)
+<<<<<<< HEAD
     //.AddCorsConfig(configuration, options =>
     //{   //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
     //    options.Policy = Origins;
@@ -52,6 +53,9 @@ services
                     .AllowAnyMethod();
             });
     })
+=======
+    .AddCors(Origins)
+>>>>>>> d62e532bfa0c737a9d82e682b2014f678dcc2d7e
     .AddControllers(options =>
     {
         var policy = new AuthorizationPolicyBuilder()
@@ -82,12 +86,17 @@ await using (app)
     app.UseRouting();
     app.UseOpenApi();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     //app.UseCors(Origins);
 =======
     app.UseCors(Origins);
 
 >>>>>>> main
+=======
+    app.UseCors(Origins);
+
+>>>>>>> d62e532bfa0c737a9d82e682b2014f678dcc2d7e
     if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
     {
         app.UseSecurityHeaders(SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));

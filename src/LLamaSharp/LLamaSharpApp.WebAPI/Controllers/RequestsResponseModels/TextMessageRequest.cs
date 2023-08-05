@@ -1,4 +1,4 @@
-﻿namespace LLamaSharpApp.WebAPI.Controllers.Requests;
+﻿namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 /// <summary>
 /// TextMessageRequest

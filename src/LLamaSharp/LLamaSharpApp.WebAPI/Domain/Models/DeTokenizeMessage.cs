@@ -13,10 +13,11 @@ public class DeTokenizeMessage : BaseMessageModel
     {
         Tokens = tokens;
     }
+
     /// <summary>
     /// The tokens to be detokenized
     /// </summary>
-    public int[] Tokens { get; }
+    public int[] Tokens { get; init; }
 
     /// <summary>
     /// Use Stateful Model

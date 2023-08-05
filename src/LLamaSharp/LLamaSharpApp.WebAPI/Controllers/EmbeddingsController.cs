@@ -1,6 +1,6 @@
-﻿using LLamaSharpApp.WebAPI.Controllers.Requests;
+﻿using LLamaSharpApp.WebAPI.Controllers.Mappers;
+using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 using LLamaSharpApp.WebAPI.Controllers.Services;
-using LLamaSharpApp.WebAPI.Domain.Models;
 using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -19,17 +19,20 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 public class EmbeddingsController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
+    private readonly RequestMessagesMapper mapper;
     private readonly ILogger logger;
 
     /// <summary>
     /// Constructor for EmbeddingsController
     /// </summary>
     /// <param name="userProvider"></param>
+    /// <param name="mapper"></param>
     /// <param name="logger"></param>
-    public EmbeddingsController(IUserIdProvider userProvider, ILogger logger)
+    public EmbeddingsController(IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
     {
         this.logger = logger;
         this.userProvider = userProvider;
+        this.mapper = mapper;
     }
 
     /// <summary>
@@ -42,13 +45,7 @@ public class EmbeddingsController : ControllerBase
     [HttpPost("embeddings")]
     public async Task<float[]> Embeddings([FromBody] EmbeddingsRequest request, [FromServices] IEmbeddingsService domainService, CancellationToken cancellationToken)
     {
-        var model = new EmbeddingsMessage(request.Text)
-        {
-            UsePersistedModelState = request.UsePersistedModelState,
-            ModelOptions = request.ModelOptions,
-            UserId = userProvider.UserId
-        };
-
+        var model = mapper.Map(request, userProvider.UserId);
         return await domainService.GetEmbeddings(model, cancellationToken);
     }
 }

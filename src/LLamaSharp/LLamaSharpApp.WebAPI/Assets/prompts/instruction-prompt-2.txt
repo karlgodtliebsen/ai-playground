@@ -1,17 +1,5 @@
 Instruction-based prompts
 
-These are used to give instructions to the model to perform a specific task. 
-A good example of such prompts is the use of Siri, Alexa, or Google Assistant. 
-
-Sample:
-
-
- -"Call mom", 
- -"Play the latest episode from my favorite TV show."
- -"Below is an instruction that describes a task. Write a response that appropriately completes the request."
-
-
-
 
 Sample:
 

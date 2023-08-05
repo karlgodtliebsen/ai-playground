@@ -1,8 +1,8 @@
 ﻿using System.Text;
 
-using LLamaSharpApp.WebAPI.Controllers.Requests;
+using LLamaSharpApp.WebAPI.Controllers.Mappers;
+using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 using LLamaSharpApp.WebAPI.Controllers.Services;
-using LLamaSharpApp.WebAPI.Domain.Models;
 using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -28,17 +28,20 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 public class ExecutorController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
+    private readonly RequestMessagesMapper mapper;
     private readonly ILogger logger;
 
     /// <summary>
     /// Constructor for ExecutorController
     /// </summary>
     /// <param name="userProvider"></param>
+    /// <param name="mapper"></param>
     /// <param name="logger"></param>
-    public ExecutorController(IUserIdProvider userProvider, ILogger logger)
+    public ExecutorController(IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
     {
         this.logger = logger;
         this.userProvider = userProvider;
+        this.mapper = mapper;
     }
 
     /// <summary>
@@ -60,7 +63,7 @@ public class ExecutorController : ControllerBase
     public async Task<string> ExecutorAsync([FromBody] ExecutorInferRequest request, [FromServices] IExecutorService domainService, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("Running Executor for {userId}...", userProvider.UserId);
-        var requestModel = CreateRequestModel(request);
+        var requestModel = mapper.Map(request, userProvider.UserId);
         var sb = new StringBuilder();
         var result = domainService.Executor(requestModel, cancellationToken);
         await foreach (var s in result.WithCancellation(cancellationToken))
@@ -69,20 +72,5 @@ public class ExecutorController : ControllerBase
         }
         op.Complete();
         return sb.ToString();
-    }
-
-    private ExecutorInferMessage CreateRequestModel(ExecutorInferRequest request)
-    {
-        var requestModel = new ExecutorInferMessage(request.Text)
-        {
-            InferenceType = request.InferenceType,
-            ModelOptions = request.ModelOptions,
-            InferenceOptions = request.InferenceOptions,
-            UserId = userProvider.UserId
-        };
-        if (request.UsePersistedModelState.HasValue) requestModel.UsePersistedModelState = request.UsePersistedModelState.Value;
-        if (request.UsePersistedExecutorState.HasValue) requestModel.UsePersistedExecutorState = request.UsePersistedExecutorState.Value;
-        if (request.UseStatelessExecutor.HasValue) requestModel.UseStatelessExecutor = request.UseStatelessExecutor.Value;
-        return requestModel;
     }
 }
