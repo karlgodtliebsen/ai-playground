@@ -4,6 +4,8 @@ using AI.Library.Configuration;
 using AI.Library.HttpUtils.LibraryConfiguration;
 using AI.Library.Utils;
 
+using LLamaSharp.Domain.Configuration;
+
 using LLamaSharpApp.WebAPI.Configuration;
 
 using Microsoft.AspNetCore.Authorization;

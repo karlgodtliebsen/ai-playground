@@ -4,10 +4,11 @@ using FluentAssertions;
 
 using LlamaSharp.Tests.Fixtures;
 
-using LLamaSharpApp.WebAPI.Configuration;
+using LLamaSharp.Domain.Configuration;
+using LLamaSharp.Domain.Domain.Repositories;
+using LLamaSharp.Domain.Domain.Services;
+
 using LLamaSharpApp.WebAPI.Controllers.Services;
-using LLamaSharpApp.WebAPI.Domain.Repositories;
-using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -50,7 +51,7 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         scope.ServiceProvider.GetService<IUserIdProvider>().Should().NotBeNull();
 
         //Options
-        factory.Services.GetService<IOptions<WebApiOptions>>().Should().NotBeNull();
+        factory.Services.GetService<IOptions<LlamaRepositoryOptions>>().Should().NotBeNull();
         factory.Services.GetService<IOptions<LlamaModelOptions>>().Should().NotBeNull();
         factory.Services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
 

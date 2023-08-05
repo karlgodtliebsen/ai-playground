@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
+    <ProjectReference Include="..\LLamaSharp.Domain\LLamaSharp.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

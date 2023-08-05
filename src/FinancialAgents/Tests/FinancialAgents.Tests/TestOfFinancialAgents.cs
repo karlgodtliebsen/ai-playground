@@ -2,13 +2,6 @@
 
 using FinancialAgents.Tests.Fixtures;
 
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.SkillDefinition;
-using Microsoft.SemanticKernel.Skills.Web;
-using Microsoft.SemanticKernel.TemplateEngine;
-
-using OpenAI.Client.Configuration;
-
 using Xunit.Abstractions;
 
 
@@ -21,7 +14,6 @@ public class TestOfFinancialAgents
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
 
-    private readonly OpenAIOptions openAIOptions;
     private readonly FinancialAgentsTestFixture fixture;
 
     public TestOfFinancialAgents(FinancialAgentsTestFixture fixture, ITestOutputHelper output)
@@ -30,31 +22,29 @@ public class TestOfFinancialAgents
         this.logger = fixture.Logger;
         this.fixture = fixture;
         this.hostApplicationFactory = fixture.Factory;
-        this.openAIOptions = fixture.OpenAIOptions;
     }
 
-    // uses https://github.com/microsoft/semantic-kernel/tree/main/dotnet/samples/KernelSyntaxExamples
 
     [Fact]
     public async Task RunWebSearchSample()
     {
         //https://github.com/microsoft/semantic-kernel/blob/main/dotnet/samples/KernelSyntaxExamples/Example11_WebSearchQueries.cs
-        IKernel kernel = Kernel.Builder
-            .WithLogger(fixture.MsLogger)
-            .Build();
-        // Load native skills
-        var skill = new SearchUrlSkill();
-        var bing = kernel.ImportSkill(skill, "search");
+        //IKernel kernel = Kernel.Builder
+        //    .WithLogger(fixture.MsLogger)
+        //    .Build();
+        //// Load native skills
+        //var skill = new SearchUrlSkill();
+        //var bing = kernel.ImportSkill(skill, "search");
 
-        // Run
-        var ask = "What's the tallest building in London?";
-        var result = await kernel.RunAsync(
-            ask,
-            bing["BingSearchUrl"]
-        );
+        //// Run
+        //var ask = "What's the tallest building in London?";
+        //var result = await kernel.RunAsync(
+        //    ask,
+        //    bing["BingSearchUrl"]
+        //);
 
-        logger.Information(ask + "\n");
-        logger.Information(result.ToString());
+        //logger.Information(ask + "\n");
+        //logger.Information(result.ToString());
     }
 
     [Fact]
@@ -62,10 +52,10 @@ public class TestOfFinancialAgents
     {
         //https://github.com/microsoft/semantic-kernel/blob/main/dotnet/samples/KernelSyntaxExamples/Example11_WebSearchQueries.cs
 
-        IKernel kernel = new KernelBuilder()
-            .WithLogger(fixture.MsLogger)
-            .WithOpenAITextCompletionService("text-davinci-003", openAIOptions.ApiKey)
-            .Build();
+        //IKernel kernel = new KernelBuilder()
+        //    .WithLogger(fixture.MsLogger)
+        //    .WithOpenAITextCompletionService("text-davinci-003", openAIOptions.ApiKey)
+        //    .Build();
 
         //// Load Bing skill
         //using var bingConnector = new BingConnector(fixture.BingOptions.ApiKey);
@@ -80,143 +70,143 @@ public class TestOfFinancialAgents
     }
 
 
-    private async Task Example1Async(IKernel kernel)
-    {
-        logger.Information("======== Bing and Google Search Skill ========");
+    //    private async Task Example1Async(IKernel kernel)
+    //    {
+    //        logger.Information("======== Bing and Google Search Skill ========");
 
-        // Run
-        var question = "What's the largest building in the world?";
-        var bingResult = await kernel.Func("bing", "search").InvokeAsync(question);
-        //var googleResult = await kernel.Func("google", "search").InvokeAsync(question);
+    //        // Run
+    //        var question = "What's the largest building in the world?";
+    //        var bingResult = await kernel.Func("bing", "search").InvokeAsync(question);
+    //        //var googleResult = await kernel.Func("google", "search").InvokeAsync(question);
 
-        logger.Information(question);
-        logger.Information("----");
-        logger.Information(bingResult.ToString());
-        logger.Information("----");
-        //logger.Information(googleResult.ToString());
-    }
+    //        logger.Information(question);
+    //        logger.Information("----");
+    //        logger.Information(bingResult.ToString());
+    //        logger.Information("----");
+    //        //logger.Information(googleResult.ToString());
+    //    }
 
-    private async Task Example2Async(IKernel kernel)
-    {
-        logger.Information("======== Use Search Skill to answer user questions ========");
+    //    private async Task Example2Async(IKernel kernel)
+    //    {
+    //        logger.Information("======== Use Search Skill to answer user questions ========");
 
-        const string SemanticFunction = @"Answer questions only when you know the facts or the information is provided.
-When you don't have sufficient information you reply with a list of commands to find the information needed.
-When answering multiple questions, use a bullet point list.
-Note: make sure single and double quotes are escaped using a backslash char.
+    //        const string SemanticFunction = @"Answer questions only when you know the facts or the information is provided.
+    //When you don't have sufficient information you reply with a list of commands to find the information needed.
+    //When answering multiple questions, use a bullet point list.
+    //Note: make sure single and double quotes are escaped using a backslash char.
 
-[COMMANDS AVAILABLE]
-- bing.search
+    //[COMMANDS AVAILABLE]
+    //- bing.search
 
-[INFORMATION PROVIDED]
-{{ $externalInformation }}
+    //[INFORMATION PROVIDED]
+    //{{ $externalInformation }}
 
-[EXAMPLE 1]
-Question: what's the biggest lake in Italy?
-Answer: Lake Garda, also known as Lago di Garda.
+    //[EXAMPLE 1]
+    //Question: what's the biggest lake in Italy?
+    //Answer: Lake Garda, also known as Lago di Garda.
 
-[EXAMPLE 2]
-Question: what's the biggest lake in Italy? What's the smallest positive number?
-Answer:
-* Lake Garda, also known as Lago di Garda.
-* The smallest positive number is 1.
+    //[EXAMPLE 2]
+    //Question: what's the biggest lake in Italy? What's the smallest positive number?
+    //Answer:
+    //* Lake Garda, also known as Lago di Garda.
+    //* The smallest positive number is 1.
 
-[EXAMPLE 3]
-Question: what's Ferrari stock price ? Who is the current number one female tennis player in the world?
-Answer:
-{{ '{{' }} bing.search ""what\\'s Ferrari stock price?"" {{ '}}' }}.
-{{ '{{' }} bing.search ""Who is the current number one female tennis player in the world?"" {{ '}}' }}.
+    //[EXAMPLE 3]
+    //Question: what's Ferrari stock price ? Who is the current number one female tennis player in the world?
+    //Answer:
+    //{{ '{{' }} bing.search ""what\\'s Ferrari stock price?"" {{ '}}' }}.
+    //{{ '{{' }} bing.search ""Who is the current number one female tennis player in the world?"" {{ '}}' }}.
 
-[END OF EXAMPLES]
+    //[END OF EXAMPLES]
 
-[TASK]
-Question: {{ $input }}.
-Answer: ";
+    //[TASK]
+    //Question: {{ $input }}.
+    //Answer: ";
 
-        var questions = "Who is the most followed person on TikTok right now? What's the exchange rate EUR:USD?";
-        //logger.Information(questions);
+    //        var questions = "Who is the most followed person on TikTok right now? What's the exchange rate EUR:USD?";
+    //        //logger.Information(questions);
 
-        var oracle = kernel.CreateSemanticFunction(SemanticFunction, maxTokens: 200, temperature: 0, topP: 1);
+    //        var oracle = kernel.CreateSemanticFunction(SemanticFunction, maxTokens: 200, temperature: 0, topP: 1);
 
-        var context = kernel.CreateNewContext();
-        context["externalInformation"] = "";
-        var answer = await oracle.InvokeAsync(questions, context);
+    //        var context = kernel.CreateNewContext();
+    //        context["externalInformation"] = "";
+    //        var answer = await oracle.InvokeAsync(questions, context);
 
-        // If the answer contains commands, execute them using the prompt renderer.
-        if (answer.Result.Contains("bing.search", StringComparison.OrdinalIgnoreCase))
-        {
-            var promptRenderer = new PromptTemplateEngine();
+    //        // If the answer contains commands, execute them using the prompt renderer.
+    //        if (answer.Result.Contains("bing.search", StringComparison.OrdinalIgnoreCase))
+    //        {
+    //            var promptRenderer = new PromptTemplateEngine();
 
-            logger.Information("---- Fetching information from Google...");
-            var information = await promptRenderer.RenderAsync(answer.Result, context);
+    //            logger.Information("---- Fetching information from Google...");
+    //            var information = await promptRenderer.RenderAsync(answer.Result, context);
 
-            logger.Information("Information found:");
-            // logger.Information(information);
+    //            logger.Information("Information found:");
+    //            // logger.Information(information);
 
-            // The rendered prompt contains the information retrieved from search engines
-            context["externalInformation"] = information;
+    //            // The rendered prompt contains the information retrieved from search engines
+    //            context["externalInformation"] = information;
 
-            // Run the semantic function again, now including information from Bing
-            answer = await oracle.InvokeAsync(questions, context);
-        }
-        else
-        {
-            logger.Information("AI had all the information, no need to query Google.");
-        }
+    //            // Run the semantic function again, now including information from Bing
+    //            answer = await oracle.InvokeAsync(questions, context);
+    //        }
+    //        else
+    //        {
+    //            logger.Information("AI had all the information, no need to query Google.");
+    //        }
 
-        logger.Information("---- ANSWER:");
-        logger.Information(answer.ToString());
-    }
+    //        logger.Information("---- ANSWER:");
+    //        logger.Information(answer.ToString());
+    //    }
 
-    [Fact]
-    public async Task RunAsync()
-    {
-        logger.Information("======== LLMPrompts ========");
+    //    [Fact]
+    //    public async Task RunAsync()
+    //    {
+    //        logger.Information("======== LLMPrompts ========");
 
-        //Load Bing skill
+    //        //Load Bing skill
 
-        IKernel kernel = new KernelBuilder()
-             .WithLogger(fixture.MsLogger)
-             .WithOpenAITextCompletionService("text-davinci-002", openAIOptions.ApiKey, serviceId: "text-davinci-002")
-             .WithOpenAITextCompletionService("text-davinci-003", openAIOptions.ApiKey)
-             .Build();
+    //        IKernel kernel = new KernelBuilder()
+    //             .WithLogger(fixture.MsLogger)
+    //             .WithOpenAITextCompletionService("text-davinci-002", openAIOptions.ApiKey, serviceId: "text-davinci-002")
+    //             .WithOpenAITextCompletionService("text-davinci-003", openAIOptions.ApiKey)
+    //             .Build();
 
-        // Load native skill
-        //using var bingConnector = new BingConnector(fixture.BingOptions.ApiKey);
-        //var bing = new WebSearchEngineSkill(bingConnector);
-        //var search = kernel.ImportSkill(bing, "bing");
+    //        // Load native skill
+    //        //using var bingConnector = new BingConnector(fixture.BingOptions.ApiKey);
+    //        //var bing = new WebSearchEngineSkill(bingConnector);
+    //        //var search = kernel.ImportSkill(bing, "bing");
 
-        // Load semantic skill defined with prompt templates
-        //string folder = RepoFiles.SampleSkillsPath();
+    //        // Load semantic skill defined with prompt templates
+    //        //string folder = RepoFiles.SampleSkillsPath();
 
-        //var sumSkill = kernel.ImportSemanticSkillFromDirectory(
-        //    folder,
-        //    "SummarizeSkill");
+    //        //var sumSkill = kernel.ImportSemanticSkillFromDirectory(
+    //        //    folder,
+    //        //    "SummarizeSkill");
 
-        //// Run
-        //var ask = "What's the tallest building in South America?";
+    //        //// Run
+    //        //var ask = "What's the tallest building in South America?";
 
-        //var result1 = await kernel.RunAsync(
-        //    ask,
-        //    search["Search"]
-        //);
+    //        //var result1 = await kernel.RunAsync(
+    //        //    ask,
+    //        //    search["Search"]
+    //        //);
 
-        //var result2 = await kernel.RunAsync(
-        //    ask,
-        //    search["Search"],
-        //    sumSkill["Summarize"]
-        //);
+    //        //var result2 = await kernel.RunAsync(
+    //        //    ask,
+    //        //    search["Search"],
+    //        //    sumSkill["Summarize"]
+    //        //);
 
-        //var result3 = await kernel.RunAsync(
-        //    ask,
-        //    search["Search"],
-        //    sumSkill["Notegen"]
-        //);
+    //        //var result3 = await kernel.RunAsync(
+    //        //    ask,
+    //        //    search["Search"],
+    //        //    sumSkill["Notegen"]
+    //        //);
 
-        //logger.Information(ask + "\n");
-        //logger.Information("Bing Answer: " + result1 + "\n");
-        //logger.Information("Summary: " + result2 + "\n");
-        //logger.Information("Notes: " + result3 + "\n");
-    }
+    //        //logger.Information(ask + "\n");
+    //        //logger.Information("Bing Answer: " + result1 + "\n");
+    //        //logger.Information("Summary: " + result2 + "\n");
+    //        //logger.Information("Notes: " + result3 + "\n");
+    //    }
 
 }

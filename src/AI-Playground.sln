@@ -16,6 +16,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenAI", "OpenAI", "{E92551FE-B0EA-4C39-A6A9-AC31EA4CF720}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LLamaSharp", "LLamaSharp", "{703CDD20-E454-4130-95B0-D958CF1A0385}"
+	ProjectSection(SolutionItems) = preProject
+		LLamaSharp\README.md = LLamaSharp\README.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LLamaSharpApp.WebAPI", "LLamaSharp\LLamaSharpApp.WebAPI\LLamaSharpApp.WebAPI.csproj", "{11FF0A14-DD56-42C1-B2CA-AEBF9FEF3EB9}"
 EndProject
@@ -65,18 +68,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SemanticKernel", "SemanticKernel", "{83D32A6A-E08B-4C8C-A991-E2B839BE3D6F}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7B547F1B-D200-433D-8B6E-33B5E3A5B724}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernel.Tests", "SemanticKernel\Tests\SemanticKernel.Tests\SemanticKernel.Tests.csproj", "{478EBCCF-728D-4B25-BF00-3FD5889B5380}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinancialAgents", "FinancialAgents", "{9FCD611C-72B6-44FC-A19B-7FF5CA72AB9D}"
+	ProjectSection(SolutionItems) = preProject
+		FinancialAgents\README.md = FinancialAgents\README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B2864683-C195-471A-91BE-6E86A7E2331E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialAgents.Tests", "FinancialAgents\Tests\FinancialAgents.Tests\FinancialAgents.Tests.csproj", "{7591A36E-6971-4D59-9846-CA765F1EE26E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageClassification", "ImageClassification", "{8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageClassification-TensorFlow", "ImageClassification-TensorFlow", "{8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0C0EFC44-80E3-4A52-AD67-F6EFE846E7C8}"
 EndProject
@@ -89,6 +98,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TensorFlow.ImageClassification.Domain", "ImageClassification\TensorFlow.ImageClassification.Domain\TensorFlow.ImageClassification.Domain.csproj", "{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageClassification.Domain", "ImageClassification\ImageClassification.Domain\ImageClassification.Domain.csproj", "{429A468B-BEFD-472D-ABF4-B47ECAE356E4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LLamaSharp.Domain", "LLamaSharp\LLamaSharp.Domain\LLamaSharp.Domain.csproj", "{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -200,6 +211,10 @@ Global
 		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -236,6 +251,7 @@ Global
 		{42B05CF2-F76E-46FF-8115-53F196BFE7BC} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
 		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
 		{429A468B-BEFD-472D-ABF4-B47ECAE356E4} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3} = {703CDD20-E454-4130-95B0-D958CF1A0385}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A365742-464F-4F92-BCF0-6F080A5C398C}
