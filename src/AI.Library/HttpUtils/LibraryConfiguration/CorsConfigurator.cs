@@ -15,7 +15,7 @@ public static class CorsConfigurator
     /// <param name="configuration"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddCorsConfig(this IServiceCollection services, IConfiguration configuration, CorsOptions options)
+    public static IServiceCollection AddCors(this IServiceCollection services, IConfiguration configuration, CorsOptions options)
     {
         services.AddCors(opt =>
         {
@@ -33,6 +33,24 @@ public static class CorsConfigurator
         return services;
     }
 
+    public static IServiceCollection AddCors(this IServiceCollection services, string origins)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy(origins,
+                policy =>
+                {
+                    policy
+                        .AllowCredentials()
+                        .WithOrigins()
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
+        return services;
+    }
+
     /// <summary>
     /// Configure Cors
     /// </summary>
@@ -40,11 +58,11 @@ public static class CorsConfigurator
     /// <param name="configuration"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddCorsConfig(this IServiceCollection services, IConfiguration configuration, Action<CorsOptions>? options = null)
+    public static IServiceCollection AddCors(this IServiceCollection services, IConfiguration configuration, Action<CorsOptions>? options = null)
     {
         var configOptions = new CorsOptions();
         options?.Invoke(configOptions);
-        return services.AddCorsConfig(configuration, configOptions);
+        return services.AddCors(configuration, configOptions);
     }
 
 
@@ -55,11 +73,11 @@ public static class CorsConfigurator
     /// <param name="configuration"></param>
     /// <param name="sectionName"></param>
     /// <returns></returns>
-    public static IServiceCollection AddCorsConfig(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
+    public static IServiceCollection AddCors(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
         sectionName ??= CorsOptions.SectionName;
         var options = configuration.GetSection(sectionName).Get<CorsOptions>()!;
-        return services.AddCorsConfig(configuration, options);
+        return services.AddCors(configuration, options);
     }
 
     /// <summary>
@@ -75,7 +93,7 @@ public static class CorsConfigurator
         sectionName ??= CorsOptions.SectionName;
         var modelOptions = configuration.GetSection(sectionName).Get<CorsOptions>() ?? new CorsOptions();
         options.Invoke(modelOptions);
-        return services.AddCorsConfig(configuration, modelOptions);
+        return services.AddCors(configuration, modelOptions);
     }
 
 }

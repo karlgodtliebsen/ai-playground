@@ -1,4 +1,4 @@
-﻿using LLamaSharpApp.WebAPI.Controllers;
+﻿using LLamaSharpApp.WebAPI.Controllers.Mappers;
 using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Repositories;
 using LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
@@ -6,6 +6,8 @@ using LLamaSharpApp.WebAPI.Domain.Services;
 using LLamaSharpApp.WebAPI.Domain.Services.Implementations;
 
 using Microsoft.Extensions.Options;
+
+using OptionsMapper = LLamaSharpApp.WebAPI.Controllers.Mappers.OptionsMapper;
 
 namespace LLamaSharpApp.WebAPI.Configuration;
 
@@ -80,6 +82,7 @@ public static class WebApiConfigurator
             .AddHttpContextAccessor()
             .AddScoped<IUserIdProvider, UserIdProvider>()
             .AddTransient<OptionsMapper>()
+            .AddTransient<RequestMessagesMapper>()
             ;
         return services;
     }

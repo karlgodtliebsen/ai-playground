@@ -3,12 +3,13 @@
 # look into https://learn.microsoft.com/da-dk/aspnet/core/web-api/http-repl/?view=aspnetcore-8.0&tabs=windows
 # https://learn.microsoft.com/da-dk/aspnet/core/test/integration-tests?view=aspnetcore-8.0
 #
+# Questions:
 # can we start the host from here?
-
+# can we get the token from here?
 
 @hostname=localhost
 @port=7039
-@token = [add token]
+@token = [insert token here]
 
 
 #get health status from anonymous healthcontroller
@@ -20,4 +21,293 @@ GET https://{{hostname}}:{{port}}/health HTTP/1.1
 #get prompt template
 GET https://{{hostname}}:{{port}}/api/llama/configuration/prompt-templates HTTP/1.1
 Authorization: Bearer {{token}}
+
+###
+
+#get llama model options
+GET https://{{hostname}}:{{port}}/api/llama/configuration/modelparams  HTTP/1.1
+Authorization: Bearer {{token}}
+
+
+###
+
+#puv llama model options
+PUT https://{{hostname}}:{{port}}/api/llama/configuration/modelparams  HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "contextSize": 512,
+  "gpuLayerCount": 20,
+  "seed": 1337,
+  "useFp16Memory": true,
+  "useMemorymap": true,
+  "useMemoryLock": false,
+  "perplexity": false,
+  "loraAdapter": "",
+  "loraBase": "",
+  "threads": 6,
+  "batchSize": 512,
+  "convertEosToNewLine": false,
+  "embeddingMode": false,
+  "modelName": "llama-2-7b.ggmlv3.q8_0.bin",
+  "antiPrompt": null,
+  "prompt": null
+}
+
+###
+
+#get inference options
+GET https://{{hostname}}:{{port}}/api/llama/configuration/inference HTTP/1.1
+Authorization: Bearer {{token}}
+
+
+###
+
+#put inference options
+PUT https://{{hostname}}:{{port}}/api/llama/configuration/inference HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+accept: */*
+
+{
+  "tokensKeep": 0,
+  "maxTokens": -1,
+  "logitBias": null,
+  "antiPrompts": [
+    "User:"
+  ],
+  "pathSession": "",
+  "inputSuffix": "",
+  "inputPrefix": "",
+  "topK": 40,
+  "topP": 0.95,
+  "tfsZ": 1,
+  "typicalP": 1,
+  "temperature": 1.0,
+  "repeatPenalty": 1.1,
+  "repeatLastTokensCount": 64,
+  "frequencyPenalty": 0,
+  "presencePenalty": 0,
+  "mirostat": 0,
+  "mirostatTau": 5,
+  "mirostatEta": 0.1,
+  "penalizeNL": true
+}
+
+
+
+###
+
+#post chat
+POST https://{{hostname}}:{{port}}/api/llama/chat HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+accept: */*
+
+{
+  "modelOptions": {
+    "contextSize": 1024,
+    "antiPrompt": [
+      "USER:"
+    ],
+    "prompt": "You are a very helpfull assitant"
+  },
+  "text": "Today is monday. What day is it tomorrow",
+  "usePersistedModelState": false,
+  "useDefaultAntiPrompt": false,
+  "useDefaultPrompt": false
+}
+
+###
+
+#post chat
+POST https://{{hostname}}:{{port}}/api/llama/chat/stream HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+accept: */*
+
+{
+  "modelOptions": {
+    "contextSize": 0,
+    "mainGpu": 0,
+    "lowVram": true,
+    "gpuLayerCount": 0,
+    "seed": 0,
+    "useFp16Memory": true,
+    "useMemorymap": true,
+    "useMemoryLock": true,
+    "perplexity": true,
+    "modelPath": "string",
+    "modelAlias": "string",
+    "loraAdapter": "string",
+    "loraBase": "string",
+    "threads": 0,
+    "batchSize": 0,
+    "convertEosToNewLine": true,
+    "embeddingMode": true,
+    "tensorSplits": [
+      0
+    ],
+    "antiPrompt": [
+      "string"
+    ],
+    "prompt": "string"
+  },
+  "text": "string",
+  "usePersistedModelState": true,
+  "useDefaultAntiPrompt": true,
+  "useDefaultPrompt": true
+}
+
+###
+
+
+#get tokenized
+POST https://{{hostname}}:{{port}}/api/llama/tokenize HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+accept: */*
+
+{
+  "modelOptions": {
+    "contextSize": 0,
+    "mainGpu": 0,
+    "lowVram": true,
+    "gpuLayerCount": 0,
+    "seed": 0,
+    "useFp16Memory": true,
+    "useMemorymap": true,
+    "useMemoryLock": true,
+    "perplexity": true,
+    "modelPath": "string",
+    "modelAlias": "string",
+    "loraAdapter": "string",
+    "loraBase": "string",
+    "threads": 0,
+    "batchSize": 0,
+    "convertEosToNewLine": true,
+    "embeddingMode": true,
+    "tensorSplits": [
+      0
+    ],
+    "antiPrompt": [
+      "string"
+    ],
+    "prompt": "string"
+  },
+  "text": "hello world",
+  "usePersistedModelState": true
+}
+
+
+
+
+
+###
+
+#get tokenized
+POST https://{{hostname}}:{{port}}/api/llama/detokenize HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+accept: */*
+
+{
+  "modelOptions": {
+    "contextSize": 1024,
+    "embeddingMode": true,
+    "tensorSplits": [
+      0
+    ]  
+  },
+  "tokens": [  1,  12199,  3186]
+}
+
+###
+
+#get embeddings
+POST https://{{hostname}}:{{port}}/api/llama/embeddings HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+accept: */*
+
+{
+  "modelOptions": {
+    "contextSize": 1024
+  },
+  "text": "Hello to the AI world",
+  "usePersistedModelState": false
+}
+
+
+###
+
+#get executor
+POST https://{{hostname}}:{{port}}/api/llama/executor HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+accept: */*
+
+{
+  "modelOptions": {
+    "contextSize": 0,
+    "mainGpu": 0,
+    "lowVram": true,
+    "gpuLayerCount": 0,
+    "seed": 0,
+    "useFp16Memory": true,
+    "useMemorymap": true,
+    "useMemoryLock": true,
+    "perplexity": true,
+    "modelPath": "string",
+    "modelAlias": "string",
+    "loraAdapter": "string",
+    "loraBase": "string",
+    "threads": 0,
+    "batchSize": 0,
+    "convertEosToNewLine": true,
+    "embeddingMode": true,
+    "tensorSplits": [
+      0
+    ],
+    "antiPrompt": [
+      "string"
+    ],
+    "prompt": "string"
+  },
+  "text": "string",
+  "inferenceOptions": {
+    "tokensKeep": 0,
+    "maxTokens": 0,
+    "logitBias": {
+      "additionalProp1": 0,
+      "additionalProp2": 0,
+      "additionalProp3": 0
+    },
+    "antiPrompts": [
+      "string"
+    ],
+    "pathSession": "string",
+    "inputSuffix": "string",
+    "inputPrefix": "string",
+    "topK": 0,
+    "topP": 0,
+    "tfsZ": 0,
+    "typicalP": 0,
+    "temperature": 0,
+    "repeatPenalty": 0,
+    "repeatLastTokensCount": 0,
+    "frequencyPenalty": 0,
+    "presencePenalty": 0,
+    "mirostat": "Disable",
+    "mirostatTau": 0,
+    "mirostatEta": 0,
+    "penalizeNL": true
+  },
+  "inferenceType": "InteractiveExecutor",
+  "usePersistedModelState": true,
+  "usePersistedExecutorState": true,
+  "useStatelessExecutor": true
+}
+
 

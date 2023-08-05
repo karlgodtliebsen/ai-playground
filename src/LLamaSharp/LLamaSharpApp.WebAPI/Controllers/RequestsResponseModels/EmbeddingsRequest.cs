@@ -1,4 +1,4 @@
-﻿namespace LLamaSharpApp.WebAPI.Controllers.Requests;
+﻿namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 /// <summary>
 /// Request object to hold the text to be sent to the embedding algoritm

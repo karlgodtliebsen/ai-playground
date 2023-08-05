@@ -1,6 +1,6 @@
-﻿using LLamaSharpApp.WebAPI.Controllers.Requests;
+﻿using LLamaSharpApp.WebAPI.Controllers.Mappers;
+using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 using LLamaSharpApp.WebAPI.Controllers.Services;
-using LLamaSharpApp.WebAPI.Domain.Models;
 using LLamaSharpApp.WebAPI.Domain.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -23,42 +23,52 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 public class ChatController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
+    private readonly RequestMessagesMapper mapper;
+    private readonly IChatDomainService domainService;
     private readonly ILogger logger;
 
     /// <summary>
     /// Controller for Chat
     /// </summary>
     /// <param name="userProvider"></param>
+    /// <param name="mapper"></param>
     /// <param name="logger"></param>
-    public ChatController(IUserIdProvider userProvider, ILogger logger)
+    /// <param name="domainService"></param>
+    public ChatController(IChatDomainService domainService, IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
     {
+        this.domainService = domainService;
         this.logger = logger;
         this.userProvider = userProvider;
+        this.mapper = mapper;
     }
 
     /// <summary>
     /// Invokes a chat with the prompt text, using the model parameters.
     /// </summary>
     /// <param name="request">Hold the Chat prompt/text</param>
-    /// <param name="domainService"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("chat")]
-    public async Task<string> Chat([FromBody] ChatMessageRequest request, [FromServices] IChatDomainService domainService, CancellationToken cancellationToken)
+    public async Task<string> Chat([FromBody] ChatMessageRequest request, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("Running Chat for {userId}...", userProvider.UserId);
-        var requestModel = BuildChat(request);
+        var requestModel = mapper.Map(request, userProvider.UserId);
         var result = await domainService.Chat(requestModel, cancellationToken);
         op.Complete();
         return result;
     }
 
 
+    /// <summary>
+    /// Invokes a stream based chat with the prompt text, using the model parameters.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
     [HttpPost("chat/stream")]
-    public async Task ChatUsingStream([FromBody] ChatMessageRequest request, [FromServices] IChatDomainService domainService, CancellationToken cancellationToken)
+    public async Task ChatUsingStream([FromBody] ChatMessageRequest request, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("Running Streamed Chat for {userId}...", userProvider.UserId);
-        var requestModel = BuildChat(request);
+        var requestModel = mapper.Map(request, userProvider.UserId);
         Response.ContentType = "text/event-stream";
         await foreach (var r in domainService.ChatStream(requestModel, cancellationToken))
         {
@@ -70,19 +80,6 @@ public class ChatController : ControllerBase
         op.Complete();
     }
 
-    private ChatMessage BuildChat(ChatMessageRequest request)   //TODO: mapping using mapperly
-    {
-        var requestModel = new ChatMessage(request.Text)
-        {
-            UsePersistedModelState = request.UsePersistedModelState,
-            ModelOptions = request.ModelOptions,
-            UserId = userProvider.UserId,
-            UseDefaultPrompt = request.UseDefaultPrompt,
-            UseDefaultAntiPrompt = request.UseDefaultAntiPrompt,
-        };
-
-        return requestModel;
-    }
 
 
     //[HttpPost("History")]

@@ -1,6 +1,4 @@
-﻿using LLamaSharpApp.WebAPI.Configuration;
-
-namespace LLamaSharpApp.WebAPI.Controllers.Requests;
+﻿namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 /// <summary>
 /// Base type for requests
@@ -10,5 +8,5 @@ public class BaseRequest
     /// <summary>
     /// Request specific LlamaModelOptions
     /// </summary>
-    public LlamaModelOptions? ModelOptions { get; set; } = default!;
+    public LlamaModelRequestResponse? ModelOptions { get; set; } = default!;
 }
