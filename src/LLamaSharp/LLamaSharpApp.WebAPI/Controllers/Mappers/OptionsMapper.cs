@@ -3,7 +3,7 @@ using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 using Riok.Mapperly.Abstractions;
 
-namespace LLamaSharpApp.WebAPI.Controllers;
+namespace LLamaSharpApp.WebAPI.Controllers.Mappers;
 
 /// <summary>
 ///  Riok.Mapperly Mapper for Options
@@ -17,6 +17,34 @@ public partial class OptionsMapper
     /// <param name="options"></param>
     /// <returns></returns>
     public partial LlamaModelRequestResponse Map(LlamaModelOptions options);
+
+
+    /// <summary>
+    /// Maps the LlamaModelOptions to the LlamaModelRequestResponse and sanitizes the sensitive data (path information)
+    /// </summary>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    public LlamaModelRequestResponse MapProtectSensitiveData(LlamaModelOptions options)
+    {
+        var response = Map(options);
+        response.ModelName = options.GetSanitizeSensitiveData();
+        return response;
+    }
+
+    /// <summary>
+    /// Maps the LlamaModelRequestResponse to the LlamaModelOptions and restores the sensitive data (path information)
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="defaultOptions"></param>
+    /// <returns></returns>
+    public LlamaModelOptions MapRestoreSensitiveData(LlamaModelRequestResponse request, LlamaModelOptions defaultOptions)
+    {
+        var options = Map(request);
+        options.ModelPath = defaultOptions.ModelPath;
+        options.RestoreSanitizedSensitiveData(request.ModelName);
+        return options;
+    }
+
 
     /// <summary>
     /// Maps the LlamaModelRequestResponse to the LlamaModelOptions
@@ -32,12 +60,11 @@ public partial class OptionsMapper
     /// <returns></returns>
     public partial InferenceRequestResponse Map(InferenceOptions options);
 
+
     /// <summary>
     /// Maps the InferenceRequestResponse to the InferenceOptions
     /// </summary>
     /// <param name="options"></param>
     /// <returns></returns>
     public partial InferenceOptions Map(InferenceRequestResponse options);
-
-
 }

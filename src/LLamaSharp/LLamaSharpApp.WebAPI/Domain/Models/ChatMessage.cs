@@ -14,7 +14,7 @@ public class ChatMessage : SimpleTextMessage
     /// <summary>
     /// The user id. Obtained from Security Infrastructure
     /// </summary>
-    public string UserId { get; init; } = default!;
+    public string UserId { get; set; } = default!;
 
     /// <summary>
     /// Use the systems build in AntiPrompt like  [ "User:" ]

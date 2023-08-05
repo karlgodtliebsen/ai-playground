@@ -1,4 +1,5 @@
-﻿using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
+﻿using LLamaSharpApp.WebAPI.Configuration;
+using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Services;
 
@@ -44,11 +45,10 @@ public class ConfigurationController : ControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet("configuration/modelparams")]
-    public async Task<LlamaModelRequestResponse> GetUsersLlamaModelConfiguration([FromServices] OptionsMapper mapper, CancellationToken cancellationToken)
+    public async Task<LlamaModelRequestResponse> GetUsersLlamaModelConfiguration([FromServices] Mappers.OptionsMapper mapper, CancellationToken cancellationToken)
     {
         var options = await domainService.GetLlamaModelOptions(userProvider.UserId, cancellationToken);
-        var response = mapper.Map(options);
-        response.ModelName = options.GetSanitizeSensitiveData();
+        var response = mapper.MapProtectSensitiveData(options);
         return response;
     }
 
@@ -59,7 +59,7 @@ public class ConfigurationController : ControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet("configuration/inference")]
-    public async Task<InferenceRequestResponse> GetUsersInferenceModelConfiguration([FromServices] OptionsMapper mapper, CancellationToken cancellationToken)
+    public async Task<InferenceRequestResponse> GetUsersInferenceModelConfiguration([FromServices] Mappers.OptionsMapper mapper, CancellationToken cancellationToken)
     {
         var options = await domainService.GetInferenceOptions(userProvider.UserId, cancellationToken);
         var response = mapper.Map(options);
@@ -95,12 +95,10 @@ public class ConfigurationController : ControllerBase
     /// <param name="mapper"></param>
     /// <param name="cancellationToken"></param>
     [HttpPut("configuration/modelparams")]
-    public async Task UpdateLlamaModelOptions([FromBody] LlamaModelRequestResponse request, [FromServices] OptionsMapper mapper, CancellationToken cancellationToken)
+    public async Task UpdateLlamaModelOptions([FromBody] LlamaModelRequestResponse request, [FromServices] Mappers.OptionsMapper mapper, CancellationToken cancellationToken)
     {
-        var defaultOptions = domainService.GetDefaultLlamaModelOptions();
-        var options = mapper.Map(request);
-        options.ModelPath = defaultOptions.ModelPath;
-        options.RestoreSanitizedSensitiveData(request.ModelName);
+        LlamaModelOptions defaultOptions = domainService.GetDefaultLlamaModelOptions();
+        var options = mapper.MapRestoreSensitiveData(request, defaultOptions);
         await domainService.PersistLlamaModelOptions(options, userProvider.UserId, cancellationToken);
     }
 
@@ -111,7 +109,7 @@ public class ConfigurationController : ControllerBase
     /// <param name="mapper"></param>
     /// <param name="cancellationToken"></param>
     [HttpPut("configuration/inference")]
-    public async Task UpdateInferenceOptions([FromBody] InferenceRequestResponse request, [FromServices] OptionsMapper mapper, CancellationToken cancellationToken)
+    public async Task UpdateInferenceOptions([FromBody] InferenceRequestResponse request, [FromServices] Mappers.OptionsMapper mapper, CancellationToken cancellationToken)
     {
         var options = mapper.Map(request);
         await domainService.PersistInferenceOptions(options, userProvider.UserId, cancellationToken);

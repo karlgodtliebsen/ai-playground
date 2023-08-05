@@ -54,9 +54,9 @@ public class TestOfQdrantAdministration
         var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
-            _ => { logger.Information("Succeeded"); },
+            _ => logger.Information("Succeeded"),
             error => throw new QdrantException(error.Error)
-            );
+           );
     }
 
     [Fact]
@@ -88,10 +88,7 @@ public class TestOfQdrantAdministration
         var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
         var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
-            _ =>
-            {
-                logger.Information($"{CollectionName} deleted");
-            },
+            _ => logger.Information($"{CollectionName} deleted"),
             error => throw new QdrantException(error.Error)
         );
     }

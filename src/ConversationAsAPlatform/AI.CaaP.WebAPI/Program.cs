@@ -26,11 +26,7 @@ services
 
     .AddWebApiConfiguration(configuration, (string?)null)
     .AddAzureAdConfiguration(configuration, (string?)null)
-    .AddCorsConfig(configuration, options =>
-    {
-        options.Policy = Origins;
-        options.Origins = new[] { "https://localhost:7039" };
-    })
+    .AddCors()
     .AddControllers(options =>
     {
         var policy = new AuthorizationPolicyBuilder()
