@@ -74,7 +74,7 @@ public sealed class InferenceRequestResponse
     /// algorithm described in the paper https://arxiv.org/abs/2007.14966.
     /// 0 = disabled, 1 = mirostat, 2 = mirostat 2.0
     /// </summary>
-    public MiroStateType? Mirostat { get; set; } = default!;
+    public MirostatType? Mirostat { get; set; } = default!;
 
     /// <summary>target entropy</summary>
     public float? MirostatTau { get; set; } = default!;

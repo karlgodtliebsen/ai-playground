@@ -1,5 +1,5 @@
 ﻿using LLamaSharp.Domain.Configuration;
-using LLamaSharpApp.WebAPI.Configuration;
+
 using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 using Riok.Mapperly.Abstractions;
@@ -38,8 +38,12 @@ public partial class OptionsMapper
     /// <param name="request"></param>
     /// <param name="defaultOptions"></param>
     /// <returns></returns>
-    public LlamaModelOptions MapRestoreSensitiveData(LlamaModelRequestResponse request, LlamaModelOptions defaultOptions)
+    public LlamaModelOptions MapRestoreSensitiveData(LlamaModelRequestResponse? request, LlamaModelOptions defaultOptions)
     {
+        if (request is null)
+        {
+            return defaultOptions;
+        }
         var options = Map(request);
         options.ModelPath = defaultOptions.ModelPath;
         options.RestoreSanitizedSensitiveData(request.ModelName);
