@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -17,5 +16,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
   </ItemGroup>
-
 </Project>
