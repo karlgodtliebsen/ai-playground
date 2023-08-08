@@ -35,33 +35,7 @@ services
     .AddLlamaConfiguration(configuration)
     .AddInferenceConfiguration(configuration)
     .AddAzureAdConfiguration(configuration, (string?)null)
-<<<<<<< HEAD
     .AddCors(Origins)
-=======
-<<<<<<< HEAD
-    //.AddCorsConfig(configuration, options =>
-    //{   //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
-    //    options.Policy = Origins;
-    //    //options.Origins = new[] { "https://localhost:7039" };
-    //})
-    //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
-    .AddCors(options =>
-    {
-        options.AddPolicy(Origins,
-            policy =>
-            {
-                policy
-                    .AllowCredentials()
-                    .WithOrigins()
-                    .SetIsOriginAllowedToAllowWildcardSubdomains()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-            });
-    })
-=======
-    .AddCors(Origins)
->>>>>>> d62e532bfa0c737a9d82e682b2014f678dcc2d7e
->>>>>>> main
     .AddControllers(options =>
     {
         var policy = new AuthorizationPolicyBuilder()
@@ -91,23 +65,8 @@ await using (app)
     app.UseMiddleware<ExceptionMiddleware>();
     app.UseRouting();
     app.UseOpenApi();
-<<<<<<< HEAD
     app.UseCors(Origins);
 
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-    //app.UseCors(Origins);
-=======
-    app.UseCors(Origins);
-
->>>>>>> main
-=======
-    app.UseCors(Origins);
-
->>>>>>> d62e532bfa0c737a9d82e682b2014f678dcc2d7e
->>>>>>> main
     if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
     {
         app.UseSecurityHeaders(SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));
