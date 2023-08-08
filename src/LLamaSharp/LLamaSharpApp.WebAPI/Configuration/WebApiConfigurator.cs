@@ -1,17 +1,10 @@
-<<<<<<< HEAD
 ﻿using LLamaSharp.Domain.Configuration;
-
 using LLamaSharpApp.WebAPI.Controllers.Mappers;
-using LLamaSharpApp.WebAPI.Controllers.Services;
-=======
-﻿using LLamaSharpApp.WebAPI.Controllers.Mappers;
 using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Repositories;
 using LLamaSharpApp.WebAPI.Domain.Repositories.Implementation;
 using LLamaSharpApp.WebAPI.Domain.Services;
 using LLamaSharpApp.WebAPI.Domain.Services.Implementations;
->>>>>>> main
-
 
 using OptionsMapper = LLamaSharpApp.WebAPI.Controllers.Mappers.OptionsMapper;
 
