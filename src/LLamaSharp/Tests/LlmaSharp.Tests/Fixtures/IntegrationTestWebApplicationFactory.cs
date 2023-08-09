@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using NSubstitute;
+
 using Polly;
 using Polly.Extensions.Http;
 
@@ -36,7 +38,7 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
         base.ConfigureWebHost(builder);
         builder.ConfigureTestServices(services =>
         {
-            services.AddSingleton<IHttpContextAccessor>(CreateHttpContext().Object);
+            services.AddSingleton<IHttpContextAccessor>(CreateHttpContext());
             services.AddSingleton<ILoggerFactory, XUnitTestLoggerFactory>();
             const string endpointUrl = "https://localhost";
             var options = new LlamaClientOptions()
@@ -58,7 +60,7 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
         });
     }
 
-    private Mock<IHttpContextAccessor> CreateHttpContext()
+    private IHttpContextAccessor CreateHttpContext()
     {
         var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
@@ -68,10 +70,10 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
             new Claim("sub", UserId),
         }, "TestAuthentication"));
 
-        var defaultHttpContext = new Mock<HttpContext>();
-        defaultHttpContext.Setup(x => x.User).Returns(claimsPrincipal);
-        var ctxAccessor = new Mock<IHttpContextAccessor>();
-        ctxAccessor.Setup(x => x.HttpContext).Returns(defaultHttpContext.Object);
+        var defaultHttpContext = Substitute.For<HttpContext>();
+        defaultHttpContext.User.Returns(claimsPrincipal);
+        IHttpContextAccessor? ctxAccessor = Substitute.For<IHttpContextAccessor>();
+        ctxAccessor.HttpContext.Returns(defaultHttpContext);
         return ctxAccessor;
     }
     private static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicyForCustomerServiceNotFound()

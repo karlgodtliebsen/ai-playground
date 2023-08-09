@@ -27,7 +27,6 @@ public class ImageClassificationController : ControllerBase
     /// Controller for Image Classification
     /// </summary>
     /// <param name="domainService"></param>
-    /// <param name="userProvider"></param>
     /// <param name="logger"></param>
     public ImageClassificationController(IImageClassifierService domainService,/* IUserIdProvider userProvider,*/ ILogger logger)
     {

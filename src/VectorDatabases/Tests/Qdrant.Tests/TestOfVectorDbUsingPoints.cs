@@ -114,7 +114,7 @@ public class TestOfVectorDbUsingPoints
         );
     }
 
-    public async Task AddBasicDataToCollection()
+    private async Task AddBasicDataToCollection()
     {
         await CleanUpAndCreateCollectionInVectorDb();
         var qdrantFactory = hostApplicationFactory.Services.GetRequiredService<IQdrantFactory>();

@@ -37,12 +37,12 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
 
 
     [Theory]
-    [InlineData("meat")]
+    // [InlineData("meat")]
     //[InlineData("food")]
     //[InlineData("birds", 1, 2, "birds.csv")]
     //[InlineData("fashionproducts", 0, "1-4", "styles.csv")]
 
-    //[InlineData("flowers")]
+    [InlineData("flowers")]
     //[InlineData("animals-10")]
     //[InlineData("animals-90")]
     //[InlineData("catsdogs")]
