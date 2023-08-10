@@ -129,6 +129,25 @@
     <None Update="graph\xor.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="tfhub_modules\d765412e8955a7067e9c0031f60783359e0e5c3f.descriptor.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="tfhub_modules\d765412e8955a7067e9c0031f60783359e0e5c3f\saved_model.pb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="tfhub_modules\d765412e8955a7067e9c0031f60783359e0e5c3f\tfhub_module.pb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="tfhub_modules\d765412e8955a7067e9c0031f60783359e0e5c3f\variables\variables.data-00000-of-00001">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="tfhub_modules\d765412e8955a7067e9c0031f60783359e0e5c3f\variables\variables.index">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="tfhub_modules\d765412e8955a7067e9c0031f60783359e0e5c3f\assets\" />
   </ItemGroup>
 
 </Project>

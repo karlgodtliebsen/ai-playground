@@ -1,14 +1,20 @@
 ﻿using AI.Test.Support;
+
 using FluentAssertions;
+
 using ImageClassification.Domain.Configuration;
 using ImageClassification.Domain.Models;
 using ImageClassification.Domain.Predictors;
 using ImageClassification.Domain.Trainers;
 using ImageClassification.Domain.Utils;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using Serilog;
+
 using TensorFlow.Net.ImageClassification.Tests.Fixtures;
+
 using Xunit.Abstractions;
 
 namespace TensorFlow.Net.ImageClassification.Tests;
@@ -41,7 +47,6 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
     //[InlineData("animals-90")]
     //[InlineData("catsdogs")]
     //[InlineData("butterfly", 0, 1, "Training_set.csv")]
-    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
     //[InlineData("TensorFlowTransferLearning", 0, 1, "tags.tsv")]
     public void TestOfTrainingForTransferLearningWithInception(string dataSet, int imageIndex = -1, object? labelIndex = null, string? fileName = null)
     {
