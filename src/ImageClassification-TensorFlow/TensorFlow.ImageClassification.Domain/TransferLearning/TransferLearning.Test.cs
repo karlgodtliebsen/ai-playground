@@ -10,7 +10,7 @@ using static Tensorflow.Binding;
 
 namespace ImageClassification.Domain.TransferLearning
 {
-    public partial class ExtendedTransferLearning
+    public partial class TransferLearningExtended
     {
         public ModelTestResult Test(TestingOptions options)
         {

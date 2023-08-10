@@ -13,14 +13,14 @@ namespace ImageClassification.Domain.Trainers;
 
 public sealed class TensorFlowTransferLearningInceptionTester : ITester
 {
-    private readonly ExtendedModelFactory factory;
+    private readonly ModelFactoryExtended factory;
     private readonly ILogger logger;
 
     private readonly TensorFlowOptions tensorFlowOptions;
     private readonly ExtendedTaskOptions taskOptions;
 
 
-    public TensorFlowTransferLearningInceptionTester(ExtendedModelFactory factory,
+    public TensorFlowTransferLearningInceptionTester(ModelFactoryExtended factory,
         IOptions<TensorFlowOptions> tensorFlowOptions,
         IOptions<ExtendedTaskOptions> taskOptions,
         ILogger logger)
@@ -36,7 +36,7 @@ public sealed class TensorFlowTransferLearningInceptionTester : ITester
         var imageSetFolderPath = PathUtils.GetPath(tensorFlowOptions.TestImagesFilePath, imageSetPath);
         var outputFolderPath = PathUtils.GetPath(tensorFlowOptions.OutputFilePath, imageSetPath);
         var inputFolderPath = PathUtils.GetPath(tensorFlowOptions.InputFilePath, imageSetPath);
-        var task = factory.AddImageClassificationTask<ExtendedTransferLearning>((opt) =>
+        var task = factory.AddImageClassificationTask<TransferLearningExtended>((opt) =>
         {
             opt.DataDir = imageSetFolderPath;
             opt.InputFolderPath = inputFolderPath;

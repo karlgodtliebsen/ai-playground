@@ -18,7 +18,7 @@ namespace ImageClassification.Domain.TransferLearning
     /// 
     /// https://www.tensorflow.org/hub/tutorials/image_retraining
     /// </summary>
-    public partial class ExtendedTransferLearning : IImageClassificationExtendedTask
+    public partial class TransferLearningExtended : IImageClassificationExtendedTask
     {
         private readonly IImageLoader imageLoader;
         private readonly ILogger logger;
@@ -29,7 +29,7 @@ namespace ImageClassification.Domain.TransferLearning
         private readonly ExtendedTaskOptions options;
         private string[]? labels = null!;
 
-        public ExtendedTransferLearning(IImageLoader imageLoader, IOptions<ExtendedTaskOptions> injectedOptions, ILogger logger)
+        public TransferLearningExtended(IImageLoader imageLoader, IOptions<ExtendedTaskOptions> injectedOptions, ILogger logger)
         {
             this.imageLoader = imageLoader;
             this.logger = logger;

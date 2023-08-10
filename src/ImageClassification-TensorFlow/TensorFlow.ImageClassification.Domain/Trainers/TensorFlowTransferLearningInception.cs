@@ -17,14 +17,14 @@ namespace ImageClassification.Domain.Trainers;
 
 public sealed class TensorFlowTransferLearningInception : ITensorFlowTransferLearningInception
 {
-    private readonly ExtendedModelFactory factory;
+    private readonly ModelFactoryExtended factory;
     private readonly ILogger logger;
 
     private readonly TensorFlowOptions tensorFlowOptions;
     private readonly ExtendedTaskOptions taskOptions;
 
 
-    public TensorFlowTransferLearningInception(ExtendedModelFactory factory,
+    public TensorFlowTransferLearningInception(ModelFactoryExtended factory,
         IOptions<TensorFlowOptions> tensorFlowOptions,
         IOptions<ExtendedTaskOptions> taskOptions,
         ILogger logger)
@@ -42,7 +42,7 @@ public sealed class TensorFlowTransferLearningInception : ITensorFlowTransferLea
         var outputFolderPath = PathUtils.GetPath(tensorFlowOptions.OutputFilePath, imageSetPath);
         var inputFolderPath = PathUtils.GetPath(tensorFlowOptions.InputFilePath, imageSetPath);
 
-        var task = factory.AddImageClassificationTask<ExtendedTransferLearning>(
+        var task = factory.AddImageClassificationTask<TransferLearningExtended>(
             (opt) =>
             {
                 opt.DataDir = imageSetFolderPath;

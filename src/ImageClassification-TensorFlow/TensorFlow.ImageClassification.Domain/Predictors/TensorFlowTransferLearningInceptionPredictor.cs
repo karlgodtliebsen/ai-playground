@@ -25,14 +25,14 @@ namespace ImageClassification.Domain.Predictors;
 //See this guide on how to use PredictionEnginePool in an ASP.NET Core Web API.
 public sealed class TensorFlowTransferLearningInceptionPredictor : IPredictor
 {
-    private readonly ExtendedModelFactory factory;
+    private readonly ModelFactoryExtended factory;
     private readonly IImageLoader imageLoader;
     private readonly ILogger logger;
     private readonly TensorFlowOptions tensorFlowOptions;
     private readonly ExtendedTaskOptions taskOptions;
 
 
-    public TensorFlowTransferLearningInceptionPredictor(ExtendedModelFactory factory,
+    public TensorFlowTransferLearningInceptionPredictor(ModelFactoryExtended factory,
           IOptions<TensorFlowOptions> tensorFlowOptions,
           IOptions<ExtendedTaskOptions> taskOptions,
           IImageLoader imageLoader, ILogger logger)
@@ -55,7 +55,7 @@ public sealed class TensorFlowTransferLearningInceptionPredictor : IPredictor
             LabelPath = Path.Combine(outputFolderPath, taskOptions.ClassificationModelPath, taskOptions.LabelFile),
         };
         //load model and use it for prediction
-        var task = factory.AddImageClassificationTask<ExtendedTransferLearning>((opt) =>
+        var task = factory.AddImageClassificationTask<TransferLearningExtended>((opt) =>
         {
             opt.InputFolderPath = options.InputFolderPath;
             opt.DataDir = options.DataDir;
@@ -98,7 +98,7 @@ public sealed class TensorFlowTransferLearningInceptionPredictor : IPredictor
         };
 
         //load model and use it for prediction
-        var task = factory.AddImageClassificationTask<ExtendedTransferLearning>((opt) =>
+        var task = factory.AddImageClassificationTask<TransferLearningExtended>((opt) =>
         {
             opt.InputFolderPath = options.InputFolderPath;
             opt.DataDir = options.DataDir;

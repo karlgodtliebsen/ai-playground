@@ -6,14 +6,14 @@ using SciSharp.Models;
 
 namespace ImageClassification.Domain.TransferLearning;
 
-public class ExtendedModelFactory
+public class ModelFactoryExtended
 {
     private readonly IServiceProvider sp;
     private readonly ModelContext context;
 
     public ModelContext Context => context;
 
-    public ExtendedModelFactory(IServiceProvider sp)
+    public ModelFactoryExtended(IServiceProvider sp)
     {
         this.sp = sp;
         context = new ModelContext();

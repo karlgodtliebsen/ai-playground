@@ -22,8 +22,8 @@ public static class TensorFlowImageClassificationConfigurator
             .AddTransient<IPredictor, TensorFlowTransferLearningInceptionPredictor>()
             .AddTransient<ITester, TensorFlowTransferLearningInceptionTester>()
             .AddTransient<IImageLoader, ImageLoader>()
-            .AddTransient<ExtendedModelFactory>()
-            .AddTransient<ExtendedTransferLearning>()
+            .AddTransient<ModelFactoryExtended>()
+            .AddTransient<TransferLearningExtended>()
             .AddSingleton<IOptions<ExtendedTaskOptions>>(new OptionsWrapper<ExtendedTaskOptions>(new ExtendedTaskOptions()))
             ;
         return services;

@@ -10,7 +10,7 @@ using static Tensorflow.Binding;
 
 namespace ImageClassification.Domain.TransferLearning
 {
-    public partial class ExtendedTransferLearning
+    public partial class TransferLearningExtended
     {
         IDictionary<string, IDictionary<string, ImageData[]>> image_dataset = null!;
         Tensor resized_image_tensor = null!;

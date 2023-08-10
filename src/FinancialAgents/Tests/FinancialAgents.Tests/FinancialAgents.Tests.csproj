@@ -64,7 +64,7 @@
 		<PackageReference Include="Testcontainers" Version="3.3.0" />
 		<PackageReference Include="TiktokenSharp" Version="1.0.6" />
 
-		<PackageReference Include="xunit" Version="2.5.0" />
+		<PackageReference Include="xunit" Version="2.5.1-pre.20" />
 		<PackageReference Include="xunit.abstractions" Version="2.0.3" />
 	</ItemGroup>
 

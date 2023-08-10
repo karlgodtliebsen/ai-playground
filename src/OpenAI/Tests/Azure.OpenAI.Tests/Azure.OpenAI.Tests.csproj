@@ -47,7 +47,7 @@
 		<PackageReference Include="Serilog.Sinks.Trace" Version="3.0.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
 
-		<PackageReference Include="xunit" Version="2.5.0" />
+		<PackageReference Include="xunit" Version="2.5.1-pre.20" />
 		<PackageReference Include="xunit.abstractions" Version="2.0.3" />
 	</ItemGroup>
 

@@ -2,7 +2,7 @@
 
 namespace ImageClassification.Domain.TransferLearning
 {
-    public partial class ExtendedTransferLearning
+    public partial class TransferLearningExtended
     {
         /// <summary>
         /// Builds a list of training images from the file system.

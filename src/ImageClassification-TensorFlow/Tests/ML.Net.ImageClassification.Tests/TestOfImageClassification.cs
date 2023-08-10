@@ -40,6 +40,7 @@ public class TestOfImageClassification : TestFixtureBase
     //butterfly: Testing_set.csv: Image_1.jpg
     //cars: MATLAB 5.0 MAT-file, Platform: GLNXA64, Created on: Sat Feb 28 19:34:55 2015 
     //fachion products: 29114,Men,Accessories,Socks,Socks,Navy Blue,Summer,2012,Casual,Puma Men Pack of 3 Socks
+    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
 
     [Theory]
     [InlineData("flowers")]
@@ -48,7 +49,6 @@ public class TestOfImageClassification : TestFixtureBase
     [InlineData("birds", 1, 2, "birds.csv")]
     [InlineData("food")]
     [InlineData("animals-10")]
-    //[InlineData("cars", 5, 6, "cardatasettrain.csv")]
     [InlineData("animals-90")]
     [InlineData("catsdogs")]
     [InlineData("fashionproducts", 0, "1-4", "styles.csv")]
@@ -73,7 +73,6 @@ public class TestOfImageClassification : TestFixtureBase
     [InlineData("butterfly", 0, 0, "Testing_set.csv")]
     [InlineData("food")]
     [InlineData("animals-10")]
-    //[InlineData("cars", 5, 6, "cardatasettest.csv")]
     [InlineData("birds", 1, 2, "birds.csv")]
     [InlineData("animals-90")]
     [InlineData("catsdogs")]

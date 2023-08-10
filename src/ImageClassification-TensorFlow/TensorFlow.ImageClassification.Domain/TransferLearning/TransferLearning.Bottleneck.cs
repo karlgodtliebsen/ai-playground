@@ -7,7 +7,7 @@ using static Tensorflow.Binding;
 
 namespace ImageClassification.Domain.TransferLearning
 {
-    public partial class ExtendedTransferLearning
+    public partial class TransferLearningExtended
     {
         /// <summary>
         /// Ensures all the training, testing, and validation bottlenecks are cached.

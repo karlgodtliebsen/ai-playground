@@ -4,7 +4,7 @@ using static Tensorflow.Binding;
 
 namespace ImageClassification.Domain.TransferLearning
 {
-    public partial class ExtendedTransferLearning
+    public partial class TransferLearningExtended
     {
         bool wants_quantization;
 
