@@ -67,7 +67,7 @@ public class TestOfSemanticKernelExample20HuggingFace
 
         foreach (var modelResult in result.ModelResults)
         {
-            var answer = modelResult.GetHuggingFaceResult().AsJson();
+            var answer = modelResult.GetHuggingFaceResult().ToJson();
             answer.Should().Contain("Answer: New York is");
             logger.Information(answer);
         }

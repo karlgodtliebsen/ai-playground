@@ -114,7 +114,7 @@ public class TestOfQdrantAdministration
             collectionInfo =>
             {
                 collectionInfo.Status.Should().Be(CollectionStatus.GREEN);
-                logger.Information(collectionInfo.AsJson());
+                logger.Information(collectionInfo.ToJson());
             },
             error => throw new QdrantException(error.Error)
         );

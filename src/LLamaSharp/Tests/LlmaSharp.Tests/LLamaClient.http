@@ -10,32 +10,45 @@
 
 @hostname=localhost
 @port=7039
-@token = [add token]
-
+#@token = [add token]
 
 #get health status from anonymous healthcontroller
 GET https://{{hostname}}:{{port}}/health HTTP/1.1
 
+###
+
+# @name authentication
+POST https://login.microsoftonline.com/d2b67c64-4844-4188-a7df-429449cd1ae7/oauth2/v2.0/token HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+client_id=db00e4dc-475f-495f-8349-7b93884d6fb5
+&scope=api://db00e4dc-475f-495f-8349-7b93884d6fb5/.default
+&client_secret=<insert client secret here>
+&grant_type=client_credentials
 
 ###
 
-#get prompt template
+@authToken  = {{authentication.response.body.$.access_token}}
+
+###
+
 GET https://{{hostname}}:{{port}}/api/llama/configuration/prompt-templates HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
 
 
 ###
 
 #get llama model options
 GET https://{{hostname}}:{{port}}/api/llama/configuration/modelparams  HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 
 
 ###
 
 #puv llama model options
 PUT https://{{hostname}}:{{port}}/api/llama/configuration/modelparams  HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
@@ -61,14 +74,14 @@ Content-Type: application/json
 
 #get inference options
 GET https://{{hostname}}:{{port}}/api/llama/configuration/inference HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 
 
 ###
 
 #put inference options
 PUT https://{{hostname}}:{{port}}/api/llama/configuration/inference HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 accept: */*
 
@@ -103,7 +116,7 @@ accept: */*
 
 #post chat
 POST https://{{hostname}}:{{port}}/api/llama/chat HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 accept: */*
 
@@ -125,7 +138,7 @@ accept: */*
 
 #post chat
 POST https://{{hostname}}:{{port}}/api/llama/chat/stream HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 accept: */*
 
@@ -167,7 +180,7 @@ accept: */*
 
 #get tokenized
 POST https://{{hostname}}:{{port}}/api/llama/tokenize HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 accept: */*
 
@@ -210,7 +223,7 @@ accept: */*
 
 #get tokenized
 POST https://{{hostname}}:{{port}}/api/llama/detokenize HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 accept: */*
 
@@ -229,7 +242,7 @@ accept: */*
 
 #get embeddings
 POST https://{{hostname}}:{{port}}/api/llama/embeddings HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 accept: */*
 
@@ -246,7 +259,7 @@ accept: */*
 
 #get executor
 POST https://{{hostname}}:{{port}}/api/llama/executor HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 accept: */*
 

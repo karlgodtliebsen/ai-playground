@@ -35,13 +35,15 @@ services
     .AddLlamaConfiguration(configuration)
     .AddInferenceConfiguration(configuration)
     .AddCors(Origins)
-    .AddControllers(options =>
-    {
-        var policy = new AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .Build();
-        options.Filters.Add(new AuthorizeFilter(policy));
-    })
+    .AddControllers(
+            options =>
+        {
+            var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+            options.Filters.Add(new AuthorizeFilter(policy));
+        }
+        )
     ;
 
 if (!env.IsDevelopment() && !env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
@@ -53,10 +55,11 @@ if (!env.IsDevelopment() && !env.IsEnvironment(HostingEnvironments.UsingReverseP
     });
 }
 
-
 services
-    .AddOpenApi(configuration)
-    .AddHealthCheck();
+    .AddSecurity(configuration)
+    .AddOpenApi()
+    .AddHealthCheck()
+    ;
 
 var app = builder.Build();
 await using (app)
@@ -79,6 +82,8 @@ await using (app)
 
     app.UseAuthentication();
     app.UseAuthorization();
+
+
 
     app.MapHealthCheckAnonymous();
     app.MapControllers();
