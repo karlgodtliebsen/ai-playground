@@ -9,13 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-
-<<<<<<< HEAD
-		<PackageReference Include="MaterialDesignThemes" Version="5.0.0-ci341" />
-=======
 		<PackageReference Include="MaterialDesignThemes" Version="5.0.0-ci346" />
->>>>>>> main
-
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />

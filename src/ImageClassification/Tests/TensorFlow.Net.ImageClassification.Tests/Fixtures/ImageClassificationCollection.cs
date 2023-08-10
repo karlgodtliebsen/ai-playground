@@ -1,4 +1,4 @@
-﻿namespace ML.Net.ImageClassification.Tests.Fixtures;
+﻿namespace TensorFlow.Net.ImageClassification.Tests.Fixtures;
 
 [CollectionDefinition("TensorFlow Image Classification Collection")]
 public class TensorFlowImageClassificationCollection : ICollectionFixture<TensorFlowImageClassificationFixture>

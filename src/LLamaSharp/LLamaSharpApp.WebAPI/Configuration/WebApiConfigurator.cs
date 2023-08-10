@@ -3,7 +3,6 @@
 using LLamaSharpApp.WebAPI.Controllers.Mappers;
 using LLamaSharpApp.WebAPI.Controllers.Services;
 
-
 namespace LLamaSharpApp.WebAPI.Configuration;
 
 /// <summary>

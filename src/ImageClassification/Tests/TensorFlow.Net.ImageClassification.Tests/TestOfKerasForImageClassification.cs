@@ -7,13 +7,13 @@ using ImageClassification.Domain.Trainers;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using ML.Net.ImageClassification.Tests.Fixtures;
-
 using Serilog;
+
+using TensorFlow.Net.ImageClassification.Tests.Fixtures;
 
 using Xunit.Abstractions;
 
-namespace ML.Net.ImageClassification.Tests;
+namespace TensorFlow.Net.ImageClassification.Tests;
 
 //Based on: 
 

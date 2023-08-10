@@ -11,11 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-<<<<<<< HEAD
 using NSubstitute;
 
-=======
->>>>>>> main
 using Polly;
 using Polly.Extensions.Http;
 

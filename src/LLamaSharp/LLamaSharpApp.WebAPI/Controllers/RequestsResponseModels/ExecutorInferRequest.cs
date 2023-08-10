@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+
 using LLamaSharp.Domain.Configuration;
-using LLamaSharpApp.WebAPI.Configuration;
+
 using LLamaSharpApp.WebAPI.Domain.Models;
 
 namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
