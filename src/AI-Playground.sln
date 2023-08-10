@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -87,17 +86,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialAgents.Tests", "Fi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageClassification-TensorFlow", "ImageClassification-TensorFlow", "{8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0C0EFC44-80E3-4A52-AD67-F6EFE846E7C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ML.Net.ImageClassification.Tests", "ImageClassification\Tests\ML.Net.ImageClassification.Tests\ML.Net.ImageClassification.Tests.csproj", "{CDB46E5E-37CE-4AF0-B66E-1ED5888F2DDB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TensorFlow.Net.ImageClassification.Tests", "ImageClassification\Tests\TensorFlow.Net.ImageClassification.Tests\TensorFlow.Net.ImageClassification.Tests.csproj", "{FE12F1DB-14B2-4A2D-8A7B-87F8A553E09C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ml.Net.ImageClassification.Domain", "ImageClassification\Ml.Net.ImageClassification.Domain\Ml.Net.ImageClassification.Domain.csproj", "{42B05CF2-F76E-46FF-8115-53F196BFE7BC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TensorFlow.ImageClassification.Domain", "ImageClassification\TensorFlow.ImageClassification.Domain\TensorFlow.ImageClassification.Domain.csproj", "{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageClassification.Domain", "ImageClassification\ImageClassification.Domain\ImageClassification.Domain.csproj", "{429A468B-BEFD-472D-ABF4-B47ECAE356E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ml.Net.ImageClassification.Domain", "ImageClassification\Ml.Net.ImageClassification.Domain\Ml.Net.ImageClassification.Domain.csproj", "{B60385E9-B663-477E-A02D-93C6E6379A45}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TensorFlow.ImageClassification.Domain", "ImageClassification\TensorFlow.ImageClassification.Domain\TensorFlow.ImageClassification.Domain.csproj", "{9FC83E0E-E973-4CC4-9D23-404968C842C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LLamaSharp.Domain", "LLamaSharp\LLamaSharp.Domain\LLamaSharp.Domain.csproj", "{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B6195235-B673-4CFD-82D6-B0B61613FBFE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ML.Net.ImageClassification.Tests", "ImageClassification\Tests\ML.Net.ImageClassification.Tests\ML.Net.ImageClassification.Tests.csproj", "{8C2AC6B2-1B87-4FFB-9B66-B264986880B2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TensorFlow.Net.ImageClassification.Tests", "ImageClassification\Tests\TensorFlow.Net.ImageClassification.Tests\TensorFlow.Net.ImageClassification.Tests.csproj", "{9A54B507-4C7B-441E-A3A7-DA0675C5A97F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,26 +192,22 @@ Global
 		{7591A36E-6971-4D59-9846-CA765F1EE26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7591A36E-6971-4D59-9846-CA765F1EE26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7591A36E-6971-4D59-9846-CA765F1EE26E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42B05CF2-F76E-46FF-8115-53F196BFE7BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B05CF2-F76E-46FF-8115-53F196BFE7BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B05CF2-F76E-46FF-8115-53F196BFE7BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B05CF2-F76E-46FF-8115-53F196BFE7BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDCC90FC-EB5A-417B-89B2-97B4EF5AD6BE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{429A468B-BEFD-472D-ABF4-B47ECAE356E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B60385E9-B663-477E-A02D-93C6E6379A45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B60385E9-B663-477E-A02D-93C6E6379A45}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B60385E9-B663-477E-A02D-93C6E6379A45}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B60385E9-B663-477E-A02D-93C6E6379A45}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9FC83E0E-E973-4CC4-9D23-404968C842C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9FC83E0E-E973-4CC4-9D23-404968C842C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9FC83E0E-E973-4CC4-9D23-404968C842C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9FC83E0E-E973-4CC4-9D23-404968C842C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C2AC6B2-1B87-4FFB-9B66-B264986880B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C2AC6B2-1B87-4FFB-9B66-B264986880B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C2AC6B2-1B87-4FFB-9B66-B264986880B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C2AC6B2-1B87-4FFB-9B66-B264986880B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9A54B507-4C7B-441E-A3A7-DA0675C5A97F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A54B507-4C7B-441E-A3A7-DA0675C5A97F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A54B507-4C7B-441E-A3A7-DA0675C5A97F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A54B507-4C7B-441E-A3A7-DA0675C5A97F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -240,11 +239,8 @@ Global
 		{B2864683-C195-471A-91BE-6E86A7E2331E} = {9FCD611C-72B6-44FC-A19B-7FF5CA72AB9D}
 		{7591A36E-6971-4D59-9846-CA765F1EE26E} = {B2864683-C195-471A-91BE-6E86A7E2331E}
 		{429A468B-BEFD-472D-ABF4-B47ECAE356E4} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
-		{B60385E9-B663-477E-A02D-93C6E6379A45} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
-		{9FC83E0E-E973-4CC4-9D23-404968C842C5} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
+		{93ED6FF4-9B51-47ED-A522-E4BC91206AE3} = {703CDD20-E454-4130-95B0-D958CF1A0385}
 		{B6195235-B673-4CFD-82D6-B0B61613FBFE} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
-		{8C2AC6B2-1B87-4FFB-9B66-B264986880B2} = {B6195235-B673-4CFD-82D6-B0B61613FBFE}
-		{9A54B507-4C7B-441E-A3A7-DA0675C5A97F} = {B6195235-B673-4CFD-82D6-B0B61613FBFE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A365742-464F-4F92-BCF0-6F080A5C398C}

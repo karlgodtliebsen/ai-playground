@@ -1,8 +1,15 @@
-﻿using LLamaSharpApp.WebAPI.Controllers.Requests;
+<<<<<<< HEAD
+﻿using LLamaSharp.Domain.Domain.Services;
+using LLamaSharpApp.WebAPI.Controllers.Mappers;
+using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 using LLamaSharpApp.WebAPI.Controllers.Services;
-using LLamaSharpApp.WebAPI.Domain.Models;
+=======
+﻿using LLamaSharpApp.WebAPI.Controllers.Mappers;
+using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
+using LLamaSharpApp.WebAPI.Controllers.Services;
 using LLamaSharpApp.WebAPI.Domain.Services;
 
+>>>>>>> main
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,17 +27,20 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 public class TokenizationController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
+    private readonly RequestMessagesMapper mapper;
     private readonly ILogger logger;
 
     /// <summary>
     /// Constructor for TokenizationController
     /// </summary>
     /// <param name="userProvider"></param>
+    /// <param name="mapper"></param>
     /// <param name="logger"></param>
-    public TokenizationController(IUserIdProvider userProvider, ILogger logger)
+    public TokenizationController(IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
     {
         this.logger = logger;
         this.userProvider = userProvider;
+        this.mapper = mapper;
     }
 
     /// <summary>
@@ -43,12 +53,7 @@ public class TokenizationController : ControllerBase
     [HttpPost("tokenize")]
     public async Task<int[]> Tokenize([FromBody] TokenizeMessageRequest request, [FromServices] ITokenizationService domainService, CancellationToken cancellationToken)
     {
-        var requestModel = new TokenizeMessage(request.Text)
-        {
-            UsePersistedModelState = request.UsePersistedModelState,
-            ModelOptions = request.ModelOptions,
-            UserId = userProvider.UserId
-        };
+        var requestModel = mapper.Map(request, userProvider.UserId);
         return await domainService.Tokenize(requestModel, cancellationToken);
     }
 
@@ -62,12 +67,7 @@ public class TokenizationController : ControllerBase
     [HttpPost("detokenize")]
     public async Task<string> DeTokenize([FromBody] DeTokenizeMessageRequest request, [FromServices] ITokenizationService domainService, CancellationToken cancellationToken)
     {
-        var requestModel = new DeTokenizeMessage(request.Tokens)
-        {
-            UsePersistedModelState = request.UsePersistedModelState,
-            ModelOptions = request.ModelOptions,
-            UserId = userProvider.UserId
-        };
+        var requestModel = mapper.Map(request, userProvider.UserId);
         return await domainService.DeTokenize(requestModel, cancellationToken);
     }
 }

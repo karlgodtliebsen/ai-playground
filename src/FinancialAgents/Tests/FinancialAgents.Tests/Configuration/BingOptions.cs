@@ -1,10 +1,11 @@
 ﻿namespace FinancialAgents.Tests.Configuration;
 
 public class BingOptions
-{    /// <summary>
-     /// Configuration Section Name
-     /// </summary>
+{
+    /// <summary>
+    /// Configuration SectionName
+    /// </summary>
     public const string SectionName = "Bing";
 
-    public string ApiKey { get; set; } = "n/a";
+    public string ApiKey { get; set; } = null!;
 }

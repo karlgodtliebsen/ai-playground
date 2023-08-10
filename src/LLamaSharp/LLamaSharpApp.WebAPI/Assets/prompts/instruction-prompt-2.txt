@@ -1,0 +1,19 @@
+Instruction-based prompts
+
+
+Sample:
+
+I will give you a question or an instruction. 
+Your objective is to answer my question or fulfill my instruction.
+
+My question or instruction is: []
+
+For your reference, today's date is [2023-08-04T23:44:42+02:00.]
+
+It's possible that the question or instruction, or just a portion of it, requires relevant information from the internet to give a satisfactory answer or complete the task. It's possible that the question or instruction, or just a portion of it, requires relevant information from the internet to give a satisfactory answer or complete the task. I'm providing you with the necessary information already obtained from the internet below. This sets the context for addressing the question or fulfilling the instruction, so you don't need to access the internet to answer my question or fulfill my instruction. Write a comprehensive reply to the given question or instruction using the information provided below in the best way you can. Ensure to cite results using [[NUMBER](URL)] notation after the reference. If the provided information from the internet refers to multiple subjects with the same name, write separate answers for each subject.
+
+A strict requirement for you is that if the below information I provide does not contain the information you need to address the question or fulfill the instruction, just respond 'The search results do not contain the necessary content. Please try again with different query and/or search options (e.g., number of search results, search engine, etc.).'
+
+Now, write a comprehensive reply to the given question or instruction with this information:
+
+[Add Search results]

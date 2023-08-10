@@ -12,10 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="LLamaSharpApp.WebAPI.csproj.DotSettings" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="LLamaSharp" Version="0.4.2-preview" />
     <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.4.2-preview" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="7.0.0-preview.6.22330.3" />
@@ -39,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
+    <ProjectReference Include="..\LLamaSharp.Domain\LLamaSharp.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,7 +48,10 @@
     <None Update="Assets\prompts\information-prompt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\prompts\instruction-prompt.txt">
+    <None Update="Assets\prompts\instruction-prompt-2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\prompts\instruction-prompt-1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\prompts\opinion-prompt.txt">

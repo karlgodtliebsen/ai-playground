@@ -1,9 +1,12 @@
 ﻿using System.Text.Json.Serialization;
-
+<<<<<<< HEAD
+using LLamaSharp.Domain.Configuration;
+=======
+>>>>>>> main
 using LLamaSharpApp.WebAPI.Configuration;
 using LLamaSharpApp.WebAPI.Domain.Models;
 
-namespace LLamaSharpApp.WebAPI.Controllers.Requests;
+namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 /// <summary>
 /// Request object to hold the text/message to be sent to the executor

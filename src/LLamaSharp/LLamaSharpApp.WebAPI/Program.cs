@@ -4,6 +4,8 @@ using AI.Library.Configuration;
 using AI.Library.HttpUtils.LibraryConfiguration;
 using AI.Library.Utils;
 
+using LLamaSharp.Domain.Configuration;
+
 using LLamaSharpApp.WebAPI.Configuration;
 
 using Microsoft.AspNetCore.Authorization;
@@ -33,25 +35,7 @@ services
     .AddLlamaConfiguration(configuration)
     .AddInferenceConfiguration(configuration)
     .AddAzureAdConfiguration(configuration, (string?)null)
-    //.AddCorsConfig(configuration, options =>
-    //{   //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
-    //    options.Policy = Origins;
-    //    //options.Origins = new[] { "https://localhost:7039" };
-    //})
-    //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
-    .AddCors(options =>
-    {
-        options.AddPolicy(Origins,
-            policy =>
-            {
-                policy
-                    .AllowCredentials()
-                    .WithOrigins()
-                    .SetIsOriginAllowedToAllowWildcardSubdomains()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-            });
-    })
+    .AddCors(Origins)
     .AddControllers(options =>
     {
         var policy = new AuthorizationPolicyBuilder()

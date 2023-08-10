@@ -105,7 +105,7 @@ Give me a TLDR with the fewest words.";
 
 
     [Fact(Skip = "TODO: Get the uri for Azure Cognitive Search")]
-    public async Task RunSampleUsingAzureCognitiveSearch()
+    public void RunSampleUsingAzureCognitiveSearch()
     {
         var kernelWithACS = Kernel.Builder
             .WithLogger(fixture.MsLogger)
