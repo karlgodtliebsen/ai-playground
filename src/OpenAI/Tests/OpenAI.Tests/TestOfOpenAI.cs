@@ -411,8 +411,8 @@ public class TestOfOpenAIClients
                 completions.Should().NotBeNull();
                 string completion = completions.Choices[0].Text.Trim();
                 completion.Should().NotBeNullOrWhiteSpace();
-                completion.Should().Contain("What day of the week is it");
                 output.WriteLine(completion);
+                completion.Should().Contain("What day of the week is it");
             }
             , error => throw new AIException(error.Error)
         );

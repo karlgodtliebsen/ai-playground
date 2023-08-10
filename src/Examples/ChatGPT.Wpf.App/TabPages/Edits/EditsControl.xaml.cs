@@ -6,9 +6,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+
 using ChatGPT.Wpf.App.Models;
+
 using Microsoft.Extensions.Options;
+
 using OneOf;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
 using OpenAI.Client.OpenAI.HttpClients;
@@ -88,7 +92,6 @@ public partial class EditsControl : UserControl
     {
         await Submit();
     }
-
 
     private async Task Submit()
     {

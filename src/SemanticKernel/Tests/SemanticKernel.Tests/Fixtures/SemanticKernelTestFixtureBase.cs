@@ -2,9 +2,7 @@
 using AI.Test.Support.DockerSupport;
 using AI.VectorDatabase.Qdrant.Configuration;
 
-using LLamaSharp.Domain.Configuration;
-using LLamaSharp.Domain.Domain.Services;
-using LLamaSharpApp.WebAPI.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -23,10 +21,11 @@ public class SemanticKernelTestFixtureBase : TestFixtureBase
     public BingOptions BingOptions { get; private set; }
     public HuggingFaceOptions HuggingFaceOptions { get; private set; }
 
-    public LlamaModelOptions LlamaModelOptions { get; private set; }
-    public IModelRequestFactory RequestFactory { get; private set; }
-    public ILlamaModelFactory LlamaModelFactory { get; private set; }
+    //public LlamaModelOptions LlamaModelOptions { get; private set; }
+    //public ILlamaModelFactory LlamaModelFactory { get; private set; }
+
     public string TestFilesPath { get; private set; }
+    public IModelRequestFactory RequestFactory { get; private set; }
     public string SkillsPath { get; private set; }
 
     public SemanticKernelTestFixtureBase()
@@ -42,8 +41,8 @@ public class SemanticKernelTestFixtureBase : TestFixtureBase
                     .AddAzureOpenAI(configuration)
                     .AddBing(configuration)
                     .AddHuggingFace(configuration)
-                    .AddLlamaConfiguration(configuration)
-                    .AddWebApiConfiguration(configuration)
+                    //.AddLlamaConfiguration(configuration)
+                    //.AddWebApiConfiguration(configuration)
                     ;
                 services.AddSingleton<TestContainerDockerLauncher>();
                 var section = configuration.GetSection(DockerLaunchOptions.SectionName);
@@ -58,8 +57,8 @@ public class SemanticKernelTestFixtureBase : TestFixtureBase
         OpenAIOptions = Factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         QdrantOptions = Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
         HuggingFaceOptions = Factory.Services.GetRequiredService<IOptions<HuggingFaceOptions>>().Value;
-        LlamaModelOptions = Factory.Services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
         RequestFactory = Factory.Services.GetRequiredService<IModelRequestFactory>();
-        LlamaModelFactory = Factory.Services.GetRequiredService<ILlamaModelFactory>();
+        //LlamaModelOptions = Factory.Services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
+        //LlamaModelFactory = Factory.Services.GetRequiredService<ILlamaModelFactory>();
     }
 }

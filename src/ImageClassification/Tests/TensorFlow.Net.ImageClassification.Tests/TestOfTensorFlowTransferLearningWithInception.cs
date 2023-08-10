@@ -1,23 +1,17 @@
 ﻿using AI.Test.Support;
-
 using FluentAssertions;
-
 using ImageClassification.Domain.Configuration;
 using ImageClassification.Domain.Models;
 using ImageClassification.Domain.Predictors;
 using ImageClassification.Domain.Trainers;
 using ImageClassification.Domain.Utils;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-using ML.Net.ImageClassification.Tests.Fixtures;
-
 using Serilog;
-
+using TensorFlow.Net.ImageClassification.Tests.Fixtures;
 using Xunit.Abstractions;
 
-namespace ML.Net.ImageClassification.Tests;
+namespace TensorFlow.Net.ImageClassification.Tests;
 
 //Based on: https://github.com/SciSharp/SciSharp-Stack-Examples/blob/2aeef9eff0b48148732aa851cdeecf41f23534b7/src/TensorFlowNET.Examples/ImageProcessing/TransferLearningWithInceptionV3.cs
 
@@ -37,12 +31,12 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
 
 
     [Theory]
-    [InlineData("meat")]
+    // [InlineData("meat")]
     //[InlineData("food")]
     //[InlineData("birds", 1, 2, "birds.csv")]
     //[InlineData("fashionproducts", 0, "1-4", "styles.csv")]
 
-    //[InlineData("flowers")]
+    [InlineData("flowers")]
     //[InlineData("animals-10")]
     //[InlineData("animals-90")]
     //[InlineData("catsdogs")]

@@ -1,4 +1,6 @@
-﻿namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
+﻿using LLama.Common;
+
+namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 /// <summary>
 /// InferenceRequestResponse
@@ -72,10 +74,7 @@ public sealed class InferenceRequestResponse
     /// algorithm described in the paper https://arxiv.org/abs/2007.14966.
     /// 0 = disabled, 1 = mirostat, 2 = mirostat 2.0
     /// </summary>
-
-//    public MirotateType Mirostat { get; set; } = MiroStateType.Disable;
-
-    //public MiroStateType? Mirostat { get; set; } = default!;
+    public MirostatType? Mirostat { get; set; } = default!;
 
     /// <summary>target entropy</summary>
     public float? MirostatTau { get; set; } = default!;

@@ -1,8 +1,4 @@
-// Global using directives
-
-global using Moq;
-
-global using System.Text.Json;
+﻿// Global using directives
 
 global using Xunit;
 

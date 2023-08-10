@@ -34,7 +34,6 @@ services
     .AddWebApiConfiguration(configuration)
     .AddLlamaConfiguration(configuration)
     .AddInferenceConfiguration(configuration)
-    .AddAzureAdConfiguration(configuration, (string?)null)
     .AddCors(Origins)
     .AddControllers(options =>
     {

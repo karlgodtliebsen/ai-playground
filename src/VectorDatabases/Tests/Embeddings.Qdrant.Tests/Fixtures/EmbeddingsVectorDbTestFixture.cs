@@ -4,7 +4,9 @@ using AI.VectorDatabase.Qdrant.Configuration;
 
 using LLamaSharp.Domain.Configuration;
 using LLamaSharp.Domain.Domain.Services;
+
 using LLamaSharpApp.WebAPI.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

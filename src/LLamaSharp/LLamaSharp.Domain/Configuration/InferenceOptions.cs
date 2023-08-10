@@ -11,5 +11,4 @@ public class InferenceOptions : InferenceParams
     /// Configuration SectionName
     /// </summary>
     public const string SectionName = "Inference";
-
 }
