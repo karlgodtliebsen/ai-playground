@@ -83,7 +83,6 @@ public sealed class HostApplicationFactory
 
             var dpMock = Substitute.For<IDateTimeProvider>();
             dpMock.Now.Returns(dateTime);
-            dpMock.Now.Returns(dateTime);
             instance.DateTimeProvider = dpMock;
         }
         else

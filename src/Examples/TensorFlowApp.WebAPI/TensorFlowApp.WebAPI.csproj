@@ -27,8 +27,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
-    <ProjectReference Include="..\..\ImageClassification\ImageClassification.Domain\ImageClassification.Domain.csproj" />
-    <ProjectReference Include="..\..\ImageClassification\TensorFlow.ImageClassification.Domain\TensorFlow.ImageClassification.Domain.csproj" />
+    <ProjectReference Include="..\..\ImageClassification-TensorFlow\ImageClassification.Domain\ImageClassification.Domain.csproj" />
+    <ProjectReference Include="..\..\ImageClassification-TensorFlow\TensorFlow.ImageClassification.Domain\TensorFlow.ImageClassification.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

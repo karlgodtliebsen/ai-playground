@@ -1,6 +1,4 @@
-﻿using ImageClassification.Domain.Configuration;
-
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
 using ML.TensorFlowApp.WebAPI.Domain.Services;
 
@@ -22,7 +20,7 @@ public static class WebApiConfigurator
     {
         services
             .AddSingleton<IOptions<WebApiOptions>>(new OptionsWrapper<WebApiOptions>(options))
-            .AddMlnetImageClassification(configuration)
+            //.AddMlnetImageClassification(configuration)
             .AddTransient<IImageClassifierService, ImageClassifierService>()
             //    .AddHttpContextAccessor()
             //    .AddScoped<IUserIdProvider, UserIdProvider>()

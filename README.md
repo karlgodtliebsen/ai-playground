@@ -68,7 +68,6 @@ The projects uses other Open Source project:
 - Llama models from Huggingface
 - Qdrant Vector Db
 - Microsoft Semantic Kerlenl Library (MSKLC)
-- TestContainer
 - TiktokenSharp
 - TensorFlow.Net
 - TensorFlow.Keras
@@ -78,6 +77,8 @@ The projects uses other Open Source project:
 - Microsoft.ML.Vision
 - SciSharp.TensorFlow.Redist
 - Microsoft.SemanticKernel.xxx preview versions
+- TestContainer
+- NSubstitue
 ```
 
 The WEB API projects uses Azure AD for Authentication:
