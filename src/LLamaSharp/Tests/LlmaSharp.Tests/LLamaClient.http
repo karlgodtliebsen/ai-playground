@@ -3,6 +3,7 @@
 # look into https://learn.microsoft.com/da-dk/aspnet/core/web-api/http-repl/?view=aspnetcore-8.0&tabs=windows
 # https://learn.microsoft.com/da-dk/aspnet/core/test/integration-tests?view=aspnetcore-8.0
 #
+<<<<<<< HEAD
 # Questions:
 # can we start the host from here?
 # can we get the token from here?
@@ -10,6 +11,14 @@
 @hostname=localhost
 @port=7039
 @token = 
+=======
+# can we start the host from here?
+
+
+@hostname=localhost
+@port=7039
+@token = [add token]
+>>>>>>> main
 
 
 #get health status from anonymous healthcontroller
@@ -22,6 +31,7 @@ GET https://{{hostname}}:{{port}}/health HTTP/1.1
 GET https://{{hostname}}:{{port}}/api/llama/configuration/prompt-templates HTTP/1.1
 Authorization: Bearer {{token}}
 
+<<<<<<< HEAD
 ###
 
 #get llama model options
@@ -311,3 +321,5 @@ accept: */*
 }
 
 
+=======
+>>>>>>> main

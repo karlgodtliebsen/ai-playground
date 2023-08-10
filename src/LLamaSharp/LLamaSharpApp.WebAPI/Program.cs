@@ -35,7 +35,29 @@ services
     .AddLlamaConfiguration(configuration)
     .AddInferenceConfiguration(configuration)
     .AddAzureAdConfiguration(configuration, (string?)null)
+<<<<<<< HEAD
     .AddCors(Origins)
+=======
+    //.AddCorsConfig(configuration, options =>
+    //{   //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
+    //    options.Policy = Origins;
+    //    //options.Origins = new[] { "https://localhost:7039" };
+    //})
+    //https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
+    .AddCors(options =>
+    {
+        options.AddPolicy(Origins,
+            policy =>
+            {
+                policy
+                    .AllowCredentials()
+                    .WithOrigins()
+                    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    })
+>>>>>>> main
     .AddControllers(options =>
     {
         var policy = new AuthorizationPolicyBuilder()

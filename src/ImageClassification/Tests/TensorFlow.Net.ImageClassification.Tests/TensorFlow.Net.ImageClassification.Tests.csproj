@@ -54,7 +54,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.9" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
+<<<<<<< HEAD
     <PackageReference Include="NSubstitute" Version="5.0.0" />
+=======
+>>>>>>> main
 
     <PackageReference Include="OneOf" Version="3.0.255" />
     <PackageReference Include="OneOf.Extended" Version="3.0.255" />
@@ -85,6 +88,51 @@
     <ProjectReference Include="..\..\..\AI.Test.Support\AI.Test.Support.csproj" />
     <ProjectReference Include="..\..\ImageClassification.Domain\ImageClassification.Domain.csproj" />
     <ProjectReference Include="..\..\TensorFlow.ImageClassification.Domain\TensorFlow.ImageClassification.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="graph\att_rnn_untrained.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\char_cnn_untrained.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\cond_test.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\InceptionV3.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\kmeans.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\lstm_crf_ner.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\rcnn_untrained.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\vd_cnn.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\word2vec.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\word_cnn.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\word_cnn_untrained.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\word_rnn_untrained.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="graph\xor.meta">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
