@@ -5,8 +5,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
+    <PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
-
 	<ItemGroup>
 		<Content Remove="C:\Users\Karl Godtliebsen\.nuget\packages\microsoft.semantickernel.connectors.ai.openai\0.17.230711.7-preview\contentFiles\any\netstandard2.0\Tokenizers\Settings\encoder.json" />
 		<Content Remove="C:\Users\Karl Godtliebsen\.nuget\packages\microsoft.semantickernel.connectors.ai.openai\0.17.230711.7-preview\contentFiles\any\netstandard2.0\Tokenizers\Settings\vocab.bpe" />
@@ -44,7 +44,7 @@
     <PackageReference Include="Microsoft.SemanticKernel.Skills.Memory.Sqlite" Version="0.10.72.1-preview" />
     <PackageReference Include="Microsoft.SemanticKernel.Skills.OpenAPI" Version="0.17.230718.1-preview" />
     <PackageReference Include="Microsoft.SemanticKernel.Skills.Web" Version="0.17.230718.1-preview" />
-		<PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="NSubstitute" Version="5.0.0" />
 		<PackageReference Include="OneOf" Version="3.0.255" />
 		<PackageReference Include="OneOf.Extended" Version="3.0.255" />
 		<PackageReference Include="OneOf.Monads" Version="1.21.0" />

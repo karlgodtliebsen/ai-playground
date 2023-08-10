@@ -8,7 +8,6 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
-
   <ItemGroup>
     <Content Include="appsettings.IntegrationTests.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -40,7 +39,7 @@
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
     <PackageReference Include="SerilogTimings" Version="3.0.1" />
 
-    <PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="NSubstitute" Version="5.0.0" />
     <PackageReference Include="OneOf" Version="3.0.255" />
 
 

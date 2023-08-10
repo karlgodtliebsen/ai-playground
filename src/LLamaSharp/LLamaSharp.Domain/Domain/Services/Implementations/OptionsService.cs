@@ -1,8 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 using AI.Library.Utils;
+
 using LLamaSharp.Domain.Configuration;
 using LLamaSharp.Domain.Domain.Repositories;
+
 using Microsoft.Extensions.Options;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;
@@ -16,7 +19,7 @@ public class OptionsService : IOptionsService
     private readonly ILogger logger;
     private readonly LlamaModelOptions llamaModelOptions;
     private readonly InferenceOptions inferenceOptions;
-
+    private readonly JsonSerializerOptions serializerOptions;
     /// <summary>
     /// Constructor for the Options Service
     /// </summary>
@@ -34,15 +37,22 @@ public class OptionsService : IOptionsService
         this.logger = logger;
         llamaModelOptions = llmaOptions.Value;
         this.inferenceOptions = inferenceOptions.Value;
+        serializerOptions = new JsonSerializerOptions()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+        };
     }
 
     /// <inheritdoc />
     public async Task PersistInferenceOptions(InferenceOptions? options, string userId, CancellationToken cancellationToken)
     {
-        //if options for the user does not exist  then use default options
+        //if options for the user does not exist then use default options
         if (options is null)
         {
-            options = inferenceOptions.CreateSnapshot();
+            options = inferenceOptions.CreateSnapshot(serializerOptions);
         }
         await stateRepository.PersistInferenceOptions(options!, userId, cancellationToken);
     }
@@ -53,15 +63,20 @@ public class OptionsService : IOptionsService
         //if options for the user does not exist then use default options
         if (options is null)
         {
-            options = llamaModelOptions.CreateSnapshot();
+            options = llamaModelOptions.CreateSnapshot(serializerOptions);
         }
         await stateRepository.PersistLlamaModelOptions(options!, userId, cancellationToken);
     }
 
+    /// <summary>
+    /// Creates a snapshot of the default LlamaModel options
+    /// </summary>
+    /// <returns></returns>
     public LlamaModelOptions GetDefaultLlamaModelOptions()
     {
-        return llamaModelOptions;
+        return llamaModelOptions.CreateSnapshot(serializerOptions);
     }
+
 
     /// <inheritdoc />
     public async Task<InferenceOptions> CoalsceInferenceOptions(InferenceOptions? queryOptions, string userId, CancellationToken cancellationToken)
@@ -74,7 +89,7 @@ public class OptionsService : IOptionsService
         return (await stateRepository.GetInferenceOptions(userId, cancellationToken))
         .Match(
              options => options,
-             _ => inferenceOptions.CreateSnapshot()
+             _ => inferenceOptions.CreateSnapshot(serializerOptions)
             );
     }
 
@@ -89,7 +104,7 @@ public class OptionsService : IOptionsService
         return (await stateRepository.GetLlamaModelOptions(userId, cancellationToken))
             .Match(
                 options => options,
-                _ => llamaModelOptions.CreateSnapshot()
+                _ => llamaModelOptions.CreateSnapshot(serializerOptions)
             );
     }
 
@@ -110,7 +125,7 @@ public class OptionsService : IOptionsService
         return (await stateRepository.GetInferenceOptions(userId, cancellationToken))
             .Match(
                 options => options,
-                _ => inferenceOptions.CreateSnapshot()
+                _ => inferenceOptions.CreateSnapshot(serializerOptions)
             );
     }
 
@@ -121,19 +136,18 @@ public class OptionsService : IOptionsService
         return (await stateRepository.GetLlamaModelOptions(userId, cancellationToken))
             .Match(
                 options => options,
-                _ => llamaModelOptions.CreateSnapshot()
+                _ => llamaModelOptions.CreateSnapshot(serializerOptions)
             );
     }
-
 }
 
 internal static class JsonExtensions
 {
-    public static InferenceOptions CreateSnapshot(this InferenceOptions inferenceOptions, JsonSerializerOptions? serializerOptions = null)
+    public static InferenceOptions CreateSnapshot(this InferenceOptions inferenceOptions, JsonSerializerOptions serializerOptions)
     {
         return inferenceOptions.ToJson(serializerOptions).FromJson<InferenceOptions>(serializerOptions)!;
     }
-    public static LlamaModelOptions CreateSnapshot(this LlamaModelOptions llamaModelOptions, JsonSerializerOptions? serializerOptions = null)
+    public static LlamaModelOptions CreateSnapshot(this LlamaModelOptions llamaModelOptions, JsonSerializerOptions serializerOptions)
     {
         return llamaModelOptions.ToJson(serializerOptions).FromJson<LlamaModelOptions>(serializerOptions)!;
     }

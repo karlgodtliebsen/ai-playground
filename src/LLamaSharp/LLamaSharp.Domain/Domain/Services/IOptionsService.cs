@@ -40,7 +40,7 @@ public interface IOptionsService
     Task<LlamaModelOptions> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
 
     /// <summary>
-    /// get default Llama model options
+    /// Get as snapshot of the default Llama model options
     /// </summary>
     /// <returns></returns>
     LlamaModelOptions GetDefaultLlamaModelOptions();

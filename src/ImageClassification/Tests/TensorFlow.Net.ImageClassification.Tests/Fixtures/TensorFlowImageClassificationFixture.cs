@@ -3,7 +3,7 @@ using ImageClassification.Domain.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace ML.Net.ImageClassification.Tests.Fixtures;
+namespace TensorFlow.Net.ImageClassification.Tests.Fixtures;
 
 public class TensorFlowImageClassificationFixture : TestFixtureBase
 {

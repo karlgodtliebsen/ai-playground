@@ -12,7 +12,9 @@ using Embeddings.Qdrant.Tests.Fixtures;
 using FluentAssertions;
 
 using LLama;
+
 using LLamaSharp.Domain.Domain.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using Xunit.Abstractions;
@@ -51,7 +53,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     }
 
     private const string CollectionName = "books-search-collection";
-    private const int VectorSize = 3;
+    private const int VectorSize = 3; // vey small vector size for testing
 
 
     private async Task CleanupCollection()

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using Moq;
+using NSubstitute;
 
 using Serilog;
 
@@ -80,14 +80,11 @@ public sealed class HostApplicationFactory
         if (fixedDt is not null)
         {
             var dateTime = fixedDt.Value;
-            var dpMock = new Mock<IDateTimeProvider>();
-            dpMock
-                .Setup((x) => x.Now)
-                .Returns(dateTime);
-            dpMock
-                .Setup((x) => x.Now)
-                .Returns(dateTime);
-            instance.DateTimeProvider = dpMock.Object;
+
+            var dpMock = Substitute.For<IDateTimeProvider>();
+            dpMock.Now.Returns(dateTime);
+            dpMock.Now.Returns(dateTime);
+            instance.DateTimeProvider = dpMock;
         }
         else
         {

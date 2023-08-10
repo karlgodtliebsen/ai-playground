@@ -1,6 +1,4 @@
-// Global using directives
-
-global using Moq;
+﻿// Global using directives
 
 global using System.Text.Json;
 
