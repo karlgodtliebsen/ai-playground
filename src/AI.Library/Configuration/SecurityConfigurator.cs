@@ -18,7 +18,7 @@ public static class SecurityConfigurator
     /// <param name="configuration"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddSecurity(this IServiceCollection services, IConfiguration configuration/*, Action<SecurityOptions>? options = null*/)
+    public static IServiceCollection AddSecurity(this IServiceCollection services, IConfiguration configuration)
     {
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

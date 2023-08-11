@@ -5,12 +5,10 @@
 #
 # Questions:
 # can we start the host from here?
-# can we get the token from here?
 
 
 @hostname=localhost
 @port=7039
-#@token = [add token]
 
 #get health status from anonymous healthcontroller
 GET https://{{hostname}}:{{port}}/health HTTP/1.1

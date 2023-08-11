@@ -18,31 +18,18 @@ namespace AI.Library.Configuration;
 public static class AzureKeyVaultConfigurator
 {
     /// <summary>
-    /// Uses Local Machine Certificate matching thumbprint to get access to Secrets in Azure KeyVault
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    public static WebApplicationBuilder AddAzureKeyVaultSecretsUsingCertificate(this WebApplicationBuilder builder, Action<AzureKeyVaultOptions>? options)
-    {
-        var usedOptions = new AzureKeyVaultOptions();
-        options?.Invoke(usedOptions);
-        AddAzureKeyVaultSecretsUsingCertificate(builder.Configuration, usedOptions);
-        return builder;
-    }
-
-    /// <summary>
     ///  Uses Local Machine Certificate matching thumbprint to add Azure KeyVault with the possibility to override the appSettings section name and other options
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="options">Option used to locate the settings in appSettings</param>
+    /// <param name="sectionName"></param>
     /// <returns></returns>
-    public static WebApplicationBuilder AddAzureKeyVault(this WebApplicationBuilder builder, Action<AzureKeyVaultOptions>? options = null)
+    public static WebApplicationBuilder AddAzureKeyVault(this WebApplicationBuilder builder, Action<AzureKeyVaultOptions>? options = null, string? sectionName = null)
     {
+        sectionName ??= AzureKeyVaultOptions.SectionName;
         var useOptions = new AzureKeyVaultOptions();
         options?.Invoke(useOptions);
-        ArgumentNullException.ThrowIfNull(useOptions.SectionName);
-        var keyVaultOptions = builder.Configuration.GetSection(useOptions.SectionName).Get<AzureKeyVaultOptions>()!;
+        var keyVaultOptions = builder.Configuration.GetSection(sectionName).Get<AzureKeyVaultOptions>()!;
         ArgumentNullException.ThrowIfNull(keyVaultOptions);
         if (useOptions.ApplicationId is not null)
         {
@@ -71,31 +58,19 @@ public static class AzureKeyVaultConfigurator
 
 
     /// <summary>
-    ///  Uses Local Machine Certificate matching thumbprint to add Azure KeyVault Secrets Using Default Section 
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <returns></returns>
-    public static WebApplicationBuilder AddAzureKeyVaultSecretsUsingDefaultSection(this WebApplicationBuilder builder)
-    {
-        var keyVaultOptions = builder.Configuration.GetSection(AzureKeyVaultOptions.ConfigSectionName).Get<AzureKeyVaultOptions>()!;
-        ArgumentNullException.ThrowIfNull(keyVaultOptions);
-        ArgumentNullException.ThrowIfNull(keyVaultOptions);
-        ArgumentNullException.ThrowIfNull(keyVaultOptions.ApplicationId);
-        ArgumentNullException.ThrowIfNull(keyVaultOptions.CertificateThumbprint);
-        ArgumentNullException.ThrowIfNull(keyVaultOptions.DirectoryId);
-        ArgumentNullException.ThrowIfNull(keyVaultOptions.KeyVaultName);
-        AddAzureKeyVaultSecretsUsingCertificate(builder.Configuration, keyVaultOptions);
-        return builder;
-    }
-
-
-    /// <summary>
     ///  Uses Local Machine Certificate matching thumbprint to get access to Secrets in Azure KeyVault
     /// </summary>
     /// <param name="configurationBuilder"></param>
     /// <param name="options"></param>
     public static void AddAzureKeyVaultSecretsUsingCertificate(IConfigurationBuilder configurationBuilder, AzureKeyVaultOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(options.ApplicationId);
+        ArgumentNullException.ThrowIfNull(options.CertificateThumbprint);
+        ArgumentNullException.ThrowIfNull(options.DirectoryId);
+        ArgumentNullException.ThrowIfNull(options.KeyVaultName);
+
         using var x509Store = new X509Store(StoreLocation.LocalMachine);
         x509Store.Open(OpenFlags.ReadOnly);
 
@@ -114,6 +89,37 @@ public static class AzureKeyVaultConfigurator
             new AzureKeyVaultConfigurationOptions());
 
         return;
+    }
+
+
+    /// <summary>
+    /// Uses Local Machine Certificate matching thumbprint to get access to Secrets in Azure KeyVault
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    public static WebApplicationBuilder AddAzureKeyVaultSecretsUsingCertificate(this WebApplicationBuilder builder, Action<AzureKeyVaultOptions> options)
+    {
+        var keyVaultOptions = new AzureKeyVaultOptions();
+        options.Invoke(keyVaultOptions);
+        AddAzureKeyVaultSecretsUsingCertificate(builder.Configuration, keyVaultOptions);
+        return builder;
+    }
+
+    /// <summary>
+    ///  Uses Local Machine Certificate matching thumbprint to add Azure KeyVault Secrets Using Default Section 
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="options"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
+    public static WebApplicationBuilder AddAzureKeyVaultSecretsUsingCertificate(this WebApplicationBuilder builder, Action<AzureKeyVaultOptions>? options = null, string? sectionName = null)
+    {
+        sectionName ??= AzureKeyVaultOptions.SectionName;
+        var keyVaultOptions = builder.Configuration.GetSection(sectionName).Get<AzureKeyVaultOptions>()!;
+        options?.Invoke(keyVaultOptions);
+        AddAzureKeyVaultSecretsUsingCertificate(builder.Configuration, keyVaultOptions);
+        return builder;
     }
 
     /// <summary>

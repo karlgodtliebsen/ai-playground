@@ -2,14 +2,10 @@
 
 namespace AI.Library.Configuration;
 
-public class AzureKeyVaultOptions
+public sealed class AzureKeyVaultOptions
 {
-    public const string ConfigSectionName = "AzureKeyVaultOptions";
+    public const string SectionName = "AzureKeyVault";
 
-    /// <summary>
-    /// Configuration Instance SectionName
-    /// </summary>
-    public string SectionName { get; set; } = ConfigSectionName;
 
     /// <summary>
     /// Name of KeyVault 

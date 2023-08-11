@@ -1,4 +1,6 @@
-﻿using AI.ConsoleApp.Configuration;
+﻿using System.Diagnostics;
+
+using AI.ConsoleApp.Configuration;
 using AI.Library.Configuration;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +13,7 @@ using OpenAI.Client.OpenAI.HttpClients;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;
 using OpenAI.Client.OpenAI.Models.Requests;
 
-using System.Diagnostics;
+using Serilog;
 
 const string applicationName = "AI-playground";
 
@@ -40,7 +42,7 @@ using (host)
         new ChatCompletionMessage {Role = "system", Content = "You are a helpful assistant.!" },
         new ChatCompletionMessage { Role = "user", Content = "Elaborate on the question: how long until Humanity reach the Planet Mars?" }
     };
-
+    Log.Logger.Information("Sending chat completion request for {DeploymentName} with {@Messages}", deploymentName, messages);
     var payload = requestFactory.CreateRequest<ChatCompletionRequest>(() =>
         new ChatCompletionRequest
         {

@@ -1,4 +1,8 @@
-﻿using AI.Library.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+
+using AI.Library.Configuration;
 
 using ChatGPT.Wpf.App.Configuration;
 using ChatGPT.Wpf.App.TabPages.ChatCompletions;
@@ -8,10 +12,6 @@ using ChatGPT.Wpf.App.TabPages.Images;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using System;
-using System.Collections.Generic;
-using System.Windows;
 
 namespace ChatGPT.Wpf.App;
 
@@ -28,7 +28,7 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-        IHostBuilder builder = Host.CreateDefaultBuilder();
+        var builder = Host.CreateDefaultBuilder();
         builder.WithLogging();
         builder.AddSecrets<App>();
         builder.ConfigureServices((context, services) =>

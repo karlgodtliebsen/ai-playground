@@ -8,14 +8,20 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+
 using ChatGPT.Wpf.App.Models;
+
 using Microsoft.Extensions.Options;
+
 using OneOf;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
 using OpenAI.Client.OpenAI.HttpClients;
 using OpenAI.Client.OpenAI.Models.Requests;
 using OpenAI.Client.OpenAI.Models.Responses;
+
+using Serilog;
 
 namespace ChatGPT.Wpf.App.TabPages.Completions;
 
@@ -32,6 +38,7 @@ public partial class CompletionControl : UserControl
 
     private readonly ICompletionAIClient aiClient;
     private readonly IModelRequestFactory requestFactory;
+    private readonly ILogger logger;
     private readonly CompletionViewModel viewModel = new();
     private readonly ViewState viewState;
     private readonly ObservableCollection<Model> models = new();
@@ -40,12 +47,14 @@ public partial class CompletionControl : UserControl
         ICompletionAIClient aiClient,
         IModelRequestFactory requestFactory,
         IOptions<OpenAIOptions> options,
+        ILogger logger,
         ViewState viewState
     )
     {
         this.viewState = viewState;
         this.aiClient = aiClient;
         this.requestFactory = requestFactory;
+        this.logger = logger;
         InitializeComponent();
         viewModel.ViewState = viewState;
         DataContext = viewModel;
@@ -60,6 +69,7 @@ public partial class CompletionControl : UserControl
 
     private void SetOpenAIModels()
     {
+        logger.Information("Setting OpenAI models");
         models.Clear();
         foreach (var model in requestFactory.GetModels("completions"))
         {
@@ -84,6 +94,7 @@ public partial class CompletionControl : UserControl
 
     private async Task Submit()
     {
+        logger.Information("Submitting");
         var prompt = viewModel!.Prompt!.Text!.Trim();
         var payload = CreatePayload(prompt);
         UpdateUIStatus(prompt);

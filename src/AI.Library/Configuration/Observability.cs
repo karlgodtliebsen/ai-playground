@@ -29,17 +29,17 @@ public static class Observability
     }
 
     /// <summary>
-    /// Creates a logger configuration based on the appsettings.json
+    /// Creates a logger configuration based on the appSettings.json
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="anchor"></param>
-    public static LoggerConfiguration CreateLoggerConfigurationUsingAppSettings(IConfiguration configuration)
+    /// <param name="configuration"></param>
+    /// <param name="options"></param>
+    public static LoggerConfiguration CreateLoggerConfigurationUsingAppSettings(IConfiguration configuration, AppLoggingOptions? options = null)
     {
         var cfg = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            //  .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .Enrich.FromLogContext()
             .ReadFrom.Configuration(configuration)
+            .ConfigureOpenTelemetry(options)
             .Destructure.UsingAttributes();
         return cfg;
     }
@@ -47,37 +47,69 @@ public static class Observability
     /// <summary>
     /// Creates a minimum configuration
     /// </summary>
+    /// <param name="options"></param>
     /// <returns></returns>
-    public static LoggerConfiguration CreateMinimumConfiguration()
+    public static LoggerConfiguration CreateMinimumConfiguration(AppLoggingOptions? options = null)
     {
         var cfg = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            //.MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .Enrich.FromLogContext()
             .WriteTo.Console()
-            //.WriteTo.Trace()
             .WriteTo.Debug()
+            .ConfigureOpenTelemetry(options)
             .Destructure.UsingAttributes();
         return cfg;
     }
 
-    /// <summary>
-    /// Creates a logger configuration based on the appsettings.json
-    /// </summary>
-    /// <param name="configuration"></param>
-    public static ILogger CreateAppSettingsBasedLogger(IConfiguration configuration)
+    private static LoggerConfiguration ConfigureOpenTelemetry(this LoggerConfiguration configuration, AppLoggingOptions? options = null)
     {
-        var logger = CreateLoggerConfigurationUsingAppSettings(configuration).CreateLogger();
-        return logger;
+        if (options?.OpenTelemetry is null) return configuration;
+
+        configuration = configuration.WriteTo.OpenTelemetry(
+            opt =>
+            {
+                opt.Endpoint = options.OpenTelemetry.Endpoint!;
+                opt.Protocol = options.OpenTelemetry.Protocol;
+                if (options.OpenTelemetry.ResourceAttributes is not null)
+                {
+                    foreach (var kvp in options.OpenTelemetry.ResourceAttributes)
+                    {
+                        opt.ResourceAttributes.Add(kvp.Key, kvp.Value);
+                    }
+                }
+                if (options.OpenTelemetry.Headers is not null)
+                {
+                    foreach (var kvp in options.OpenTelemetry.Headers)
+                    {
+                        opt.Headers.Add(kvp.Key, kvp.Value);
+                    }
+                }
+                if (options.OpenTelemetry.IncludedData.HasValue)
+                {
+                    opt.IncludedData = options.OpenTelemetry.IncludedData.Value;
+                }
+            }
+        );
+        return configuration;
     }
 
+    /// <summary>
+    /// Creates a logger configuration based on the appSettings.json
+    /// </summary>
+    /// <param name="configuration"></param>
+    /// <param name="options"></param>
+    public static ILogger CreateAppSettingsBasedLogger(this IConfiguration configuration, AppLoggingOptions? options = null)
+    {
+        var logger = CreateLoggerConfigurationUsingAppSettings(configuration, options).CreateLogger();
+        return logger;
+    }
 
     /// <summary>
     /// Creates a logger configuration based on minimal bootstrap Configuration
     /// </summary>
-    public static ILogger CreateBootstrapLogger()
+    public static ILogger CreateBootstrapLogger(AppLoggingOptions? options = null)
     {
-        var logger = CreateMinimumConfiguration().CreateBootstrapLogger();
+        var logger = CreateMinimumConfiguration(options).CreateBootstrapLogger();
         return logger;
     }
 

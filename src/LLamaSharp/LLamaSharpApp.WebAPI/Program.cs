@@ -23,6 +23,7 @@ var services = builder.Services;
 IdentityModelEventSource.ShowPII = env.IsDevelopment();
 
 builder.WithLogging();
+
 if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
 {
     builder.WebHost.ConfigureKestrel(serverOptions =>
@@ -82,8 +83,6 @@ await using (app)
 
     app.UseAuthentication();
     app.UseAuthorization();
-
-
 
     app.MapHealthCheckAnonymous();
     app.MapControllers();
