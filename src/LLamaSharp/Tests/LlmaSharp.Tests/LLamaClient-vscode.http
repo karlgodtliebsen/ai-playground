@@ -18,7 +18,7 @@ Content-Type: application/x-www-form-urlencoded
 
 client_id=db00e4dc-475f-495f-8349-7b93884d6fb5
 &scope=api://db00e4dc-475f-495f-8349-7b93884d6fb5/.default
-&client_secret=<insert client secret here>
+&client_secret=4ri8Q~OnIN859imaeAqF9QdNo_~o568zrFOPAb9Y
 &grant_type=client_credentials
 
 ###

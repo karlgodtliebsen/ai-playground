@@ -1,4 +1,4 @@
-﻿using LLamaSharpApp.WebAPI.Domain.Models;
+﻿using LLamaSharp.Domain.Domain.Models;
 using SerilogTimings.Extensions;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;

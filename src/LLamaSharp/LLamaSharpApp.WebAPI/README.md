@@ -2,15 +2,17 @@
 An ASP.NET Core WebAPI (v7.0) using LlamaSCharp and LlaMa version 1 and 2 models.
 
 
-Temp:
-Some sane configuration is missing from the Program.cs and Appsettings file, look at LLamaSharpApp.WebAPI for details
-Fix by using this: https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-7.0
+###Info:
+Some  configuration is missing from the Program.cs and Appsettings file, look at LLamaSharpApp.WebAPI for details
+Fix by using this: 
+> https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-7.0
 
 
 #### How to download the source and build:
 Clone the repository and open the solution in Visual Studio 2022.
 
 Download a Llama model version 1 or version 2 like: 
+
 ```
 - llama-2-7b.ggmlv3.q8_0.bin
 - wizardLM-7B.ggmlv3.q4_1.bin
@@ -24,23 +26,13 @@ Download a Llama model version 1 or version 2 like:
 Add the models to a folder and update the appsettings.json files with the path to the folder.
 I use: '/projects/AI/LlamaModels' to store the models.
 
-The web controllers are configured to use Authentication. 
-Either fill out the appsettings.json section (Remember not to commit/publish the information).
+
+### Authentication
+The Asp.net Web APIs are configured to use Authentication:  
+Either fill out the appsettings.json section (Remember not to commit/publish the information) or use Keyvault or UserSecret during development.
 Use either Environment variables, Azure Keyvault or UserSecret during development (or...).
 
-Authentication can be disabled in the Program.cs file, remember to remove the [Authentication] attributes from the controllers.
+More information at: 
+> https://damienbod.com/
+Authentication can be disabled in the Program.cs files, and remember to remove the [Authentication] attributes from the controllers, and Hardcode some User Identity. 
 
-
-### References
-1. https://huggingface.co/TheBloke
-2. https://huggingface.co/TheBloke/wizardLM-7B-GGML/resolve/main/wizardLM-7B.ggmlv3.q4_1.bin
-3. https://github.com/SciSharp/LLamaSharp
-4. https://scisharp.github.io/SciSharp/
-5. https://blog.maartenballiauw.be/post/2023/06/15/running-large-language-models-locally-your-own-chatgpt-like-ai-in-csharp.html
-6. https://scisharp.github.io/LLamaSharp/0.4/ContributingGuide/#add-examples
-7. https://huggingface.co/meta-llama
-
-
-### Authentication Identity
-1. https://damienbod.com/
-2. https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/

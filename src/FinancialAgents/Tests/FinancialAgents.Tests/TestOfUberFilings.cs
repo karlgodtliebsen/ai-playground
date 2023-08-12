@@ -9,11 +9,8 @@ using AngleSharp.Html.Parser;
 using FinancialAgents.Tests.Fixtures;
 
 using FluentAssertions;
-
+using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Services;
-
-using LLamaSharpApp.WebAPI.Domain.Models;
-
 using Microsoft.Extensions.DependencyInjection;
 
 using Xunit.Abstractions;

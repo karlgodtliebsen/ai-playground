@@ -1,15 +1,17 @@
 ﻿using System.Runtime.CompilerServices;
+
 using LLama;
+
 using LLamaSharp.Domain.Configuration;
+using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Repositories;
-using LLamaSharpApp.WebAPI.Domain.Models;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;
 
 /// <summary>
 /// Chat Domain Service
 /// </summary>
-public class ChatDomainService : IChatDomainService
+public class ChatService : IChatService
 {
     private readonly ILlamaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
@@ -26,8 +28,7 @@ public class ChatDomainService : IChatDomainService
     /// <param name="modelStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public ChatDomainService(ILlamaModelFactory factory,
-        IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
+    public ChatService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;

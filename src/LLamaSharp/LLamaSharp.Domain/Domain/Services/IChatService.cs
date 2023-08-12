@@ -1,11 +1,11 @@
-﻿using LLamaSharpApp.WebAPI.Domain.Models;
+﻿using LLamaSharp.Domain.Domain.Models;
 
 namespace LLamaSharp.Domain.Domain.Services;
 
 /// <summary>
 /// Interface for Chat Service
 /// </summary>
-public interface IChatDomainService
+public interface IChatService
 {
     /// <summary>
     /// Executes the chat

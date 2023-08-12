@@ -19,7 +19,7 @@ public class OptionsService : IOptionsService
     private readonly ILogger logger;
     private readonly LlamaModelOptions llamaModelOptions;
     private readonly InferenceOptions inferenceOptions;
-    private readonly JsonSerializerOptions serializerOptions;
+
     /// <summary>
     /// Constructor for the Options Service
     /// </summary>
@@ -37,13 +37,6 @@ public class OptionsService : IOptionsService
         this.logger = logger;
         llamaModelOptions = llmaOptions.Value;
         this.inferenceOptions = inferenceOptions.Value;
-        serializerOptions = new JsonSerializerOptions()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true,
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
-        };
     }
 
     /// <inheritdoc />
@@ -52,7 +45,7 @@ public class OptionsService : IOptionsService
         //if options for the user does not exist then use default options
         if (options is null)
         {
-            options = inferenceOptions.CreateSnapshot(serializerOptions);
+            options = inferenceOptions.CreateSnapshot();
         }
         await stateRepository.PersistInferenceOptions(options!, userId, cancellationToken);
     }
@@ -63,7 +56,7 @@ public class OptionsService : IOptionsService
         //if options for the user does not exist then use default options
         if (options is null)
         {
-            options = llamaModelOptions.CreateSnapshot(serializerOptions);
+            options = llamaModelOptions.CreateSnapshot();
         }
         await stateRepository.PersistLlamaModelOptions(options!, userId, cancellationToken);
     }
@@ -74,7 +67,7 @@ public class OptionsService : IOptionsService
     /// <returns></returns>
     public LlamaModelOptions GetDefaultLlamaModelOptions()
     {
-        return llamaModelOptions.CreateSnapshot(serializerOptions);
+        return llamaModelOptions.CreateSnapshot();
     }
 
 
@@ -89,7 +82,7 @@ public class OptionsService : IOptionsService
         return (await stateRepository.GetInferenceOptions(userId, cancellationToken))
         .Match(
              options => options,
-             _ => inferenceOptions.CreateSnapshot(serializerOptions)
+             _ => inferenceOptions.CreateSnapshot()
             );
     }
 
@@ -104,8 +97,17 @@ public class OptionsService : IOptionsService
         return (await stateRepository.GetLlamaModelOptions(userId, cancellationToken))
             .Match(
                 options => options,
-                _ => llamaModelOptions.CreateSnapshot(serializerOptions)
+                _ => llamaModelOptions.CreateSnapshot()
             );
+    }
+
+    public IEnumerable<string> GetModels()
+    {
+        var models = stateRepository.GetModels();
+        foreach (var model in models)
+        {
+            yield return model;
+        }
     }
 
     /// <inheritdoc />
@@ -117,6 +119,10 @@ public class OptionsService : IOptionsService
             yield return template;
         }
     }
+    public async Task<string> GetSpecifiedSystemPromptTemplates(string name, string? version = null, CancellationToken? cancellationToken = null)
+    {
+        return await stateRepository.GetSpecifiedSystemPromptTemplates(name, version, cancellationToken);
+    }
 
     /// <inheritdoc />
     public async Task<InferenceOptions> GetInferenceOptions(string userId, CancellationToken cancellationToken)
@@ -125,7 +131,7 @@ public class OptionsService : IOptionsService
         return (await stateRepository.GetInferenceOptions(userId, cancellationToken))
             .Match(
                 options => options,
-                _ => inferenceOptions.CreateSnapshot(serializerOptions)
+                _ => inferenceOptions.CreateSnapshot()
             );
     }
 
@@ -136,19 +142,27 @@ public class OptionsService : IOptionsService
         return (await stateRepository.GetLlamaModelOptions(userId, cancellationToken))
             .Match(
                 options => options,
-                _ => llamaModelOptions.CreateSnapshot(serializerOptions)
+                _ => llamaModelOptions.CreateSnapshot()
             );
     }
 }
 
 internal static class JsonExtensions
 {
-    public static InferenceOptions CreateSnapshot(this InferenceOptions inferenceOptions, JsonSerializerOptions serializerOptions)
+    private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions()
     {
-        return inferenceOptions.ToJson(serializerOptions).FromJson<InferenceOptions>(serializerOptions)!;
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+    };
+
+    public static InferenceOptions CreateSnapshot(this InferenceOptions inferenceOptions)
+    {
+        return inferenceOptions.ToJson(SerializerOptions).FromJson<InferenceOptions>(SerializerOptions)!;
     }
-    public static LlamaModelOptions CreateSnapshot(this LlamaModelOptions llamaModelOptions, JsonSerializerOptions serializerOptions)
+    public static LlamaModelOptions CreateSnapshot(this LlamaModelOptions llamaModelOptions)
     {
-        return llamaModelOptions.ToJson(serializerOptions).FromJson<LlamaModelOptions>(serializerOptions)!;
+        return llamaModelOptions.ToJson(SerializerOptions).FromJson<LlamaModelOptions>(SerializerOptions)!;
     }
 }

@@ -1,5 +1,5 @@
-﻿using LLamaSharp.Domain.Domain.Repositories;
-using LLamaSharpApp.WebAPI.Domain.Models;
+﻿using LLamaSharp.Domain.Domain.Models;
+using LLamaSharp.Domain.Domain.Repositories;
 using SerilogTimings.Extensions;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;

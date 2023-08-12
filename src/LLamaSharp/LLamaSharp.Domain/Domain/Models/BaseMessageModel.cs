@@ -1,6 +1,6 @@
 ﻿using LLamaSharp.Domain.Configuration;
 
-namespace LLamaSharpApp.WebAPI.Domain.Models;
+namespace LLamaSharp.Domain.Domain.Models;
 
 /// <summary>
 /// Domain Model for SimpleTextMessage

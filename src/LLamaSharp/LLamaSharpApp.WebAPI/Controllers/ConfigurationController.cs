@@ -88,6 +88,15 @@ public class ConfigurationController : ControllerBase
         await Response.CompleteAsync();
     }
 
+    /// <summary>
+    /// Returns the available models
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("configuration/models")]
+    public IList<string> GetModels()
+    {
+        return domainService.GetModels().ToList();
+    }
 
     /// <summary>
     /// Update the model options for the user

@@ -19,22 +19,25 @@ namespace LLamaSharp.Domain.Domain.Repositories.Implementation;
 /// </summary>
 public sealed class UsersStateFileRepository : IUsersStateRepository
 {
+    private readonly LlamaModelOptions modelOptions;
     private readonly ILogger logger;
     private const string InferenceFile = "inference-options.json";
     private const string LlamaModelFile = "llamamodel-options.json";
     private const string AssetsPath = "Assets";
-    private readonly LlamaRepositoryOptions llamaRepositoryOptions;
+    private readonly LlamaRepositoryOptions repositoryOptions;
     private static readonly string FullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
 
     /// <summary>
     /// Constructor for the User State File Repository
     /// </summary>
-    /// <param name="webApiOptions"></param>
+    /// <param name="repositoryOptions"></param>
+    /// <param name="modelOptions"></param>
     /// <param name="logger"></param>
-    public UsersStateFileRepository(IOptions<LlamaRepositoryOptions> webApiOptions, ILogger logger)
+    public UsersStateFileRepository(IOptions<LlamaRepositoryOptions> repositoryOptions, IOptions<LlamaModelOptions> modelOptions, ILogger logger)
     {
+        this.modelOptions = modelOptions.Value;
+        this.repositoryOptions = repositoryOptions.Value;
         this.logger = logger;
-        this.llamaRepositoryOptions = webApiOptions.Value;
     }
 
     private async Task PersistObject(object obj, string fileName, CancellationToken cancellationToken)
@@ -47,7 +50,7 @@ public sealed class UsersStateFileRepository : IUsersStateRepository
 
     private string GetFullPath(string userId)
     {
-        var path = Path.GetFullPath(Path.Combine(FullPath, llamaRepositoryOptions.StatePersistencePath, userId));
+        var path = Path.GetFullPath(Path.Combine(FullPath, repositoryOptions.StatePersistencePath, userId));
         Directory.CreateDirectory(path!);
         return path;
     }
@@ -121,10 +124,37 @@ public sealed class UsersStateFileRepository : IUsersStateRepository
     /// <inheritdoc />
     public async IAsyncEnumerable<string> GetSystemPromptTemplates([EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var directory = Path.Combine(FullPath, AssetsPath, "prompts");
-        foreach (var file in Directory.EnumerateFiles(directory, "*-prompt.txt"))
+        var directory = Path.GetFullPath(Path.Combine(FullPath, AssetsPath, "prompts"));
+        foreach (var file in Directory.EnumerateFiles(directory, "*-prompt*.txt"))
         {
             yield return await File.ReadAllTextAsync(file, cancellationToken);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<string> GetSpecifiedSystemPromptTemplates(string name, string? version = null, CancellationToken? cancellationToken = null)
+    {
+        var directory = Path.GetFullPath(Path.Combine(FullPath, AssetsPath, "prompts"));
+        if (!string.IsNullOrEmpty(version))
+        {
+            version = "-" + version;
+        }
+        var file = Directory.EnumerateFiles(directory, $"{name}-prompt{version}.txt").FirstOrDefault();
+        if (file is null)
+        {
+            throw new FileNotFoundException($"Prompt file {name}-prompt{version}.txt not found");
+        }
+        cancellationToken ??= CancellationToken.None;
+        return await File.ReadAllTextAsync(file, cancellationToken.Value);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<string> GetModels()
+    {
+        var directory = Path.GetFullPath(Path.GetDirectoryName(modelOptions.ModelPath)!);
+        foreach (var file in Directory.EnumerateFiles(directory, "*"))
+        {
+            yield return Path.GetFileNameWithoutExtension(file);
         }
     }
 }

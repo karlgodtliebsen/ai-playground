@@ -1,8 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 using LLamaSharp.Domain.Configuration;
-
-using LLamaSharpApp.WebAPI.Domain.Models;
+using LLamaSharp.Domain.Domain.Models;
 
 namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
@@ -40,6 +39,16 @@ public class ExecutorInferRequest : TextMessageRequest
     /// When true, the a Stateless Executor will be used
     /// </summary>
     public bool? UseStatelessExecutor { get; set; } = false;
+
+    /// <summary>
+    /// Use the systems build in AntiPrompt
+    /// </summary>
+    public bool UseDefaultAntiPrompt { get; set; } = false!;
+
+    /// <summary>
+    /// Use the systems build in Prompt
+    /// </summary>
+    public bool UseDefaultPrompt { get; set; } = false;
 }
 
 

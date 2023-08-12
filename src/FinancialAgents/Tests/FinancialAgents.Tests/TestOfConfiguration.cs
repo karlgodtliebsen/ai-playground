@@ -5,6 +5,7 @@ using FinancialAgents.Tests.Fixtures;
 using FluentAssertions;
 
 using LLamaSharp.Domain.Configuration;
+using LLamaSharp.Domain.Domain.DomainServices;
 using LLamaSharp.Domain.Domain.Repositories;
 using LLamaSharp.Domain.Domain.Services;
 
@@ -36,9 +37,10 @@ public sealed class TestOfConfiguration : IClassFixture<FinancialAgentsTestFixtu
 
         hostApplicationFactory.Services.GetService<ILlamaModelFactory>().Should().NotBeNull();
         hostApplicationFactory.Services.GetService<IOptionsService>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<IChatDomainService>().Should().NotBeNull();
+        hostApplicationFactory.Services.GetService<IChatService>().Should().NotBeNull();
         hostApplicationFactory.Services.GetService<IEmbeddingsService>().Should().NotBeNull();
         hostApplicationFactory.Services.GetService<IExecutorService>().Should().NotBeNull();
+        hostApplicationFactory.Services.GetService<ICompositeService>().Should().NotBeNull();
         hostApplicationFactory.Services.GetService<IModelStateRepository>().Should().NotBeNull();
         hostApplicationFactory.Services.GetService<IUsersStateRepository>().Should().NotBeNull();
 

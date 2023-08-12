@@ -1,8 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
+
 using LLama;
 using LLama.Abstractions;
+
+using LLamaSharp.Domain.Configuration;
+using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Repositories;
-using LLamaSharpApp.WebAPI.Domain.Models;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;
 
@@ -47,11 +50,41 @@ public class ExecutorService : IExecutorService
         }
     }
 
-    private async IAsyncEnumerable<string> UseStatefulExecutor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public IEnumerable<string> ChatUsingInteractiveExecutor(InferenceOptions inferenceOptions, LlamaModelOptions modelOptions, string userInput)
     {
-        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
+        var (chatSession, _) = factory.CreateChatSession<InteractiveExecutor>(modelOptions);
+        var outputs = chatSession.Chat(userInput, inferenceOptions);
+        foreach (var output in outputs)
+        {
+            yield return output;
+        }
+    }
 
-        var model = factory.CreateModel(modelOptions);      //model specified by options
+    public IEnumerable<string> ExecutorWithTransformation(InferenceOptions inferenceOptions, LlamaModelOptions modelOptions, string userInput)
+    {
+        //LLamaModel
+        var (chatSession, _) = factory.CreateChatSession<InteractiveExecutor>(modelOptions,
+            (session =>
+                session.WithOutputTransform(
+                    new LLamaTransforms.KeywordTextOutputStreamTransform(
+                    new string[] { "User:", "Bob:" },
+                    redundancyLength: 8))));
+
+        //InteractiveExecutor ex = new(new LLamaModel(new ModelParams(modelPath, contextSize: 1024, seed: 1337, gpuLayerCount: 5)));
+        //ChatSession session = new ChatSession(ex); // The only change is to remove the transform for the output text stream.
+        //foreach (var text in session.Chat(prompt, new InferenceParams() { Temperature = 0.6f, AntiPrompts = new List<string> { "User:" } }))
+
+        var outputs = chatSession.Chat(userInput, inferenceOptions);
+
+        foreach (var output in outputs)
+        {
+            yield return output;
+        }
+    }
+
+    private async IAsyncEnumerable<string> UseStatefulExecutor(LlamaModelOptions modelOptions, ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        var model = factory.CreateModel(modelOptions);
         var executor = LoadStatefulExecutor(input, model);
         var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
         var res = executor.InferAsync(input.Text, inferenceOptions, cancellationToken);
@@ -63,10 +96,17 @@ public class ExecutorService : IExecutorService
         //model.Dispose();  //TODO: must be solved
     }
 
-    private async IAsyncEnumerable<string> UseStatelessExecutor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    private async IAsyncEnumerable<string> UseStatefulExecutor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
+        await foreach (var result in UseStatefulExecutor(modelOptions, input, cancellationToken).WithCancellation(cancellationToken))
+        {
+            yield return result;
+        }
+    }
 
+    private async IAsyncEnumerable<string> UseStatelessExecutor(LlamaModelOptions modelOptions, ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
         var model = factory.CreateModel(modelOptions);//model specified by options
         var executor = GetStatelessExecutor(model);
 
@@ -77,6 +117,15 @@ public class ExecutorService : IExecutorService
             yield return result;
         }
         //model.Dispose();  //TODO: must be solved
+    }
+
+    private async IAsyncEnumerable<string> UseStatelessExecutor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
+        await foreach (var result in UseStatelessExecutor(modelOptions, input, cancellationToken).WithCancellation(cancellationToken))
+        {
+            yield return result;
+        }
     }
 
     private ILLamaExecutor GetStatelessExecutor(LLamaModel model)

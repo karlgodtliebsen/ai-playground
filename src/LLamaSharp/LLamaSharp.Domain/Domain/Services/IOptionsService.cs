@@ -8,6 +8,12 @@ namespace LLamaSharp.Domain.Domain.Services;
 public interface IOptionsService
 {
     /// <summary>
+    /// Returns the available models
+    /// </summary>
+    /// <returns></returns>
+    IEnumerable<string> GetModels();
+
+    /// <summary>
     /// Persist Inference Options
     /// </summary>
     /// <param name="options"></param>
@@ -65,6 +71,20 @@ public interface IOptionsService
     /// <returns></returns>
     Task<LlamaModelOptions> CoalsceLlamaModelOptions(LlamaModelOptions? queryOptions, string userId, CancellationToken cancellationToken);
 
-
+    /// <summary>
+    /// Get the system prompt templates
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     IAsyncEnumerable<string> GetSystemPromptTemplates(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// get the specified system prompt templates
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="version"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<string> GetSpecifiedSystemPromptTemplates(string name, string? version = null, CancellationToken? cancellationToken = null);
 }
+

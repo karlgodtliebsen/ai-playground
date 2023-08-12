@@ -1,4 +1,4 @@
-﻿namespace LLamaSharpApp.WebAPI.Domain.Models;
+﻿namespace LLamaSharp.Domain.Domain.Models;
 
 /// <summary>
 /// Domain object to hold the text to be sent to the embedding algoritm

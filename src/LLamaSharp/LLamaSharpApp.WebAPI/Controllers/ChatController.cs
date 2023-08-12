@@ -23,7 +23,7 @@ public class ChatController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
     private readonly RequestMessagesMapper mapper;
-    private readonly IChatDomainService domainService;
+    private readonly IChatService service;
     private readonly ILogger logger;
 
     /// <summary>
@@ -32,10 +32,10 @@ public class ChatController : ControllerBase
     /// <param name="userProvider"></param>
     /// <param name="mapper"></param>
     /// <param name="logger"></param>
-    /// <param name="domainService"></param>
-    public ChatController(IChatDomainService domainService, IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
+    /// <param name="service"></param>
+    public ChatController(IChatService service, IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
     {
-        this.domainService = domainService;
+        this.service = service;
         this.logger = logger;
         this.userProvider = userProvider;
         this.mapper = mapper;
@@ -52,7 +52,7 @@ public class ChatController : ControllerBase
     {
         using var op = logger.BeginOperation("Running Chat for {userId}...", userProvider.UserId);
         var requestModel = mapper.Map(request, userProvider.UserId);
-        var result = await domainService.Chat(requestModel, cancellationToken);
+        var result = await service.Chat(requestModel, cancellationToken);
         op.Complete();
         return result;
     }
@@ -69,7 +69,7 @@ public class ChatController : ControllerBase
         using var op = logger.BeginOperation("Running Streamed Chat for {userId}...", userProvider.UserId);
         var requestModel = mapper.Map(request, userProvider.UserId);
         Response.ContentType = "text/event-stream";
-        await foreach (var r in domainService.ChatStream(requestModel, cancellationToken))
+        await foreach (var r in service.ChatStream(requestModel, cancellationToken))
         {
             logger.Information("Sending SSE: {r}", r);
             await Response.WriteAsync($"data:{r}\n\n", cancellationToken);
