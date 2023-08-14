@@ -8,11 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LlamaSharp.Tests;
 
-public class TestOfLlamaSharpClients : IClassFixture<IntegrationTestWebApplicationFactory>, IDisposable
+public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<IntegrationTestWebApplicationFactory>, IDisposable
 {
     private readonly IntegrationTestWebApplicationFactory factory;
 
-    public TestOfLlamaSharpClients(IntegrationTestWebApplicationFactory factory)
+    public TestOfLlamaSharpConfigurationClient(IntegrationTestWebApplicationFactory factory)
     {
         this.factory = factory;
     }
@@ -21,7 +21,6 @@ public class TestOfLlamaSharpClients : IClassFixture<IntegrationTestWebApplicati
     {
         //factory.Dispose();//Code smell: really annoying that this messes up the test runner
     }
-
 
     [Fact]
     public async Task VerifyThatUserIdProviderFindsUserSubject()
@@ -55,24 +54,43 @@ public class TestOfLlamaSharpClients : IClassFixture<IntegrationTestWebApplicati
     }
 
     [Fact]
-
     public async Task VerifyThatLLamaClientCanCallControllerAndFetchPromptTemplates()
     {
-        var client = factory.Services.GetRequiredService<ILLamaClient>();
+        var client = factory.Services.GetRequiredService<ILLamaConfigurationClient>();
         var response = await client.GetPromptTemplatesAsync(CancellationToken.None);
+        response.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task VerifyThatLLamaClientCanCallControllerAndFetchModelOptionss()
+    {
+        var client = factory.Services.GetRequiredService<ILLamaConfigurationClient>();
+        var response = await client.GetModelOptions(CancellationToken.None);
+        response.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task VerifyThatLLamaClientCanCallControllerAndFetchInferenceOptions()
+    {
+        var client = factory.Services.GetRequiredService<ILLamaConfigurationClient>();
+        var response = await client.GetInferenceOptions(CancellationToken.None);
+        response.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task VerifyThatLLamaClientCanCallControllerAndFetchModels()
+    {
+        var client = factory.Services.GetRequiredService<ILLamaConfigurationClient>();
+        var response = await client.GetModels(CancellationToken.None);
         response.Should().NotBeNull();
     }
 
     [Fact]
     public async Task VerifyThatLLamaClientCanHealthCheckController()
     {
-        var client = factory.Services.GetRequiredService<ILLamaClient>();
+        var client = factory.Services.GetRequiredService<ILLamaConfigurationClient>();
         var status = await client.CheckHealthEndpoint(CancellationToken.None);
         status.Should().NotBeNull();
         status.Should().Be("Healthy");
     }
 }
-
-
-
-

@@ -1,7 +1,10 @@
-﻿using LLamaSharp.Domain.Domain.Models;
+﻿using AI.Library.Utils;
+
+using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Services;
 
 using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
+
 using Riok.Mapperly.Abstractions;
 
 namespace LLamaSharpApp.WebAPI.Controllers.Mappers;
@@ -92,16 +95,18 @@ public partial class RequestMessagesMapper
     /// </summary>
     /// <param name="request"></param>
     /// <param name="userId"></param>
+    /// <exception cref="AIException">If the Text property is null or empty</exception>
     /// <returns></returns>
     public ExecutorInferMessage Map(ExecutorInferRequest request, string userId)
     {
-        var defaultOptions = configurationDomainService.GetDefaultLlamaModelOptions();
+        if (string.IsNullOrEmpty(request.Text))
+        {
+            throw new AIException("Text cannot be null or empty", nameof(request.Text));
+        }
+        var defaultModelOptions = configurationDomainService.GetDefaultLlamaModelOptions();
         var model = Map(request);
         model.UserId = userId;
-        model.ModelOptions = optionsMapper.MapRestoreSensitiveData(request.ModelOptions!, defaultOptions);
-        if (request.UsePersistedModelState.HasValue) model.UsePersistedModelState = request.UsePersistedModelState.Value;
-        if (request.UsePersistedExecutorState.HasValue) model.UsePersistedExecutorState = request.UsePersistedExecutorState.Value;
-        if (request.UseStatelessExecutor.HasValue) model.UseStatelessExecutor = request.UseStatelessExecutor.Value;
+        model.ModelOptions = optionsMapper.MapRestoreSensitiveData(request.ModelOptions!, defaultModelOptions);
         return model;
     }
 
@@ -114,10 +119,10 @@ public partial class RequestMessagesMapper
     /// <returns></returns>
     public ChatMessage Map(ChatMessageRequest request, string userId)
     {
-        var defaultOptions = configurationDomainService.GetDefaultLlamaModelOptions();
+        var defaultModelOptions = configurationDomainService.GetDefaultLlamaModelOptions();
         var model = Map(request);
         model.UserId = userId;
-        model.ModelOptions = optionsMapper.MapRestoreSensitiveData(request.ModelOptions!, defaultOptions);
+        model.ModelOptions = optionsMapper.MapRestoreSensitiveData(request.ModelOptions!, defaultModelOptions);
         return model;
     }
 
@@ -129,10 +134,10 @@ public partial class RequestMessagesMapper
     /// <returns></returns>
     public EmbeddingsMessage Map(EmbeddingsRequest request, string userId)
     {
-        var defaultOptions = configurationDomainService.GetDefaultLlamaModelOptions();
+        var defaultModelOptions = configurationDomainService.GetDefaultLlamaModelOptions();
         var model = Map(request);
         model.UserId = userId;
-        model.ModelOptions = optionsMapper.MapRestoreSensitiveData(request.ModelOptions!, defaultOptions);
+        model.ModelOptions = optionsMapper.MapRestoreSensitiveData(request.ModelOptions!, defaultModelOptions);
         return model;
     }
 

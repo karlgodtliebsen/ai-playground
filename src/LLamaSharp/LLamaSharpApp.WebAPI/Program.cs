@@ -58,7 +58,7 @@ if (!env.IsDevelopment() && !env.IsEnvironment(HostingEnvironments.UsingReverseP
 
 services
     .AddSecurity(configuration)
-    .AddOpenApi()
+    .AddOpenApi(configuration)
     .AddHealthCheck()
     ;
 

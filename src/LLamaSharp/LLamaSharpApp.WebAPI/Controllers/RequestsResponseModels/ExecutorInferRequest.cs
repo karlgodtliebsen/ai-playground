@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-using LLamaSharp.Domain.Configuration;
 using LLamaSharp.Domain.Domain.Models;
 
 namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
@@ -13,7 +12,7 @@ public class ExecutorInferRequest : TextMessageRequest
     /// <summary>
     /// Request specific options
     /// </summary>
-    public InferenceOptions? InferenceOptions { get; set; } = default!;
+    public InferenceRequestResponse? InferenceOptions { get; set; } = default!;
 
     /// <summary>
     /// Discriminator for the statefull Executor type

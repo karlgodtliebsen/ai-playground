@@ -9,4 +9,14 @@ public class BaseRequest
     /// Request specific LlamaModelOptions
     /// </summary>
     public LlamaModelRequestResponse? ModelOptions { get; set; } = default!;
+
+    /// <summary>
+    /// AntiPrompt
+    /// </summary>
+    public string[]? AntiPrompt { get; set; } = default!;
+
+    /// <summary>
+    ///Prompt
+    /// </summary>
+    public string? Prompt { get; set; } = default!;
 }

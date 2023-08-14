@@ -70,6 +70,14 @@ public class OptionsService : IOptionsService
         return llamaModelOptions.CreateSnapshot();
     }
 
+    /// <summary>
+    /// Creates a snapshot of the default Inference options
+    /// </summary>
+    /// <returns></returns>
+    public InferenceOptions GetDefaultInferenceOptions()
+    {
+        return inferenceOptions.CreateSnapshot();
+    }
 
     /// <inheritdoc />
     public async Task<InferenceOptions> CoalsceInferenceOptions(InferenceOptions? queryOptions, string userId, CancellationToken cancellationToken)

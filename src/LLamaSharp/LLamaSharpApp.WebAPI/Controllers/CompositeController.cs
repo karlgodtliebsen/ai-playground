@@ -18,10 +18,10 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 [ApiVersion("1")]
 [ApiExplorerSettings(GroupName = "v1")]
 [ApiController]
-[Route("api/llama")]
+[Route("api/llama/composite")]
 [Authorize]
 //[AllowAnonymous]
-public class GeneralController : ControllerBase
+public class CompositeController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
     private readonly RequestMessagesMapper mapper;
@@ -35,7 +35,7 @@ public class GeneralController : ControllerBase
     /// <param name="userProvider"></param>
     /// <param name="mapper"></param>
     /// <param name="logger"></param>
-    public GeneralController(ICompositeService domainService, IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
+    public CompositeController(ICompositeService domainService, IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
     {
         this.domainService = domainService;
         this.logger = logger;
@@ -49,14 +49,23 @@ public class GeneralController : ControllerBase
     /// <param name="request">Hold the Chat prompt/text</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpPost("execute")]
-    public async Task<string> Chat([FromBody] ExecutorInferRequest request, CancellationToken cancellationToken)
+    [HttpPost("executeInstruction")]
+    public async Task<IActionResult> ChatSessionWithInstructionsExecutorAndRoleName([FromBody] ExecutorInferRequest request, CancellationToken cancellationToken)
     {
-        using var op = logger.BeginOperation("Running Interactive Instruction Chat for {userId}...", userProvider.UserId);
+        var op = logger.BeginOperation("Running Interactive Instruction Chat for {userId}...", userProvider.UserId);
         var requestModel = mapper.Map(request, userProvider.UserId);
-        var result = await domainService.ChatUsingInstructionsSessionWithRoleName(requestModel, cancellationToken);
-        op.Complete();
-        return result;
+        var result = await domainService.ChatSessionWithInstructionsExecutorAndRoleName(requestModel, cancellationToken);
+        //<OneOf<string,ErrorResponse>>
+
+        return result.Match<IActionResult>(
+            r =>
+            {
+                op.Complete();
+                op.Dispose();
+                return Ok(r);
+            },
+            BadRequest
+            );
     }
 
 }

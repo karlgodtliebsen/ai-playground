@@ -38,7 +38,7 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
         base.ConfigureWebHost(builder);
         builder.ConfigureTestServices(services =>
         {
-            services.AddSingleton<IHttpContextAccessor>(CreateHttpContext());
+            services.AddSingleton(CreateHttpContext());
             services.AddSingleton<ILoggerFactory, XUnitTestLoggerFactory>();
             const string endpointUrl = "https://localhost";
             var options = new LlamaClientOptions()
@@ -47,16 +47,29 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
             };
             services.AddSingleton<IOptions<LlamaClientOptions>>(new OptionsWrapper<LlamaClientOptions>(options));
             services.AddScoped(_ => TestClaimsProvider.WithAdministratorClaims());
-            Func<HttpClient, IServiceProvider, LLamaClient> f = (c, sp) =>
+
+            LLamaConfigurationClient ConfigClient(HttpClient c, IServiceProvider sp)
             {
                 var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
                 var client = this.CreateClientWithTestAuth(claimsProvider);
-                return new LLamaClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
-            };
+                return new LLamaConfigurationClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
+            }
 
-            services.AddHttpClient<ILLamaClient, LLamaClient>(f)
+            services.AddHttpClient<ILLamaConfigurationClient, LLamaConfigurationClient>(ConfigClient)
                 .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
             ;
+
+
+            LLamaCompositeOperationsClient CompositeClient(HttpClient c, IServiceProvider sp)
+            {
+                var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
+                var client = this.CreateClientWithTestAuth(claimsProvider);
+                return new LLamaCompositeOperationsClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
+            }
+
+            services.AddHttpClient<ILLamaCompositeOperationsClient, LLamaCompositeOperationsClient>(CompositeClient)
+                .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
+                ;
         });
     }
 

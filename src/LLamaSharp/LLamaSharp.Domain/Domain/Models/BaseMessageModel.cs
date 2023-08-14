@@ -18,4 +18,14 @@ public class BaseMessageModel
     /// The request specific LlamaModelOptions: Optional
     /// </summary>
     public LlamaModelOptions? ModelOptions { get; set; } = default!;
+
+    /// <summary>
+    /// AntiPrompt
+    /// </summary>
+    public string[]? AntiPrompt { get; set; } = default!;
+
+    /// <summary>
+    ///Prompt
+    /// </summary>
+    public string? Prompt { get; set; } = default!;
 }

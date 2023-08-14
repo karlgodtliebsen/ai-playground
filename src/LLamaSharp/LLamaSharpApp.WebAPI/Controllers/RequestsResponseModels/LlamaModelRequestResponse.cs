@@ -54,20 +54,9 @@ public sealed class LlamaModelRequestResponse
     /// </summary>
     public bool? EmbeddingMode { get; set; } = false;
 
-
     /// <summary>
     /// The Name of the Model
     /// </summary>
     public string? ModelName { get; set; } = default!;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public string[]? AntiPrompt { get; set; } = default!;
-
-    /// <summary>
-    /// Path to the promptFile
-    /// </summary>
-    public string? Prompt { get; set; } = default!;
 
 }

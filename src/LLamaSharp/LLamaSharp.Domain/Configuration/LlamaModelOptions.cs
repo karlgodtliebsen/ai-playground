@@ -24,25 +24,18 @@ public class LlamaModelOptions : ModelParams
 
     public void RestoreSanitizedSensitiveData(string? modelName)
     {
-        if (modelName is null || ModelPath!.EndsWith(modelName))
+        if (modelName is null) return;
+        if (!modelName.EndsWith(".bin"))
+        {
+            modelName = $"{modelName}.bin";
+        }
+        if (ModelPath!.EndsWith(modelName))
         {
             return;
         }
+
         var path = Path.GetFullPath(ModelPath);
         var r = path.Split(Path.DirectorySeparatorChar).LastOrDefault()!;
         ModelPath = path.Replace(r, modelName);
     }
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public string[]? AntiPrompt { get; set; }
-
-    /// <summary>
-    /// Path to the promptFile
-    /// </summary>
-    public string? Prompt { get; set; }
-
-
 }

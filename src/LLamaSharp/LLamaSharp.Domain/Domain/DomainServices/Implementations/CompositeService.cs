@@ -1,12 +1,17 @@
-﻿using LLamaSharp.Domain.Configuration;
+﻿using AI.Library.HttpUtils;
+
+using LLamaSharp.Domain.Configuration;
 using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Services;
+
+using OneOf;
 
 namespace LLamaSharp.Domain.Domain.DomainServices.Implementations;
 
 /// <summary>
 /// CompositeDomain Service that handles all the different composite chat actions
-/// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionStripRoleName.cs" >llamasharp samples</a>
+/// Created to align with the LLama.Examples
+/// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/" >LLama.Examples</a>
 /// </summary>
 public class CompositeService : ICompositeService
 {
@@ -33,85 +38,110 @@ public class CompositeService : ICompositeService
         this.logger = logger;
     }
 
+    ///// <summary>
+    ///// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionStripRoleName.cs" >LLama.Examples/a>
+    ///// </summary>
+    ///// <param name="input"></param>
+    ///// <param name="cancellationToken"></param>
+    ////public async Task<string> ChatUsingInstructionsSessionWithStrippedRoleNames(ExecutorInferMessage input, CancellationToken cancellationToken)
+    ////{
+    ////}
+
     /// <summary>
-    /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionStripRoleName.cs" >llamasharp samples</a>
+    /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionWithRoleName.cs" >LLama.Examples</a>
     /// </summary>
     /// <param name="input"></param>
     /// <param name="cancellationToken"></param>
-    public async Task<string> ChatUsingInstructionsSessionWithRoleName(ExecutorInferMessage input, CancellationToken cancellationToken)
+    public async Task<OneOf<string, ErrorResponse>> ChatSessionWithInstructionsExecutorAndRoleName(ExecutorInferMessage input, CancellationToken cancellationToken)
     {
-        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
+        try
+        {
+            var modelOptions = input.ModelOptions!;
+            var inferenceOptions = input.InferenceOptions!;
+            inferenceOptions.AntiPrompts = Array.Empty<string>(); //input.AntiPrompt!;
+            //inferenceOptions.AntiPrompts = new List<string> { "User:" }!;
 
-        var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
+            var userInput = CreateUserInput(input);
 
-        //        inferenceOptions.AntiPrompts = modelOptions.AntiPrompt!;
-        inferenceOptions.AntiPrompts = new List<string> { "User:" }!;
-        inferenceOptions.Temperature = 0.6f;
+            var outputs = executor.ChatUsingInteractiveExecutor(inferenceOptions, modelOptions, userInput);
 
-        //https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionStripRoleName.cs
-
-        modelOptions.ContextSize = 1024;
-        modelOptions.Seed = 1337;
-        //modelOptions.GpuLayerCount = 5;
-
-        //logger.Debug("Using Model Options: {@modelOptions}", modelOptions);
-        //logger.Debug("Using Inference Options: {@inferenceOptions}", inferenceOptions);
-
-        //AlignModelParameters(input, inferenceOptions, modelOptions);
-
-
-        var promptTemplate = await optionsService.GetSpecifiedSystemPromptTemplates("instruction", "1", cancellationToken);
-
-        //fill the template with the user input
-        var userInput = CreateUserInput(input, promptTemplate, modelOptions);
-
-        var outputs = executor.ChatUsingInteractiveExecutor(inferenceOptions, modelOptions, userInput);
-
-
-        //var (chatSession, model) = factory.CreateChatSession<InteractiveExecutor>(modelOptions,
-        //    (session =>
-        //        session.WithOutputTransform(new LLamaTransforms.KeywordTextOutputStreamTransform(
-        //        new string[] { "User:", "Bob:" },
-        //        redundancyLength: 8))));
-
-
-        ////modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
-
-        //var outputs = chatSession.Chat(userInput, inferenceOptions, cancellationToken);
-
-        //modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
-        var result = string.Join("", outputs);
-
+            var result = string.Join("", outputs);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Error in ChatSessionWithInstructionsExecutorAndRoleName");
+            return new ErrorResponse(ex.Message);
+        }
         //model.Dispose();
-        return result;
     }
+
+
+
+    //public async Task<string> GetEmbeddings(ExecutorInferMessage input, CancellationToken cancellationToken)
+    //{
+    //}
+
+    //SaveAndLoadSession
+    //InstructModeExecute
+    //InteractiveModeExecute
+    //LoadAndSaveState
+    //QuantizeModel
+    //StatelessModeExecute
+
+    //inferenceOptions.AntiPrompts = modelOptions.AntiPrompt!;
+    //inferenceOptions.AntiPrompts = new List<string> { "User:" }!;
+
+    //logger.Debug("Using Model Options: {@modelOptions}", modelOptions);
+    //logger.Debug("Using Inference Options: {@inferenceOptions}", inferenceOptions);
+    //AlignModelParameters(input, inferenceOptions, modelOptions);
+    //var prompt = File.ReadAllText("Assets/chat-with-bob.txt").Trim();
+    //InteractiveExecutor ex = new(new LLamaModel(new ModelParams(modelPath, contextSize: 1024, seed: 1337, gpuLayerCount: 5)));
+    //ChatSession session = new ChatSession(ex); // The only change is to remove the transform for the output text stream.
+    //var promptTemplate = await optionsService.GetSpecifiedSystemPromptTemplates("instruction", "1", cancellationToken);
+
+    //var (chatSession, model) = factory.CreateChatSession<InteractiveExecutor>(modelOptions,
+    //    (session =>
+    //        session.WithOutputTransform(new LLamaTransforms.KeywordTextOutputStreamTransform(
+    //        new string[] { "User:", "Bob:" },
+    //        redundancyLength: 8))));
+
+    ////modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
+    //var outputs = chatSession.Chat(userInput, inferenceOptions, cancellationToken);
+    //modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
+
 
     private void AlignModelParameters(ExecutorInferMessage input, InferenceOptions inferenceOptions, LlamaModelOptions modelOptions)
     {
-        if (input.UseDefaultAntiPrompt && modelOptions.AntiPrompt is not null)
+        if (input.UseDefaultAntiPrompt && input.AntiPrompt is not null)
         {
-            inferenceOptions.AntiPrompts = modelOptions.AntiPrompt;
+            inferenceOptions.AntiPrompts = input.AntiPrompt;
         }
 
-        if (input.ModelOptions is not null && input.ModelOptions.AntiPrompt is not null)
+        if (input.ModelOptions is not null && input.AntiPrompt is not null)
         {
-            inferenceOptions.AntiPrompts = input.ModelOptions.AntiPrompt!;
+            inferenceOptions.AntiPrompts = input.AntiPrompt!;
         }
     }
-    private string CreateUserInput(ExecutorInferMessage input, string promptTemplate, LlamaModelOptions modelOptions)
+
+    private string CreateUserInput(ExecutorInferMessage input)
     {
         string userInput = input.Text;
 
-        if (input is { UseDefaultPrompt: false, ModelOptions.Prompt: not null })
+        if (input is { UseDefaultPrompt: false, Prompt: not null })
         {
-            var prompt = input.ModelOptions.Prompt.Trim() + userInput;
+            var prompt = $""""
+                {input.Prompt.Trim()}\n
+                """{userInput}"""
+                """";
+
             logger.Debug("Prefixing User providedModel Options Prompt: {Prompt} to User Input {userInput}", prompt, userInput);
             return prompt;
         }
 
-        if (input.UseDefaultPrompt && modelOptions.Prompt is not null)
+        if (input is { UseDefaultPrompt: true, Prompt: not null })
         {
-            var prompt = modelOptions.Prompt.Trim() + userInput;
+            var prompt = input.Prompt.Trim() + userInput;
             logger.Debug("Prefixing System Default Prompt template: {DefaultPrompt} to User Input {userInput}", prompt, userInput);
             return prompt;
         }

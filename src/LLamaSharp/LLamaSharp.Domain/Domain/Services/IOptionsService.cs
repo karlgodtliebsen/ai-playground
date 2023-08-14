@@ -46,10 +46,17 @@ public interface IOptionsService
     Task<LlamaModelOptions> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Get as snapshot of the default Llama model options
+    /// Get a snapshot of the default Llama model options
     /// </summary>
     /// <returns></returns>
     LlamaModelOptions GetDefaultLlamaModelOptions();
+
+    /// <summary>
+    /// Get a snapshot of the default Inference options
+    /// </summary>
+    /// <returns></returns>
+    InferenceOptions GetDefaultInferenceOptions();
+
 
     /// <summary>
     /// This method unites the options that might be submitted for this specific call, or that might be stored for this specific user,

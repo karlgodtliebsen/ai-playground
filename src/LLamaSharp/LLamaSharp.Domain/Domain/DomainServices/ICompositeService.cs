@@ -1,4 +1,8 @@
-﻿using LLamaSharp.Domain.Domain.Models;
+﻿using AI.Library.HttpUtils;
+
+using LLamaSharp.Domain.Domain.Models;
+
+using OneOf;
 
 namespace LLamaSharp.Domain.Domain.DomainServices;
 
@@ -13,6 +17,6 @@ public interface ICompositeService
     /// <param name="input"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<string> ChatUsingInstructionsSessionWithRoleName(ExecutorInferMessage input, CancellationToken cancellationToken);
+    Task<OneOf<string, ErrorResponse>> ChatSessionWithInstructionsExecutorAndRoleName(ExecutorInferMessage input, CancellationToken cancellationToken);
 
 }
