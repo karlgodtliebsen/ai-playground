@@ -5,9 +5,11 @@ using FluentAssertions;
 using LlamaSharp.Tests.Fixtures;
 
 using LLamaSharp.Domain.Configuration;
+using LLamaSharp.Domain.Domain.DomainServices;
 using LLamaSharp.Domain.Domain.Repositories;
 using LLamaSharp.Domain.Domain.Services;
 
+using LLamaSharpApp.WebAPI.Controllers.Mappers;
 using LLamaSharpApp.WebAPI.Controllers.Services;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -41,11 +43,17 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
 
         factory.Services.GetService<ILlamaModelFactory>().Should().NotBeNull();
         factory.Services.GetService<IOptionsService>().Should().NotBeNull();
-        factory.Services.GetService<IChatDomainService>().Should().NotBeNull();
+        factory.Services.GetService<ICompositeService>().Should().NotBeNull();
+        factory.Services.GetService<IChatService>().Should().NotBeNull();
         factory.Services.GetService<IEmbeddingsService>().Should().NotBeNull();
-        factory.Services.GetService<IExecutorService>().Should().NotBeNull();
+        factory.Services.GetService<IInteractiveExecutorService>().Should().NotBeNull();
         factory.Services.GetService<IModelStateRepository>().Should().NotBeNull();
         factory.Services.GetService<IUsersStateRepository>().Should().NotBeNull();
+
+        factory.Services.GetService<RequestMessagesMapper>().Should().NotBeNull();
+        factory.Services.GetService<OptionsMapper>().Should().NotBeNull();
+
+
         //Scoped service registrations
         using var scope = factory.Services.CreateScope();
         scope.ServiceProvider.GetService<IUserIdProvider>().Should().NotBeNull();

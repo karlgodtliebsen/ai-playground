@@ -1,4 +1,4 @@
-﻿using LLamaSharpApp.WebAPI.Domain.Models;
+﻿using LLamaSharp.Domain.Domain.Models;
 
 namespace LLamaSharp.Domain.Domain.Services;
 

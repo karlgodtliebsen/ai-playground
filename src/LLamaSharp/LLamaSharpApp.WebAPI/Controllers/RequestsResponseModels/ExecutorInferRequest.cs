@@ -1,8 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-using LLamaSharp.Domain.Configuration;
-
-using LLamaSharpApp.WebAPI.Domain.Models;
+using LLamaSharp.Domain.Domain.Models;
 
 namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
@@ -14,7 +12,7 @@ public class ExecutorInferRequest : TextMessageRequest
     /// <summary>
     /// Request specific options
     /// </summary>
-    public InferenceOptions? InferenceOptions { get; set; } = default!;
+    public InferenceRequestResponse? InferenceOptions { get; set; } = default!;
 
     /// <summary>
     /// Discriminator for the statefull Executor type
@@ -25,6 +23,20 @@ public class ExecutorInferRequest : TextMessageRequest
     /// </summary>
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public InferenceType InferenceType { get; set; } = InferenceType.InteractiveExecutor;
+
+    /// <summary>
+    /// Keywords for Interactive Instruction Execution
+    /// </summary>
+    public string[] Keywords { get; set; } = Array.Empty<string>();
+    /// <summary>
+    /// Setting for Interactive Instruction Execution
+    /// </summary>
+    public bool RemoveAllMatchedTokens { get; set; }
+
+    /// <summary>
+    /// Setting for Interactive Instruction Execution
+    /// </summary>
+    public int RedundancyLength { get; set; }
 
 
     /// <summary>
@@ -40,6 +52,16 @@ public class ExecutorInferRequest : TextMessageRequest
     /// When true, the a Stateless Executor will be used
     /// </summary>
     public bool? UseStatelessExecutor { get; set; } = false;
+
+    /// <summary>
+    /// Use the systems build in AntiPrompt
+    /// </summary>
+    public bool UseDefaultAntiPrompt { get; set; } = false!;
+
+    /// <summary>
+    /// Use the systems build in Prompt
+    /// </summary>
+    public bool UseDefaultPrompt { get; set; } = false;
 }
 
 

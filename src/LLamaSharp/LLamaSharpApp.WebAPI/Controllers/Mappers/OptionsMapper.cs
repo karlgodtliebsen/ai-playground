@@ -7,7 +7,7 @@ using Riok.Mapperly.Abstractions;
 namespace LLamaSharpApp.WebAPI.Controllers.Mappers;
 
 /// <summary>
-///  Riok.Mapperly Mapper for Options
+/// Using Source Generator Mapping: Riok.Mapperly Mapper for Options mapping
 /// </summary>
 [Mapper]
 public partial class OptionsMapper

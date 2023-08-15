@@ -1,5 +1,8 @@
-﻿using LLamaSharp.Domain.Domain.Services;
+﻿using LLamaSharp.Domain.Domain.DomainServices;
+using LLamaSharp.Domain.Domain.DomainServices.Implementations;
+using LLamaSharp.Domain.Domain.Services;
 using LLamaSharp.Domain.Domain.Services.Implementations;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,10 +32,11 @@ public static class LLamaDomainConfigurator
         services
             .AddTransient<ILlamaModelFactory, LlamaModelFactory>()
             .AddTransient<IOptionsService, OptionsService>()
-            .AddTransient<IChatDomainService, ChatDomainService>()
+            .AddTransient<IChatService, ChatService>()
             .AddTransient<IEmbeddingsService, EmbeddingsService>()
-            .AddTransient<IExecutorService, ExecutorService>()
+            .AddTransient<IInteractiveExecutorService, InteractiveInstructionExecutorService>()
             .AddTransient<ITokenizationService, TokenizationService>()
+            .AddTransient<ICompositeService, CompositeService>()
             ;
 
         return services;

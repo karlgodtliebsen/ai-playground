@@ -1,6 +1,6 @@
 ﻿using LLamaSharp.Domain.Configuration;
 
-namespace LLamaSharpApp.WebAPI.Domain.Models;
+namespace LLamaSharp.Domain.Domain.Models;
 
 /// <summary>
 /// Domain Model for SimpleTextMessage
@@ -18,4 +18,15 @@ public class BaseMessageModel
     /// The request specific LlamaModelOptions: Optional
     /// </summary>
     public LlamaModelOptions? ModelOptions { get; set; } = default!;
+
+    /// <summary>
+    /// AntiPrompt
+    /// </summary>
+    public string[]? AntiPrompts { get; set; } = default!;
+
+
+    /// <summary>
+    ///Prompt
+    /// </summary>
+    public string? Prompt { get; set; } = default!;
 }

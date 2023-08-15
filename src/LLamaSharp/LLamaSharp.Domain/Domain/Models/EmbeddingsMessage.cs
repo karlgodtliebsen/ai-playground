@@ -1,4 +1,4 @@
-﻿namespace LLamaSharpApp.WebAPI.Domain.Models;
+﻿namespace LLamaSharp.Domain.Domain.Models;
 
 /// <summary>
 /// Domain object to hold the text to be sent to the embedding algoritm
@@ -15,5 +15,10 @@ public class EmbeddingsMessage : SimpleTextMessage
     /// The user id
     /// </summary>
     public string UserId { get; set; } = default!;
+
+
+    public bool AddBos { get; set; } = true!;
+    public int Threads { get; set; } = -1;
+    public string Encoding { get; set; } = "UTF-8";
 
 }

@@ -1,6 +1,6 @@
 ﻿using LLamaSharp.Domain.Configuration;
 
-namespace LLamaSharpApp.WebAPI.Domain.Models;
+namespace LLamaSharp.Domain.Domain.Models;
 
 /// <summary>
 /// Domain Model for ExecutorInferMessage
@@ -21,9 +21,25 @@ public class ExecutorInferMessage : SimpleTextMessage
     public InferenceOptions? InferenceOptions { get; set; } = default!;
 
     /// <summary>
-    /// The user id
+    /// The user id. Obtained from Security Infrastructure
     /// </summary>
     public string UserId { get; set; } = default!;
+
+    /// <summary>
+    /// Keywords for Interactive Instruction Execution
+    /// </summary>
+    public string[] Keywords { get; set; } = Array.Empty<string>();
+
+    /// <summary>
+    /// Setting for Interactive Instruction Execution
+    /// </summary>
+    public bool RemoveAllMatchedTokens { get; set; }
+
+    /// <summary>
+    /// Setting for Interactive Instruction Execution
+    /// </summary>
+    public int RedundancyLength { get; set; }
+
 
     /// <summary>
     /// Discriminator for the stateful Executor type
@@ -44,6 +60,18 @@ public class ExecutorInferMessage : SimpleTextMessage
     /// Use a stateful executor, one of 'InteractiveExecutor' or 'InstructExecutor'
     /// </summary>
     public bool UsePersistedExecutorState { get; set; }
+
+
+    /// <summary>
+    /// Use the systems build in AntiPrompt like  [ "User:" ]
+    /// </summary>
+    public bool UseDefaultAntiPrompt { get; init; } = false;
+
+    /// <summary>
+    /// Use the systems build in Prompt
+    /// </summary>
+    public bool UseDefaultPrompt { get; init; } = false;
+
 }
 
 

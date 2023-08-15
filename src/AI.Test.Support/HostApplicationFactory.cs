@@ -21,6 +21,8 @@ public sealed class HostApplicationFactory
 
     public Microsoft.Extensions.Logging.ILogger MsLogger() => Services.GetRequiredService<ILogger<object>>();
     public ILogger<T> MsLogger<T>() => Services.GetRequiredService<ILogger<T>>();
+    private readonly IConfigurationRoot configuration;
+    public IServiceProvider Services { get; private set; }
 
     public void ConfigureLogging(ITestOutputHelper output)
     {
@@ -29,7 +31,6 @@ public sealed class HostApplicationFactory
         Log.Logger = cfg.CreateLogger();
     }
 
-    private readonly IConfigurationRoot configuration;
 
     public HostApplicationFactory(IConfigurationRoot configuration, IServiceProvider services)
     {
@@ -37,7 +38,6 @@ public sealed class HostApplicationFactory
         this.configuration = configuration;
     }
 
-    public IServiceProvider Services { get; private set; }
 
     public static HostApplicationFactory Build(
                                                 Func<string>? environment = null,

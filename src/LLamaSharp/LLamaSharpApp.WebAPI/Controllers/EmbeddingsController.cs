@@ -1,7 +1,9 @@
 ﻿using LLamaSharp.Domain.Domain.Services;
+
 using LLamaSharpApp.WebAPI.Controllers.Mappers;
 using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 using LLamaSharpApp.WebAPI.Controllers.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,6 +46,7 @@ public class EmbeddingsController : ControllerBase
     [HttpPost("embeddings")]
     public async Task<float[]> Embeddings([FromBody] EmbeddingsRequest request, [FromServices] IEmbeddingsService domainService, CancellationToken cancellationToken)
     {
+        //TODO: protect against properties
         var model = mapper.Map(request, userProvider.UserId);
         return await domainService.GetEmbeddings(model, cancellationToken);
     }

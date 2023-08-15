@@ -1,4 +1,4 @@
-﻿### OpenAI.Client:
+﻿## OpenAI.Client:
 
 A dotnet Client 'OpenAI.Client' with a Test project and a WPF application that shows how to use it.
 
@@ -10,7 +10,15 @@ Read the documentation here:
 > https://platform.openai.com/docs/api-reference/
 
 
-## Configuration
+### TODO: Use Awesome ChatGPT Prompts
+> https://github.com/f/awesome-chatgpt-prompts
+> https://huggingface.co/datasets/Open-Orca/OpenOrca
+
+The Art of ChatGPT Prompting: A Guide to Crafting Clear and Effective Prompts:
+> https://fka.gumroad.com/l/art-of-chatgpt-prompting
+
+
+### Configuration
 
 
 #### OpenAI:

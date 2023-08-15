@@ -1,4 +1,5 @@
 ﻿using LLamaSharp.Domain.Configuration;
+
 using OneOf;
 using OneOf.Types;
 
@@ -9,6 +10,12 @@ namespace LLamaSharp.Domain.Domain.Repositories;
 /// </summary>
 public interface IUsersStateRepository
 {
+    /// <summary>
+    /// Get the list of models
+    /// </summary>
+    /// <returns></returns>
+    IEnumerable<string> GetModels();
+
     /// <summary>
     /// Persist Inference Options
     /// </summary>
@@ -43,13 +50,18 @@ public interface IUsersStateRepository
 
 
     /// <summary>
-    /// Returns the system chat configuration from the assets files
+    /// Returns the systems prompt templates from the assets files
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     IAsyncEnumerable<string> GetSystemPromptTemplates(CancellationToken cancellationToken);
 
-
-
-
+    /// <summary>
+    /// Returns the specified system prompt templates from the assets files
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="version"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<string> GetSpecifiedSystemPromptTemplates(string name, string? version = null, CancellationToken? cancellationToken = null);
 }

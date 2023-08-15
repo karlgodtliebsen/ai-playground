@@ -79,4 +79,7 @@ public interface ILlamaModelFactory
     /// <returns></returns>
     StatelessExecutor CreateStateLessExecutor<TExecutor>(LLamaModel model) where TExecutor : StatelessExecutor, ILLamaExecutor;
 
+    InteractiveExecutor CreateInteractiveExecutor(LLamaModel model);
+
+    InstructExecutor CreateInstructExecutor(LLamaModel model);
 }

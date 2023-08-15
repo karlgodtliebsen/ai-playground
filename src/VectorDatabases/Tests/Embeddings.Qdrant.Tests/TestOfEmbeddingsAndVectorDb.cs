@@ -7,11 +7,8 @@ using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using Embeddings.Qdrant.Tests.Fixtures;
 
 using FluentAssertions;
-
+using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Services;
-
-using LLamaSharpApp.WebAPI.Domain.Models;
-
 using Microsoft.Extensions.DependencyInjection;
 
 using OpenAI.Client.Domain;

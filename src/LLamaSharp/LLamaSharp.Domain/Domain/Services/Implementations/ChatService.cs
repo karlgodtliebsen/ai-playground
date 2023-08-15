@@ -1,15 +1,17 @@
 ﻿using System.Runtime.CompilerServices;
+
 using LLama;
+
 using LLamaSharp.Domain.Configuration;
+using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Repositories;
-using LLamaSharpApp.WebAPI.Domain.Models;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;
 
 /// <summary>
 /// Chat Domain Service
 /// </summary>
-public class ChatDomainService : IChatDomainService
+public class ChatService : IChatService
 {
     private readonly ILlamaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
@@ -26,8 +28,7 @@ public class ChatDomainService : IChatDomainService
     /// <param name="modelStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public ChatDomainService(ILlamaModelFactory factory,
-        IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
+    public ChatService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;
@@ -48,45 +49,12 @@ public class ChatDomainService : IChatDomainService
         AlignModelParameters(input, inferenceOptions, modelOptions);
         var (chatSession, model) = factory.CreateChatSession<InteractiveExecutor>(modelOptions);
         modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
-        var userInput = CreateUserInput(input, modelOptions);
+        var userInput = CreateUserInput(input);
         var outputs = chatSession.Chat(userInput, inferenceOptions, cancellationToken);
         var result = string.Join("", outputs);
 
         modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
         model.Dispose();        //TODO: check if this is needed - ResettableLLamaModel
-        return result;
-    }
-
-
-    public async Task<string> ChatX(ChatMessage input, CancellationToken cancellationToken)
-    {
-        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
-        var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
-        inferenceOptions.AntiPrompts = modelOptions.AntiPrompt;
-        AlignModelParameters(input, inferenceOptions, modelOptions);
-
-        //https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionStripRoleName.cs
-
-        modelOptions.ContextSize = 1024;
-        modelOptions.Seed = 1337;
-        //modelOptions.GpuLayerCount = 5;
-
-        //logger.Debug("Using Model Options: {@modelOptions}", modelOptions);
-        //logger.Debug("Using Inference Options: {@inferenceOptions}", inferenceOptions);
-
-        var (chatSession, model) = factory.CreateChatSession<InteractiveExecutor>(modelOptions,
-            (session => session.WithOutputTransform(new LLamaTransforms.KeywordTextOutputStreamTransform(new string[] { "User:", "Bob:" }, redundancyLength: 8))));
-
-
-        //modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
-
-        var userInput = CreateUserInput(input, modelOptions);
-        var outputs = chatSession.Chat(userInput, inferenceOptions, cancellationToken);
-        var result = string.Join("", outputs);
-
-        //modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
-
-        model.Dispose();
         return result;
     }
 
@@ -98,7 +66,7 @@ public class ChatDomainService : IChatDomainService
         AlignModelParameters(input, inferenceOptions, modelOptions);
         var (chatSession, model) = factory.CreateChatSession<InteractiveExecutor>(modelOptions);    //InstructExecutor
         modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
-        var userInput = CreateUserInput(input, modelOptions);
+        var userInput = CreateUserInput(input);
         var results = chatSession.ChatAsync(userInput, inferenceOptions, cancellationToken);
         await foreach (var result in results.WithCancellation(cancellationToken))
         {
@@ -110,31 +78,41 @@ public class ChatDomainService : IChatDomainService
 
     private void AlignModelParameters(ChatMessage input, InferenceOptions inferenceOptions, LlamaModelOptions modelOptions)
     {
-        if (input.UseDefaultAntiPrompt && modelOptions.AntiPrompt is not null)
+        if (input.UseDefaultAntiPrompt && input.AntiPrompts is not null)
         {
-            inferenceOptions.AntiPrompts = modelOptions.AntiPrompt;
+            inferenceOptions.AntiPrompts = input.AntiPrompts;
         }
 
-        if (input.ModelOptions is not null && input.ModelOptions.AntiPrompt is not null)
+        if (input.ModelOptions is not null && input.AntiPrompts is not null)
         {
-            inferenceOptions.AntiPrompts = input.ModelOptions.AntiPrompt!;
+            inferenceOptions.AntiPrompts = input.AntiPrompts!;
         }
     }
 
-    private string CreateUserInput(ChatMessage input, LlamaModelOptions modelOptions)
+    private string CreateUserInput(ChatMessage input)
     {
         string userInput = input.Text;
 
-        if (input is { UseDefaultPrompt: false, ModelOptions.Prompt: not null })
+        if (input is { UseDefaultPrompt: false, Prompt: not null })
         {
-            var prompt = input.ModelOptions.Prompt.Trim() + userInput;
+            //var prompt = input.Prompt.Trim() + userInput;
+
+            var prompt = $""""
+                {input.Prompt.Trim()}\n
+                """{userInput}"""
+                """";
+
             logger.Debug("Prefixing User providedModel Options Prompt: {Prompt} to User Input {userInput}", prompt, userInput);
             return prompt;
         }
 
-        if (input.UseDefaultPrompt && modelOptions.Prompt is not null)
+        if (input.UseDefaultPrompt && input.Prompt is not null)
         {
-            var prompt = modelOptions.Prompt.Trim() + userInput;
+            //var prompt = $""""
+            //    {input.Prompt.Trim()}\n
+            //    """{userInput}"""
+            //    """";
+            var prompt = input.Prompt.Trim() + userInput;
             logger.Debug("Prefixing System Default Prompt template: {DefaultPrompt} to User Input {userInput}", prompt, userInput);
             return prompt;
         }
