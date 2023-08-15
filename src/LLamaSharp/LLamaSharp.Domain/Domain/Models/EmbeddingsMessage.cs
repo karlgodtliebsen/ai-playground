@@ -16,4 +16,9 @@ public class EmbeddingsMessage : SimpleTextMessage
     /// </summary>
     public string UserId { get; set; } = default!;
 
+
+    public bool AddBos { get; set; } = true!;
+    public int Threads { get; set; } = -1;
+    public string Encoding { get; set; } = "UTF-8";
+
 }

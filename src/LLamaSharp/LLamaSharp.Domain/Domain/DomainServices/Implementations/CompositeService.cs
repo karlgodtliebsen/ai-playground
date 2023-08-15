@@ -15,56 +15,65 @@ namespace LLamaSharp.Domain.Domain.DomainServices.Implementations;
 /// </summary>
 public class CompositeService : ICompositeService
 {
-    private readonly IExecutorService executor;
+    private readonly IInteractiveExecutorService interactiveExecutor;
     private readonly ILlamaModelFactory factory;
     private readonly IOptionsService optionsService;
     private readonly ILogger logger;
 
-    //TODO: consider https://github.com/SciSharp/LLamaSharp/blob/master/docs/ChatSession/save-load-session.md
-    //TODO: use ChatHistory 
-
     /// <summary>
     /// Constructor for Composite Service
     /// </summary>
-    /// <param name="executor"></param>
+    /// <param name="interactiveExecutor"></param>
     /// <param name="factory"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public CompositeService(IExecutorService executor, ILlamaModelFactory factory, IOptionsService optionsService, ILogger logger)
+    public CompositeService(IInteractiveExecutorService interactiveExecutor, ILlamaModelFactory factory, IOptionsService optionsService, ILogger logger)
     {
-        this.executor = executor;
+        this.interactiveExecutor = interactiveExecutor;
         this.factory = factory;
         this.optionsService = optionsService;
         this.logger = logger;
     }
 
-    ///// <summary>
-    ///// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionStripRoleName.cs" >LLama.Examples/a>
-    ///// </summary>
-    ///// <param name="input"></param>
-    ///// <param name="cancellationToken"></param>
-    ////public async Task<string> ChatUsingInstructionsSessionWithStrippedRoleNames(ExecutorInferMessage input, CancellationToken cancellationToken)
-    ////{
-    ////}
+    /// <summary>
+    /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionStripRoleName.cs" >LLama.Examples</a>
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
+    public async Task<OneOf<string, ErrorResponse>> ChatSessionWithInstructionsExecutorAndNoRoleNames(ExecutorInferMessage input, CancellationToken cancellationToken)
+    {
+        var modelOptions = input.ModelOptions!;
+        var inferenceOptions = input.InferenceOptions!;
+        inferenceOptions.AntiPrompts = Array.Empty<string>();
+        var executionOptions = new KeywordTextOutputStreamTransform(input.Keywords, input.RedundancyLength, input.RemoveAllMatchedTokens);
+        try
+        {
+            var userInput = CreateUserInput(input);
+            var outputs = interactiveExecutor.ChatUsingInteractiveExecutorWithTransformation(inferenceOptions, modelOptions, executionOptions, userInput);
+            var result = string.Join("", outputs);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Error in ChatSessionWithInstructionsExecutorAndStrippedRoleName");
+            return new ErrorResponse(ex.Message);
+        }
+    }
 
     /// <summary>
     /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionWithRoleName.cs" >LLama.Examples</a>
     /// </summary>
     /// <param name="input"></param>
     /// <param name="cancellationToken"></param>
-    public async Task<OneOf<string, ErrorResponse>> ChatSessionWithInstructionsExecutorAndRoleName(ExecutorInferMessage input, CancellationToken cancellationToken)
+    public async Task<OneOf<string, ErrorResponse>> ChatSessionWithInstructionsExecutorAndRoleNames(ExecutorInferMessage input, CancellationToken cancellationToken)
     {
+        var modelOptions = input.ModelOptions!;
+        var inferenceOptions = input.InferenceOptions!;
+        inferenceOptions.AntiPrompts = Array.Empty<string>();
         try
         {
-            var modelOptions = input.ModelOptions!;
-            var inferenceOptions = input.InferenceOptions!;
-            inferenceOptions.AntiPrompts = Array.Empty<string>(); //input.AntiPrompt!;
-            //inferenceOptions.AntiPrompts = new List<string> { "User:" }!;
-
             var userInput = CreateUserInput(input);
-
-            var outputs = executor.ChatUsingInteractiveExecutor(inferenceOptions, modelOptions, userInput);
-
+            var outputs = interactiveExecutor.ChatUsingInteractiveExecutor(inferenceOptions, modelOptions, userInput);
             var result = string.Join("", outputs);
             return result;
         }
@@ -77,10 +86,11 @@ public class CompositeService : ICompositeService
     }
 
 
+    //TODO: consider https://github.com/SciSharp/LLamaSharp/blob/master/docs/ChatSession/save-load-session.md
+    //TODO: use ChatHistory 
 
     //public async Task<string> GetEmbeddings(ExecutorInferMessage input, CancellationToken cancellationToken)
-    //{
-    //}
+
 
     //SaveAndLoadSession
     //InstructModeExecute
@@ -113,14 +123,14 @@ public class CompositeService : ICompositeService
 
     private void AlignModelParameters(ExecutorInferMessage input, InferenceOptions inferenceOptions, LlamaModelOptions modelOptions)
     {
-        if (input.UseDefaultAntiPrompt && input.AntiPrompt is not null)
+        if (input.UseDefaultAntiPrompt && input.AntiPrompts is not null)
         {
-            inferenceOptions.AntiPrompts = input.AntiPrompt;
+            inferenceOptions.AntiPrompts = input.AntiPrompts;
         }
 
-        if (input.ModelOptions is not null && input.AntiPrompt is not null)
+        if (input.ModelOptions is not null && input.AntiPrompts is not null)
         {
-            inferenceOptions.AntiPrompts = input.AntiPrompt!;
+            inferenceOptions.AntiPrompts = input.AntiPrompts!;
         }
     }
 

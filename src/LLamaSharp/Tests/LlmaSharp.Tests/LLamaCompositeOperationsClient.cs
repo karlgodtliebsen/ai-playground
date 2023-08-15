@@ -19,11 +19,44 @@ public sealed class LLamaCompositeOperationsClient : ILLamaCompositeOperationsCl
         this.httpClient = httpClient;
     }
 
-    public async Task<string> InteractiveExecutorWithChat(ExecutorInferRequest request, CancellationToken cancellationToken)
+    public async Task<string> InteractiveExecutorWithChatAndNoRoleNames(ExecutorInferRequest request, CancellationToken cancellationToken)
     {
-        var response = await httpClient.PostAsJsonAsync($"{options.Endpoint}/api/llama/composite/executeInstruction", request, cancellationToken);
+        var response = await httpClient.PostAsJsonAsync($"{options.Endpoint}/api/llama/composite/interactiveInstructionExecute/noroles", request, cancellationToken);
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<string>(cancellationToken: cancellationToken);
+        var result = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken);
+        return result!;
+    }
+
+    public async Task<string> InteractiveExecutorWithChatAndRoleNames(ExecutorInferRequest request, CancellationToken cancellationToken)
+    {
+        var response = await httpClient.PostAsJsonAsync($"{options.Endpoint}/api/llama/composite/interactiveInstructionExecute/roles", request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken);
+        return result!;
+    }
+
+    public async Task<string> ExecuteInstructions(ExecutorInferRequest request, CancellationToken cancellationToken)
+    {
+        var response = await httpClient.PostAsJsonAsync($"{options.Endpoint}/api/llama/execute/instructions", request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken);
+        return result!;
+    }
+
+    public async Task<string> InteractiveExecuteInstructions(ExecutorInferRequest request, CancellationToken cancellationToken)
+    {
+        var response = await httpClient.PostAsJsonAsync($"{options.Endpoint}/api/llama/interactive/execute/instructions", request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken);
+        return result!;
+
+    }
+
+    public async Task<float[]> GetEmbeddings(EmbeddingsRequest request, CancellationToken cancellationToken)
+    {
+        var response = await httpClient.PostAsJsonAsync($"{options.Endpoint}/api/llama/embeddings", request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<float[]>(cancellationToken: cancellationToken);
         return result!;
     }
 

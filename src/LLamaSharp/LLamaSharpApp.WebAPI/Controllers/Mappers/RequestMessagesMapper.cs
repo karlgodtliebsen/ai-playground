@@ -10,7 +10,7 @@ using Riok.Mapperly.Abstractions;
 namespace LLamaSharpApp.WebAPI.Controllers.Mappers;
 
 /// <summary>
-///  Riok.Mapperly Mapper for Request to Messages
+/// Using Source Generator Mapping: Riok.Mapperly Mapper for Request to Messages mapping
 /// </summary>
 [Mapper]
 public partial class RequestMessagesMapper

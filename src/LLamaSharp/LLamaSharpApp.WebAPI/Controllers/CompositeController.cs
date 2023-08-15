@@ -45,27 +45,49 @@ public class CompositeController : ControllerBase
 
     /// <summary>
     /// Invokes a chat with the prompt text, using the model parameters.
+    /// Matches LLama.Examples.NewVersion.ChatSessionStripRoleName
+    /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionStripRoleName.cs" >LLama.Examples</a>
     /// </summary>
     /// <param name="request">Hold the Chat prompt/text</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpPost("executeInstruction")]
-    public async Task<IActionResult> ChatSessionWithInstructionsExecutorAndRoleName([FromBody] ExecutorInferRequest request, CancellationToken cancellationToken)
+    [HttpPost("interactiveInstructionExecute/noroles")]
+    public async Task<IActionResult> ChatSessionWithInstructionsExecutorAndStrippedRoleName([FromBody] ExecutorInferRequest request, CancellationToken cancellationToken)
     {
         var op = logger.BeginOperation("Running Interactive Instruction Chat for {userId}...", userProvider.UserId);
         var requestModel = mapper.Map(request, userProvider.UserId);
-        var result = await domainService.ChatSessionWithInstructionsExecutorAndRoleName(requestModel, cancellationToken);
-        //<OneOf<string,ErrorResponse>>
-
+        var result = await domainService.ChatSessionWithInstructionsExecutorAndNoRoleNames(requestModel, cancellationToken);
         return result.Match<IActionResult>(
             r =>
             {
                 op.Complete();
-                op.Dispose();
                 return Ok(r);
             },
             BadRequest
             );
     }
 
+    /// <summary>
+    /// Invokes a chat with the prompt text, using the model parameters.
+    /// Matches LLama.Examples.NewVersion.ChatSessionWithRoleName
+    /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionWithRoleName.cs" >LLama.Examples</a>
+    /// </summary>
+    /// <param name="request">Hold the Chat prompt/text</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost("interactiveInstructionExecute/roles")]
+    public async Task<IActionResult> ChatSessionWithInstructionsExecutorAndRoleName([FromBody] ExecutorInferRequest request, CancellationToken cancellationToken)
+    {
+        var op = logger.BeginOperation("Running Interactive Instruction Chat for {userId}...", userProvider.UserId);
+        var requestModel = mapper.Map(request, userProvider.UserId);
+        var result = await domainService.ChatSessionWithInstructionsExecutorAndRoleNames(requestModel, cancellationToken);
+        return result.Match<IActionResult>(
+            r =>
+            {
+                op.Complete();
+                return Ok(r);
+            },
+            BadRequest
+        );
+    }
 }

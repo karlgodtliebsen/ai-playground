@@ -22,7 +22,8 @@ public class BaseMessageModel
     /// <summary>
     /// AntiPrompt
     /// </summary>
-    public string[]? AntiPrompt { get; set; } = default!;
+    public string[]? AntiPrompts { get; set; } = default!;
+
 
     /// <summary>
     ///Prompt

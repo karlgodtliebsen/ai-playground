@@ -26,7 +26,7 @@ namespace LLamaSharpApp.WebAPI.Controllers;
 [ApiController]
 [Route("api/llama")]
 [Authorize]
-public class ExecutorController : ControllerBase
+public class InteractiveExecutorController : ControllerBase
 {
     private readonly IUserIdProvider userProvider;
     private readonly RequestMessagesMapper mapper;
@@ -38,7 +38,7 @@ public class ExecutorController : ControllerBase
     /// <param name="userProvider"></param>
     /// <param name="mapper"></param>
     /// <param name="logger"></param>
-    public ExecutorController(IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
+    public InteractiveExecutorController(IUserIdProvider userProvider, RequestMessagesMapper mapper, ILogger logger)
     {
         this.logger = logger;
         this.userProvider = userProvider;
@@ -60,13 +60,13 @@ public class ExecutorController : ControllerBase
     /// <param name="domainService"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>Inferred text</returns>
-    [HttpPost("executor")]
-    public async Task<string> ExecutorAsync([FromBody] ExecutorInferRequest request, [FromServices] IExecutorService domainService, CancellationToken cancellationToken)
+    [HttpPost("execute/instructions")]
+    public async Task<string> ExecuteInstructions([FromBody] ExecutorInferRequest request, [FromServices] IInteractiveExecutorService domainService, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("Running Executor for {userId}...", userProvider.UserId);
         var requestModel = mapper.Map(request, userProvider.UserId);
         var sb = new StringBuilder();
-        var result = domainService.Executor(requestModel, cancellationToken);
+        var result = domainService.Execute(requestModel, cancellationToken);
         await foreach (var s in result.WithCancellation(cancellationToken))
         {
             sb.Append(s);
@@ -74,4 +74,36 @@ public class ExecutorController : ControllerBase
         op.Complete();
         return sb.ToString();
     }
+
+    /// <summary>
+    /// Uses Inference
+    /// The word "inference" refers to the process of drawing conclusions or making deductions based on evidence, reasoning, or information that is available.
+    /// It involves using existing knowledge or data to reach a logical or reasonable understanding or interpretation.
+    /// </summary>
+    /// <param name="request">
+    /// Discriminator for the stateful Executor type
+    /// Will be ignored when UseStatelessExecutor is true
+    /// May be one of the following:InteractiveExecutor or InstructExecutor 
+    /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/Examples/InstructModeExecute.md"/>
+    /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/docs/Examples/InteractiveModeExecute.md"/>
+    /// </param>
+    /// <param name="domainService"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>Inferred text</returns>
+    [HttpPost("interactive/execute/instructions")]
+    public async Task<string> InteractiveExecuteInstructions([FromBody] ExecutorInferRequest request, [FromServices] IInteractiveExecutorService domainService, CancellationToken cancellationToken)
+    {
+        using var op = logger.BeginOperation("Running Executor for {userId}...", userProvider.UserId);
+        var requestModel = mapper.Map(request, userProvider.UserId);
+        var sb = new StringBuilder();
+        var result = domainService.InteractiveExecuteInstructions(requestModel, cancellationToken);
+        await foreach (var s in result.WithCancellation(cancellationToken))
+        {
+            sb.Append(s);
+        }
+        op.Complete();
+        return sb.ToString();
+    }
+
+
 }

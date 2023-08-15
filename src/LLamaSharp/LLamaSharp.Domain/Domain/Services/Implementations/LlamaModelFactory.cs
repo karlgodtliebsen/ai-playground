@@ -1,9 +1,13 @@
 ﻿using LLama;
 using LLama.Abstractions;
 using LLama.Common;
+
 using LLamaSharp.Domain.Configuration;
+
 using Microsoft.Extensions.Options;
+
 using SerilogTimings.Extensions;
+
 using LLamaEmbedder = LLama.LLamaEmbedder;
 using LLamaModel = LLama.LLamaModel;
 
@@ -125,12 +129,21 @@ public class LlamaModelFactory : ILlamaModelFactory
         switch (typeof(TExecutor))
         {
             case { } type when type == typeof(InteractiveExecutor):
-                return new InteractiveExecutor(model);
+                return CreateInteractiveExecutor(model);
             case { } type when type == typeof(InstructExecutor):
-                return new InstructExecutor(model);
+                return CreateInstructExecutor(model);
             default:
                 return (StatefulExecutorBase)Activator.CreateInstance(typeof(TExecutor), model)!;
         }
+    }
+
+    public InteractiveExecutor CreateInteractiveExecutor(LLamaModel model)
+    {
+        return new InteractiveExecutor(model);
+    }
+    public InstructExecutor CreateInstructExecutor(LLamaModel model)
+    {
+        return new InstructExecutor(model);
     }
 
     /// <summary>

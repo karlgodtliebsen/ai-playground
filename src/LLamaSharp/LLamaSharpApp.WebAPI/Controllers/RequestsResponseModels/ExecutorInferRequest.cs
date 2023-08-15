@@ -24,6 +24,20 @@ public class ExecutorInferRequest : TextMessageRequest
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public InferenceType InferenceType { get; set; } = InferenceType.InteractiveExecutor;
 
+    /// <summary>
+    /// Keywords for Interactive Instruction Execution
+    /// </summary>
+    public string[] Keywords { get; set; } = Array.Empty<string>();
+    /// <summary>
+    /// Setting for Interactive Instruction Execution
+    /// </summary>
+    public bool RemoveAllMatchedTokens { get; set; }
+
+    /// <summary>
+    /// Setting for Interactive Instruction Execution
+    /// </summary>
+    public int RedundancyLength { get; set; }
+
 
     /// <summary>
     /// When true, the models state will be loaded and saved from the file system

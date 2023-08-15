@@ -26,6 +26,22 @@ public class ExecutorInferMessage : SimpleTextMessage
     public string UserId { get; set; } = default!;
 
     /// <summary>
+    /// Keywords for Interactive Instruction Execution
+    /// </summary>
+    public string[] Keywords { get; set; } = Array.Empty<string>();
+
+    /// <summary>
+    /// Setting for Interactive Instruction Execution
+    /// </summary>
+    public bool RemoveAllMatchedTokens { get; set; }
+
+    /// <summary>
+    /// Setting for Interactive Instruction Execution
+    /// </summary>
+    public int RedundancyLength { get; set; }
+
+
+    /// <summary>
     /// Discriminator for the stateful Executor type
     /// Will be ignored when UseStatelessExecutor is true
     /// May be one of the following:InteractiveExecutor or InstructExecutor 

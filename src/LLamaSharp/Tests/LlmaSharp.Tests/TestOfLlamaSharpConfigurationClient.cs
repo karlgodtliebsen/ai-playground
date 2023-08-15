@@ -6,15 +6,19 @@ using LLamaSharpApp.WebAPI.Controllers.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Xunit.Abstractions;
+
 namespace LlamaSharp.Tests;
 
 public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<IntegrationTestWebApplicationFactory>, IDisposable
 {
     private readonly IntegrationTestWebApplicationFactory factory;
-
-    public TestOfLlamaSharpConfigurationClient(IntegrationTestWebApplicationFactory factory)
+    private readonly ILogger logger;
+    public TestOfLlamaSharpConfigurationClient(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
+        factory.Setup(output);
         this.factory = factory;
+        this.logger = factory.Logger;
     }
 
     public void Dispose()
@@ -23,7 +27,7 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
     }
 
     [Fact]
-    public async Task VerifyThatUserIdProviderFindsUserSubject()
+    public void VerifyThatUserIdProviderFindsUserSubject()
     {
         using var scope = factory.Services.CreateScope();
         var userProvider = scope.ServiceProvider.GetRequiredService<IUserIdProvider>();
@@ -51,6 +55,7 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
         response.EnsureSuccessStatusCode();
         var text = await response.Content.ReadAsStringAsync(CancellationToken.None);
         text.Should().NotBeNull();
+        logger.Information(text);
     }
 
     [Fact]
@@ -59,6 +64,7 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
         var client = factory.Services.GetRequiredService<ILLamaConfigurationClient>();
         var response = await client.GetPromptTemplatesAsync(CancellationToken.None);
         response.Should().NotBeNull();
+        logger.Information(response);
     }
 
     [Fact]
@@ -67,6 +73,7 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
         var client = factory.Services.GetRequiredService<ILLamaConfigurationClient>();
         var response = await client.GetModelOptions(CancellationToken.None);
         response.Should().NotBeNull();
+        logger.Information("Response: {@response}", response);
     }
 
     [Fact]
@@ -75,6 +82,7 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
         var client = factory.Services.GetRequiredService<ILLamaConfigurationClient>();
         var response = await client.GetInferenceOptions(CancellationToken.None);
         response.Should().NotBeNull();
+        logger.Information("Response: {@response}", response);
     }
 
     [Fact]
@@ -83,6 +91,7 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
         var client = factory.Services.GetRequiredService<ILLamaConfigurationClient>();
         var response = await client.GetModels(CancellationToken.None);
         response.Should().NotBeNull();
+        logger.Information("Response: {@response}", response);
     }
 
     [Fact]
@@ -92,5 +101,6 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
         var status = await client.CheckHealthEndpoint(CancellationToken.None);
         status.Should().NotBeNull();
         status.Should().Be("Healthy");
+        logger.Information("Response: {status}", status);
     }
 }

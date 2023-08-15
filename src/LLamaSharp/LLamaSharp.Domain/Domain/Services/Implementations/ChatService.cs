@@ -78,14 +78,14 @@ public class ChatService : IChatService
 
     private void AlignModelParameters(ChatMessage input, InferenceOptions inferenceOptions, LlamaModelOptions modelOptions)
     {
-        if (input.UseDefaultAntiPrompt && input.AntiPrompt is not null)
+        if (input.UseDefaultAntiPrompt && input.AntiPrompts is not null)
         {
-            inferenceOptions.AntiPrompts = input.AntiPrompt;
+            inferenceOptions.AntiPrompts = input.AntiPrompts;
         }
 
-        if (input.ModelOptions is not null && input.AntiPrompt is not null)
+        if (input.ModelOptions is not null && input.AntiPrompts is not null)
         {
-            inferenceOptions.AntiPrompts = input.AntiPrompt!;
+            inferenceOptions.AntiPrompts = input.AntiPrompts!;
         }
     }
 

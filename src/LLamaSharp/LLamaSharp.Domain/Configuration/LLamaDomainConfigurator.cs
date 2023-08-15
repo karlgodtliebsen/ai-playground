@@ -34,7 +34,7 @@ public static class LLamaDomainConfigurator
             .AddTransient<IOptionsService, OptionsService>()
             .AddTransient<IChatService, ChatService>()
             .AddTransient<IEmbeddingsService, EmbeddingsService>()
-            .AddTransient<IExecutorService, ExecutorService>()
+            .AddTransient<IInteractiveExecutorService, InteractiveInstructionExecutorService>()
             .AddTransient<ITokenizationService, TokenizationService>()
             .AddTransient<ICompositeService, CompositeService>()
             ;

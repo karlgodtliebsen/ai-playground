@@ -9,10 +9,11 @@ using LLamaSharp.Domain.Domain.Repositories;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;
 
+
 /// <summary>
 /// Executor Service
 /// </summary>
-public class ExecutorService : IExecutorService
+public class InteractiveInstructionExecutorService : IInteractiveExecutorService
 {
     private readonly ILlamaModelFactory factory;
     private readonly IModelStateRepository modelStateRepository;
@@ -27,7 +28,7 @@ public class ExecutorService : IExecutorService
     /// <param name="modelStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public ExecutorService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
+    public InteractiveInstructionExecutorService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
     {
         this.factory = factory;
         this.modelStateRepository = modelStateRepository;
@@ -36,12 +37,12 @@ public class ExecutorService : IExecutorService
     }
 
     /// <summary>
-    /// Activates the executor and returns the result
+    /// Activates the input parameters specified interactive executor and returns the result
     /// </summary>
     /// <param name="input"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async IAsyncEnumerable<string> Executor(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public async IAsyncEnumerable<string> Execute(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var res = input.UseStatelessExecutor ? UseStatelessExecutor(input, cancellationToken) : UseStatefulExecutor(input, cancellationToken);
         await foreach (var result in res.WithCancellation(cancellationToken))
@@ -49,7 +50,22 @@ public class ExecutorService : IExecutorService
             yield return result;
         }
     }
-
+    public async IAsyncEnumerable<string> InteractiveExecuteInstructions(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        var ex = factory.CreateInteractiveExecutor(factory.CreateModel(input.ModelOptions!));
+        await foreach (var result in ex.InferAsync(input.Prompt!, input.InferenceOptions, cancellationToken))
+        {
+            yield return result;
+        }
+    }
+    public async IAsyncEnumerable<string> ExecuteInstructions(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        var ex = factory.CreateInstructExecutor(factory.CreateModel(input.ModelOptions!));
+        await foreach (var result in ex.InferAsync(input.Prompt!, input.InferenceOptions, cancellationToken))
+        {
+            yield return result;
+        }
+    }
     public IEnumerable<string> ChatUsingInteractiveExecutor(InferenceOptions inferenceOptions, LlamaModelOptions modelOptions, string userInput)
     {
         var (chatSession, _) = factory.CreateChatSession<InteractiveExecutor>(modelOptions);
@@ -60,19 +76,15 @@ public class ExecutorService : IExecutorService
         }
     }
 
-    public IEnumerable<string> ExecutorWithTransformation(InferenceOptions inferenceOptions, LlamaModelOptions modelOptions, string userInput)
+
+    public IEnumerable<string> ChatUsingInteractiveExecutorWithTransformation(InferenceOptions inferenceOptions, LlamaModelOptions modelOptions,
+        KeywordTextOutputStreamTransform executionOptions, string userInput)
     {
         //LLamaModel
         var (chatSession, _) = factory.CreateChatSession<InteractiveExecutor>(modelOptions,
-            (session =>
-                session.WithOutputTransform(
-                    new LLamaTransforms.KeywordTextOutputStreamTransform(
-                    new string[] { "User:", "Bob:" },
-                    redundancyLength: 8))));
-
-        //InteractiveExecutor ex = new(new LLamaModel(new ModelParams(modelPath, contextSize: 1024, seed: 1337, gpuLayerCount: 5)));
-        //ChatSession session = new ChatSession(ex); // The only change is to remove the transform for the output text stream.
-        //foreach (var text in session.Chat(prompt, new InferenceParams() { Temperature = 0.6f, AntiPrompts = new List<string> { "User:" } }))
+            session =>
+                session.WithOutputTransform(new LLamaTransforms.KeywordTextOutputStreamTransform(executionOptions.Keywords, redundancyLength: executionOptions.RedundancyLength, removeAllMatchedTokens: executionOptions.RemoveAllMatchedTokens))
+            );
 
         var outputs = chatSession.Chat(userInput, inferenceOptions);
 
