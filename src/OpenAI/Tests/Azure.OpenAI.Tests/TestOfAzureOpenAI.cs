@@ -1,7 +1,7 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 
 using Azure.AI.OpenAI;
-using Azure.OpenAI.Tests.Configuration;
+using Azure.OpenAI.Tests.Fixtures;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 
 namespace Azure.OpenAI.Tests;
 
-
+[Collection("Azure OpenAI  Collection")]
 public class TestOfAzureOpenAI
 {
     private readonly OpenAIClient azureOpenAIClient;
@@ -22,18 +22,10 @@ public class TestOfAzureOpenAI
     private readonly ILogger logger;
 
 
-    public TestOfAzureOpenAI(ITestOutputHelper output)
+    public TestOfAzureOpenAI(ITestOutputHelper output, AzureOpenAITestFixture fixture)
     {
-        this.factory = HostApplicationFactory.Build(
-            environment: () => "IntegrationTests",
-            serviceContext: (services, configuration) =>
-            {
-                services.AddAzureOpenAI(configuration);
-            },
-            fixedDateTime: () => DateTimeOffset.UtcNow
-        );
-        factory.ConfigureLogging(output);
-        logger = factory.Logger();
+        this.factory = fixture.BuildFactoryWithLogging(output);
+        logger = factory.Services.GetRequiredService<ILogger>();
         options = factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         azureOpenAIClient = new OpenAIClient(options.ApiKey);
     }

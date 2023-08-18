@@ -1,6 +1,8 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 
 using FinancialAgents.Tests.Fixtures;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using Xunit.Abstractions;
 
@@ -14,16 +16,11 @@ public class TestOfFinancialAgents
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
 
-    private readonly FinancialAgentsTestFixture fixture;
-
-    public TestOfFinancialAgents(FinancialAgentsTestFixture fixture, ITestOutputHelper output)
+    public TestOfFinancialAgents(ITestOutputHelper output, FinancialAgentsTestFixture fixture)
     {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.fixture = fixture;
-        this.hostApplicationFactory = fixture.Factory;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.logger = hostApplicationFactory.Services.GetRequiredService<ILogger>();
     }
-
 
     [Fact]
     public async Task RunWebSearchSample()

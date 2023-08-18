@@ -1,4 +1,4 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 
 using FinancialAgents.Tests.Fixtures;
 
@@ -13,41 +13,45 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using Xunit.Abstractions;
+
 namespace FinancialAgents.Tests;
 
+[Collection("FinancialAgents Collection")]
 public sealed class TestOfConfiguration : IClassFixture<FinancialAgentsTestFixture>
 {
-    private readonly FinancialAgentsTestFixture factory;
+    //private readonly FinancialAgentsTestFixture fixture;
     private readonly HostApplicationFactory hostApplicationFactory;
+    private readonly IServiceProvider services;
 
-    public TestOfConfiguration(FinancialAgentsTestFixture factory)
+    public TestOfConfiguration(ITestOutputHelper output, FinancialAgentsTestFixture fixture)
     {
-        this.factory = factory;
-        this.hostApplicationFactory = factory.Factory;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
     }
 
 
     [Fact]
     public void EnsureThatServiceConfigurationIsValid()
     {
-        hostApplicationFactory.Services.GetService<ILogger>().Should().NotBeNull();
+        services.GetService<ILogger>().Should().NotBeNull();
 
-        hostApplicationFactory.Services.GetService<ILoggerFactory>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<ILogger<object>>().Should().NotBeNull();
+        services.GetService<ILoggerFactory>().Should().NotBeNull();
+        services.GetService<ILogger<object>>().Should().NotBeNull();
 
-        hostApplicationFactory.Services.GetService<ILlamaModelFactory>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<IOptionsService>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<IChatService>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<IEmbeddingsService>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<IInteractiveExecutorService>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<ICompositeService>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<IModelStateRepository>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<IUsersStateRepository>().Should().NotBeNull();
+        services.GetService<ILlamaModelFactory>().Should().NotBeNull();
+        services.GetService<IOptionsService>().Should().NotBeNull();
+        services.GetService<IChatService>().Should().NotBeNull();
+        services.GetService<IEmbeddingsService>().Should().NotBeNull();
+        services.GetService<IInteractiveExecutorService>().Should().NotBeNull();
+        services.GetService<ICompositeService>().Should().NotBeNull();
+        services.GetService<IModelStateRepository>().Should().NotBeNull();
+        services.GetService<IUsersStateRepository>().Should().NotBeNull();
 
         //Options
-        hostApplicationFactory.Services.GetService<IOptions<LlamaRepositoryOptions>>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<IOptions<LlamaModelOptions>>().Should().NotBeNull();
-        hostApplicationFactory.Services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
+        services.GetService<IOptions<LlamaRepositoryOptions>>().Should().NotBeNull();
+        services.GetService<IOptions<LlamaModelOptions>>().Should().NotBeNull();
+        services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
 
     }
 }

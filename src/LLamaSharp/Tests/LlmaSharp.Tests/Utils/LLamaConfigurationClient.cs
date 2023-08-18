@@ -4,7 +4,7 @@ using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 using Microsoft.Extensions.Options;
 
-namespace LlamaSharp.Tests;
+namespace LlamaSharp.Tests.Utils;
 
 public sealed class LLamaConfigurationClient : ILLamaConfigurationClient
 {
@@ -61,6 +61,6 @@ public sealed class LLamaConfigurationClient : ILLamaConfigurationClient
 
     public void Dispose()
     {
-        this.httpClient.Dispose();
+        httpClient.Dispose();
     }
 }

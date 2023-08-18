@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 
 using LlamaSharp.Tests.Fixtures;
-
+using LlamaSharp.Tests.Utils;
 using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Services;
 

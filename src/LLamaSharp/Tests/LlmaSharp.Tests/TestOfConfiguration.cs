@@ -87,7 +87,5 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         //var s = openApiOptions.ToJson();
         //s.Should().NotBeNullOrEmpty();
         //Log.Logger.Debug(openApiOptions!.Info!.Title!);
-
     }
-
 }

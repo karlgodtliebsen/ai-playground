@@ -1,10 +1,19 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
+
 using FluentAssertions;
+
+using ImageClassification.Domain.Configuration;
+
 using ImageClassification.Domain.Models;
 using ImageClassification.Domain.Trainers;
+
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
 using Serilog;
+
 using TensorFlow.Net.ImageClassification.Tests.Fixtures;
+
 using Xunit.Abstractions;
 
 namespace TensorFlow.Net.ImageClassification.Tests;
@@ -14,15 +23,17 @@ namespace TensorFlow.Net.ImageClassification.Tests;
 [Collection("TensorFlow Image Classification Collection")]
 public class TestOfTensorFlowImageRecognitionInception : TestFixtureBase
 {
-    private readonly TensorFlowImageClassificationFixture fixture;
     private readonly ILogger logger;
-
+    private readonly HostApplicationFactory hostApplicationFactory;
+    private readonly IServiceProvider services;
+    private readonly TensorFlowOptions options;
 
     public TestOfTensorFlowImageRecognitionInception(TensorFlowImageClassificationFixture fixture, ITestOutputHelper output)
     {
-        this.fixture = fixture;
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        options = services.GetRequiredService<IOptions<TensorFlowOptions>>().Value;
     }
 
 
@@ -47,7 +58,7 @@ public class TestOfTensorFlowImageRecognitionInception : TestFixtureBase
         }
 
         logger.Information("Training [{set}]", dataSet);
-        ITrainer trainer = fixture.Factory.Services.GetRequiredService<ITensorFlowTrainer>();
+        ITrainer trainer = services.GetRequiredService<ITensorFlowTrainer>();
         var model = trainer.TrainModel(dataSet, mapper);
         model.Should().NotBeNull();
     }

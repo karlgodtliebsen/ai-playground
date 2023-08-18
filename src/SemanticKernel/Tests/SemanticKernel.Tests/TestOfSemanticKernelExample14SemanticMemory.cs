@@ -1,8 +1,10 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Memory;
 
@@ -19,27 +21,26 @@ namespace SemanticKernel.Tests;
 public class TestOfSemanticKernelExample14SemanticMemory
 {
     private readonly ILogger logger;
-
+    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
     private readonly HostApplicationFactory hostApplicationFactory;
-
+    private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
     private readonly QdrantOptions qdrantOptions;
+
     private readonly SemanticKernelWithDockerTestFixture fixture;
-
-    public TestOfSemanticKernelExample14SemanticMemory(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
-    {
-        this.fixture = fixture;
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-
-        this.hostApplicationFactory = fixture.Factory;
-        this.openAIOptions = fixture.OpenAIOptions;
-        this.qdrantOptions = fixture.QdrantOptions;
-    }
-
     private const string CollectionName = "SemanticKernel-14-test-collection";
     private const string EmbeddingModel = "text-embedding-ada-002";
     private const int VectorSize = 1536;
+
+    public TestOfSemanticKernelExample14SemanticMemory(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
+    {
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
+        this.qdrantOptions = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
+    }
 
 
     [Fact]
@@ -61,8 +62,8 @@ public class TestOfSemanticKernelExample14SemanticMemory
          */
 
         var kernelWithCustomDb = Kernel.Builder
-            .WithLogger(fixture.MsLogger)
-            .WithOpenAITextEmbeddingGenerationService(EmbeddingModel, fixture.OpenAIOptions.ApiKey)
+            .WithLogger(msLogger)
+            .WithOpenAITextEmbeddingGenerationService(EmbeddingModel, openAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)
             .Build();
 

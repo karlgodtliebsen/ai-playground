@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 using AI.Library.Utils;
-using AI.Test.Support;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
@@ -12,6 +12,7 @@ using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Qdrant.Tests.Fixtures;
 
@@ -26,18 +27,19 @@ public class TestOfVectorDbUsingPoints
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly QdrantOptions options;
     private readonly JsonSerializerOptions serializerOptions;
+    private readonly IServiceProvider services;
 
     public TestOfVectorDbUsingPoints(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.hostApplicationFactory = fixture.Factory;
-        this.options = fixture.Options;
-        this.logger = fixture.Logger;
         serializerOptions = new JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.options = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
+        this.logger = services.GetRequiredService<ILogger>();
     }
 
     private const int VectorSize = 4;

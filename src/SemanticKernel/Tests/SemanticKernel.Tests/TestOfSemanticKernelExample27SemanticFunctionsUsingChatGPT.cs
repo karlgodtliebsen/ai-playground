@@ -1,6 +1,12 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
+
+using OpenAI.Client.Configuration;
 
 using SemanticKernel.Tests.Fixtures;
 
@@ -13,16 +19,17 @@ public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT
 {
     private readonly ILogger logger;
     private readonly Microsoft.Extensions.Logging.ILogger msLogger;
-    private readonly SemanticKernelTestFixtureBase fixture;
     private readonly HostApplicationFactory hostApplicationFactory;
+    private readonly IServiceProvider services;
+    private readonly OpenAIOptions openAIOptions;
 
     public TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.fixture = fixture;
-        this.msLogger = fixture.MsLogger;
-        this.hostApplicationFactory = fixture.Factory;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
     }
 
     const string Model = "gpt-3.5-turbo";
@@ -33,8 +40,8 @@ public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT
         logger.Information("======== Using Chat GPT model for text completion ========");
 
         IKernel kernel = new KernelBuilder()
-            .WithLogger(fixture.MsLogger)
-            .WithOpenAIChatCompletionService(Model, fixture.OpenAIOptions.ApiKey)
+            .WithLogger(msLogger)
+            .WithOpenAIChatCompletionService(Model, openAIOptions.ApiKey)
             .Build();
 
         var func = kernel.CreateSemanticFunction("List the two planets closest to '{{$input}}', excluding moons, using bullet points.");

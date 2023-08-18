@@ -1,6 +1,6 @@
 ﻿using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
-namespace LlamaSharp.Tests;
+namespace LlamaSharp.Tests.Utils;
 
 public interface ILLamaCompositeOperationsClient : IDisposable
 {

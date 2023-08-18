@@ -1,4 +1,4 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 
 using FluentAssertions;
 
@@ -24,15 +24,17 @@ namespace TensorFlow.Net.ImageClassification.Tests;
 [Collection("TensorFlow Image Classification Collection")]
 public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
 {
-    private readonly TensorFlowImageClassificationFixture fixture;
     private readonly ILogger logger;
-
+    private readonly HostApplicationFactory hostApplicationFactory;
+    private readonly IServiceProvider services;
+    private readonly TensorFlowOptions options;
 
     public TestOfTensorFlowTransferLearningWithInception(TensorFlowImageClassificationFixture fixture, ITestOutputHelper output)
     {
-        this.fixture = fixture;
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        options = services.GetRequiredService<IOptions<TensorFlowOptions>>().Value;
     }
 
 
@@ -56,7 +58,7 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
             mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName)!;
         }
         logger.Information("Training [{set}]", dataSet);
-        ITrainer trainer = fixture.Factory.Services.GetRequiredService<ITensorFlowTransferLearningInception>();
+        ITrainer trainer = services.GetRequiredService<ITensorFlowTransferLearningInception>();
         var result = trainer.TrainModel(dataSet, mapper);
         result.Should().NotBeNullOrEmpty();
         logger.Information("Training [{set}] model returned {result}", dataSet, result);
@@ -73,7 +75,7 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
         }
 
         logger.Information("Training [{set}]", dataSet);
-        ITester tester = fixture.Factory.Services.GetRequiredService<ITester>();
+        ITester tester = services.GetRequiredService<ITester>();
         var accuracy = tester.TestModel(dataSet, mapper);
         accuracy.Should().BeGreaterThan(0.75f);
         var result = $"Result: ({accuracy} > {0.75f})";
@@ -85,9 +87,9 @@ public class TestOfTensorFlowTransferLearningWithInception : TestFixtureBase
     [InlineData("flowers")]
     public void TestOfModelPredictionForTransferLearningWithInception(string imageSetPath)
     {
-        IPredictor predictor = fixture.Factory.Services.GetRequiredService<IPredictor>();
-        IImageLoader loader = fixture.Factory.Services.GetRequiredService<IImageLoader>();
-        var options = fixture.Factory.Services.GetRequiredService<IOptions<TensorFlowOptions>>().Value;
+        IPredictor predictor = services.GetRequiredService<IPredictor>();
+        IImageLoader loader = services.GetRequiredService<IImageLoader>();
+        var options = services.GetRequiredService<IOptions<TensorFlowOptions>>().Value;
 
         var imageSetForPredictions = PathUtils.GetPath(options.TestImagesFilePath, imageSetPath);
         var inputFolderPath = PathUtils.GetPath(options.InputFilePath, imageSetPath);

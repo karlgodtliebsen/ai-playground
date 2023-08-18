@@ -18,9 +18,9 @@
 
   <ItemGroup>
 
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.10" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
     <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
 
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
@@ -44,9 +44,9 @@
 
 
     <PackageReference Include="FluentAssertions" Version="6.11.0" />
-    <PackageReference Include="FluentValidation" Version="11.6.0" />
+    <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.6.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
 
     <PackageReference Include="xunit" Version="2.5.1-pre.20" />
 
@@ -61,6 +61,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\AI.Library\AI.Library.csproj" />
     <ProjectReference Include="..\..\..\AI.Test.Support\AI.Test.Support.csproj" />
+    <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
     <ProjectReference Include="..\..\LLamaSharpApp.WebAPI\LLamaSharpApp.WebAPI.csproj" />
   </ItemGroup>
 

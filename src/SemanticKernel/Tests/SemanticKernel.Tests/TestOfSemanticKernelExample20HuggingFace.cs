@@ -1,12 +1,16 @@
 ﻿using AI.Library.Utils;
-using AI.Test.Support;
+using AI.Test.Support.Fixtures;
 
 using FluentAssertions;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using Microsoft.SemanticKernel.Connectors.AI.HuggingFace.TextCompletion;
 
+using SemanticKernel.Tests.Configuration;
 using SemanticKernel.Tests.Fixtures;
 
 using Xunit.Abstractions;
@@ -18,23 +22,24 @@ public class TestOfSemanticKernelExample20HuggingFace
 {
     private readonly ILogger logger;
     private readonly Microsoft.Extensions.Logging.ILogger msLogger;
-    private readonly SemanticKernelTestFixtureBase fixture;
     private readonly HostApplicationFactory hostApplicationFactory;
-
-    public TestOfSemanticKernelExample20HuggingFace(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
-    {
-        this.fixture = fixture;
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.msLogger = fixture.MsLogger;
-        this.hostApplicationFactory = fixture.Factory;
-    }
+    private readonly IServiceProvider services;
+    private readonly HuggingFaceOptions huggingFaceOptions;
 
     //"https://api-inference.huggingface.co/models
     const string endPoint = "https://api-inference.huggingface.co/models";
-
     const string Model = "gpt2-large";
-    //Ok    
+
+    public TestOfSemanticKernelExample20HuggingFace(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
+    {
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        huggingFaceOptions = services.GetRequiredService<IOptions<HuggingFaceOptions>>().Value;
+    }
+
+
     //gpt2
     //gpt2-large
 
@@ -49,10 +54,10 @@ public class TestOfSemanticKernelExample20HuggingFace
     {
         logger.Information("======== HuggingFace text completion AI ========");
         IKernel kernel = new KernelBuilder()
-            .WithLogger(fixture.MsLogger)
+            .WithLogger(msLogger)
             .WithHuggingFaceTextCompletionService(
                 model: Model,
-                apiKey: fixture.HuggingFaceOptions.ApiKey
+                apiKey: huggingFaceOptions.ApiKey
             )
             .Build();
 
@@ -81,7 +86,7 @@ public class TestOfSemanticKernelExample20HuggingFace
         const string Input = "This is test";
 
         var huggingFaceLocal = new HuggingFaceTextCompletion(Model, endpoint: endPoint);
-        var huggingFaceRemote = new HuggingFaceTextCompletion(Model, apiKey: fixture.HuggingFaceOptions.ApiKey);
+        var huggingFaceRemote = new HuggingFaceTextCompletion(Model, apiKey: huggingFaceOptions.ApiKey);
 
         // Act
         var localResponse = await huggingFaceLocal.CompleteAsync(Input, new CompleteRequestSettings());
@@ -107,7 +112,7 @@ public class TestOfSemanticKernelExample20HuggingFace
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(endPoint);
 
-        var huggingFaceRemote = new HuggingFaceTextCompletion(Model, apiKey: fixture.HuggingFaceOptions.ApiKey, httpClient: httpClient);
+        var huggingFaceRemote = new HuggingFaceTextCompletion(Model, apiKey: huggingFaceOptions.ApiKey, httpClient: httpClient);
 
         // Act
         var remoteResponse = await huggingFaceRemote.CompleteAsync(Input, new CompleteRequestSettings());

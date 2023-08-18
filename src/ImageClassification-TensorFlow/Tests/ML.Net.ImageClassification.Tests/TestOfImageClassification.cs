@@ -1,4 +1,4 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 
 using FluentAssertions;
 
@@ -24,15 +24,17 @@ namespace ML.Net.ImageClassification.Tests;
 [Collection("Image Classification Collection")]
 public class TestOfImageClassification : TestFixtureBase
 {
-    private readonly ImageClassificationFixture fixture;
     private readonly ILogger logger;
-
+    private readonly HostApplicationFactory hostApplicationFactory;
+    private readonly IServiceProvider services;
+    private readonly MlImageClassificationOptions options;
 
     public TestOfImageClassification(ImageClassificationFixture fixture, ITestOutputHelper output)
     {
-        this.fixture = fixture;
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        options = services.GetRequiredService<IOptions<MlImageClassificationOptions>>().Value;
     }
 
     //birds: birds.csv: 2.0,train/ABYSSINIAN GROUND HORNBILL/141.jpg,ABYSSINIAN GROUND HORNBILL,train,BUCORVUS ABYSSINICUS
@@ -60,11 +62,10 @@ public class TestOfImageClassification : TestFixtureBase
             mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName);
         }
         logger.Information("Training [{set}]", dataSet);
-        ITrainer trainer = fixture.Factory.Services.GetRequiredService<IMlNetTrainer>();
+        ITrainer trainer = services.GetRequiredService<IMlNetTrainer>();
         var model = trainer.TrainModel(dataSet, mapper);
         model.Should().NotBeNull();
     }
-
 
 
     [Theory]
@@ -85,7 +86,7 @@ public class TestOfImageClassification : TestFixtureBase
             mapper = MapImageLabels.CreateImageToLabelMapper(imageIndex, labelIndex, fileName);
         }
         logger.Information("Verifying [{set}]", dataSet);
-        IPredictor predictor = fixture.Factory.Services.GetRequiredService<IPredictor>();
+        IPredictor predictor = services.GetRequiredService<IPredictor>();
         predictor.PredictImages(dataSet, mapper);
     }
 
@@ -94,10 +95,8 @@ public class TestOfImageClassification : TestFixtureBase
     [InlineData("flowers")]
     public void TestOfModelPredictionForMlImageClassificationModel(string imageSetPath)
     {
-        IPredictor predictor = fixture.Factory.Services.GetRequiredService<IPredictor>();
-        IImageLoader loader = fixture.Factory.Services.GetRequiredService<IImageLoader>();
-        var options = fixture.Factory.Services.GetRequiredService<IOptions<MlImageClassificationOptions>>().Value;
-
+        IPredictor predictor = services.GetRequiredService<IPredictor>();
+        IImageLoader loader = services.GetRequiredService<IImageLoader>();
         var imageSetForPredictions = PathUtils.GetPath(options.TestImagesFilePath, imageSetPath);
         var inputFolderPath = PathUtils.GetPath(options.InputFilePath, imageSetPath);
 

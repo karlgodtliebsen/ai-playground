@@ -1,13 +1,14 @@
 ﻿using System.Text.Json.Serialization;
 
 using AI.Library.Utils;
-using AI.Test.Support;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Qdrant.Tests.Fixtures;
 
@@ -24,22 +25,23 @@ public class TestOfVectorDbUsingBatch
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly QdrantOptions options;
+    private readonly IServiceProvider services;
     private readonly JsonSerializerOptions serializerOptions;
-
+    private const string CollectionName = "embeddings-collection";
+    private const int VectorSize = 3;
 
     public TestOfVectorDbUsingBatch(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.hostApplicationFactory = fixture.Factory;
-        this.options = fixture.Options;
-        this.logger = fixture.Logger;
         serializerOptions = new JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.options = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
+        this.logger = services.GetRequiredService<ILogger>();
     }
-    private const string CollectionName = "embeddings-collection";
-    private const int VectorSize = 3;
 
 
     private async Task CleanupCollection()

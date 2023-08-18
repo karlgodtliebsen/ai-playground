@@ -1,7 +1,9 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 
 using OpenAI.Client.Configuration;
@@ -12,29 +14,28 @@ using SemanticKernel.Tests.Fixtures;
 using Xunit.Abstractions;
 
 
-
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel With Docker Collection")]
 public class TestOfSemanticKernel
 {
     private readonly ILogger logger;
+    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
 
     private readonly HostApplicationFactory hostApplicationFactory;
-
+    private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
-    private readonly SemanticKernelWithDockerTestFixture fixture;
+
+    private const string CollectionName = "SemanticKernel-test-collection";
 
     public TestOfSemanticKernel(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
     {
-        this.fixture = fixture;
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.hostApplicationFactory = fixture.Factory;
-        this.openAIOptions = fixture.OpenAIOptions;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
+        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
     }
-
-    private const string collectionName = "SemanticKernel-test-collection";
 
     [Fact]
     public async Task RunSimpleSummarizationSample()
@@ -44,7 +45,7 @@ public class TestOfSemanticKernel
 
         var builder = new KernelBuilder();
         builder
-            .WithLogger(fixture.MsLogger)
+            .WithLogger(msLogger)
             .WithOpenAITextCompletionService(completionModel, openAIOptions.ApiKey);
 
         var kernel = builder.Build();
@@ -78,7 +79,7 @@ One line TLDR with the fewest words.";
         var completionModel = "text-davinci-003";
         var builder = new KernelBuilder();
         builder
-            .WithLogger(fixture.MsLogger)
+            .WithLogger(msLogger)
             .WithOpenAITextCompletionService(completionModel, openAIOptions.ApiKey);
 
         var kernel = builder.Build();
@@ -108,7 +109,7 @@ Give me a TLDR with the fewest words.";
     public void RunSampleUsingAzureCognitiveSearch()
     {
         var kernelWithACS = Kernel.Builder
-            .WithLogger(fixture.MsLogger)
+            .WithLogger(msLogger)
             .WithAzureCognitiveSearchMemory("", openAIOptions.ApiKey)
             .Build();
     }
@@ -126,10 +127,10 @@ Give me a TLDR with the fewest words.";
         bool storeOnDisk = false;
 
         var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
-        var memoryStorage = await factory.Create(collectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
+        var memoryStorage = await factory.Create(CollectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         IKernel kernel = Kernel.Builder
-            .WithLogger(fixture.MsLogger)
+            .WithLogger(msLogger)
             .WithOpenAITextCompletionService(completionModel, openAIOptions.ApiKey)
             .WithOpenAITextEmbeddingGenerationService(embeddingModel, openAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)
@@ -140,7 +141,7 @@ Give me a TLDR with the fewest words.";
 3rd Law of Thermodynamics - A perfect crystal at zero Kelvin has zero entropy.";
 
         await kernel.Memory.SaveReferenceAsync(
-            collection: collectionName,
+            collection: CollectionName,
             //description: text1,
             text: text1,
             externalId: Guid.NewGuid().ToString(),
