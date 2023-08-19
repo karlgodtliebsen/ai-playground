@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LlamaSharp.Tests.Fixtures;
+namespace AI.Test.Support.Fixtures;
 
 /// <summary>
 /// https://gunnarpeipman.com/aspnet-core-integration-tests-users-roles/

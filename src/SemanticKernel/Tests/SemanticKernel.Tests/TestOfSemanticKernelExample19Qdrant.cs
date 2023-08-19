@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel With Docker Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample19Qdrant
 {
     private readonly ILogger logger;
@@ -30,9 +30,9 @@ public class TestOfSemanticKernelExample19Qdrant
     private readonly OpenAIOptions openAIOptions;
     private readonly QdrantOptions qdrantOptions;
 
-    public TestOfSemanticKernelExample19Qdrant(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
+    public TestOfSemanticKernelExample19Qdrant(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();

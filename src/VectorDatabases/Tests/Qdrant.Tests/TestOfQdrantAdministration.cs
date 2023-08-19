@@ -30,11 +30,10 @@ public class TestOfQdrantAdministration
 
     public TestOfQdrantAdministration(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.options = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
-        this.logger = services.GetRequiredService<ILogger>();
     }
 
 

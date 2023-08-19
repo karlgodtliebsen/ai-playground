@@ -20,7 +20,6 @@ namespace FinancialAgents.Tests;
 [Collection("FinancialAgents Collection")]
 public sealed class TestOfConfiguration : IClassFixture<FinancialAgentsTestFixture>
 {
-    //private readonly FinancialAgentsTestFixture fixture;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
 
@@ -29,7 +28,6 @@ public sealed class TestOfConfiguration : IClassFixture<FinancialAgentsTestFixtu
         this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
         this.services = hostApplicationFactory.Services;
     }
-
 
     [Fact]
     public void EnsureThatServiceConfigurationIsValid()

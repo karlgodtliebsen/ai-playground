@@ -14,17 +14,27 @@ using OpenAI.Client.Configuration;
 namespace AI.Caap.Tests.Fixtures;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class CaapTestFixture : TestFixtureBase
+public class CaapWithDatabaseTestFixture : TestFixtureBase
 {
     protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
     {
-        base.AddServices(services, configuration);
         services
             .AddCaaP(configuration)
             .AddOpenAIConfiguration(configuration)
             .AddRepository()
             .AddDatabaseContext(configuration)
             ;
+        AddDockerSupport(services, configuration);
+    }
+}
+
+
+// ReSharper disable once ClassNeverInstantiated.Global
+public sealed class CaapWithInMemoryDatabaseTestFixture : CaapWithDatabaseTestFixture
+{
+    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    {
+        base.AddServices(services, configuration);
         var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ConversationDbContext>));
         if (dbContextDescriptor != null) services.Remove(dbContextDescriptor);
         var dbConnectionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbConnection));
@@ -35,16 +45,4 @@ public sealed class CaapTestFixture : TestFixtureBase
         });
     }
 }
-public sealed class CaapWithDatabaseTestFixture : TestFixtureBase
-{
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
-    {
-        base.AddServices(services, configuration);
-        services
-            .AddCaaP(configuration)
-            .AddOpenAIConfiguration(configuration)
-            .AddRepository()
-            .AddDatabaseContext(configuration)
-            ;
-    }
-}
+

@@ -33,25 +33,24 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     private readonly ILogger logger;
 
     private readonly HostApplicationFactory hostApplicationFactory;
-    private readonly JsonSerializerOptions serializerOptions;
-    private readonly EmbeddingsVectorDbTestFixture fixture;
+    private readonly JsonSerializerOptions serializerOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
     private readonly ILlamaModelFactory llamaModelFactory;
     private string modelFilesPath;
     private readonly IServiceProvider services;
     private const string CollectionName = "books-search-collection";
+
     private const int VectorSize = 3; // vey small vector size for testing
 
     public TestOfSearchScenarioInVectorDbUsingEmbeddings(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        serializerOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
         this.services = hostApplicationFactory.Services;
         var options = services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
         this.modelFilesPath = Path.GetFullPath(options.ModelPath);
         this.llamaModelFactory = services.GetRequiredService<ILlamaModelFactory>();
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
         this.logger = services.GetRequiredService<ILogger>();
     }
 

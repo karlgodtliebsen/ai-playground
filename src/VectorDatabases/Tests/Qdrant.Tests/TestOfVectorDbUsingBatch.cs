@@ -26,17 +26,17 @@ public class TestOfVectorDbUsingBatch
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly QdrantOptions options;
     private readonly IServiceProvider services;
-    private readonly JsonSerializerOptions serializerOptions;
+    private readonly JsonSerializerOptions serializerOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+
     private const string CollectionName = "embeddings-collection";
     private const int VectorSize = 3;
 
     public TestOfVectorDbUsingBatch(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        serializerOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.options = services.GetRequiredService<IOptions<QdrantOptions>>().Value;

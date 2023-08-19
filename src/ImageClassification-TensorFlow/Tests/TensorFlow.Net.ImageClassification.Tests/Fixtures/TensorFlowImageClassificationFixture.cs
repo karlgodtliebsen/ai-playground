@@ -12,7 +12,6 @@ public class TensorFlowImageClassificationFixture : TestFixtureBase
 {
     protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
     {
-        base.AddServices(services, configuration);
         services
             .AddTensorFlowImageClassification(configuration)
             ;

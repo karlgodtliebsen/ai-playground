@@ -28,9 +28,9 @@ public class TestOfSemanticKernel
 
     private const string CollectionName = "SemanticKernel-test-collection";
 
-    public TestOfSemanticKernel(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
+    public TestOfSemanticKernel(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;

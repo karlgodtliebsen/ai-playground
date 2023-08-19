@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel With Docker Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample14SemanticMemory
 {
     private readonly ILogger logger;
@@ -27,14 +27,14 @@ public class TestOfSemanticKernelExample14SemanticMemory
     private readonly OpenAIOptions openAIOptions;
     private readonly QdrantOptions qdrantOptions;
 
-    private readonly SemanticKernelWithDockerTestFixture fixture;
+    //private readonly SemanticKernelWithDockerTestFixture fixture;
     private const string CollectionName = "SemanticKernel-14-test-collection";
     private const string EmbeddingModel = "text-embedding-ada-002";
     private const int VectorSize = 1536;
 
-    public TestOfSemanticKernelExample14SemanticMemory(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
+    public TestOfSemanticKernelExample14SemanticMemory(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();

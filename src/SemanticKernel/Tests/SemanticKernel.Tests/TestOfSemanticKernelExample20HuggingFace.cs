@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Base Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample20HuggingFace
 {
     private readonly ILogger logger;
@@ -30,9 +30,9 @@ public class TestOfSemanticKernelExample20HuggingFace
     const string endPoint = "https://api-inference.huggingface.co/models";
     const string Model = "gpt2-large";
 
-    public TestOfSemanticKernelExample20HuggingFace(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
+    public TestOfSemanticKernelExample20HuggingFace(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();

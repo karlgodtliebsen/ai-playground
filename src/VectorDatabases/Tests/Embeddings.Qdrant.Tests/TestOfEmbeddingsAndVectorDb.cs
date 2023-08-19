@@ -34,8 +34,7 @@ public class TestOfEmbeddingsAndVectorDb
 
     public TestOfEmbeddingsAndVectorDb(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.requestFactory = services.GetRequiredService<IModelRequestFactory>(); ;
@@ -89,8 +88,8 @@ public class TestOfEmbeddingsAndVectorDb
     }
 
 
-    [Fact(Skip = "To many request. Needs solving")]
-    // [Fact]
+    [Fact(Skip = "Emits 'To many request'. Needs solving")]
+    //[Fact]
     public async Task VerifyEmbeddingsModelUsingOpenAIClient()
     {
         var fileData = await File.ReadAllTextAsync(Path.Combine(testFilesPath, "UBER_2019.html"));

@@ -24,7 +24,7 @@ using TimeSkill = SemanticKernel.Tests.Skills.TimeSkill;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Base Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample51StepwisePlanner
 {
     private readonly ILogger logger;
@@ -35,9 +35,10 @@ public class TestOfSemanticKernelExample51StepwisePlanner
     const string Model = "gpt-3.5-turbo";
     private readonly BingOptions bingOptions;
     private readonly string skillsPath;
-    public TestOfSemanticKernelExample51StepwisePlanner(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
+
+    public TestOfSemanticKernelExample51StepwisePlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();

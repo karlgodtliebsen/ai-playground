@@ -1,25 +1,23 @@
 ﻿using AI.Test.Support.Fixtures;
+using AI.VectorDatabase.Qdrant.Configuration;
+
+using Microsoft.Extensions.Configuration;
+
+using Microsoft.Extensions.DependencyInjection;
+
+using OpenAI.Client.Configuration;
 
 namespace Embeddings.Qdrant.Tests.Fixtures;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class EmbeddingsVectorDbTestFixture : TestFixtureBase
 {
+    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    {
+        services
+            .AddQdrant(configuration)
+            .AddOpenAIConfiguration(configuration);
+        AddDockerSupport(services, configuration);
+    }
 
-    //public TestContainerDockerLauncher Launcher { get; private set; }
-    //public Func<bool> Launch { get; set; }
-
-    ///// <summary>
-    ///// Post Build Setup of Logging and Launcher that depends on ITestOutputHelper
-    ///// </summary>
-    ///// <param name="output"></param>
-    //public override void Setup(ITestOutputHelper output)
-    //{
-    //    base.Setup(output);
-    //    Launcher = Factory.Services.GetRequiredService<TestContainerDockerLauncher>();
-    //    Launcher.Start();
-    //}
-    //public void Dispose()
-    //{
-    //    Launcher?.Stop();
-    //}
 }

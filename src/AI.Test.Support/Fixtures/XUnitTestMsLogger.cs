@@ -16,18 +16,17 @@ public sealed class XUnitTestMsLogger : Microsoft.Extensions.Logging.ILogger
     private const string Error = "fail";
     private const string Critical = "crit";
 
-    private readonly string _categoryName;
-    private readonly bool _useScopes;
-    private readonly TextWriter _outputx;
-    private readonly Action<string> _write;
-    private readonly IExternalScopeProvider _scopes;
+    private readonly string categoryName;
+    private readonly bool useScopes;
+    private readonly Action<string> write;
+    private readonly IExternalScopeProvider? scopes;
 
-    public XUnitTestMsLogger(Action<string> write, IExternalScopeProvider scopes, string categoryName, bool useScopes)
+    public XUnitTestMsLogger(Action<string> write, IExternalScopeProvider? scopes, string categoryName, bool useScopes)
     {
-        _write = write;
-        _scopes = scopes;
-        _categoryName = categoryName;
-        _useScopes = useScopes;
+        this.write = write;
+        this.scopes = scopes;
+        this.categoryName = categoryName;
+        this.useScopes = useScopes;
     }
 
     public bool IsEnabled(LogLevel logLevel)
@@ -35,9 +34,13 @@ public sealed class XUnitTestMsLogger : Microsoft.Extensions.Logging.ILogger
         return logLevel != LogLevel.None;
     }
 
-    public IDisposable BeginScope<TState>(TState state)
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
     {
-        return _scopes.Push(state);
+        if (!useScopes || scopes is null)
+        {
+            return null;
+        }
+        return scopes!.Push(state);
     }
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception, string> formatter)
@@ -70,9 +73,9 @@ public sealed class XUnitTestMsLogger : Microsoft.Extensions.Logging.ILogger
                 throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null);
         }
 
-        sb.Append(": ").Append(_categoryName).Append('[').Append(eventId).Append(']').AppendLine();
+        sb.Append(": ").Append(categoryName).Append('[').Append(eventId).Append(']').AppendLine();
 
-        if (_useScopes && TryAppendScopes(sb))
+        if (useScopes && TryAppendScopes(sb))
             sb.AppendLine();
 
         sb.Append(Spacer);
@@ -86,23 +89,27 @@ public sealed class XUnitTestMsLogger : Microsoft.Extensions.Logging.ILogger
         }
 
         var message = sb.ToString();
-        _write(message);
+        write(message);
     }
 
     private bool TryAppendScopes(StringBuilder sb)
     {
-        var scopes = false;
-        _scopes.ForEachScope((callback, state) =>
+        var isScoped = false;
+        if (!useScopes || scopes is null)
         {
-            if (!scopes)
+            return isScoped;
+        }
+        this.scopes!.ForEachScope((callback, state) =>
+        {
+            if (!isScoped)
             {
                 state.Append(Spacer);
-                scopes = true;
+                isScoped = true;
             }
 
             state.Append(ScopeDelimiter);
             state.Append(callback);
         }, sb);
-        return scopes;
+        return isScoped;
     }
 }

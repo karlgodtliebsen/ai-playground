@@ -19,7 +19,7 @@ public class TestOfAgentRepository
     private readonly HostApplicationFactory factory;
     private readonly IServiceProvider services;
 
-    public TestOfAgentRepository(ITestOutputHelper output, CaapTestFixture fixture)
+    public TestOfAgentRepository(ITestOutputHelper output, CaapWithDatabaseTestFixture fixture)
     {
         this.factory = fixture.BuildFactoryWithLogging(output);
         this.services = factory.Services;
@@ -35,16 +35,17 @@ public class TestOfAgentRepository
 
         var repository = factory.Services.GetRequiredService<IAgentRepository>();
         var conversationId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
         var agent = new Agent()
         {
             Name = "Arthur",
             Instruction = "Read Hichhiker's Guide to the Galaxy",
-            OwnerId = Guid.NewGuid()
+            OwnerId = userId
         };
 
         await repository.AddAgent(agent, CancellationToken.None);
 
-        var persistedAgent = await repository.FindAgent(conversationId, agent.Id, CancellationToken.None);
+        var persistedAgent = await repository.FindAgent(agent.Id, userId, CancellationToken.None);
         persistedAgent.Should().NotBeNull();
 
         persistedAgent.Should().BeEquivalentTo(agent, options => options.Excluding(x => x.CreatedTime).Excluding(x => x.UpdatedTime));

@@ -12,11 +12,12 @@ using Xunit.Abstractions;
 
 namespace AI.Caap.Tests;
 
+[Collection("Caap Collection")]
 public class TestOfConversationRepository
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory factory;
-    public const bool UseRelationelDatabase = true;
+    private const bool UseRelationalDatabase = true;
     private readonly IServiceProvider services;
 
     public TestOfConversationRepository(ITestOutputHelper output, CaapWithDatabaseTestFixture fixture)
@@ -26,7 +27,7 @@ public class TestOfConversationRepository
         this.logger = services.GetRequiredService<ILogger>();
         this.services.DestroyMigration();
         this.services.UseMigration();
-        if (UseRelationelDatabase)
+        if (UseRelationalDatabase)
         {
             this.services.DestroyMigration();
             this.services.UseMigration();

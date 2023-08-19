@@ -42,7 +42,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
     const string Model = "gpt-3.5-turbo";
     const string CompletionModel = "text-davinci-003";
     const string EmbeddingModel = "text-embedding-ada-002";
-    public TestOfSemanticKernelExample31CustomPlanner(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
+    public TestOfSemanticKernelExample31CustomPlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
         this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
         this.services = hostApplicationFactory.Services;

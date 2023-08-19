@@ -1,35 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AI.Test.Support.DockerSupport;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Xunit.Abstractions;
 
 namespace AI.Test.Support.Fixtures;
-
-//public abstract class TestFixtureBase
-//{
-//    public ITestOutputHelper Output { get; protected set; }
-//    public ILogger Logger { get; protected set; }
-
-//    public Microsoft.Extensions.Logging.ILogger MsLogger { get; protected set; }
-
-//    public HostApplicationFactory Factory { get; protected set; }
-
-//    protected TestFixtureBase()
-//    {
-//    }
-
-//    /// <summary>
-//    /// Post Build Setup of Logging that depends on ITestOutputHelper
-//    /// </summary>
-//    /// <param name="output"></param>
-//    public virtual void Setup(ITestOutputHelper output)
-//    {
-//        Output = output;
-//        Factory.ConfigureLogging(output);
-//        Logger = Factory.Logger();
-//        MsLogger = Factory.MsLogger();
-//    }
-//}
 
 public abstract class TestFixtureBase
 {
@@ -41,7 +17,20 @@ public abstract class TestFixtureBase
     /// </summary>
     protected TestFixtureBase()
     {
-        //Environment = "IntegrationTests";
+        //https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-7.0
+        var env = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                  ?? System.Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+        if (env is not null)
+        {
+            Environment = env;
+        }
+    }
+
+    protected void AddDockerSupport(IServiceCollection services, IConfigurationRoot configuration)
+    {
+        services.AddSingleton<TestContainerDockerLauncher>();
+        var section = configuration.GetSection(DockerLaunchOptions.SectionName);
+        services.AddOptions<DockerLaunchOptions>().Bind(section);
     }
 
     /// <summary>

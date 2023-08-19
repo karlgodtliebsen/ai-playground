@@ -8,7 +8,7 @@ public sealed class XUnitTestMsLoggerProvider : ILoggerProvider, ISupportExterna
 {
     private readonly ITestOutputHelper output;
     private readonly bool useScopes;
-    private IExternalScopeProvider scopes;
+    private IExternalScopeProvider? scopes;
 
     public XUnitTestMsLoggerProvider(ITestOutputHelper output, bool useScopes)
     {
@@ -25,8 +25,8 @@ public sealed class XUnitTestMsLoggerProvider : ILoggerProvider, ISupportExterna
     {
     }
 
-    public void SetScopeProvider(IExternalScopeProvider scopes)
+    public void SetScopeProvider(IExternalScopeProvider scopeProvider)
     {
-        this.scopes = scopes;
+        this.scopes = scopeProvider;
     }
 }

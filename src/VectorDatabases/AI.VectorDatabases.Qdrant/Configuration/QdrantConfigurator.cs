@@ -9,7 +9,7 @@ namespace AI.VectorDatabase.Qdrant.Configuration;
 public static class QdrantConfigurator
 {
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from app settings.json for the Llma parts (ie the llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
@@ -28,7 +28,7 @@ public static class QdrantConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from app settings.json for the Llma parts (ie the llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
@@ -41,7 +41,7 @@ public static class QdrantConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from app settings.json for the Llma parts (ie the llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
@@ -56,7 +56,7 @@ public static class QdrantConfigurator
     }
 
     /// <summary>
-    /// Add configuration from appsettings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from app settings.json for the Llma parts (ie the llama model parts)
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>

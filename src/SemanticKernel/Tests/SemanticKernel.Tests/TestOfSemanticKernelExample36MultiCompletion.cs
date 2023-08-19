@@ -24,7 +24,7 @@ public class TestOfSemanticKernelExample36MultiCompletion
     private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
 
-    public TestOfSemanticKernelExample36MultiCompletion(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
+    public TestOfSemanticKernelExample36MultiCompletion(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
         this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
         this.services = hostApplicationFactory.Services;

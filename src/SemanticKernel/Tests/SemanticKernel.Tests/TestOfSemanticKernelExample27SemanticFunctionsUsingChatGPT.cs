@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Base Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT
 {
     private readonly ILogger logger;
@@ -23,7 +23,7 @@ public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT
     private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
 
-    public TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
+    public TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
         this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
         this.services = hostApplicationFactory.Services;

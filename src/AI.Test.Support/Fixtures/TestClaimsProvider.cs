@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace LlamaSharp.Tests.Fixtures;
+namespace AI.Test.Support.Fixtures;
 
 /// <summary>
 /// https://gunnarpeipman.com/aspnet-core-integration-tests-users-roles/

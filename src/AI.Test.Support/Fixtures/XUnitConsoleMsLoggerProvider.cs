@@ -6,7 +6,7 @@ public sealed class XUnitConsoleMsLoggerProvider : ILoggerProvider, ISupportExte
 {
     private readonly TextWriter output;
     private readonly bool useScopes;
-    private IExternalScopeProvider scopes;
+    private IExternalScopeProvider? scopes = default!;
 
     public XUnitConsoleMsLoggerProvider(TextWriter output, bool useScopes)
     {
@@ -23,8 +23,8 @@ public sealed class XUnitConsoleMsLoggerProvider : ILoggerProvider, ISupportExte
     {
     }
 
-    public void SetScopeProvider(IExternalScopeProvider scopes)
+    public void SetScopeProvider(IExternalScopeProvider scopeProvider)
     {
-        this.scopes = scopes;
+        this.scopes = scopeProvider;
     }
 }

@@ -5,7 +5,7 @@ namespace FinancialAgents.Tests.Configuration;
 
 public static class SearchConfigurator
 {
-    public static IServiceCollection AddConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddSearchConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         var section = configuration.GetSection(GoogleOptions.SectionName);
         services.AddOptions<GoogleOptions>().Bind(section);

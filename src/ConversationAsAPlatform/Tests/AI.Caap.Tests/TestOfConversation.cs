@@ -18,6 +18,7 @@ using Xunit.Abstractions;
 
 namespace AI.Caap.Tests;
 
+[Collection("Caap InMemory Collection")]
 public class TestOfConversation
 {
     private readonly ILogger logger;
@@ -25,7 +26,7 @@ public class TestOfConversation
     private readonly IModelRequestFactory requestFactory;
     private readonly IServiceProvider services;
 
-    public TestOfConversation(ITestOutputHelper output, CaapTestFixture fixture)
+    public TestOfConversation(ITestOutputHelper output, CaapWithInMemoryDatabaseTestFixture fixture)
     {
         this.factory = fixture.BuildFactoryWithLogging(output);
         this.services = factory.Services;

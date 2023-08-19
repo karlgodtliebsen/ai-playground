@@ -12,7 +12,6 @@ public sealed class OpenAITestFixture : TestFixtureBase
 {
     protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
     {
-        base.AddServices(services, configuration);
         services.AddOpenAIConfiguration(configuration);
     }
 }
