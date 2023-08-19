@@ -11,6 +11,8 @@ using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Serilog;
+
 using Xunit.Abstractions;
 
 namespace LlamaSharp.Tests;
@@ -24,14 +26,12 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
 
     public TestOfLlamaSharpCompositeClient(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
-        factory.Setup(output);
-        this.factory = factory;
+        this.factory = factory.WithOutputHelper(output);
         this.logger = factory.Logger;
     }
-
     public void Dispose()
     {
-        //factory.Dispose();//Code smell: really annoying that this messes up the test runner
+        Log.CloseAndFlush();
     }
 
     /// <summary>

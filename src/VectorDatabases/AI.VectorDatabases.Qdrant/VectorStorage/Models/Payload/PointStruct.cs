@@ -24,5 +24,5 @@ public class PointStruct
     /// <a href="https://qdrant.tech/documentation/concepts/points/" />
     /// </summary>
     [JsonPropertyName("payload")]
-    public object? Payload { get; init; } = default!;
+    public object Payload { get; init; } = default!;
 }

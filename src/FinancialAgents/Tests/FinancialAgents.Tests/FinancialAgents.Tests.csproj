@@ -7,12 +7,6 @@
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
     <PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
-	<ItemGroup>
-		<Content Remove="C:\Users\Karl Godtliebsen\.nuget\packages\microsoft.semantickernel.connectors.ai.openai\0.17.230711.7-preview\contentFiles\any\netstandard2.0\Tokenizers\Settings\encoder.json" />
-		<Content Remove="C:\Users\Karl Godtliebsen\.nuget\packages\microsoft.semantickernel.connectors.ai.openai\0.17.230711.7-preview\contentFiles\any\netstandard2.0\Tokenizers\Settings\vocab.bpe" />
-		<Content Remove="C:\Users\Karl Godtliebsen\.nuget\packages\microsoft.testplatform.testhost\17.5.0\build\netcoreapp3.1\x64\testhost.dll" />
-		<Content Remove="C:\Users\Karl Godtliebsen\.nuget\packages\microsoft.testplatform.testhost\17.5.0\build\netcoreapp3.1\x64\testhost.exe" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<Content Include="appsettings.IntegrationTests.json">

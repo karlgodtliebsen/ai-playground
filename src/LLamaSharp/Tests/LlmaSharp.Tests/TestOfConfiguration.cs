@@ -17,20 +17,24 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
+using Serilog;
+
+using Xunit.Abstractions;
+
 namespace LlamaSharp.Tests;
 
 public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplicationFactory>, IDisposable
 {
     private readonly IntegrationTestWebApplicationFactory factory;
 
-    public TestOfConfiguration(IntegrationTestWebApplicationFactory factory)
+    public TestOfConfiguration(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
-        this.factory = factory;
+        this.factory = factory.WithOutputHelper(output);
     }
 
     public void Dispose()
     {
-        factory.Dispose();
+        Log.CloseAndFlush();
     }
 
     [Fact]

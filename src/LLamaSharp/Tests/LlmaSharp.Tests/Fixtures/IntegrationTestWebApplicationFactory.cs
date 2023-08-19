@@ -3,7 +3,6 @@ using System.Security.Claims;
 
 using AI.Library.Configuration;
 using AI.Test.Support.Fixtures;
-using AI.Test.Support.Logging;
 
 using LlamaSharp.Tests.Utils;
 
@@ -30,33 +29,49 @@ namespace LlamaSharp.Tests.Fixtures;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private IConfiguration configuration;
-    public ITestOutputHelper Output { get; protected set; }
-    public ILogger Logger { get; protected set; }
+    private IConfiguration? configuration;
+    private ITestOutputHelper? output = default!;
+
+    public ILogger Logger { get; private set; }
 
     public string UserId { get; set; } = Guid.NewGuid().ToString();
+    public string Environment { get; set; } = "IntegrationTests";
 
     /// <inheritdoc />
     public IntegrationTestWebApplicationFactory()
     {
         Log.CloseAndFlush();
+        //https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-7.0
+        var env = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                  ?? System.Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+        if (env is not null)
+        {
+            Environment = env;
+        }
     }
-
     /// <summary>
     /// Post Build Setup of Logging that depends on ITestOutputHelper
     /// </summary>
     /// <param name="output"></param>
-    public void Setup(ITestOutputHelper output)
+    public IntegrationTestWebApplicationFactory WithOutputHelper(ITestOutputHelper output)
     {
-        Output = output;
-        Services.GetService<ILogger>();//kickstarts the building of the IntegrationTestWebApplicationFactory. Something is probably wrong here, it should be done in another way??
-        ConfigureLogging(output);
+        this.output = output;
+        Services.GetService<ILogger>();
+        ConfigureLogging();
+        return this;
     }
 
-    private void ConfigureLogging(ITestOutputHelper output)
+    private void ConfigureLogging()
     {
+        if (configuration is null)
+        {
+            throw new InvalidOperationException("Configuration is null");
+        }
         var cfg = Observability.CreateLoggerConfigurationUsingAppSettings(configuration);
-        cfg = cfg.WriteTo.TestOutput(output);
+        if (output is not null)
+        {
+            cfg = cfg.WriteTo.TestOutput(output);
+        }
         Log.Logger = cfg.CreateLogger();
         Logger = Services.GetRequiredService<ILogger>();
     }
@@ -65,19 +80,41 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
     {
         var path = AppDomain.CurrentDomain.BaseDirectory;
         builder.UseContentRoot(path);
-        builder.UseEnvironment("IntegrationTests");
+        builder.UseEnvironment(Environment);
         base.ConfigureWebHost(builder);
-        builder.ConfigureAppConfiguration((x, cfg) =>
+        builder.ConfigureAppConfiguration((ctx, _) =>
         {
-            this.configuration = x.Configuration;
+            this.configuration = ctx.Configuration;
         });
 
         builder.ConfigureTestServices(services =>
          {
              services.AddSingleton(CreateHttpContext());
-             services.AddSingleton<ILoggerFactory, XUnitTestLoggerFactory>();
-
+             //services.AddSingleton<ILoggerFactory, XUnitTestLoggerFactory>();
              services.AddTransient<ILogger>((_) => Log.Logger);
+             if (output is not null)
+             {
+                 services.AddLogging(logging =>
+                 {
+                     //var useScopes = logging.UsesScopes();
+                     logging.ClearProviders();
+                     logging.AddConsole();
+                     logging.AddDebug();
+                     services.AddSingleton<ILoggerFactory, XUnitTestMsLoggerFactory>();
+                     services.AddSingleton<ILoggerProvider>(new XUnitTestMsLoggerProvider(output, false));
+                 });
+             }
+             else
+             {
+                 services.AddLogging(logging =>
+                 {
+                     logging.AddConsole();
+                     logging.AddDebug();
+                     services.AddSingleton<ILoggerFactory, XUnitTestMsLoggerFactory>();
+                     services.AddSingleton<ILoggerProvider>(new XUnitConsoleMsLoggerProvider(Console.Out, false));
+                 });
+             }
+
 
              const string endpointUrl = "https://localhost";
              var options = new LlamaClientOptions()

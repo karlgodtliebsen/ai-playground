@@ -112,7 +112,7 @@ public class TestOfConversation
         response.Switch(
             r =>
             {
-                var content = r.response.Message!.Content;
+                var content = r.response.Message!.Content!;
                 content.Should().Contain("Arthur");
                 logger.Information(content);
             },

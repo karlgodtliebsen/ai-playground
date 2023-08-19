@@ -95,7 +95,7 @@ public interface IQdrantVectorDb
     Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, float[] vector, int limit = 10, int offset = 0, CancellationToken cancellationToken = default);
 
     Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadIds(string collectionName, IEnumerable<string> ids, bool withEmbeddings = false, int limit = 10, int offset = 0, CancellationToken cancellationToken = default);
-    Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string collectionName, string id, bool withEmbeddings = false, CancellationToken cancellationToken = default);
+    Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string colName, string id, bool withEmbeddings = false, CancellationToken cancellationToken = default);
 
     Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, SearchRequest query, CancellationToken cancellationToken);
     Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPointIds(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, CancellationToken cancellationToken = default);

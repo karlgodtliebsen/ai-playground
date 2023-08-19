@@ -61,7 +61,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\AI.Library\AI.Library.csproj" />
     <ProjectReference Include="..\..\..\AI.Test.Support\AI.Test.Support.csproj" />
-    <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
     <ProjectReference Include="..\..\LLamaSharpApp.WebAPI\LLamaSharpApp.WebAPI.csproj" />
   </ItemGroup>
 

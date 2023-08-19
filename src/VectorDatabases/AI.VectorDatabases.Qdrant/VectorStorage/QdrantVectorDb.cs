@@ -467,17 +467,17 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     }
 
 
-    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string collectionName, string id, bool withVectors = false, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string colName, string id, bool withEmbeddings = false, CancellationToken cancellationToken = default)
     {
         var search = new SearchRequest()
                 .SimilarToVector(new float[this.vectorSize!.Value])
                 .HavingExternalId(id)
                 .IncludePayLoad()
                 .TakeFirst()
-                .IncludeVectorData(withVectors)
+                .IncludeVectorData(withEmbeddings)
                 .WithScoreThreshold(-1)
             ;
-        var result = await Search(collectionName, search, cancellationToken: cancellationToken);
+        var result = await Search(colName, search, cancellationToken: cancellationToken);
         return result;
     }
 

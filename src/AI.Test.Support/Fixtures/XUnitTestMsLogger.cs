@@ -9,12 +9,12 @@ public sealed class XUnitTestMsLogger : Microsoft.Extensions.Logging.ILogger
     private const string ScopeDelimiter = "=> ";
     private const string Spacer = "      ";
 
-    private const string Trace = "trce";
-    private const string Debug = "dbug";
-    private const string Info = "info";
-    private const string Warn = "warn";
-    private const string Error = "fail";
-    private const string Critical = "crit";
+    private const string Trace = "trace";
+    private const string Debug = "Debug";
+    private const string Info = "Information";
+    private const string Warn = "Warning";
+    private const string Error = "Error";
+    private const string Critical = "Critical";
 
     private readonly string categoryName;
     private readonly bool useScopes;

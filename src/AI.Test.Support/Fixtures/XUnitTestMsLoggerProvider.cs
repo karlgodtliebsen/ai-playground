@@ -18,7 +18,19 @@ public sealed class XUnitTestMsLoggerProvider : ILoggerProvider, ISupportExterna
 
     public Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName)
     {
-        return new XUnitTestMsLogger((s) => output.WriteLine(s), scopes, categoryName, useScopes);
+        return new XUnitTestMsLogger(WriteLine, scopes, categoryName, useScopes);
+    }
+
+    private void WriteLine(string message)
+    {
+        try
+        {
+            output.WriteLine(message);
+        }
+        catch
+        {
+            // swallow exceptions from disposed test output helpers
+        }
     }
 
     public void Dispose()

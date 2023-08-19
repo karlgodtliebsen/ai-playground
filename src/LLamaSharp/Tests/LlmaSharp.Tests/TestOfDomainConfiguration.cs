@@ -13,12 +13,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using Serilog;
+
 using Xunit.Abstractions;
 
 namespace LlamaSharp.Tests;
 
 [Collection("LLamaSharp Collection")]
-public sealed class TestOfDomainConfiguration
+public sealed class TestOfDomainConfiguration : IDisposable
 {
     private readonly HostApplicationFactory factory;
     private readonly IServiceProvider services;
@@ -28,12 +30,25 @@ public sealed class TestOfDomainConfiguration
         this.factory = fixture.BuildFactoryWithLogging(output);
         this.services = factory.Services;
     }
+    public void Dispose()
+    {
+        Log.CloseAndFlush();
+    }
 
     [Fact]
-    public void ShowThatTestLoggerEmitsMessage()
+    public void ShowThatMicrosoftTestLoggerEmitsMessage()
     {
-        var logger = services.GetRequiredService<ILogger<TestOfDomainConfiguration>>();
-        logger.LogDebug("Log output message");
+        var logger = factory.Services.GetRequiredService<ILogger<TestOfDomainConfiguration>>();
+        logger.Should().NotBeNull();
+        logger.LogInformation("Log output message Microsoft Logger");
+    }
+
+    [Fact]
+    public void ShowThatSerilogTestLoggerEmitsMessage()
+    {
+        var logger = factory.Services.GetRequiredService<ILogger>();
+        logger.Should().NotBeNull();
+        logger.Information("Log output message Serilog");
     }
 
     [Fact]

@@ -185,7 +185,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
             var point = new PointStruct()
             {
                 Id = Guid.NewGuid().ToString(),
-                Payload = new Dictionary<string, string>()
+                Payload = new Dictionary<string, string?>()
                 {
                     {"name", document.Name},
                     {"author", document.Author},
@@ -200,14 +200,12 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
         return points;
     }
 
-
-
     public class Document
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Author { get; set; }
-        public int Year { get; set; }
+        public string? Name { get; init; } = default!;
+        public string? Description { get; init; } = default!;
+        public string? Author { get; init; } = default!;
+        public int Year { get; init; }
     }
 }
 

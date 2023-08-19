@@ -1,11 +1,15 @@
 ﻿using AI.Test.Support.Fixtures;
+
 using FluentAssertions;
 
 using LlamaSharp.Tests.Fixtures;
 using LlamaSharp.Tests.Utils;
+
 using LLamaSharpApp.WebAPI.Controllers.Services;
 
 using Microsoft.Extensions.DependencyInjection;
+
+using Serilog;
 
 using Xunit.Abstractions;
 
@@ -17,14 +21,12 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
     private readonly ILogger logger;
     public TestOfLlamaSharpConfigurationClient(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
-        factory.Setup(output);
-        this.factory = factory;
+        this.factory = factory.WithOutputHelper(output);
         this.logger = factory.Logger;
     }
-
     public void Dispose()
     {
-        //factory.Dispose();//Code smell: really annoying that this messes up the test runner
+        Log.CloseAndFlush();
     }
 
     [Fact]
@@ -33,6 +35,7 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
         using var scope = factory.Services.CreateScope();
         var userProvider = scope.ServiceProvider.GetRequiredService<IUserIdProvider>();
         userProvider.UserId.Should().Be(factory.UserId);
+        logger.Information("Log output message");
     }
 
     [Fact]
