@@ -1,48 +1,18 @@
-﻿using AI.Test.Support;
-using AI.Test.Support.DockerSupport;
+﻿using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
-using Xunit.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Qdrant.Tests.Fixtures;
 
-public sealed class VectorDbTestFixture : TestFixtureBase, IDisposable
+// ReSharper disable once ClassNeverInstantiated.Global
+public sealed class VectorDbTestFixture : TestFixtureBase
 {
-
-    public QdrantOptions Options { get; private set; }
-    public TestContainerDockerLauncher Launcher { get; private set; }
-
-    public VectorDbTestFixture()
+    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
     {
-        Factory = HostApplicationFactory.Build(
-            environment: () => "IntegrationTests",
-            serviceContext: (services, configuration) =>
-            {
-                services.AddQdrant(configuration);
-                services.AddSingleton<TestContainerDockerLauncher>();
-                var section = configuration.GetSection(DockerLaunchOptions.SectionName);
-                services.AddOptions<DockerLaunchOptions>().Bind(section);
-            },
-            fixedDateTime: () => DateTimeOffset.UtcNow
-        );
-        Options = Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value;
-    }
-    /// <summary>
-    /// Post Build Setup of Logging and Launcher that depends on ITestOutputHelper
-    /// </summary>
-    /// <param name="output"></param>
-    public override void Setup(ITestOutputHelper output)
-    {
-        base.Setup(output);
-        Launcher = Factory.Services.GetRequiredService<TestContainerDockerLauncher>();
-        Launcher.Start();
-    }
-
-    public void Dispose()
-    {
-        Launcher.Stop();
+        services.AddQdrant(configuration);
+        AddDockerSupport(services, configuration);
     }
 }

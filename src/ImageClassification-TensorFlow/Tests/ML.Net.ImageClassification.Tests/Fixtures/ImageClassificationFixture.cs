@@ -1,26 +1,20 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
+
 using ImageClassification.Domain.Configuration;
+
+using Microsoft.Extensions.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace ML.Net.ImageClassification.Tests.Fixtures;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class ImageClassificationFixture : TestFixtureBase
 {
-    public MlImageClassificationOptions MlImageClassificationOptions { get; private set; }
-
-    public ImageClassificationFixture()
+    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
     {
-        Factory = HostApplicationFactory.Build(
-            environment: () => "IntegrationTests",
-            serviceContext: (services, configuration) =>
-            {
-                services
-                    .AddMlnetImageClassification(configuration)
-                    ;
-            },
-            fixedDateTime: () => DateTimeOffset.UtcNow
-        );
-        MlImageClassificationOptions = Factory.Services.GetRequiredService<IOptions<MlImageClassificationOptions>>().Value;
+        services
+            .AddMlnetImageClassification(configuration)
+            ;
     }
 }

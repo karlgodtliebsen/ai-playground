@@ -1,4 +1,4 @@
-﻿namespace LlamaSharp.Tests;
+﻿namespace LlamaSharp.Tests.Utils;
 
 public class LlamaClientOptions
 {

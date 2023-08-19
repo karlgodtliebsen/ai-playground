@@ -1,15 +1,20 @@
-﻿
+﻿using System.Diagnostics;
 
-using System.Diagnostics;
+using AI.Test.Support.Fixtures;
 
-using AI.Test.Support;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
+using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Planning;
 using Microsoft.SemanticKernel.Reliability;
 using Microsoft.SemanticKernel.Skills.Web;
 using Microsoft.SemanticKernel.Skills.Web.Bing;
 
+using OpenAI.Client.Configuration;
+
+using SemanticKernel.Tests.Configuration;
 using SemanticKernel.Tests.Fixtures;
 using SemanticKernel.Tests.Skills;
 
@@ -19,23 +24,28 @@ using TimeSkill = SemanticKernel.Tests.Skills.TimeSkill;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Base Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample51StepwisePlanner
 {
     private readonly ILogger logger;
     private readonly Microsoft.Extensions.Logging.ILogger msLogger;
-    private readonly SemanticKernelTestFixtureBase fixture;
     private readonly HostApplicationFactory hostApplicationFactory;
-
-    public TestOfSemanticKernelExample51StepwisePlanner(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
-    {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.fixture = fixture;
-        this.msLogger = fixture.MsLogger;
-        this.hostApplicationFactory = fixture.Factory;
-    }
+    private readonly IServiceProvider services;
+    private readonly OpenAIOptions openAIOptions;
     const string Model = "gpt-3.5-turbo";
+    private readonly BingOptions bingOptions;
+    private readonly string skillsPath;
+
+    public TestOfSemanticKernelExample51StepwisePlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
+    {
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
+        this.bingOptions = services.GetRequiredService<IOptions<BingOptions>>().Value;
+        this.skillsPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Skills"));
+    }
 
 
     [Fact]
@@ -60,7 +70,7 @@ public class TestOfSemanticKernelExample51StepwisePlanner
 
     private async Task RunWithQuestion(IKernel kernel, string question)
     {
-        var bingConnector = new BingConnector(fixture.BingOptions.ApiKey);
+        var bingConnector = new BingConnector(bingOptions.ApiKey);
         var webSearchEngineSkill = new WebSearchEngineSkill(bingConnector);
 
         kernel.ImportSkill(webSearchEngineSkill, "WebSearch");
@@ -101,10 +111,10 @@ public class TestOfSemanticKernelExample51StepwisePlanner
     {
         var builder = new KernelBuilder();
         builder
-            .WithOpenAIChatCompletionService(Model, fixture.OpenAIOptions.ApiKey);
+            .WithOpenAIChatCompletionService(Model, openAIOptions.ApiKey);
 
         var kernel = builder
-            .WithLogger(fixture.MsLogger)
+            .WithLogger(msLogger)
             .Configure(c => c.SetDefaultHttpRetryConfig(new HttpRetryConfig
             {
                 MaxRetryCount = 3,

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 
 using LlamaSharp.Tests.Fixtures;
+using LlamaSharp.Tests.Utils;
 
 using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Services;
@@ -18,6 +19,9 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
 {
     private readonly IntegrationTestWebApplicationFactory factory;
     private readonly ILogger logger;
+    const string Model = "wizardLM-7B.ggmlv3.q4_1";
+    //"llama-2-7b.ggmlv3.q8_0";
+
     public TestOfLlamaSharpCompositeClient(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
         factory.Setup(output);
@@ -29,10 +33,6 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
     {
         //factory.Dispose();//Code smell: really annoying that this messes up the test runner
     }
-
-
-    const string Model = "wizardLM-7B.ggmlv3.q4_1";
-    //"llama-2-7b.ggmlv3.q8_0";
 
     /// <summary>
     /// <a href="https://github.com/SciSharp/LLamaSharp/blob/master/LLama.Examples/NewVersion/ChatSessionStripRoleName.cs" >LLama.Examples</a>

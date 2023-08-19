@@ -1,4 +1,9 @@
-﻿using Microsoft.SemanticKernel;
+﻿using AI.Test.Support.Fixtures;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.AI.ImageGeneration;
 
@@ -10,23 +15,28 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Base Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample18DallE
 {
     private readonly ILogger logger;
     private readonly Microsoft.Extensions.Logging.ILogger msLogger;
     private readonly OpenAIOptions openAIOptions;
-    private readonly SemanticKernelTestFixtureBase fixture;
+    private readonly HostApplicationFactory hostApplicationFactory;
+    private readonly IServiceProvider services;
 
-    public TestOfSemanticKernelExample18DallE(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
-    {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.fixture = fixture;
-        this.openAIOptions = fixture.OpenAIOptions;
-    }
     const string Model = "gpt-3.5-turbo";
     //const int openAiVectorSize = 1536;
+
+
+    public TestOfSemanticKernelExample18DallE(SemanticKernelTestFixture fixture, ITestOutputHelper output)
+    {
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
+    }
+
     [Fact]
     public async Task UseDallEQdrantMemoryCollectionc_Example18()
     {
@@ -38,7 +48,7 @@ public class TestOfSemanticKernelExample18DallE
         //var memoryStorage = await factory.Create(collectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         IKernel kernel = new KernelBuilder()
-            .WithLogger(fixture.MsLogger)
+            .WithLogger(msLogger)
             .WithOpenAIImageGenerationService(openAIOptions.ApiKey)
             .WithOpenAIChatCompletionService(Model, openAIOptions.ApiKey)
             //.WithMemoryStorage(memoryStorage)

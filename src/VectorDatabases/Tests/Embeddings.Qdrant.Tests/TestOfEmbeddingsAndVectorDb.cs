@@ -1,5 +1,5 @@
 ﻿using AI.Library.Utils;
-using AI.Test.Support;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
@@ -7,8 +7,10 @@ using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using Embeddings.Qdrant.Tests.Fixtures;
 
 using FluentAssertions;
+
 using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using OpenAI.Client.Domain;
@@ -26,18 +28,18 @@ public class TestOfEmbeddingsAndVectorDb
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IModelRequestFactory requestFactory;
     private readonly string testFilesPath;
+    private readonly IServiceProvider services;
+    private const string CollectionName = "embeddings-test-collection";
+    private const int VectorSize = 4;
 
     public TestOfEmbeddingsAndVectorDb(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.hostApplicationFactory = fixture.Factory;
-        this.requestFactory = fixture.RequestFactory;
-        this.testFilesPath = fixture.TestFilesPath;
-        this.logger = fixture.Logger;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.requestFactory = services.GetRequiredService<IModelRequestFactory>(); ;
+        this.testFilesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
     }
-
-    private const string CollectionName = "embeddings-test-collection";
-    private const int VectorSize = 4;
 
     private async Task CleanupCollection()
     {
@@ -86,8 +88,8 @@ public class TestOfEmbeddingsAndVectorDb
     }
 
 
-    [Fact(Skip = "To many request. Needs solving")]
-    // [Fact]
+    [Fact(Skip = "Emits 'To many request'. Needs solving")]
+    //[Fact]
     public async Task VerifyEmbeddingsModelUsingOpenAIClient()
     {
         var fileData = await File.ReadAllTextAsync(Path.Combine(testFilesPath, "UBER_2019.html"));

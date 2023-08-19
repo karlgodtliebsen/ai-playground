@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 using AI.Library.Utils;
-using AI.Test.Support;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
@@ -13,9 +13,11 @@ using FluentAssertions;
 
 using LLama;
 
+using LLamaSharp.Domain.Configuration;
 using LLamaSharp.Domain.Domain.Services;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Xunit.Abstractions;
 
@@ -31,30 +33,26 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     private readonly ILogger logger;
 
     private readonly HostApplicationFactory hostApplicationFactory;
-    private readonly JsonSerializerOptions serializerOptions;
-    private readonly EmbeddingsVectorDbTestFixture fixture;
+    private readonly JsonSerializerOptions serializerOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
     private readonly ILlamaModelFactory llamaModelFactory;
     private string modelFilesPath;
+    private readonly IServiceProvider services;
+    private const string CollectionName = "books-search-collection";
 
-
+    private const int VectorSize = 3; // vey small vector size for testing
 
     public TestOfSearchScenarioInVectorDbUsingEmbeddings(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.hostApplicationFactory = fixture.Factory;
-        this.fixture = fixture;
-        this.modelFilesPath = fixture.ModelFilesPath;
-        this.llamaModelFactory = fixture.LlamaModelFactory;
-        serializerOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.services = hostApplicationFactory.Services;
+        var options = services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
+        this.modelFilesPath = Path.GetFullPath(options.ModelPath);
+        this.llamaModelFactory = services.GetRequiredService<ILlamaModelFactory>();
+        this.logger = services.GetRequiredService<ILogger>();
     }
-
-    private const string CollectionName = "books-search-collection";
-    private const int VectorSize = 3; // vey small vector size for testing
-
 
     private async Task CleanupCollection()
     {

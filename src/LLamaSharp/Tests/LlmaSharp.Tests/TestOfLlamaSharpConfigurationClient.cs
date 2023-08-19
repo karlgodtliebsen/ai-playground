@@ -1,7 +1,8 @@
-﻿using FluentAssertions;
+﻿using AI.Test.Support.Fixtures;
+using FluentAssertions;
 
 using LlamaSharp.Tests.Fixtures;
-
+using LlamaSharp.Tests.Utils;
 using LLamaSharpApp.WebAPI.Controllers.Services;
 
 using Microsoft.Extensions.DependencyInjection;

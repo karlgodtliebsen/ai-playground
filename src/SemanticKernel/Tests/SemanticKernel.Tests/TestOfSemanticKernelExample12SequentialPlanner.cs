@@ -1,4 +1,7 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using SemanticKernel.Tests.Fixtures;
 
@@ -6,21 +9,20 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Base Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample12SequentialPlanner
 {
     private readonly ILogger logger;
     private readonly Microsoft.Extensions.Logging.ILogger msLogger;
-    private readonly SemanticKernelTestFixtureBase fixture;
     private readonly HostApplicationFactory hostApplicationFactory;
+    private readonly IServiceProvider services;
 
-    public TestOfSemanticKernelExample12SequentialPlanner(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
+    public TestOfSemanticKernelExample12SequentialPlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.fixture = fixture;
-        this.msLogger = fixture.MsLogger;
-        this.hostApplicationFactory = fixture.Factory;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
     }
 
     [Fact]

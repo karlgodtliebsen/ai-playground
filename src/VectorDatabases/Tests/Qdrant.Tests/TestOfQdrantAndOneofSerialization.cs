@@ -12,19 +12,15 @@ namespace Qdrant.Tests;
 public class TestOfQdrantAndOneofSerialization
 {
     private readonly ITestOutputHelper output;
-    private readonly JsonSerializerOptions serializerOptions;
-
+    private readonly JsonSerializerOptions serializerOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
 
     public TestOfQdrantAndOneofSerialization(ITestOutputHelper output)
     {
         this.output = output;
-        serializerOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
     }
-
-
 
     [Fact(Skip = "Awaiting solution to json serialize/Deserialize OnfOf")]
     public async Task VerifyOneOf()

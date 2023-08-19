@@ -1,7 +1,13 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using Microsoft.SemanticKernel.Connectors.AI.OpenAI.TextCompletion;
+
+using OpenAI.Client.Configuration;
 
 using SemanticKernel.Tests.Fixtures;
 
@@ -9,22 +15,24 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Base Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample37MultiStreamingCompletion
 {
     private readonly ILogger logger;
     private readonly Microsoft.Extensions.Logging.ILogger msLogger;
-    private readonly SemanticKernelTestFixtureBase fixture;
+    private readonly SemanticKernelTestFixture fixture;
     private readonly HostApplicationFactory hostApplicationFactory;
     private static readonly object s_lockObject = new();
+    private readonly IServiceProvider services;
+    private readonly OpenAIOptions openAIOptions;
 
-    public TestOfSemanticKernelExample37MultiStreamingCompletion(SemanticKernelTestFixtureBase fixture, ITestOutputHelper output)
+    public TestOfSemanticKernelExample37MultiStreamingCompletion(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.fixture = fixture;
-        this.msLogger = fixture.MsLogger;
-        this.hostApplicationFactory = fixture.Factory;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
     }
 
     [Fact]
@@ -33,7 +41,7 @@ public class TestOfSemanticKernelExample37MultiStreamingCompletion
         var model = "text-davinci-003";
         logger.Information("======== Open AI - Multiple Text Completion ========");
 
-        ITextCompletion textCompletion = new OpenAITextCompletion(model, fixture.OpenAIOptions.ApiKey);
+        ITextCompletion textCompletion = new OpenAITextCompletion(model, openAIOptions.ApiKey);
         var requestSettings = new CompleteRequestSettings()
         {
             MaxTokens = 200,

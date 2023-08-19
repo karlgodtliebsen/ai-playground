@@ -1,7 +1,9 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Orchestration;
 using Microsoft.SemanticKernel.Planning;
@@ -10,6 +12,9 @@ using Microsoft.SemanticKernel.Skills.Core;
 using Microsoft.SemanticKernel.Skills.Web;
 using Microsoft.SemanticKernel.Skills.Web.Bing;
 
+using OpenAI.Client.Configuration;
+
+using SemanticKernel.Tests.Configuration;
 using SemanticKernel.Tests.Domain;
 using SemanticKernel.Tests.Fixtures;
 using SemanticKernel.Tests.Skills;
@@ -25,23 +30,29 @@ public class TestOfSemanticKernelExample31CustomPlanner
 {
     private readonly ILogger logger;
     private readonly Microsoft.Extensions.Logging.ILogger msLogger;
-    private readonly SemanticKernelWithDockerTestFixture fixture;
     private readonly HostApplicationFactory hostApplicationFactory;
+    private readonly IServiceProvider services;
+    private readonly OpenAIOptions openAIOptions;
+    private readonly BingOptions bingOptions;
+    private readonly string skillsPath;
 
-    public TestOfSemanticKernelExample31CustomPlanner(SemanticKernelWithDockerTestFixture fixture, ITestOutputHelper output)
-    {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.fixture = fixture;
-        this.msLogger = fixture.MsLogger;
-        this.hostApplicationFactory = fixture.Factory;
-    }
     private const string CollectionName = "SemanticKernel-customplanner-test-collection";
     private const int VectorSize = 1536;
 
     const string Model = "gpt-3.5-turbo";
     const string CompletionModel = "text-davinci-003";
     const string EmbeddingModel = "text-embedding-ada-002";
+    public TestOfSemanticKernelExample31CustomPlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
+    {
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
+        this.bingOptions = services.GetRequiredService<IOptions<BingOptions>>().Value;
+        this.skillsPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Skills"));
+    }
+
 
     [Fact]
     public async Task UseCustomPlanner_Example31()
@@ -54,9 +65,9 @@ public class TestOfSemanticKernelExample31CustomPlanner
 
         logger.Information("======== Custom Planner - Create and Execute Markup Plan ========");
         IKernel kernel = new KernelBuilder()
-            .WithLogger(fixture.MsLogger)
-            .WithOpenAITextCompletionService(CompletionModel, fixture.OpenAIOptions.ApiKey)
-            .WithOpenAITextEmbeddingGenerationService(EmbeddingModel, fixture.OpenAIOptions.ApiKey)
+            .WithLogger(msLogger)
+            .WithOpenAITextCompletionService(CompletionModel, openAIOptions.ApiKey)
+            .WithOpenAITextEmbeddingGenerationService(EmbeddingModel, openAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)
             .Build();
 
@@ -149,9 +160,9 @@ public class TestOfSemanticKernelExample31CustomPlanner
     // DependsOn: BingSkill named "bing"
     private IDictionary<string, ISKFunction> LoadQASkill(IKernel kernel)
     {
-        string folder = fixture.SkillsPath;
+        string folder = skillsPath;
         kernel.ImportSkill(new TimeSkill(), "time");
-        var bing = new WebSearchEngineSkill(new BingConnector(fixture.BingOptions.ApiKey));
+        var bing = new WebSearchEngineSkill(new BingConnector(bingOptions.ApiKey));
         var search = kernel.ImportSkill(bing, "bing");
         return kernel.ImportSemanticSkillFromDirectory(folder, "QASkill");
     }

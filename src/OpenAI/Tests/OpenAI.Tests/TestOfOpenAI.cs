@@ -1,54 +1,45 @@
 ﻿using AI.Library.Utils;
-using AI.Test.Support;
+using AI.Test.Support.Fixtures;
 
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
 using OpenAI.Client.OpenAI.HttpClients;
 using OpenAI.Client.OpenAI.Models.Chat;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;
 using OpenAI.Client.OpenAI.Models.Images;
 using OpenAI.Client.OpenAI.Models.Requests;
+using OpenAI.Tests.Fixtures;
 
 using Xunit.Abstractions;
 
 namespace OpenAI.Tests;
 
-
+[Collection("OpenAI Collection")]
 public class TestOfOpenAIClients
 {
-    private readonly ITestOutputHelper output;
     private readonly ILogger logger;
-    private readonly HostApplicationFactory factory;
     private readonly string path;
     private readonly IModelRequestFactory requestFactory;
+    private readonly HostApplicationFactory hostApplicationFactory;
+    private readonly IServiceProvider services;
 
-    public TestOfOpenAIClients(ITestOutputHelper output)
+    public TestOfOpenAIClients(ITestOutputHelper output, OpenAITestFixture fixture)
     {
-        this.output = output;
-        this.factory = HostApplicationFactory.Build(
-            environment: () => "IntegrationTests",
-            serviceContext: (services, configuration) =>
-            {
-                services.AddOpenAIConfiguration(configuration);
-            },
-            fixedDateTime: () => DateTimeOffset.UtcNow
-        );
-        factory.ConfigureLogging(output);
-        logger = factory.Services.GetRequiredService<ILogger>();
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
         path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
-        requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();
+        requestFactory = services.GetRequiredService<IModelRequestFactory>();
     }
-
 
     [Fact]
     public async Task VerifyDownloadModelsClient()
     {
 
-        var aiClient = factory.Services.GetRequiredService<IModelsAIClient>();
+        var aiClient = services.GetRequiredService<IModelsAIClient>();
         var response = await aiClient.GetModelsAsync(CancellationToken.None);
         response.Switch(
             r =>
@@ -57,7 +48,7 @@ public class TestOfOpenAIClients
                 models.Length.Should().BeGreaterThan(0);
                 foreach (var model in models)
                 {
-                    output.WriteLine(model.Id);
+                    logger.Information(model.Id);
                 }
             },
         error => throw new AIException(error.Error)
@@ -67,7 +58,7 @@ public class TestOfOpenAIClients
     [Fact]
     public async Task VerifyTextCompletionModelClient()
     {
-        var aiClient = factory.Services.GetRequiredService<ICompletionAIClient>();
+        var aiClient = services.GetRequiredService<ICompletionAIClient>();
 
         //https://platform.openai.com/docs/models/overview
         //text-davinci-003
@@ -76,7 +67,7 @@ public class TestOfOpenAIClients
 
         string deploymentName = "text-davinci-003"; //text-davinci-003 text-davinci-002
         string prompt = "Say this is a test";
-        output.WriteLine($"Input: {prompt}");
+        logger.Information($"Input: {prompt}");
 
         var payload = requestFactory.CreateRequest<CompletionRequest>(() =>
             new CompletionRequest
@@ -99,7 +90,7 @@ public class TestOfOpenAIClients
                 string completion = r.Choices[0].Text.Trim();
                 completion.Should().NotBeNullOrWhiteSpace();
                 completion.Should().Be("This is indeed a test");
-                output.WriteLine(completion);
+                logger.Information(completion);
             },
             error => throw new AIException(error.Error)
         );
@@ -108,7 +99,7 @@ public class TestOfOpenAIClients
     [Fact]
     public async Task VerifyCompletionModelClient()
     {
-        var aiClient = factory.Services.GetRequiredService<ICompletionAIClient>();
+        var aiClient = services.GetRequiredService<ICompletionAIClient>();
 
         //https://platform.openai.com/docs/models/overview
         //text-davinci-003
@@ -143,7 +134,7 @@ public class TestOfOpenAIClients
                 completions.Choices.Count.Should().Be(1);
                 string completion = completions.Choices[0].Text.Trim();
                 completion.Should().Contain("Tuesday");
-                output.WriteLine(completion);
+                logger.Information(completion);
             },
             error => throw new AIException(error.Error)
             );
@@ -155,7 +146,7 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/models/overview
         //https://platform.openai.com/docs/api-reference/chat/create
 
-        var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+        var aiClient = services.GetRequiredService<IChatCompletionAIClient>();
 
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
@@ -180,7 +171,7 @@ public class TestOfOpenAIClients
                 completions.Choices.Count.Should().Be(1);
                 string completion = completions.Choices.First().Message!.Content!.Trim();
                 completion.Should().Contain("I assist you today?");
-                output.WriteLine(completion);
+                logger.Information(completion);
             },
             error => throw new AIException(error.Error)
         );
@@ -192,7 +183,7 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/models/overview
         //https://platform.openai.com/docs/api-reference/chat/create
 
-        var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+        var aiClient = services.GetRequiredService<IChatCompletionAIClient>();
 
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
@@ -222,7 +213,7 @@ public class TestOfOpenAIClients
                         if (t!.Delta!.Content != null)
                         {
                             string completion = t!.Delta!.Content;
-                            output.WriteLine(completion);
+                            logger.Information(completion);
                         }
                     }
                 }
@@ -237,7 +228,7 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/models/overview
         //https://platform.openai.com/docs/api-reference/chat/create
 
-        var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+        var aiClient = services.GetRequiredService<IChatCompletionAIClient>();
 
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
@@ -268,7 +259,7 @@ public class TestOfOpenAIClients
                         if (t!.Delta!.Content != null)
                         {
                             string completion = t!.Delta!.Content;
-                            output.WriteLine(completion);
+                            logger.Information(completion);
                         }
                     }
                 }
@@ -285,7 +276,7 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/api-reference/chat/create
         //https://github.com/openai/openai-cookbook/blob/main/examples/How_to_stream_completions.ipynb
 
-        var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+        var aiClient = services.GetRequiredService<IChatCompletionAIClient>();
 
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
@@ -314,7 +305,7 @@ public class TestOfOpenAIClients
                         if (t!.Delta!.Content != null)
                         {
                             string completion = t!.Delta!.Content;
-                            output.WriteLine(completion);
+                            logger.Information(completion);
                         }
                     }
                 },
@@ -330,7 +321,7 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/models/overview
         //https://platform.openai.com/docs/api-reference/chat/create
 
-        var aiClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+        var aiClient = services.GetRequiredService<IChatCompletionAIClient>();
 
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
@@ -354,7 +345,7 @@ public class TestOfOpenAIClients
                 completions.Choices.Count.Should().Be(1);
                 string completion = completions.Choices.First().Message!.Content!.Trim();
                 completion.Should().NotBeNullOrWhiteSpace();
-                output.WriteLine(completion);
+                logger.Information(completion);
             },
             error => throw new AIException(error.Error)
         );
@@ -366,7 +357,7 @@ public class TestOfOpenAIClients
         //https://platform.openai.com/docs/models/overview
         //https://platform.openai.com/docs/api-reference/moderations/create
 
-        var aiClient = factory.Services.GetRequiredService<IModerationAIClient>();
+        var aiClient = services.GetRequiredService<IModerationAIClient>();
 
         string deploymentName = "text-moderation-latest";
 
@@ -392,7 +383,7 @@ public class TestOfOpenAIClients
     public async Task VerifyEditModelClient()
     {
         //https://platform.openai.com/docs/models/overview
-        var aiClient = factory.Services.GetRequiredService<IEditsAIClient>();
+        var aiClient = services.GetRequiredService<IEditsAIClient>();
 
         var payload = requestFactory.CreateRequest<EditsRequest>(() =>
             new EditsRequest
@@ -411,7 +402,7 @@ public class TestOfOpenAIClients
                 completions.Should().NotBeNull();
                 string completion = completions.Choices[0].Text.Trim();
                 completion.Should().NotBeNullOrWhiteSpace();
-                output.WriteLine(completion);
+                logger.Information(completion);
                 completion.Should().Contain("What day of the week is it");
             }
             , error => throw new AIException(error.Error)
@@ -422,7 +413,7 @@ public class TestOfOpenAIClients
     public async Task VerifyEmbeddingsModelClient()
     {
         //https://platform.openai.com/docs/models/overview
-        var aiClient = factory.Services.GetRequiredService<IEmbeddingsAIClient>();
+        var aiClient = services.GetRequiredService<IEmbeddingsAIClient>();
 
         var payload = requestFactory.CreateRequest<EmbeddingsRequest>(() =>
             new EmbeddingsRequest
@@ -439,7 +430,7 @@ public class TestOfOpenAIClients
                 embeddings.Data.Count.Should().Be(1);
                 var data = embeddings.Data[0];
                 data.Embedding.Length.Should().Be(1536);
-                output.WriteLine(data.Embedding.Length.ToString());
+                logger.Information(data.Embedding.Length.ToString());
             },
             error => throw new AIException(error.Error)
         );
@@ -449,7 +440,7 @@ public class TestOfOpenAIClients
     public async Task VerifyFileUploadClient()
     {
         //https://platform.openai.com/docs/models/overview
-        var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
+        var aiClient = services.GetRequiredService<IFilesAIClient>();
 
         var payload =
             new UploadFileRequest
@@ -473,7 +464,7 @@ public class TestOfOpenAIClients
     [Fact]
     public async Task VerifyListFilesClient()
     {
-        var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
+        var aiClient = services.GetRequiredService<IFilesAIClient>();
         //https://platform.openai.com/docs/models/overview
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Switch(
@@ -490,7 +481,7 @@ public class TestOfOpenAIClients
     {
         await VerifyFileUploadClient();
 
-        var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
+        var aiClient = services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Switch(
             _ => { },
@@ -527,7 +518,7 @@ public class TestOfOpenAIClients
         await VerifyFileUploadClient();
         await Task.Delay(TimeSpan.FromSeconds(10));
 
-        var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
+        var aiClient = services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Should().NotBeNull();
         response.Switch(
@@ -560,7 +551,7 @@ public class TestOfOpenAIClients
         await VerifyFileUploadClient();
         await Task.Delay(TimeSpan.FromSeconds(10));
 
-        var aiClient = factory.Services.GetRequiredService<IFilesAIClient>();
+        var aiClient = services.GetRequiredService<IFilesAIClient>();
         var response = await aiClient.GetFilesAsync(CancellationToken.None);
         response.Switch(
             fd =>
@@ -587,7 +578,7 @@ public class TestOfOpenAIClients
     [Fact]
     public async Task VerifyCreateImageClient()
     {
-        var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
+        var aiClient = services.GetRequiredService<IImagesAIClient>();
         var payload =
 
             new ImageGenerationRequest
@@ -606,7 +597,7 @@ public class TestOfOpenAIClients
                 {
                     model.Url.Should().NotBeNullOrEmpty();
                     model.Data.Should().BeNull();
-                    output.WriteLine(model.Url);
+                    logger.Information(model.Url);
                 }
             },
             error => throw new AIException(error.Error)
@@ -616,7 +607,7 @@ public class TestOfOpenAIClients
     [Fact]
     public async Task VerifyCreateImageWithBSonReturnClient()
     {
-        var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
+        var aiClient = services.GetRequiredService<IImagesAIClient>();
 
         var payload = new ImageGenerationRequest
         {
@@ -635,7 +626,7 @@ public class TestOfOpenAIClients
                 {
                     model.Url.Should().BeNullOrEmpty();
                     model.Data.Should().NotBeNullOrEmpty();
-                    output.WriteLine(model.Data);
+                    logger.Information(model.Data);
                 }
             },
             error => throw new AIException(error.Error)
@@ -645,7 +636,7 @@ public class TestOfOpenAIClients
     [Fact(Skip = "WIP")]
     public async Task VerifyEditImageClient()
     {
-        var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
+        var aiClient = services.GetRequiredService<IImagesAIClient>();
         string name = "img-rHHYCWOZmShIIIBNAco4l6WE.png";
         await using var imageStream = File.OpenRead(Path.Combine(path, name));
 
@@ -670,7 +661,7 @@ public class TestOfOpenAIClients
                 {
                     model.Url.Should().NotBeNullOrEmpty();
                     model.Data.Should().BeNull();
-                    output.WriteLine(model.Url);
+                    logger.Information(model.Url);
                 }
             },
             error => throw new AIException(error.Error)
@@ -681,7 +672,7 @@ public class TestOfOpenAIClients
     [Fact]
     public async Task VerifyVariationsImageClient()
     {
-        var aiClient = factory.Services.GetRequiredService<IImagesAIClient>();
+        var aiClient = services.GetRequiredService<IImagesAIClient>();
         string name = "img-rHHYCWOZmShIIIBNAco4l6WE.png";
         await using var imageStream = File.OpenRead(Path.Combine(path, name));
 
@@ -703,7 +694,7 @@ public class TestOfOpenAIClients
                 {
                     model.Url.Should().NotBeNullOrEmpty();
                     model.Data.Should().BeNull();
-                    output.WriteLine(model.Url);
+                    logger.Information(model.Url);
                 }
             },
             error => throw new AIException(error.Error)

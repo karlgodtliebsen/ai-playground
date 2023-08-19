@@ -1,4 +1,4 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 
@@ -18,12 +18,13 @@ public class TestOfTikTokenEmbeddings
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly string testFilesPath;
+    private readonly IServiceProvider services;
+
     public TestOfTikTokenEmbeddings(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.hostApplicationFactory = fixture.Factory;
-        this.testFilesPath = fixture.TestFilesPath;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
     }
 
     private const string CollectionName = "tiktoken-embeddings-test-collection";

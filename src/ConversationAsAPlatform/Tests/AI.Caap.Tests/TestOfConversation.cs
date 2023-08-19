@@ -1,19 +1,14 @@
-﻿using System.Data.Common;
-
-using AI.CaaP.Configuration;
+﻿using AI.Caap.Tests.Fixtures;
 using AI.CaaP.Domain;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
-using AI.CaaP.Repository.DatabaseContexts;
 using AI.Library.Utils;
-using AI.Test.Support;
+using AI.Test.Support.Fixtures;
 
 using FluentAssertions;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-using OpenAI.Client.Configuration;
 using OpenAI.Client.Domain;
 using OpenAI.Client.OpenAI.HttpClients;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;
@@ -23,43 +18,20 @@ using Xunit.Abstractions;
 
 namespace AI.Caap.Tests;
 
+[Collection("Caap InMemory Collection")]
 public class TestOfConversation
 {
     private readonly ILogger logger;
-
     private readonly HostApplicationFactory factory;
-    public const string IntegrationTests = "integrationtests";
-
     private readonly IModelRequestFactory requestFactory;
+    private readonly IServiceProvider services;
 
-
-    public TestOfConversation(ITestOutputHelper output)
+    public TestOfConversation(ITestOutputHelper output, CaapWithInMemoryDatabaseTestFixture fixture)
     {
-        this.factory = HostApplicationFactory.Build(
-            environment: () => IntegrationTests,
-            serviceContext: (services, configuration) =>
-            {
-                services
-                    .AddCaaP(configuration)
-                    .AddOpenAIConfiguration(configuration)
-                    .AddRepository()
-                    .AddDatabaseContext(configuration)
-                    ;
-
-                var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ConversationDbContext>));
-                if (dbContextDescriptor != null) services.Remove(dbContextDescriptor);
-                var dbConnectionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbConnection));
-                if (dbConnectionDescriptor != null) services.Remove(dbConnectionDescriptor);
-                services.AddDbContext<ConversationDbContext>(options =>
-                {
-                    options.UseInMemoryDatabase("Conversations");
-                });
-            },
-            fixedDateTime: () => DateTimeOffset.UtcNow
-        );
-        factory.ConfigureLogging(output);
-        logger = factory.Services.GetRequiredService<ILogger>();
-        requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();
+        this.factory = fixture.BuildFactoryWithLogging(output);
+        this.services = factory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();
     }
 
 
@@ -72,7 +44,7 @@ public class TestOfConversation
     [Fact]
     public async Task RunAConversation()
     {
-        var aiChatClient = factory.Services.GetRequiredService<IChatCompletionAIClient>();
+        var aiChatClient = services.GetRequiredService<IChatCompletionAIClient>();
         string deploymentName = "gpt-3.5-turbo";
         var messages = new[]
         {
@@ -108,7 +80,7 @@ public class TestOfConversation
     public async Task RunAConversationUsingANameQuestion()
     {
 
-        var aiChatService = factory.Services.GetRequiredService<IOpenAiChatCompletionService>();
+        var aiChatService = services.GetRequiredService<IOpenAiChatCompletionService>();
         var agentId = Guid.NewGuid();
         var userId = Guid.NewGuid();
         string deploymentName = "gpt-3.5-turbo";
@@ -151,9 +123,9 @@ public class TestOfConversation
     [Fact]
     public async Task RunAPersistedConversation()
     {
-        this.factory.Services.CleanDatabase();
-        var conversationRepository = factory.Services.GetRequiredService<IConversationRepository>();
-        var aiChatService = factory.Services.GetRequiredService<IOpenAiChatCompletionService>();
+        this.services.CleanDatabase();
+        var conversationRepository = services.GetRequiredService<IConversationRepository>();
+        var aiChatService = services.GetRequiredService<IOpenAiChatCompletionService>();
 
         var agentId = Guid.NewGuid();
         var userId = Guid.NewGuid();
@@ -183,7 +155,6 @@ public class TestOfConversation
         {
             messages.Add(new ChatCompletionMessage { Role = conv.Role, Content = conv.Content });
         }
-
 
         var response = await aiChatService.GetChatCompletion(messages.ToList(), conversation.UserId, deploymentName, CancellationToken.None);
         response.Switch(

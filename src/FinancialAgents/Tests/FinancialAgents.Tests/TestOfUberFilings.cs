@@ -1,4 +1,4 @@
-﻿using AI.Test.Support;
+﻿using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
@@ -9,8 +9,10 @@ using AngleSharp.Html.Parser;
 using FinancialAgents.Tests.Fixtures;
 
 using FluentAssertions;
+
 using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using Xunit.Abstractions;
@@ -22,24 +24,22 @@ public class TestOfUberFilings
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
-    private readonly FinancialAgentsTestFixture fixture;
     private readonly string testFilesPath;
     private readonly ILlamaModelFactory llamaModelFactory;
     private readonly IEmbeddingsService embeddingService;
+    private readonly IServiceProvider services;
+    private const string CollectionName = "SemanticKernel-uber-test-collection";
+    private const int VectorSize = 1536;
 
     public TestOfUberFilings(FinancialAgentsTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.logger = fixture.Logger;
-        this.fixture = fixture;
-        this.hostApplicationFactory = fixture.Factory;
-        this.testFilesPath = fixture.TestFilesPath;
-        this.llamaModelFactory = fixture.LlamaModelFactory;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.llamaModelFactory = services.GetRequiredService<ILlamaModelFactory>();
+        this.testFilesPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files"));
         this.embeddingService = hostApplicationFactory.Services.GetRequiredService<IEmbeddingsService>();
     }
-
-    private const string CollectionName = "SemanticKernel-uber-test-collection";
-    private const int VectorSize = 1536;
 
     private async Task CleanupCollection()
     {

@@ -1,5 +1,5 @@
 ﻿using AI.Library.Utils;
-using AI.Test.Support;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
@@ -9,6 +9,7 @@ using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Qdrant.Tests.Fixtures;
 
@@ -23,19 +24,18 @@ public class TestOfQdrantAdministration
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly QdrantOptions options;
-
+    private readonly IServiceProvider services;
+    private const string CollectionName = "qdrant-test-collection";
+    private const int VectorSize = 4;
 
     public TestOfQdrantAdministration(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        fixture.Setup(output);
-        this.hostApplicationFactory = fixture.Factory;
-        this.options = fixture.Options;
-        this.logger = fixture.Logger;
+        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.options = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
     }
 
-
-    private const string CollectionName = "qdrant-test-collection";
-    private const int VectorSize = 4;
 
     [Fact]
     public async Task VerifyInitialAccessToQdrant()

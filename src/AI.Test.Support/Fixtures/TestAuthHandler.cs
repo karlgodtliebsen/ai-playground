@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace LlamaSharp.Tests.Fixtures;
+namespace AI.Test.Support.Fixtures;
 
 
 public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>

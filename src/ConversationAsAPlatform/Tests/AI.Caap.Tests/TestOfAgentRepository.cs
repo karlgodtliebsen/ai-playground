@@ -1,8 +1,8 @@
-﻿using AI.CaaP.AgentsDomain;
-using AI.CaaP.Configuration;
+﻿using AI.Caap.Tests.Fixtures;
+using AI.CaaP.AgentsDomain;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
-using AI.Test.Support;
+using AI.Test.Support.Fixtures;
 
 using FluentAssertions;
 
@@ -12,53 +12,40 @@ using Xunit.Abstractions;
 
 namespace AI.Caap.Tests;
 
+[Collection("Caap Collection")]
 public class TestOfAgentRepository
 {
     private readonly ILogger logger;
-
-
     private readonly HostApplicationFactory factory;
-    public const string IntegrationTests = "integrationtests";
+    private readonly IServiceProvider services;
 
-    public TestOfAgentRepository(ITestOutputHelper output)
+    public TestOfAgentRepository(ITestOutputHelper output, CaapWithDatabaseTestFixture fixture)
     {
-        this.factory = HostApplicationFactory.Build(
-            environment: () => IntegrationTests,
-            serviceContext: (services, configuration) =>
-            {
-                services
-                    .AddCaaP(configuration)
-                    .AddRepository()
-                    .AddDatabaseContext(configuration)
-                    ;
-            },
-            fixedDateTime: () => DateTimeOffset.UtcNow
-        );
-        factory.ConfigureLogging(output);
-        logger = factory.Services.GetRequiredService<ILogger>();
-
-        this.factory.Services.DestroyMigration();
-        this.factory.Services.UseMigration();
+        this.factory = fixture.BuildFactoryWithLogging(output);
+        this.services = factory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.services.DestroyMigration();
+        this.services.UseMigration();
     }
-
 
     [Fact]
     public async Task PersistAnAgent()
     {
-        this.factory.Services.CleanDatabase();
+        this.services.CleanDatabase();
 
         var repository = factory.Services.GetRequiredService<IAgentRepository>();
         var conversationId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
         var agent = new Agent()
         {
             Name = "Arthur",
             Instruction = "Read Hichhiker's Guide to the Galaxy",
-            OwnerId = Guid.NewGuid()
+            OwnerId = userId
         };
 
         await repository.AddAgent(agent, CancellationToken.None);
 
-        var persistedAgent = await repository.FindAgent(conversationId, agent.Id, CancellationToken.None);
+        var persistedAgent = await repository.FindAgent(agent.Id, userId, CancellationToken.None);
         persistedAgent.Should().NotBeNull();
 
         persistedAgent.Should().BeEquivalentTo(agent, options => options.Excluding(x => x.CreatedTime).Excluding(x => x.UpdatedTime));
@@ -67,7 +54,7 @@ public class TestOfAgentRepository
     [Fact]
     public async Task PersistMultipleAgents()
     {
-        this.factory.Services.CleanDatabase();
+        this.services.CleanDatabase();
 
         var repository = factory.Services.GetRequiredService<IAgentRepository>();
 
