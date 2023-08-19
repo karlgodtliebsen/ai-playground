@@ -18,7 +18,7 @@ public class TestOfFinancialAgents
 
     public TestOfFinancialAgents(ITestOutputHelper output, FinancialAgentsTestFixture fixture)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.WithLogging(output).Build();
         this.logger = hostApplicationFactory.Services.GetRequiredService<ILogger>();
     }
 

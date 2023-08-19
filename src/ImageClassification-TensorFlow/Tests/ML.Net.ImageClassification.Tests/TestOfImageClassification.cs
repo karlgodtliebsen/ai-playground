@@ -31,7 +31,7 @@ public class TestOfImageClassification : TestFixtureBase
 
     public TestOfImageClassification(ImageClassificationFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.WithLogging(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         options = services.GetRequiredService<IOptions<MlImageClassificationOptions>>().Value;

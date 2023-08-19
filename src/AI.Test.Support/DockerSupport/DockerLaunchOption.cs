@@ -1,6 +1,7 @@
 ﻿namespace AI.Test.Support.DockerSupport;
 
-public class DockerLaunchOption
+// ReSharper disable once ClassNeverInstantiated.Global
+public sealed class DockerLaunchOption
 {
     public string ImageName { get; set; } = default!;
     public int HostPort { get; set; } = 6333;
@@ -9,4 +10,8 @@ public class DockerLaunchOption
 
     public string? HostPath { get; set; } = default!;
     public string? ContainerPath { get; set; } = default!;
+
+    [Destructurama.Attributed.LogMasked()]
+    public IDictionary<string, string> EnvironmentVars { get; set; } = new Dictionary<string, string>();
+
 }

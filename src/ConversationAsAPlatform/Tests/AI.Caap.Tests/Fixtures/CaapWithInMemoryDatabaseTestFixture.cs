@@ -1,33 +1,14 @@
 ﻿using System.Data.Common;
 
-using AI.CaaP.Configuration;
-using AI.CaaP.Repository.Configuration;
 using AI.CaaP.Repository.DatabaseContexts;
-using AI.Test.Support.Fixtures;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using OpenAI.Client.Configuration;
-
 namespace AI.Caap.Tests.Fixtures;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class CaapWithDatabaseTestFixture : TestFixtureBase
-{
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
-    {
-        services
-            .AddCaaP(configuration)
-            .AddOpenAIConfiguration(configuration)
-            .AddRepository()
-            .AddDatabaseContext(configuration)
-            ;
-        AddDockerSupport(services, configuration);
-    }
-}
-
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class CaapWithInMemoryDatabaseTestFixture : CaapWithDatabaseTestFixture

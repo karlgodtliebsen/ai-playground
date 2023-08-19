@@ -36,7 +36,7 @@ public class TestOfVectorDbUsingBatch
 
     public TestOfVectorDbUsingBatch(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.hostApplicationFactory = fixture.WithLogging(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.options = services.GetRequiredService<IOptions<QdrantOptions>>().Value;

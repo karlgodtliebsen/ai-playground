@@ -9,8 +9,12 @@ namespace AI.Test.Support.Fixtures;
 
 public abstract class TestFixtureBase
 {
-    public string Environment { get; private set; } = "IntegrationTests";
-    public DateTimeOffset DateTimeOffset { get; private set; } = DateTimeOffset.UtcNow;
+    private string Environment { get; set; } = "IntegrationTests";
+    private bool useLogging = false;
+    private bool useDocker = false;
+    private ITestOutputHelper? output;
+
+    public DateTimeOffset DateTimeOffset { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// abstract constructor
@@ -47,7 +51,7 @@ public abstract class TestFixtureBase
         return factory;
     }
 
-    private HostApplicationFactory Build()
+    private HostApplicationFactory BuildWithOutLogging()
     {
         var factory = HostApplicationFactory.Build(
             environment: AddEnvironment,
@@ -70,14 +74,36 @@ public abstract class TestFixtureBase
     {
     }
 
-    public virtual HostApplicationFactory BuildFactoryWithLogging(ITestOutputHelper output)
+    //support for builder pattern
+    private HostApplicationFactory BuildFactory()
     {
-        var factory = BuildWithLogging(output);
-        return factory;
+        if (useLogging && output is not null)
+        {
+            return BuildWithLogging(output!);
+        }
+        return BuildWithOutLogging();
     }
-    public virtual HostApplicationFactory BuildFactory()
+
+    public TestFixtureBase WithDockerSupport()
     {
-        var factory = Build();
+        useDocker = true;
+        return this;
+    }
+
+    public virtual TestFixtureBase WithLogging(ITestOutputHelper outputHelper)
+    {
+        useLogging = true;
+        this.output = outputHelper;
+        return this;
+    }
+
+    public virtual HostApplicationFactory Build()
+    {
+        var factory = BuildFactory();
+        if (useDocker)
+        {
+            factory = factory.WithDockerSupport();
+        }
         return factory;
     }
 }

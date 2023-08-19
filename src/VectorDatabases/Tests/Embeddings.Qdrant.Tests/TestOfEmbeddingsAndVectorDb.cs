@@ -34,7 +34,7 @@ public class TestOfEmbeddingsAndVectorDb
 
     public TestOfEmbeddingsAndVectorDb(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.hostApplicationFactory = fixture.WithLogging(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.requestFactory = services.GetRequiredService<IModelRequestFactory>(); ;

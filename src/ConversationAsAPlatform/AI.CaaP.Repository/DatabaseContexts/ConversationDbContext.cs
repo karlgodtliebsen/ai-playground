@@ -19,7 +19,6 @@ public class ConversationDbContext : DbContext
     {
     }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 

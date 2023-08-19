@@ -28,7 +28,7 @@ public class TestOfConversation
 
     public TestOfConversation(ITestOutputHelper output, CaapWithInMemoryDatabaseTestFixture fixture)
     {
-        this.factory = fixture.BuildFactoryWithLogging(output);
+        this.factory = fixture.WithLogging(output).WithDockerSupport().Build();
         this.services = factory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();
@@ -79,7 +79,6 @@ public class TestOfConversation
     [Fact]
     public async Task RunAConversationUsingANameQuestion()
     {
-
         var aiChatService = services.GetRequiredService<IOpenAiChatCompletionService>();
         var agentId = Guid.NewGuid();
         var userId = Guid.NewGuid();

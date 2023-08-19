@@ -30,7 +30,7 @@ public class TestOfTensorFlowImageRecognitionInception : TestFixtureBase
 
     public TestOfTensorFlowImageRecognitionInception(TensorFlowImageClassificationFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output);
+        this.hostApplicationFactory = fixture.WithLogging(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         options = services.GetRequiredService<IOptions<TensorFlowOptions>>().Value;

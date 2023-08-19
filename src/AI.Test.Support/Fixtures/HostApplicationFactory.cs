@@ -93,12 +93,13 @@ public sealed class HostApplicationFactory : IDisposable
         return dpMock;
     }
 
-    public HostApplicationFactory WithDockerSupport()
+    internal HostApplicationFactory WithDockerSupport()
     {
         launcher = Services.GetRequiredService<TestContainerDockerLauncher>();
         launcher.Start();
         return this;
     }
+
     public void Dispose()
     {
         launcher?.Stop();

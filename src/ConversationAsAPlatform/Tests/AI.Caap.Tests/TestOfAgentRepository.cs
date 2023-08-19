@@ -21,7 +21,7 @@ public class TestOfAgentRepository
 
     public TestOfAgentRepository(ITestOutputHelper output, CaapWithDatabaseTestFixture fixture)
     {
-        this.factory = fixture.BuildFactoryWithLogging(output);
+        this.factory = fixture.WithLogging(output).WithDockerSupport().Build();
         this.services = factory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.services.DestroyMigration();

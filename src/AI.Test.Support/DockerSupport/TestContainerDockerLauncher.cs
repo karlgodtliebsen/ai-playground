@@ -43,22 +43,16 @@ public class TestContainerDockerLauncher
                         Directory.CreateDirectory(sourcePath);
                     }
                     var container = TestContainerFactory
-                       .Build(option.ImageName, option.HostPort, option.ContainerPort, option.WaitForPort,
+                       .Build(option.ImageName, option.HostPort, option.ContainerPort, option.WaitForPort, option.EnvironmentVars,
                            b => b.WithBindMount(sourcePath, mappedTo, AccessMode.ReadWrite)
                        );
 
-                    if (container is not null)
-                    {
-                        containers.Add(container);
-                    }
+                    containers.Add(container);
                 }
                 else
                 {
-                    var container = TestContainerFactory.Build(option.ImageName, option.HostPort, option.ContainerPort, option.WaitForPort);
-                    if (container is not null)
-                    {
-                        containers.Add(container);
-                    }
+                    var container = TestContainerFactory.Build(option.ImageName, option.HostPort, option.ContainerPort, option.WaitForPort, option.EnvironmentVars);
+                    containers.Add(container);
                 }
             }
             catch (Exception ex)

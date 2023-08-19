@@ -5,6 +5,7 @@ using AI.CaaP.Repository.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace AI.CaaP.Repository.Configuration;
 
@@ -50,15 +51,11 @@ public static class RepositoryConfigurator
 
     public static IServiceCollection AddDatabaseContext(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
-        if (sectionName is null)
-        {
-            sectionName = DatabaseConnectionOptions.ConfigSectionName;
-        }
+        sectionName ??= DatabaseConnectionOptions.ConfigSectionName;
         var configuredOptions = configuration.GetSection(sectionName).Get<DatabaseConnectionOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
         return services.AddDatabaseContext(configuredOptions);
     }
-
 
     public static void CleanDatabase(this IServiceProvider services)
     {
@@ -76,6 +73,55 @@ public static class RepositoryConfigurator
 
     public static void DestroyMigration(this IServiceProvider services)
     {
+
+        DatabaseConnectionOptions dbOptions = services.GetRequiredService<IOptions<DatabaseConnectionOptions>>().Value;
+        switch (dbOptions.UseProvider)
+        {
+            case "mssql":
+                DestroyMigrationUsingMsSql(services);
+                break;
+            case "postgres":
+                DestroyMigrationUsingPsql(services);
+                break;
+        }
+    }
+
+    private static void DestroyMigrationUsingPsql(this IServiceProvider services)
+    {
+        var scope = services.CreateScope();
+        using var context = scope.ServiceProvider.GetRequiredService<ConversationDbContext>();
+        context.Database.ExecuteSqlRaw("""
+            DO $$ 
+            DECLARE 
+                l_sql text;
+            BEGIN 
+                -- Drop all foreign key constraints
+                FOR l_sql IN 
+                    SELECT 'ALTER TABLE ' || table_schema || '.' || table_name || ' DROP CONSTRAINT ' || constraint_name || ';'
+                    FROM information_schema.table_constraints 
+                    WHERE constraint_type = 'FOREIGN KEY'
+                LOOP 
+                    EXECUTE l_sql;
+                END LOOP;
+
+                -- Drop all tables
+                FOR l_sql IN 
+                    SELECT 'DROP TABLE ' || table_schema || '.' || table_name || ' CASCADE;'
+                    FROM information_schema.tables 
+                    WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
+                LOOP 
+                    EXECUTE l_sql;
+                END LOOP;
+
+            END $$;            
+            
+            """);
+    }
+
+
+    private static void DestroyMigrationUsingMsSql(this IServiceProvider services)
+    {
+
         var scope = services.CreateScope();
         using var context = scope.ServiceProvider.GetRequiredService<ConversationDbContext>();
         context.Database.ExecuteSqlRaw("""
@@ -102,5 +148,4 @@ public static class RepositoryConfigurator
             
             """);
     }
-
 }

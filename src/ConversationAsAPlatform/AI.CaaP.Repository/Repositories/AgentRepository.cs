@@ -17,7 +17,6 @@ public class AgentRepository : IAgentRepository
         this.dbContext = dbContext;
     }
 
-
     public async Task<List<Agent>> FindAllAgents(CancellationToken cancellationToken)
     {
         var result = dbContext.Agents;

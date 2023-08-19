@@ -30,7 +30,7 @@ public class TestOfSemanticKernel
 
     public TestOfSemanticKernel(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.BuildFactoryWithLogging(output).WithDockerSupport();
+        this.hostApplicationFactory = fixture.WithLogging(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
