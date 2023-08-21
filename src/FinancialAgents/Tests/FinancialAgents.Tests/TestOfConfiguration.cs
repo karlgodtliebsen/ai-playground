@@ -25,7 +25,7 @@ public sealed class TestOfConfiguration : IClassFixture<FinancialAgentsTestFixtu
 
     public TestOfConfiguration(ITestOutputHelper output, FinancialAgentsTestFixture fixture)
     {
-        this.hostApplicationFactory = fixture.WithLogging(output).Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
         this.services = hostApplicationFactory.Services;
     }
 

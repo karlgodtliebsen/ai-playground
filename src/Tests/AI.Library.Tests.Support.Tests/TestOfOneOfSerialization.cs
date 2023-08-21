@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using FluentAssertions;
 
@@ -6,10 +7,10 @@ using OneOf;
 
 using Xunit.Abstractions;
 
-namespace Qdrant.Tests;
+namespace AI.Library.Tests.Support.Tests;
 
 
-public class TestOfQdrantAndOneofSerialization
+public class TestOfOneOfSerialization
 {
     private readonly ITestOutputHelper output;
     private readonly JsonSerializerOptions serializerOptions = new()
@@ -17,7 +18,7 @@ public class TestOfQdrantAndOneofSerialization
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
-    public TestOfQdrantAndOneofSerialization(ITestOutputHelper output)
+    public TestOfOneOfSerialization(ITestOutputHelper output)
     {
         this.output = output;
     }

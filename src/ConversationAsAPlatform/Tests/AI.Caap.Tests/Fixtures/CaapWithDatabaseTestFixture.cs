@@ -11,7 +11,7 @@ namespace AI.Caap.Tests.Fixtures;
 
 public class CaapWithDatabaseTestFixture : TestFixtureBase
 {
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddCaaP(configuration)
@@ -19,6 +19,5 @@ public class CaapWithDatabaseTestFixture : TestFixtureBase
             .AddRepository()
             .AddDatabaseContext(configuration)
             ;
-        AddDockerSupport(services, configuration);
     }
 }

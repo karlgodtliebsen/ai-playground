@@ -21,7 +21,7 @@ public sealed class TestOfLlamaSharpConfigurationClient : IClassFixture<Integrat
     private readonly ILogger logger;
     public TestOfLlamaSharpConfigurationClient(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
-        this.factory = factory.WithOutputHelper(output);
+        this.factory = factory.WithOutputLogSupport(output).Build<IntegrationTestWebApplicationFactory>();
         this.logger = factory.Logger;
     }
     public void Dispose()

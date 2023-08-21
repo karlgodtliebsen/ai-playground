@@ -13,7 +13,7 @@ namespace FinancialAgents.Tests.Fixtures;
 public class FinancialAgentsTestFixture : TestFixtureBase
 {
 
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddHuggingFace(configuration)

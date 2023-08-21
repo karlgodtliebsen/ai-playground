@@ -26,7 +26,7 @@ public class TestOfSemanticKernelExample36MultiCompletion
 
     public TestOfSemanticKernelExample36MultiCompletion(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithLogging(output).Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();

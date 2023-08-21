@@ -10,7 +10,7 @@ namespace OpenAI.Tests.Fixtures;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class OpenAITestFixture : TestFixtureBase
 {
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddOpenAIConfiguration(configuration);
     }

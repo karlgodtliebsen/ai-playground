@@ -16,9 +16,10 @@ namespace AI.Test.Support.Fixtures;
 
 public sealed class HostApplicationFactory : IDisposable
 {
+    private TestContainerDockerLauncher? launcher = default!;
+
     public IServiceProvider Services { get; private set; }
     public ISystemClock DateTimeProvider { get; private set; } = default!;
-    private TestContainerDockerLauncher? launcher = default!;
 
     public HostApplicationFactory(IServiceProvider services)
     {
@@ -28,7 +29,7 @@ public sealed class HostApplicationFactory : IDisposable
     public static HostApplicationFactory Build(
                         ITestOutputHelper? output = null,
                         Func<string>? environment = null,
-                        Action<IServiceCollection, IConfigurationRoot>? serviceContext = null,
+                        Action<IServiceCollection, IConfiguration>? serviceContext = null,
                         Func<DateTimeOffset>? fixedDateTime = null
                        )
     {
@@ -41,9 +42,19 @@ public sealed class HostApplicationFactory : IDisposable
         }
         configurationBuilder.AddEnvironmentVariables();
         configurationBuilder.AddUserSecrets<HostApplicationFactory>();
-        var buildConfiguration = configurationBuilder.Build();
+        IConfiguration buildConfiguration = configurationBuilder.Build();
         var serviceCollection = new ServiceCollection();
         serviceContext?.Invoke(serviceCollection, buildConfiguration);
+        SetupLogging(serviceCollection, buildConfiguration, output);
+        var instance = new HostApplicationFactory(serviceCollection.BuildServiceProvider())
+        {
+            DateTimeProvider = SetupTestDateTime(fixedDateTime)
+        };
+        return instance;
+    }
+
+    private static void SetupLogging(IServiceCollection serviceCollection, IConfiguration buildConfiguration, ITestOutputHelper? output = null)
+    {
         if (output is not null)
         {
             var cfg = Observability.CreateLoggerConfigurationUsingAppSettings(buildConfiguration);
@@ -68,17 +79,13 @@ public sealed class HostApplicationFactory : IDisposable
         {
             serviceCollection.AddLogging(logging =>
             {
+                var useScopes = logging.UsesScopes();
                 logging.AddConsole();
                 logging.AddDebug();
                 serviceCollection.AddSingleton<ILoggerFactory, XUnitTestMsLoggerFactory>();
-                serviceCollection.AddSingleton<ILoggerProvider>(new XUnitConsoleMsLoggerProvider(Console.Out, false));
+                serviceCollection.AddSingleton<ILoggerProvider>(new XUnitConsoleMsLoggerProvider(Console.Out, useScopes));
             });
         }
-        var instance = new HostApplicationFactory(serviceCollection.BuildServiceProvider())
-        {
-            DateTimeProvider = SetupTestDateTime(fixedDateTime)
-        };
-        return instance;
     }
 
     private static ISystemClock SetupTestDateTime(Func<DateTimeOffset>? fixedDateTime)

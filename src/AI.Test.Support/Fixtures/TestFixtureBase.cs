@@ -30,12 +30,7 @@ public abstract class TestFixtureBase
         }
     }
 
-    protected void AddDockerSupport(IServiceCollection services, IConfigurationRoot configuration)
-    {
-        services.AddSingleton<TestContainerDockerLauncher>();
-        var section = configuration.GetSection(DockerLaunchOptions.SectionName);
-        services.AddOptions<DockerLaunchOptions>().Bind(section);
-    }
+
 
     /// <summary>
     /// Post Build Setup of Logging that depends on ITestOutputHelper
@@ -51,7 +46,7 @@ public abstract class TestFixtureBase
         return factory;
     }
 
-    private HostApplicationFactory BuildWithOutLogging()
+    private HostApplicationFactory BuildWithoutLogging()
     {
         var factory = HostApplicationFactory.Build(
             environment: AddEnvironment,
@@ -69,9 +64,18 @@ public abstract class TestFixtureBase
     {
         return DateTimeOffset;
     }
-
-    protected virtual void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    protected void AddDockerSupport(IServiceCollection services, IConfiguration cfg)
     {
+        services.AddSingleton<TestContainerDockerLauncher>();
+        var section = cfg.GetSection(DockerLaunchOptions.SectionName);
+        services.AddOptions<DockerLaunchOptions>().Bind(section);
+    }
+    protected virtual void AddServices(IServiceCollection services, IConfiguration configuration)
+    {
+        if (useDocker)
+        {
+            AddDockerSupport(services, configuration!);
+        }
     }
 
     //support for builder pattern
@@ -81,7 +85,7 @@ public abstract class TestFixtureBase
         {
             return BuildWithLogging(output!);
         }
-        return BuildWithOutLogging();
+        return BuildWithoutLogging();
     }
 
     public TestFixtureBase WithDockerSupport()
@@ -90,7 +94,7 @@ public abstract class TestFixtureBase
         return this;
     }
 
-    public virtual TestFixtureBase WithLogging(ITestOutputHelper outputHelper)
+    public virtual TestFixtureBase WithOutputLogSupport(ITestOutputHelper outputHelper)
     {
         useLogging = true;
         this.output = outputHelper;

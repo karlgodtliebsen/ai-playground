@@ -1,58 +1,40 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using System.Net;
+using System.Security.Claims;
 
-using LlamaSharp.Tests.Utils;
+using AI.Library.Configuration;
+using AI.Test.Support.DockerSupport;
 
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
-namespace LlamaSharp.Tests.Fixtures;
+using NSubstitute;
+
+using Polly;
+using Polly.Extensions.Http;
+
+using Serilog;
+
+using Xunit.Abstractions;
+
+namespace AI.Test.Support.Fixtures;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApplicationFactory<Program>
+public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint> where TEntryPoint : class
 {
-
-    protected override void ConfigureTestServices(IServiceCollection services, IConfiguration cfg)
-    {
-        const string endpointUrl = "https://localhost";
-        var options = new LlamaClientOptions()
-        {
-            Endpoint = endpointUrl,
-        };
-        services.AddSingleton<IOptions<LlamaClientOptions>>(new OptionsWrapper<LlamaClientOptions>(options));
-        LLamaConfigurationClient ConfigClient(HttpClient c, IServiceProvider sp)
-        {
-            var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
-            var client = this.CreateClientWithTestAuth(claimsProvider);
-            return new LLamaConfigurationClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
-        }
-
-        services.AddHttpClient<ILLamaConfigurationClient, LLamaConfigurationClient>(ConfigClient)
-            .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
-            ;
-
-        LLamaCompositeOperationsClient CompositeClient(HttpClient c, IServiceProvider sp)
-        {
-            var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
-            var client = this.CreateClientWithTestAuth(claimsProvider);
-            return new LLamaCompositeOperationsClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
-        }
-
-        services.AddHttpClient<ILLamaCompositeOperationsClient, LLamaCompositeOperationsClient>(CompositeClient)
-            .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
-            ;
-    }
-
-
-    /*
     private IConfiguration? configuration;
-    private ITestOutputHelper? output = default!;
+    private ITestOutputHelper? outputHelper = default!;
     private bool useDocker = false;
 
-    public ILogger Logger { get; private set; }
+    public ILogger Logger { get; private set; } = default!;
 
-    public string UserId { get; set; } = Guid.NewGuid().ToString();
+    public string UserId { get; set; } = Guid.NewGuid().ToString("N");
     public string Environment { get; set; } = "IntegrationTests";
+
 
     /// <inheritdoc />
     public IntegrationTestWebApplicationFactory()
@@ -70,19 +52,19 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
     /// Post Build Setup of Logging that depends on ITestOutputHelper
     /// </summary>
     /// <param name="output"></param>
-    public IntegrationTestWebApplicationFactory WithOutputHelper(ITestOutputHelper output)
+    public IntegrationTestWebApplicationFactory<TEntryPoint> WithOutputLogSupport(ITestOutputHelper output)
     {
-        this.output = output;
+        this.outputHelper = output;
         return this;
     }
 
-    public IntegrationTestWebApplicationFactory WithDockerSupport()
+    public IntegrationTestWebApplicationFactory<TEntryPoint> WithDockerSupport()
     {
         useDocker = true;
         return this;
     }
 
-    public IntegrationTestWebApplicationFactory Build()
+    public T Build<T>() where T : IntegrationTestWebApplicationFactory<TEntryPoint>
     {
         Services.GetService<ILogger>();     //triggers the ConfigureWebHost. Nice lazy activation
         ConfigureLogging();
@@ -90,7 +72,7 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
         {
             StartDocker();
         }
-        return this;
+        return (T)this;
     }
 
     private TestContainerDockerLauncher? launcher = default!;
@@ -101,7 +83,7 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
         launcher.Start();
     }
 
-    public void Dispose()
+    public new void Dispose()
     {
         launcher?.Stop();
         launcher = default;
@@ -109,8 +91,9 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        var path = AppDomain.CurrentDomain.BaseDirectory;
-        builder.UseContentRoot(path);
+        var path = Path.GetDirectoryName(typeof(TEntryPoint).Assembly.Location);
+        //var path = AppDomain.CurrentDomain.BaseDirectory;
+        builder.UseContentRoot(path!);
         builder.UseEnvironment(Environment);
         base.ConfigureWebHost(builder);
         builder.ConfigureAppConfiguration((ctx, _) =>
@@ -128,35 +111,16 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
              {
                  SetupDockerSupport(services, configuration);
              }
-
-             const string endpointUrl = "https://localhost";
-             var options = new LlamaClientOptions()
+             if (configuration is not null)
              {
-                 Endpoint = endpointUrl,
-             };
-             services.AddSingleton<IOptions<LlamaClientOptions>>(new OptionsWrapper<LlamaClientOptions>(options));
-             LLamaConfigurationClient ConfigClient(HttpClient c, IServiceProvider sp)
-             {
-                 var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
-                 var client = this.CreateClientWithTestAuth(claimsProvider);
-                 return new LLamaConfigurationClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
+                 ConfigureTestServices(services, configuration!);
              }
-
-             services.AddHttpClient<ILLamaConfigurationClient, LLamaConfigurationClient>(ConfigClient)
-                 .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
-             ;
-
-             LLamaCompositeOperationsClient CompositeClient(HttpClient c, IServiceProvider sp)
-             {
-                 var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
-                 var client = this.CreateClientWithTestAuth(claimsProvider);
-                 return new LLamaCompositeOperationsClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
-             }
-
-             services.AddHttpClient<ILLamaCompositeOperationsClient, LLamaCompositeOperationsClient>(CompositeClient)
-                 .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
-                 ;
          });
+    }
+
+    protected virtual void ConfigureTestServices(IServiceCollection services, IConfiguration cfg)
+    {
+
     }
 
     private void ConfigureLogging()
@@ -166,9 +130,9 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
             throw new InvalidOperationException("Configuration is null");
         }
         var cfg = Observability.CreateLoggerConfigurationUsingAppSettings(configuration);
-        if (output is not null)
+        if (outputHelper is not null)
         {
-            cfg = cfg.WriteTo.TestOutput(output);
+            cfg = cfg.WriteTo.TestOutput(outputHelper);
         }
         Log.Logger = cfg.CreateLogger();
         Logger = Services.GetRequiredService<ILogger>();
@@ -183,7 +147,7 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
 
     private void SetupLogging(IServiceCollection services)
     {
-        if (output is not null)
+        if (outputHelper is not null)
         {
             services.AddLogging(logging =>
             {
@@ -192,7 +156,7 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
                 logging.AddConsole();
                 logging.AddDebug();
                 services.AddSingleton<ILoggerFactory, XUnitTestMsLoggerFactory>();
-                services.AddSingleton<ILoggerProvider>(new XUnitTestMsLoggerProvider(output, useScopes));
+                services.AddSingleton<ILoggerProvider>(new XUnitTestMsLoggerProvider(outputHelper, useScopes));
             });
         }
         else
@@ -208,7 +172,7 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
         }
     }
 
-    private IHttpContextAccessor CreateHttpContext()
+    protected IHttpContextAccessor CreateHttpContext()
     {
         var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
@@ -224,7 +188,7 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
         ctxAccessor.HttpContext.Returns(defaultHttpContext);
         return ctxAccessor;
     }
-    private static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicyForCustomerServiceNotFound()
+    protected static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicyForCustomerServiceNotFound()
     {
         return Policy
                 .HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.NotFound)
@@ -238,6 +202,5 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
             .HandleTransientHttpError()
             .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
     }
-    */
 }
 

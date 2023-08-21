@@ -33,7 +33,7 @@ public class TestContainerDockerLauncher
         {
             try
             {
-                logger.Information("Stating Docker Container Image:\n {option}", option.ImageName);
+                //logger.Information("Stating Docker Container Image:\n {image} {name}", option.ImageName, option.ContainerName);
                 if (option.HostPath is not null)
                 {
                     var sourcePath = Path.GetFullPath(option.HostPath);
@@ -42,22 +42,18 @@ public class TestContainerDockerLauncher
                     {
                         Directory.CreateDirectory(sourcePath);
                     }
-                    var container = TestContainerFactory
-                       .Build(option.ImageName, option.HostPort, option.ContainerPort, option.WaitForPort, option.EnvironmentVars,
-                           b => b.WithBindMount(sourcePath, mappedTo, AccessMode.ReadWrite)
-                       );
-
+                    var container = TestContainerFactory.Build(option, b => b.WithBindMount(sourcePath, mappedTo, AccessMode.ReadWrite));
                     containers.Add(container);
                 }
                 else
                 {
-                    var container = TestContainerFactory.Build(option.ImageName, option.HostPort, option.ContainerPort, option.WaitForPort, option.EnvironmentVars);
+                    var container = TestContainerFactory.Build(option);
                     containers.Add(container);
                 }
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Error starting Docker Container for\n{@options}", options);
+                logger.Error(ex, "Error starting Docker Container for\n {image} {name}", option.ImageName, option.ContainerName);
             }
         }
         isLaunched = true;

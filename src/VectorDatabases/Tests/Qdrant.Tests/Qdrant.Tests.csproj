@@ -6,12 +6,6 @@
 		<Nullable>enable</Nullable>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Content Remove="C:\Users\Karl Godtliebsen\.nuget\packages\microsoft.testplatform.testhost\17.5.0\build\netcoreapp3.1\x64\testhost.dll" />
-		<Content Remove="C:\Users\Karl Godtliebsen\.nuget\packages\microsoft.testplatform.testhost\17.5.0\build\netcoreapp3.1\x64\testhost.exe" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<Content Include="appsettings.IntegrationTests.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

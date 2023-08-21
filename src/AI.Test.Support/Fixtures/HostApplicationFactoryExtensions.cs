@@ -9,7 +9,7 @@ namespace AI.Test.Support.Fixtures;
 
 public static class HostApplicationFactoryExtensions
 {
-    internal static bool UsesScopes(this ILoggingBuilder builder)
+    public static bool UsesScopes(this ILoggingBuilder builder)
     {
         var serviceProvider = builder.Services.BuildServiceProvider();
         // look for other host builders on this chain calling ConfigureLogging explicitly

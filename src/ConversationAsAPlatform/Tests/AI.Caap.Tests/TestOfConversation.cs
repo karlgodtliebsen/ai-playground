@@ -28,7 +28,7 @@ public class TestOfConversation
 
     public TestOfConversation(ITestOutputHelper output, CaapWithInMemoryDatabaseTestFixture fixture)
     {
-        this.factory = fixture.WithLogging(output).WithDockerSupport().Build();
+        this.factory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = factory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();

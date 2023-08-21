@@ -13,7 +13,7 @@ namespace AI.Caap.Tests.Fixtures;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class CaapWithInMemoryDatabaseTestFixture : CaapWithDatabaseTestFixture
 {
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         base.AddServices(services, configuration);
         var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ConversationDbContext>));
