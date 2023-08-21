@@ -16,6 +16,10 @@ public abstract class TestFixtureBase
 
     public DateTimeOffset DateTimeOffset { get; set; } = DateTimeOffset.UtcNow;
 
+    public TestContainerDockerLauncher? Launcher { get; set; } = default!;
+    private Action<TestContainerDockerLauncher> action;
+
+
     /// <summary>
     /// abstract constructor
     /// </summary>
@@ -70,6 +74,7 @@ public abstract class TestFixtureBase
         var section = cfg.GetSection(DockerLaunchOptions.SectionName);
         services.AddOptions<DockerLaunchOptions>().Bind(section);
     }
+
     protected virtual void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         if (useDocker)
@@ -94,6 +99,7 @@ public abstract class TestFixtureBase
         return this;
     }
 
+
     public virtual TestFixtureBase WithOutputLogSupport(ITestOutputHelper outputHelper)
     {
         useLogging = true;
@@ -101,12 +107,24 @@ public abstract class TestFixtureBase
         return this;
     }
 
-    public virtual HostApplicationFactory Build()
+    public HostApplicationFactory Build()
     {
         var factory = BuildFactory();
         if (useDocker)
         {
             factory = factory.WithDockerSupport();
+        }
+        return factory;
+    }
+
+    public HostApplicationFactory Build(out TestContainerDockerLauncher? launcher)
+    {
+        launcher = default;
+        var factory = BuildFactory();
+        if (useDocker)
+        {
+            factory = factory.WithDockerSupport(out var launch);
+            Launcher = launch!;
         }
         return factory;
     }

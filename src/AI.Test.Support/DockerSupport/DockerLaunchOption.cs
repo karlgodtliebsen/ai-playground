@@ -1,6 +1,13 @@
 ﻿namespace AI.Test.Support.DockerSupport;
 
 // ReSharper disable once ClassNeverInstantiated.Global
+
+
+//TODO: https://github.com/testcontainers/testcontainers-dotnet/blob/develop/src/Testcontainers/Configurations/Containers/ContainerConfiguration.cs#L16
+
+/// <summary>
+/// use https://github.com/testcontainers/testcontainers-dotnet/blob/develop/src/Testcontainers/Configurations/Containers/ContainerConfiguration.cs#L16
+/// </summary>
 public sealed class DockerLaunchOption
 {
     /// <summary>

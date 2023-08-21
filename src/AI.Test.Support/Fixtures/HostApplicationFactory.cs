@@ -14,9 +14,9 @@ using Xunit.Abstractions;
 
 namespace AI.Test.Support.Fixtures;
 
-public sealed class HostApplicationFactory : IDisposable
+public sealed class HostApplicationFactory
 {
-    private TestContainerDockerLauncher? launcher = default!;
+    private TestContainerDockerLauncher? launch = default!;
 
     public IServiceProvider Services { get; private set; }
     public ISystemClock DateTimeProvider { get; private set; } = default!;
@@ -102,16 +102,22 @@ public sealed class HostApplicationFactory : IDisposable
 
     internal HostApplicationFactory WithDockerSupport()
     {
-        launcher = Services.GetRequiredService<TestContainerDockerLauncher>();
-        launcher.Start();
+        launch = Services.GetRequiredService<TestContainerDockerLauncher>();
+        launch.Start();
         return this;
     }
 
-    public void Dispose()
+    internal HostApplicationFactory WithDockerSupport(out TestContainerDockerLauncher? launcher)
     {
-        launcher?.Stop();
-        launcher = default;
+        launcher = Services.GetRequiredService<TestContainerDockerLauncher>();
+        return this;
     }
+
+    //public void Dispose()
+    //{
+    //    launcher?.Stop();
+    //    launcher = default;
+    //}
 
 }
 
