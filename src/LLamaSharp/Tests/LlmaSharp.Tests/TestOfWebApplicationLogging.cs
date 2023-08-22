@@ -18,7 +18,7 @@ public sealed class TestOfWebApplicationLogging : IClassFixture<IntegrationTestW
 
     public TestOfWebApplicationLogging(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
-        this.factory = factory.WithOutputHelper(output);
+        this.factory = factory.WithOutputLogSupport(output).Build<IntegrationTestWebApplicationFactory>();
     }
 
     public void Dispose()

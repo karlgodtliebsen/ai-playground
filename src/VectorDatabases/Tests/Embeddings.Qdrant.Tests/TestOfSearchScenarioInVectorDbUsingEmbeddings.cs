@@ -46,7 +46,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
 
     public TestOfSearchScenarioInVectorDbUsingEmbeddings(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithLogging(output).WithDockerSupport().Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         var options = services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
         this.modelFilesPath = Path.GetFullPath(options.ModelPath);

@@ -19,7 +19,7 @@ public class TestOfSemanticKernelExample12SequentialPlanner
 
     public TestOfSemanticKernelExample12SequentialPlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithLogging(output).WithDockerSupport().Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();

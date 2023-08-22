@@ -12,7 +12,7 @@ namespace Embeddings.Qdrant.Tests.Fixtures;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class EmbeddingsVectorDbTestFixture : TestFixtureBase
 {
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddQdrant(configuration)

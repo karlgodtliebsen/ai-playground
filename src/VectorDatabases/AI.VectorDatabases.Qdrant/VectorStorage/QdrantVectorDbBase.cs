@@ -50,6 +50,7 @@ public abstract class QdrantVectorDbBase
         }
         return await HandleError(response, subUri, cancellationToken);
     }
+
     private OneOf<TR, ErrorResponse> VerifyResult<TR>(QdrantHttpResponse<TR>? response, Operation op)
     {
         if (response is null)
@@ -69,7 +70,7 @@ public abstract class QdrantVectorDbBase
     private ErrorResponse HandleError(Exception ex, string subUri)
     {
         logger.Error(ex, "Operation Failed for {uri}", subUri);
-        return new ErrorResponse("Operation Failed for" + subUri + ex.Message);
+        return new ErrorResponse($"Operation Failed for {subUri} {ex.Message}");
     }
 
     private async Task<ErrorResponse> HandleError(HttpResponseMessage? response, string subUri, CancellationToken cancellationToken, Exception? ex = null)

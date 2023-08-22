@@ -30,7 +30,7 @@ public class TestOfQdrantAdministration
 
     public TestOfQdrantAdministration(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithLogging(output).WithDockerSupport().Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.options = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
@@ -82,6 +82,7 @@ public class TestOfQdrantAdministration
             error => throw new QdrantException(error.Error)
         );
     }
+
     [Fact]
     public async Task CleanupCollection()
     {

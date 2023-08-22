@@ -24,7 +24,7 @@ public class TestOfAzureOpenAI
 
     public TestOfAzureOpenAI(ITestOutputHelper output, AzureOpenAITestFixture fixture)
     {
-        this.factory = fixture.WithLogging(output).Build();
+        this.factory = fixture.WithOutputLogSupport(output).Build();
         logger = factory.Services.GetRequiredService<ILogger>();
         options = factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         azureOpenAIClient = new OpenAIClient(options.ApiKey);

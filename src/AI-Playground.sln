@@ -101,6 +101,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TensorFlow.Net.ImageClassif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ML.Net.ImageClassification.Tests", "ImageClassification-TensorFlow\Tests\ML.Net.ImageClassification.Tests\ML.Net.ImageClassification.Tests.csproj", "{98145CAD-5A97-4294-A96B-E595FF285127}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E209937D-6939-4835-BA0C-A34F594165E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI.Library.Tests.Support.Tests", "Tests\AI.Library.Tests.Support.Tests\AI.Library.Tests.Support.Tests.csproj", "{1D28D677-1856-42A5-8913-BE43DBA0939C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -215,6 +219,10 @@ Global
 		{98145CAD-5A97-4294-A96B-E595FF285127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98145CAD-5A97-4294-A96B-E595FF285127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98145CAD-5A97-4294-A96B-E595FF285127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D28D677-1856-42A5-8913-BE43DBA0939C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D28D677-1856-42A5-8913-BE43DBA0939C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D28D677-1856-42A5-8913-BE43DBA0939C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D28D677-1856-42A5-8913-BE43DBA0939C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -252,6 +260,7 @@ Global
 		{2E94F1DA-9AE6-4442-92F2-CE6E5D0D2E6C} = {8AEF073B-5837-43E9-82C1-BDE1BEBBAF88}
 		{D098A691-5163-49D0-A614-223239DA6791} = {B6195235-B673-4CFD-82D6-B0B61613FBFE}
 		{98145CAD-5A97-4294-A96B-E595FF285127} = {B6195235-B673-4CFD-82D6-B0B61613FBFE}
+		{1D28D677-1856-42A5-8913-BE43DBA0939C} = {E209937D-6939-4835-BA0C-A34F594165E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A365742-464F-4F92-BCF0-6F080A5C398C}

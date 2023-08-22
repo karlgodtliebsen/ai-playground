@@ -10,7 +10,7 @@ namespace Qdrant.Tests.Fixtures;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class VectorDbTestFixture : TestFixtureBase
 {
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddQdrant(configuration);
         AddDockerSupport(services, configuration);

@@ -10,7 +10,7 @@ namespace LlamaSharp.Tests.Fixtures;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class LLamaSharpTestFixture : TestFixtureBase
 {
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddLlamaConfiguration(configuration)
@@ -18,6 +18,6 @@ public sealed class LLamaSharpTestFixture : TestFixtureBase
             .AddInferenceConfiguration(configuration)
             .AddLLamaRepository(configuration)
             ;
-        AddDockerSupport(services, configuration);
+        //AddDockerSupport(services, configuration);
     }
 }

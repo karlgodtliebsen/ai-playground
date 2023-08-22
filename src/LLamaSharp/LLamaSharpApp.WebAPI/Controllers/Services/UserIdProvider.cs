@@ -18,10 +18,10 @@ public class UserIdProvider : IUserIdProvider
             var sId = identity.FindFirst("sub");
             if (sId is null)
             {
-                this.UserId = Guid.Empty.ToString();
+                this.UserId = Guid.Empty.ToString("N");
                 return;
             }
-            this.UserId = Guid.TryParse(sId!.Value, out var guid) ? guid.ToString() : Guid.NewGuid().ToString();
+            this.UserId = Guid.TryParse(sId!.Value, out var guid) ? guid.ToString("N") : Guid.NewGuid().ToString("N");
         }
     }
 

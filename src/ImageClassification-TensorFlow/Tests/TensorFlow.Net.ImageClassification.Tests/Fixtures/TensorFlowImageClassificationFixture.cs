@@ -10,7 +10,7 @@ namespace TensorFlow.Net.ImageClassification.Tests.Fixtures;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class TensorFlowImageClassificationFixture : TestFixtureBase
 {
-    protected override void AddServices(IServiceCollection services, IConfigurationRoot configuration)
+    protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddTensorFlowImageClassification(configuration)

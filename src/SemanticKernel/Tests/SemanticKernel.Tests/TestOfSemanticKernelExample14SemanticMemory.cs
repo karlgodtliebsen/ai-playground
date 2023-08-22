@@ -34,7 +34,7 @@ public class TestOfSemanticKernelExample14SemanticMemory
 
     public TestOfSemanticKernelExample14SemanticMemory(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithLogging(output).WithDockerSupport().Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
