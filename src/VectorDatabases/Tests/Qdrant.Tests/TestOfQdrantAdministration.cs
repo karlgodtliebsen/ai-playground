@@ -82,6 +82,7 @@ public class TestOfQdrantAdministration
             error => throw new QdrantException(error.Error)
         );
     }
+
     [Fact]
     public async Task CleanupCollection()
     {

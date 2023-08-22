@@ -23,8 +23,7 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     private readonly ILogger logger;
     private readonly QdrantOptions options;
     private int? vectorSize = 0;
-    private string collectionName;
-
+    private string activeCollectionName;
 
     public class HttpStatusResponse
     {
@@ -40,7 +39,7 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     }
     public void SetCollectionName(string collectionName)
     {
-        this.collectionName = collectionName;
+        this.activeCollectionName = collectionName;
     }
     public void SetVectorSize(int dimension)
     {
@@ -135,9 +134,9 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
 
             async collection =>
             {
-                foreach (var collectionName in collection)
+                foreach (var colName in collection)
                 {
-                    await DeleteCollection(collectionName, cancellationToken);
+                    await DeleteCollection(colName, cancellationToken);
                 }
                 return true;
             },
@@ -150,13 +149,11 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
         return await DeleteCollection(collectionName, cancellationToken);
     }
 
-
     public async Task<OneOf<bool, ErrorResponse>> DeleteCollection(string collectionName, CancellationToken cancellationToken)
     {
         var result = await DeleteAsync<bool>($"/collections/{collectionName}", cancellationToken);
         return result;
     }
-
 
     public async Task<OneOf<bool, ErrorResponse>> Delete(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken)
     {
