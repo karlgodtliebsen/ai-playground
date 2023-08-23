@@ -1,4 +1,4 @@
-﻿namespace AI.Test.Support.Testcontainers.Qdrant;
+﻿namespace AI.Test.Support.DockerSupport.Testcontainers.Qdrant;
 
 /// <inheritdoc cref="DockerContainer" />
 //[PublicAPI]

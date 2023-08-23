@@ -1,4 +1,4 @@
-﻿namespace AI.Test.Support.Testcontainers.Qdrant;
+﻿namespace AI.Test.Support.DockerSupport.Testcontainers.Qdrant;
 
 /// <inheritdoc cref="ContainerConfiguration" />
 //[PublicAPI]
@@ -20,12 +20,12 @@ public sealed class QdrantConfiguration : ContainerConfiguration
         AccessMode? accessMode = null
     )
     {
-        this.ContainerName = containerName;
-        this.HostPath = hostPath;
-        this.ContainerPath = containerPath;
+        ContainerName = containerName;
+        HostPath = hostPath;
+        ContainerPath = containerPath;
         if (accessMode is not null)
         {
-            this.AccessMode = accessMode.Value;
+            AccessMode = accessMode.Value;
         }
     }
 

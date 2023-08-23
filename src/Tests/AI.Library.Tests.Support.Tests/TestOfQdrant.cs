@@ -1,5 +1,5 @@
 ﻿using AI.Library.Tests.Support.Tests.QdrantTestHelper;
-using AI.Test.Support.Testcontainers.Qdrant;
+using AI.Test.Support.DockerSupport.Testcontainers.Qdrant;
 
 using DotNet.Testcontainers.Configurations;
 

@@ -1,4 +1,4 @@
-﻿namespace AI.Test.Support.Testcontainers.Qdrant;
+﻿namespace AI.Test.Support.DockerSupport.Testcontainers.Qdrant;
 
 /// <inheritdoc cref="ContainerBuilder{TBuilderEntity, TContainerEntity, TConfigurationEntity}" />
 //[PublicAPI]
@@ -106,17 +106,25 @@ public sealed class QdrantBuilder : ContainerBuilder<QdrantBuilder, QdrantContai
             var (stdout, stderr) = await container.GetLogsAsync(timestampsEnabled: false)
                 .ConfigureAwait(false);
 
+            //strategy 1
             var contains1 = stdout.Contains("Access web UI at http:");
-            var contains2 = stdout.Contains("Actix runtime found; starting in Actix runtime");
-
             return contains1;
 
+            //strategy 3
+            var detectedLines = Array.Empty<string>()
+                .Concat(stdout.Split(LineEndings, StringSplitOptions.RemoveEmptyEntries))
+                .Concat(stderr.Split(LineEndings, StringSplitOptions.RemoveEmptyEntries))
+                .Count(line => line.Contains("Access web UI at http")
+                               || line.Contains("Qdrant HTTP listening on")
+                               || line.Contains("starting in Actix runtime"));
+            return detectedLines >= 1;
+
+            //original strategy
             return 2.Equals(Array.Empty<string>()
                 .Concat(stdout.Split(LineEndings, StringSplitOptions.RemoveEmptyEntries))
                 .Concat(stderr.Split(LineEndings, StringSplitOptions.RemoveEmptyEntries))
-                .Count(line => line.Contains("Actix runtime found; starting in Actix runtime")));
+                .Count(line => line.Contains("something qdrant specific")));
 
-            // .Count(line => line.Contains("Access web UI at http:") && line.EndsWith("/dashboard")));
         }
     }
 }
