@@ -9,7 +9,7 @@ internal interface IQdrantVectorDbClient
     /// <param name="vectorParams"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<bool> CreateCollection(string collectionName, QdrantVectorDbClient.VectorParams vectorParams, CancellationToken cancellationToken);
+    Task<bool> CreateCollection(string collectionName, MinimalQdrantVectorDbClient.VectorParams vectorParams, CancellationToken cancellationToken);
 
-    Task<QdrantVectorDbClient.CollectionInfo> GetCollection(string collectionName, CancellationToken cancellationToken);
+    Task<MinimalQdrantVectorDbClient.CollectionInfo> GetCollection(string collectionName, CancellationToken cancellationToken);
 }

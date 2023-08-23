@@ -42,8 +42,8 @@ public sealed class TestOfQdrantWithDefaultConfiguration : IAsyncLifetime
     {
         var cancellationToken = CancellationToken.None;
         var url = quadrantContainer.GetConnectionUrl();
-        var vectorParams = new QdrantVectorDbClient.VectorParams(VectorSize, QdrantVectorDbClient.Distances.DOT, true);
-        IQdrantVectorDbClient client = new QdrantVectorDbClient(url);
+        var vectorParams = new MinimalQdrantVectorDbClient.VectorParams(VectorSize, MinimalQdrantVectorDbClient.Distances.DOT);
+        IQdrantVectorDbClient client = new MinimalQdrantVectorDbClient(url);
 
         var response = await client.CreateCollection(CollectionName, vectorParams, cancellationToken);
         response.Should().BeTrue();
@@ -92,8 +92,8 @@ public sealed class TestOfQdrantWithVolumeMountedConfiguration : IAsyncLifetime
     {
         var cancellationToken = CancellationToken.None;
         var url = quadrantContainer.GetConnectionUrl();
-        var vectorParams = new QdrantVectorDbClient.VectorParams(VectorSize, QdrantVectorDbClient.Distances.DOT, true);
-        IQdrantVectorDbClient client = new QdrantVectorDbClient(url);
+        var vectorParams = new MinimalQdrantVectorDbClient.VectorParams(VectorSize, MinimalQdrantVectorDbClient.Distances.DOT);
+        IQdrantVectorDbClient client = new MinimalQdrantVectorDbClient(url);
 
         var response = await client.CreateCollection(CollectionName, vectorParams, cancellationToken);
         response.Should().BeTrue();

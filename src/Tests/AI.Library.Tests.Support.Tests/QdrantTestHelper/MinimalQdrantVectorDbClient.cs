@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace AI.Library.Tests.Support.Tests.QdrantTestHelper;
 
-internal class QdrantVectorDbClient : IQdrantVectorDbClient
+internal class MinimalQdrantVectorDbClient : IQdrantVectorDbClient
 {
     private static readonly HttpClient httpClient = new HttpClient();
 
@@ -13,11 +13,18 @@ internal class QdrantVectorDbClient : IQdrantVectorDbClient
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
-    public QdrantVectorDbClient(string url)
+    public MinimalQdrantVectorDbClient(string url)
     {
         httpClient.BaseAddress = new Uri(url);
     }
 
+    /// <summary>
+    /// <a href="https://qdrant.github.io/qdrant/redoc/index.html#tag/collections/operation/create_collection">Documentation</a>
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="vectorParams"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task<bool> CreateCollection(string collectionName, VectorParams vectorParams, CancellationToken cancellationToken)
     {
         httpClient.DefaultRequestHeaders.Clear();
@@ -31,6 +38,12 @@ internal class QdrantVectorDbClient : IQdrantVectorDbClient
         return result!.Result;
     }
 
+    /// <summary>
+    /// <a href="https://qdrant.github.io/qdrant/redoc/index.html#tag/collections/operation/get_collection">Documentation</a>
+    /// </summary>
+    /// <param name="collectionName"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task<CollectionInfo> GetCollection(string collectionName, CancellationToken cancellationToken)
     {
         httpClient.DefaultRequestHeaders.Clear();
@@ -43,6 +56,9 @@ internal class QdrantVectorDbClient : IQdrantVectorDbClient
         public const string DOT = "Dot";
     }
 
+    /// <summary>
+    /// <a href="https://qdrant.github.io/qdrant/redoc/index.html">Documentation</a>
+    /// </summary>
     internal class VectorParams
     {
         /// <summary>
@@ -57,11 +73,6 @@ internal class QdrantVectorDbClient : IQdrantVectorDbClient
         [JsonPropertyName("distance")]
         public string Distance { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonPropertyName("on_disk")]
-        public bool OnDisk { get; set; }
 
         /// <summary>
         /// Constructor for VectorParams
@@ -69,14 +80,15 @@ internal class QdrantVectorDbClient : IQdrantVectorDbClient
         /// <param name="size"></param>
         /// <param name="distance"></param>
         /// <param name="onDisk"></param>
-        public VectorParams(int size, string distance, bool onDisk = false)
+        public VectorParams(int size, string distance)
         {
             Size = size;
             Distance = distance;
-            OnDisk = onDisk;
         }
     }
-
+    /// <summary>
+    /// <a href="https://qdrant.github.io/qdrant/redoc/index.html">Documentation</a>
+    /// </summary>
     private class CreateCollectionWithVectorRequest
     {
         /// <summary>
@@ -87,19 +99,12 @@ internal class QdrantVectorDbClient : IQdrantVectorDbClient
         public VectorParams Vectors { get; init; } = default!;
     }
 
+    /// <summary>
+    /// <a href="https://qdrant.github.io/qdrant/redoc/index.html">Documentation</a>
+    /// </summary>
     internal class CollectionInfo
     {
         [JsonPropertyName("status")] public string Status { get; set; }
-
-        [JsonPropertyName("optimizer_status")] public string OptimizerStatus { get; set; }
-
-        [JsonPropertyName("vectors_count")] public int VectorsCount { get; set; }
-
-        [JsonPropertyName("indexed_vectors_count")] public int IndexedVectorsCount { get; set; }
-
-        [JsonPropertyName("points_count")] public int PointsCount { get; set; }
-
-        [JsonPropertyName("segments_count")] public int SegmentsCount { get; set; }
 
     }
 
@@ -107,7 +112,7 @@ internal class QdrantVectorDbClient : IQdrantVectorDbClient
     {
         [JsonPropertyName("time")] public float Time { get; set; }
 
-        [JsonPropertyName("status")] public string Status { get; set; } = "ok";
+        [JsonPropertyName("status")] public string Status { get; set; }
 
         [JsonPropertyName("result")] public T Result { get; set; } = default!;
     }
