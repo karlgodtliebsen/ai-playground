@@ -42,26 +42,19 @@ public sealed class TestOfQdrantWithDefaultConfiguration : IAsyncLifetime
     {
         var cancellationToken = CancellationToken.None;
         var url = quadrantContainer.GetConnectionUrl();
-        var vectorParams = new VectorParams(VectorSize, Distance.DOT, true);
+        var vectorParams = new QdrantVectorDbClient.VectorParams(VectorSize, QdrantVectorDbClient.Distances.DOT, true);
         IQdrantVectorDbClient client = new QdrantVectorDbClient(url);
 
         var response = await client.CreateCollection(CollectionName, vectorParams, cancellationToken);
-        response.Switch(
-            _ => output.WriteLine($"Created Collection {CollectionName}"),
-            error => throw new QdrantException(error.Error)
-        );
+        response.Should().BeTrue();
+        output.WriteLine($"Created Collection {CollectionName}");
+
         var result = await client.GetCollection(CollectionName, cancellationToken);
-        result.Switch(
-            collectionInfo =>
-            {
-                output.WriteLine($"Found Collection {CollectionName}");
-                collectionInfo.Should().NotBeNull();
-            },
-            error => throw new QdrantException(error.Error)
-        );
+        result.Should().NotBeNull();
+        result.Status.Should().Be("green");
+        output.WriteLine($"Verified Collection {CollectionName}");
     }
 }
-
 
 
 /// <summary>
@@ -99,22 +92,16 @@ public sealed class TestOfQdrantWithVolumeMountedConfiguration : IAsyncLifetime
     {
         var cancellationToken = CancellationToken.None;
         var url = quadrantContainer.GetConnectionUrl();
-        var vectorParams = new VectorParams(VectorSize, Distance.DOT, true);
+        var vectorParams = new QdrantVectorDbClient.VectorParams(VectorSize, QdrantVectorDbClient.Distances.DOT, true);
         IQdrantVectorDbClient client = new QdrantVectorDbClient(url);
 
         var response = await client.CreateCollection(CollectionName, vectorParams, cancellationToken);
-        response.Switch(
-            _ => output.WriteLine($"Created Collection {CollectionName}"),
-            error => throw new QdrantException(error.Error)
-        );
+        response.Should().BeTrue();
+        output.WriteLine($"Created Collection {CollectionName}");
+
         var result = await client.GetCollection(CollectionName, cancellationToken);
-        result.Switch(
-            collectionInfo =>
-            {
-                output.WriteLine($"Found Collection {CollectionName}");
-                collectionInfo.Should().NotBeNull();
-            },
-            error => throw new QdrantException(error.Error)
-        );
+        result.Should().NotBeNull();
+        result.Status.Should().Be("green");
+        output.WriteLine($"Verified Collection {CollectionName}");
     }
 }

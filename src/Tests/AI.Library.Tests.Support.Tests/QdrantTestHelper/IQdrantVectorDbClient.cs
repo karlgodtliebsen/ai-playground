@@ -1,8 +1,6 @@
-﻿using OneOf;
+﻿namespace AI.Library.Tests.Support.Tests.QdrantTestHelper;
 
-namespace AI.Library.Tests.Support.Tests.QdrantTestHelper;
-
-public interface IQdrantVectorDbClient
+internal interface IQdrantVectorDbClient
 {
     /// <summary>
     /// <a href="https://qdrant.tech/documentation/concepts/collections/">Create collection</a>
@@ -11,7 +9,7 @@ public interface IQdrantVectorDbClient
     /// <param name="vectorParams"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<OneOf<bool, ErrorResponse>> CreateCollection(string collectionName, VectorParams vectorParams, CancellationToken cancellationToken);
+    Task<bool> CreateCollection(string collectionName, QdrantVectorDbClient.VectorParams vectorParams, CancellationToken cancellationToken);
 
-    Task<OneOf<CollectionInfo, ErrorResponse>> GetCollection(string collectionName, CancellationToken cancellationToken);
+    Task<QdrantVectorDbClient.CollectionInfo> GetCollection(string collectionName, CancellationToken cancellationToken);
 }

@@ -98,33 +98,13 @@ public sealed class QdrantBuilder : ContainerBuilder<QdrantBuilder, QdrantContai
     /// <inheritdoc cref="IWaitUntil" />
     private sealed class WaitUntil : IWaitUntil
     {
-        private static readonly string[] LineEndings = { "\r\n", "\n" };
-
         /// <inheritdoc />
         public async Task<bool> UntilAsync(IContainer container)
         {
             var (stdout, stderr) = await container.GetLogsAsync(timestampsEnabled: false)
                 .ConfigureAwait(false);
 
-            //strategy 1
-            var contains1 = stdout.Contains("Access web UI at http:");
-            return contains1;
-
-            //strategy 3
-            var detectedLines = Array.Empty<string>()
-                .Concat(stdout.Split(LineEndings, StringSplitOptions.RemoveEmptyEntries))
-                .Concat(stderr.Split(LineEndings, StringSplitOptions.RemoveEmptyEntries))
-                .Count(line => line.Contains("Access web UI at http")
-                               || line.Contains("Qdrant HTTP listening on")
-                               || line.Contains("starting in Actix runtime"));
-            return detectedLines >= 1;
-
-            //original strategy
-            return 2.Equals(Array.Empty<string>()
-                .Concat(stdout.Split(LineEndings, StringSplitOptions.RemoveEmptyEntries))
-                .Concat(stderr.Split(LineEndings, StringSplitOptions.RemoveEmptyEntries))
-                .Count(line => line.Contains("something qdrant specific")));
-
+            return stdout.Contains("Access web UI at http:");
         }
     }
 }
