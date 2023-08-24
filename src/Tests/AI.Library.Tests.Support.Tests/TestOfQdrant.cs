@@ -1,9 +1,12 @@
-﻿using AI.Library.Tests.Support.Tests.QdrantTestHelper;
-using AI.Test.Support.DockerSupport.Testcontainers.Qdrant;
+﻿using AI.Test.Support.DockerSupport.Testcontainers.Qdrant;
 
 using DotNet.Testcontainers.Configurations;
 
 using FluentAssertions;
+
+using QdrantCSharp;
+using QdrantCSharp.Enums;
+using QdrantCSharp.Models;
 
 using Xunit.Abstractions;
 
@@ -40,18 +43,13 @@ public sealed class TestOfQdrantWithDefaultConfiguration : IAsyncLifetime
     [Fact]
     public async Task CreateCollectionAndFindIt_UsingDefaultOptions()
     {
-        var cancellationToken = CancellationToken.None;
-        var url = quadrantContainer.GetConnectionUrl();
-        var vectorParams = new MinimalQdrantVectorDbClient.VectorParams(VectorSize, MinimalQdrantVectorDbClient.Distances.DOT);
-        IQdrantVectorDbClient client = new MinimalQdrantVectorDbClient(url);
-
-        var response = await client.CreateCollection(CollectionName, vectorParams, cancellationToken);
-        response.Should().BeTrue();
+        QdrantHttpClient client = new QdrantHttpClient(quadrantContainer.GetConnectionUrl(), string.Empty);
+        var response = await client.CreateCollection(CollectionName, new VectorParams(size: 4, distance: Distance.DOT));
+        response.Result.Should().BeTrue();
         output.WriteLine($"Created Collection {CollectionName}");
-
-        var result = await client.GetCollection(CollectionName, cancellationToken);
+        var result = await client.GetCollection(CollectionName);
         result.Should().NotBeNull();
-        result.Status.Should().Be("green");
+        result.Status.Should().Be("ok");
         output.WriteLine($"Verified Collection {CollectionName}");
     }
 }
@@ -90,18 +88,13 @@ public sealed class TestOfQdrantWithVolumeMountedConfiguration : IAsyncLifetime
     [Fact]
     public async Task CreateCollectionAndFindIt_UsingMountedVolumeOptions()
     {
-        var cancellationToken = CancellationToken.None;
-        var url = quadrantContainer.GetConnectionUrl();
-        var vectorParams = new MinimalQdrantVectorDbClient.VectorParams(VectorSize, MinimalQdrantVectorDbClient.Distances.DOT);
-        IQdrantVectorDbClient client = new MinimalQdrantVectorDbClient(url);
-
-        var response = await client.CreateCollection(CollectionName, vectorParams, cancellationToken);
-        response.Should().BeTrue();
+        QdrantHttpClient client = new QdrantHttpClient(quadrantContainer.GetConnectionUrl(), string.Empty);
+        var response = await client.CreateCollection(CollectionName, new VectorParams(size: 4, distance: Distance.DOT));
+        response.Result.Should().BeTrue();
         output.WriteLine($"Created Collection {CollectionName}");
-
-        var result = await client.GetCollection(CollectionName, cancellationToken);
+        var result = await client.GetCollection(CollectionName);
         result.Should().NotBeNull();
-        result.Status.Should().Be("green");
+        result.Status.Should().Be("ok");
         output.WriteLine($"Verified Collection {CollectionName}");
     }
 }
