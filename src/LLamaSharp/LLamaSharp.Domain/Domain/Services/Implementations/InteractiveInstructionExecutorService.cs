@@ -15,8 +15,8 @@ namespace LLamaSharp.Domain.Domain.Services.Implementations;
 /// </summary>
 public class InteractiveInstructionExecutorService : IInteractiveExecutorService
 {
-    private readonly ILlamaModelFactory factory;
-    private readonly IModelStateRepository modelStateRepository;
+    private readonly ILLamaFactory factory;
+    private readonly IContextStateRepository contextStateRepository;
 
     private readonly IOptionsService optionsService;
     private readonly ILogger logger;
@@ -25,13 +25,13 @@ public class InteractiveInstructionExecutorService : IInteractiveExecutorService
     /// Constructor for the Executor Service
     /// </summary>
     /// <param name="factory"></param>
-    /// <param name="modelStateRepository"></param>
+    /// <param name="contextStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public InteractiveInstructionExecutorService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
+    public InteractiveInstructionExecutorService(ILLamaFactory factory, IContextStateRepository contextStateRepository, IOptionsService optionsService, ILogger logger)
     {
         this.factory = factory;
-        this.modelStateRepository = modelStateRepository;
+        this.contextStateRepository = contextStateRepository;
         this.optionsService = optionsService;
         this.logger = logger;
     }
@@ -52,7 +52,7 @@ public class InteractiveInstructionExecutorService : IInteractiveExecutorService
     }
     public async IAsyncEnumerable<string> InteractiveExecuteInstructions(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var ex = factory.CreateInteractiveExecutor(factory.CreateModel(input.ModelOptions!));
+        var ex = factory.CreateInteractiveExecutor(factory.CreateContext(input.ModelOptions!));
         await foreach (var result in ex.InferAsync(input.Prompt!, input.InferenceOptions, cancellationToken))
         {
             yield return result;
@@ -60,13 +60,13 @@ public class InteractiveInstructionExecutorService : IInteractiveExecutorService
     }
     public async IAsyncEnumerable<string> ExecuteInstructions(ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var ex = factory.CreateInstructExecutor(factory.CreateModel(input.ModelOptions!));
+        var ex = factory.CreateInstructExecutor(factory.CreateContext(input.ModelOptions!));
         await foreach (var result in ex.InferAsync(input.Prompt!, input.InferenceOptions, cancellationToken))
         {
             yield return result;
         }
     }
-    public IEnumerable<string> ChatUsingInteractiveExecutor(InferenceOptions inferenceOptions, LlamaModelOptions modelOptions, string userInput)
+    public IEnumerable<string> ChatUsingInteractiveExecutor(InferenceOptions inferenceOptions, LLamaModelOptions modelOptions, string userInput)
     {
         var (chatSession, _) = factory.CreateChatSession<InteractiveExecutor>(modelOptions);
         var outputs = chatSession.Chat(userInput, inferenceOptions);
@@ -77,10 +77,10 @@ public class InteractiveInstructionExecutorService : IInteractiveExecutorService
     }
 
 
-    public IEnumerable<string> ChatUsingInteractiveExecutorWithTransformation(InferenceOptions inferenceOptions, LlamaModelOptions modelOptions,
+    public IEnumerable<string> ChatUsingInteractiveExecutorWithTransformation(InferenceOptions inferenceOptions, LLamaModelOptions modelOptions,
         KeywordTextOutputStreamTransform executionOptions, string userInput)
     {
-        //LLamaModel
+        //LLamaContext
         var (chatSession, _) = factory.CreateChatSession<InteractiveExecutor>(modelOptions,
             session =>
                 session.WithOutputTransform(new LLamaTransforms.KeywordTextOutputStreamTransform(executionOptions.Keywords, redundancyLength: executionOptions.RedundancyLength, removeAllMatchedTokens: executionOptions.RemoveAllMatchedTokens))
@@ -94,9 +94,9 @@ public class InteractiveInstructionExecutorService : IInteractiveExecutorService
         }
     }
 
-    private async IAsyncEnumerable<string> UseStatefulExecutor(LlamaModelOptions modelOptions, ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    private async IAsyncEnumerable<string> UseStatefulExecutor(LLamaModelOptions modelOptions, ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var model = factory.CreateModel(modelOptions);
+        var model = factory.CreateContext(modelOptions);
         var executor = LoadStatefulExecutor(input, model);
         var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
         var res = executor.InferAsync(input.Text, inferenceOptions, cancellationToken);
@@ -117,9 +117,9 @@ public class InteractiveInstructionExecutorService : IInteractiveExecutorService
         }
     }
 
-    private async IAsyncEnumerable<string> UseStatelessExecutor(LlamaModelOptions modelOptions, ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
+    private async IAsyncEnumerable<string> UseStatelessExecutor(LLamaModelOptions modelOptions, ExecutorInferMessage input, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var model = factory.CreateModel(modelOptions);//model specified by options
+        var model = factory.CreateContext(modelOptions);//model specified by options
         var executor = GetStatelessExecutor(model);
 
         var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
@@ -140,7 +140,7 @@ public class InteractiveInstructionExecutorService : IInteractiveExecutorService
         }
     }
 
-    private ILLamaExecutor GetStatelessExecutor(LLamaModel model)
+    private ILLamaExecutor GetStatelessExecutor(LLamaContext model)
     {
         var executor = factory.CreateStateLessExecutor<StatelessExecutor>(model);//maybe the future will bring several of the stateless also
         return executor;
@@ -148,11 +148,11 @@ public class InteractiveInstructionExecutorService : IInteractiveExecutorService
 
     private void SaveState(ExecutorInferMessage input, StatefulExecutorBase executor)
     {
-        modelStateRepository.SaveState(executor.Model, input.UserId, input.UsePersistedModelState);
-        modelStateRepository.SaveState(executor, input.UserId, input.UsePersistedExecutorState);
+        contextStateRepository.SaveState(executor.Context, input.UserId, input.UsePersistedModelState);
+        contextStateRepository.SaveState(executor, input.UserId, input.UsePersistedExecutorState);
     }
 
-    private StatefulExecutorBase LoadStatefulExecutor(ExecutorInferMessage input, LLamaModel model)
+    private StatefulExecutorBase LoadStatefulExecutor(ExecutorInferMessage input, LLamaContext model)
     {
         StatefulExecutorBase executor;
         switch (input.InferenceType)
@@ -165,8 +165,8 @@ public class InteractiveInstructionExecutorService : IInteractiveExecutorService
                 break;
             default: throw new ArgumentException($"InferenceType {input.InferenceType} is not supported");
         }
-        modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
-        modelStateRepository.LoadState(executor, input.UserId, input.UsePersistedExecutorState);
+        contextStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
+        contextStateRepository.LoadState(executor, input.UserId, input.UsePersistedExecutorState);
         return executor;
     }
 

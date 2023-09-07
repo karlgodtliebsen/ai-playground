@@ -16,7 +16,7 @@ namespace LLamaSharp.Domain.Domain.DomainServices.Implementations;
 public class CompositeService : ICompositeService
 {
     private readonly IInteractiveExecutorService interactiveExecutor;
-    private readonly ILlamaModelFactory factory;
+    private readonly ILLamaFactory factory;
     private readonly IOptionsService optionsService;
     private readonly ILogger logger;
 
@@ -27,7 +27,7 @@ public class CompositeService : ICompositeService
     /// <param name="factory"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public CompositeService(IInteractiveExecutorService interactiveExecutor, ILlamaModelFactory factory, IOptionsService optionsService, ILogger logger)
+    public CompositeService(IInteractiveExecutorService interactiveExecutor, ILLamaFactory factory, IOptionsService optionsService, ILogger logger)
     {
         this.interactiveExecutor = interactiveExecutor;
         this.factory = factory;
@@ -121,7 +121,7 @@ public class CompositeService : ICompositeService
     //modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
 
 
-    private void AlignModelParameters(ExecutorInferMessage input, InferenceOptions inferenceOptions, LlamaModelOptions modelOptions)
+    private void AlignModelParameters(ExecutorInferMessage input, InferenceOptions inferenceOptions, LLamaModelOptions modelOptions)
     {
         if (input.UseDefaultAntiPrompt && input.AntiPrompts is not null)
         {

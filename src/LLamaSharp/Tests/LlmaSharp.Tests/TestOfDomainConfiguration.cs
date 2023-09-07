@@ -63,21 +63,21 @@ public sealed class TestOfDomainConfiguration : IDisposable
     [Fact]
     public void EnsureThatServiceConfigurationIsValid()
     {
-        services.GetService<ILlamaModelFactory>().Should().NotBeNull();
+        services.GetService<ILLamaFactory>().Should().NotBeNull();
         services.GetService<IOptionsService>().Should().NotBeNull();
         services.GetService<ICompositeService>().Should().NotBeNull();
         services.GetService<IChatService>().Should().NotBeNull();
         services.GetService<IEmbeddingsService>().Should().NotBeNull();
         services.GetService<IInteractiveExecutorService>().Should().NotBeNull();
-        services.GetService<IModelStateRepository>().Should().NotBeNull();
+        services.GetService<IContextStateRepository>().Should().NotBeNull();
         services.GetService<IUsersStateRepository>().Should().NotBeNull();
 
         //Options
         services.GetService<IOptions<LlamaRepositoryOptions>>().Should().NotBeNull();
-        services.GetService<IOptions<LlamaModelOptions>>().Should().NotBeNull();
+        services.GetService<IOptions<LLamaModelOptions>>().Should().NotBeNull();
         services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
 
-        var options = services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
+        var options = services.GetRequiredService<IOptions<LLamaModelOptions>>().Value;
         options.ModelPath.Should().Be("/projects/AI/LlamaModels/llama-2-7b.ggmlv3.q8_0.bin");
 
         var iOptions = services.GetRequiredService<IOptions<InferenceOptions>>().Value;

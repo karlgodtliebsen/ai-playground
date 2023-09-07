@@ -7,8 +7,8 @@ namespace LLamaSharp.Domain.Domain.Services.Implementations;
 /// <inheritdoc />
 public class TokenizationService : ITokenizationService
 {
-    private readonly ILlamaModelFactory factory;
-    private readonly IModelStateRepository modelStateRepository;
+    private readonly ILLamaFactory factory;
+    private readonly IContextStateRepository contextStateRepository;
     private readonly IOptionsService optionsService;
     private readonly ILogger logger;
 
@@ -16,13 +16,13 @@ public class TokenizationService : ITokenizationService
     /// Constructor for Tokenization Service
     /// </summary>
     /// <param name="factory"></param>
-    /// <param name="modelStateRepository"></param>
+    /// <param name="contextStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public TokenizationService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
+    public TokenizationService(ILLamaFactory factory, IContextStateRepository contextStateRepository, IOptionsService optionsService, ILogger logger)
     {
         this.factory = factory;
-        this.modelStateRepository = modelStateRepository;
+        this.contextStateRepository = contextStateRepository;
         this.optionsService = optionsService;
         this.logger = logger;
     }
@@ -38,10 +38,10 @@ public class TokenizationService : ITokenizationService
         using var op = logger.BeginOperation("Running Tokenize");
 
         var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
-        var model = factory.CreateModel(modelOptions);
-        modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
+        var model = factory.CreateContext(modelOptions);
+        contextStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var tokens = model.Tokenize(input.Text).ToArray();
-        modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
+        contextStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
         op.Complete();
         return tokens;
     }
@@ -56,10 +56,10 @@ public class TokenizationService : ITokenizationService
     {
         using var op = logger.BeginOperation("Running DeTokenize");
         var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
-        var model = factory.CreateModel(modelOptions);
-        modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
+        var model = factory.CreateContext(modelOptions);
+        contextStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var text = model.DeTokenize(input.Tokens);
-        modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
+        contextStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
         op.Complete();
         return text;
     }

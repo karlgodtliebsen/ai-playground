@@ -19,7 +19,7 @@ namespace LLamaSharp.Domain.Domain.Repositories.Implementation;
 /// </summary>
 public sealed class UsersStateFileRepository : IUsersStateRepository
 {
-    private readonly LlamaModelOptions modelOptions;
+    private readonly LLamaModelOptions modelOptions;
     private readonly ILogger logger;
     private const string InferenceFile = "inference-options.json";
     private const string LlamaModelFile = "llamamodel-options.json";
@@ -33,7 +33,7 @@ public sealed class UsersStateFileRepository : IUsersStateRepository
     /// <param name="repositoryOptions"></param>
     /// <param name="modelOptions"></param>
     /// <param name="logger"></param>
-    public UsersStateFileRepository(IOptions<LlamaRepositoryOptions> repositoryOptions, IOptions<LlamaModelOptions> modelOptions, ILogger logger)
+    public UsersStateFileRepository(IOptions<LlamaRepositoryOptions> repositoryOptions, IOptions<LLamaModelOptions> modelOptions, ILogger logger)
     {
         this.modelOptions = modelOptions.Value;
         this.repositoryOptions = repositoryOptions.Value;
@@ -78,9 +78,9 @@ public sealed class UsersStateFileRepository : IUsersStateRepository
     /// <param name="options"></param>
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
-    public async Task PersistLlamaModelOptions(LlamaModelOptions options, string userId, CancellationToken cancellationToken)
+    public async Task PersistLlamaModelOptions(LLamaModelOptions options, string userId, CancellationToken cancellationToken)
     {
-        options.TensorSplits = IntPtr.Zero;
+        options.TensorSplits = Array.Empty<float>();
         var fileName = GetFileName(userId, LlamaModelFile);
         await PersistObject(options, fileName, cancellationToken);
     }
@@ -109,13 +109,13 @@ public sealed class UsersStateFileRepository : IUsersStateRepository
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<OneOf<LlamaModelOptions, None>> GetLlamaModelOptions(string userId, CancellationToken cancellationToken)
+    public async Task<OneOf<LLamaModelOptions, None>> GetLlamaModelOptions(string userId, CancellationToken cancellationToken)
     {
         var fileName = GetFileName(userId, LlamaModelFile);
         if (!File.Exists(fileName)) return new None();
         using var op = logger.BeginOperation("Loading Llama Model Options for {userId}...", userId);
         FileInfo fileInfo = new FileInfo(fileName);
-        var options = await fileInfo.FromJsonFile<LlamaModelOptions>(cancellationToken);
+        var options = await fileInfo.FromJsonFile<LLamaModelOptions>(cancellationToken);
         op.Complete();
         return options!;
     }

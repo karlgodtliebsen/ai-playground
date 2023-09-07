@@ -27,7 +27,7 @@ public interface IOptionsService
     /// <param name="options"></param>
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
-    Task PersistLlamaModelOptions(LlamaModelOptions? options, string userId, CancellationToken cancellationToken);
+    Task PersistLlamaModelOptions(LLamaModelOptions? options, string userId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get Inference Options
@@ -43,13 +43,13 @@ public interface IOptionsService
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<LlamaModelOptions> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
+    Task<LLamaModelOptions> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get a snapshot of the default Llama model options
     /// </summary>
     /// <returns></returns>
-    LlamaModelOptions GetDefaultLlamaModelOptions();
+    LLamaModelOptions GetDefaultLlamaModelOptions();
 
     /// <summary>
     /// Get a snapshot of the default Inference options
@@ -76,7 +76,7 @@ public interface IOptionsService
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<LlamaModelOptions> CoalsceLlamaModelOptions(LlamaModelOptions? queryOptions, string userId, CancellationToken cancellationToken);
+    Task<LLamaModelOptions> CoalsceLlamaModelOptions(LLamaModelOptions? queryOptions, string userId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get the system prompt templates

@@ -107,7 +107,7 @@ public class ConfigurationController : ControllerBase
     [HttpPut("configuration/modelparams")]
     public async Task UpdateLlamaModelOptions([FromBody] LlamaModelRequestResponse request, [FromServices] Mappers.OptionsMapper mapper, CancellationToken cancellationToken)
     {
-        LlamaModelOptions defaultOptions = domainService.GetDefaultLlamaModelOptions();
+        LLamaModelOptions defaultOptions = domainService.GetDefaultLlamaModelOptions();
         var options = mapper.MapRestoreSensitiveData(request, defaultOptions);
         await domainService.PersistLlamaModelOptions(options, userProvider.UserId, cancellationToken);
     }

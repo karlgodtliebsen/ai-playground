@@ -16,9 +16,9 @@ public interface IInteractiveExecutorService
     /// <returns></returns>
     IAsyncEnumerable<string> Execute(ExecutorInferMessage input, CancellationToken cancellationToken);
 
-    IEnumerable<string> ChatUsingInteractiveExecutorWithTransformation(InferenceOptions inferenceOptions, LlamaModelOptions modelOptions, KeywordTextOutputStreamTransform executionOptions, string userInput);
+    IEnumerable<string> ChatUsingInteractiveExecutorWithTransformation(InferenceOptions inferenceOptions, LLamaModelOptions modelOptions, KeywordTextOutputStreamTransform executionOptions, string userInput);
 
-    IEnumerable<string> ChatUsingInteractiveExecutor(InferenceOptions inferenceOptions, LlamaModelOptions modelOptions, string userInput);
+    IEnumerable<string> ChatUsingInteractiveExecutor(InferenceOptions inferenceOptions, LLamaModelOptions modelOptions, string userInput);
 
     IAsyncEnumerable<string> InteractiveExecuteInstructions(ExecutorInferMessage input, CancellationToken cancellationToken);
 

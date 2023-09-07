@@ -21,8 +21,12 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
 {
     private readonly IntegrationTestWebApplicationFactory factory;
     private readonly ILogger logger;
-    const string Model = "wizardLM-7B.ggmlv3.q4_1";
-    //"llama-2-7b.ggmlv3.q8_0";
+    const string Model = "wizardLM-7B.ggmlv3.q4_1.bin";
+    //"llama-2-7b.ggmlv3.q8_0.bin";
+    //codellama-7b.ggmlv3.Q8_0.bin
+    //codellama-7b-instruct.ggmlv3.Q8_0.bin
+    //codellama-13b-instruct.ggmlv3.Q3_K_M.bin
+    //codellama-7b-instruct.ggmlv3.Q5_0.bin
 
     public TestOfLlamaSharpCompositeClient(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {

@@ -5,7 +5,7 @@ namespace LLamaSharp.Domain.Domain.Repositories;
 /// <summary>
 /// Centralized handling for model state persist and load
 /// </summary>
-public interface IModelStateRepository
+public interface IContextStateRepository
 {
     /// <summary>
     /// Saves the state of the model
@@ -13,7 +13,7 @@ public interface IModelStateRepository
     /// <param name="model"></param>
     /// <param name="userId"></param>
     /// <param name="save"></param>
-    void SaveState(LLamaModel model, string userId, bool save);
+    void SaveState(LLamaContext model, string userId, bool save);
 
     /// <summary>
     /// Saves the state of the executor
@@ -29,7 +29,7 @@ public interface IModelStateRepository
     /// <param name="model"></param>
     /// <param name="userId"></param>
     /// <param name="load"></param>
-    void LoadState(LLamaModel model, string userId, bool load);
+    void LoadState(LLamaContext model, string userId, bool load);
 
     /// <summary>
     /// Loads the state of the executor

@@ -45,13 +45,13 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         factory.Services.GetService<ILoggerFactory>().Should().NotBeNull();
         factory.Services.GetService<ILogger<object>>().Should().NotBeNull();
 
-        factory.Services.GetService<ILlamaModelFactory>().Should().NotBeNull();
+        factory.Services.GetService<ILLamaFactory>().Should().NotBeNull();
         factory.Services.GetService<IOptionsService>().Should().NotBeNull();
         factory.Services.GetService<ICompositeService>().Should().NotBeNull();
         factory.Services.GetService<IChatService>().Should().NotBeNull();
         factory.Services.GetService<IEmbeddingsService>().Should().NotBeNull();
         factory.Services.GetService<IInteractiveExecutorService>().Should().NotBeNull();
-        factory.Services.GetService<IModelStateRepository>().Should().NotBeNull();
+        factory.Services.GetService<IContextStateRepository>().Should().NotBeNull();
         factory.Services.GetService<IUsersStateRepository>().Should().NotBeNull();
 
         factory.Services.GetService<RequestMessagesMapper>().Should().NotBeNull();
@@ -64,10 +64,10 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
 
         //Options
         factory.Services.GetService<IOptions<LlamaRepositoryOptions>>().Should().NotBeNull();
-        factory.Services.GetService<IOptions<LlamaModelOptions>>().Should().NotBeNull();
+        factory.Services.GetService<IOptions<LLamaModelOptions>>().Should().NotBeNull();
         factory.Services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
 
-        var options = factory.Services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
+        var options = factory.Services.GetRequiredService<IOptions<LLamaModelOptions>>().Value;
         options.ModelPath.Should().Be("/projects/AI/LlamaModels/llama-2-7b.ggmlv3.q8_0.bin");
 
         var iOptions = factory.Services.GetRequiredService<IOptions<InferenceOptions>>().Value;

@@ -25,12 +25,12 @@ public static class LLamaDomainConfigurator
     public static IServiceCollection AddLLamaDomain(this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddLlamaConfiguration(configuration)
+            .AddLLamaConfiguration(configuration)
             .AddInferenceConfiguration(configuration)
             .AddLLamaRepository(configuration);
 
         services
-            .AddTransient<ILlamaModelFactory, LlamaModelFactory>()
+            .AddTransient<ILLamaFactory, IlLamaFactory>()
             .AddTransient<IOptionsService, OptionsService>()
             .AddTransient<IChatService, ChatService>()
             .AddTransient<IEmbeddingsService, EmbeddingsService>()

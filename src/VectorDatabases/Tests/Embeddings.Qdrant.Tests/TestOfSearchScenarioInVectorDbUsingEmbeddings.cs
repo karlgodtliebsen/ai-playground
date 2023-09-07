@@ -37,7 +37,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
-    private readonly ILlamaModelFactory llamaModelFactory;
+    private readonly ILLamaFactory ilLamaFactory;
     private string modelFilesPath;
     private readonly IServiceProvider services;
     private const string CollectionName = "books-search-collection";
@@ -48,9 +48,9 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     {
         this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
-        var options = services.GetRequiredService<IOptions<LlamaModelOptions>>().Value;
+        var options = services.GetRequiredService<IOptions<LLamaModelOptions>>().Value;
         this.modelFilesPath = Path.GetFullPath(options.ModelPath);
-        this.llamaModelFactory = services.GetRequiredService<ILlamaModelFactory>();
+        this.ilLamaFactory = services.GetRequiredService<ILLamaFactory>();
         this.logger = services.GetRequiredService<ILogger>();
     }
 
@@ -92,9 +92,9 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     {
         //fi to point at folder for all the models, outside of this solution
         modelFilesPath = Path.Combine(Path.GetDirectoryName(modelFilesPath), model);
-        var modelParams = llamaModelFactory.CreateModelParams();
+        var modelParams = ilLamaFactory.CreateModelParams();
         modelParams.ModelPath = modelFilesPath;
-        var embedder = llamaModelFactory.CreateEmbedder(modelParams);
+        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
         await RunEmbedding(embedder);
     }
 
@@ -102,8 +102,8 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
     [Fact]
     public async Task AddEmbeddingVectorToCollectionAndUseSearchToFindBook()
     {
-        var modelParams = llamaModelFactory.CreateModelParams();
-        var embedder = llamaModelFactory.CreateEmbedder(modelParams);
+        var modelParams = ilLamaFactory.CreateModelParams();
+        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
         await RunEmbedding(embedder);
     }
 
@@ -176,8 +176,8 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
             new Document { Name = "The Left Hand of Darkness", Description = "A human ambassador is sent to a planet where the inhabitants are genderless and can change gender at will.", Author = "Ursula K. Le Guin", Year = 1969 },
             new Document { Name = "The Three-Body Problem", Description = "Humans encounter an alien civilization that lives in a dying system.", Author = "Liu Cixin", Year = 2008 }
         };
-        var modelParams = llamaModelFactory.CreateModelParams();
-        var embedder = llamaModelFactory.CreateEmbedder(modelParams);
+        var modelParams = ilLamaFactory.CreateModelParams();
+        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
 
         var points = new PointCollection();
         foreach (var document in documents)

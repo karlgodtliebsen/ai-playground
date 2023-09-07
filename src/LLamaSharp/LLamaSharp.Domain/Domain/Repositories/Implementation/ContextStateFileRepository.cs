@@ -12,7 +12,7 @@ namespace LLamaSharp.Domain.Domain.Repositories.Implementation;
 /// Centralized handling for model state persist and load
 /// Will probably evolve into something like repository to support both file systems and dbs
 /// </summary>
-public sealed class ModelStateFileRepository : IModelStateRepository
+public sealed class ContextStateFileRepository : IContextStateRepository
 {
     private readonly ILogger logger;
     private readonly LlamaRepositoryOptions llamaRepositoryOptions;
@@ -28,7 +28,7 @@ public sealed class ModelStateFileRepository : IModelStateRepository
     /// </summary>
     /// <param name="options"></param>
     /// <param name="logger">Serilog</param>
-    public ModelStateFileRepository(IOptions<LlamaRepositoryOptions> options, ILogger logger)
+    public ContextStateFileRepository(IOptions<LlamaRepositoryOptions> options, ILogger logger)
     {
         this.logger = logger;
         llamaRepositoryOptions = options.Value;
@@ -54,7 +54,7 @@ public sealed class ModelStateFileRepository : IModelStateRepository
     /// <param name="model"></param>
     /// <param name="userId"></param>
     /// <param name="save"></param>
-    public void SaveState(LLamaModel model, string userId, bool save)
+    public void SaveState(LLamaContext model, string userId, bool save)
     {
         if (save)
         {
@@ -88,7 +88,7 @@ public sealed class ModelStateFileRepository : IModelStateRepository
     /// <param name="model"></param>
     /// <param name="userId"></param>
     /// <param name="load"></param>
-    public void LoadState(LLamaModel model, string userId, bool load)
+    public void LoadState(LLamaContext model, string userId, bool load)
     {
         if (load)
         {

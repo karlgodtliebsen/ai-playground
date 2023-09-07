@@ -8,29 +8,27 @@ using Microsoft.Extensions.Options;
 
 using SerilogTimings.Extensions;
 
-using LLamaEmbedder = LLama.LLamaEmbedder;
-using LLamaModel = LLama.LLamaModel;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;
 
 /// <summary>
 /// Factory for creating LLama models, executors, parameters and embedders
 /// </summary>
-public class LlamaModelFactory : ILlamaModelFactory
+public class IlLamaFactory : ILLamaFactory
 {
     private readonly ILogger logger;
-    private readonly LlamaModelOptions llamaModelOptions;
+    private readonly LLamaModelOptions LLamaContextOptions;
 
     /// <summary>
     /// Constructor for LLama Model Factory
     /// </summary>
     /// <param name="options"></param>
     /// <param name="logger"></param>
-    public LlamaModelFactory(IOptions<LlamaModelOptions> options, ILogger logger)
+    public IlLamaFactory(IOptions<LLamaModelOptions> options, ILogger logger)
     {
         this.logger = logger;
         ArgumentNullException.ThrowIfNull(options.Value);
-        llamaModelOptions = options.Value;
+        LLamaContextOptions = options.Value;
     }
 
     /// <summary>
@@ -39,28 +37,28 @@ public class LlamaModelFactory : ILlamaModelFactory
     /// <returns></returns>
     public ModelParams CreateModelParams()
     {
-        return llamaModelOptions;
+        return LLamaContextOptions;
     }
 
     /// <summary>
     /// Creates a default llama model 
     /// </summary>
     /// <returns></returns>
-    public LLamaModel CreateModel()
+    public LLamaContext CreateContext()
     {
         var parameters = CreateModelParams();
-        return CreateModel(parameters);
+        return CreateContext(parameters);
     }
 
     /// <summary>
-    /// Creates a llama model with specified parameters (ResettableLLamaModel)
+    /// Creates a llama model with specified parameters (ResettableLLamaContext)
     /// </summary>
     /// <param name="parameters"></param>
     /// <returns></returns>
-    public LLamaModel CreateModel(ModelParams parameters)
+    public LLamaContext CreateContext(ModelParams parameters)
     {
         using var op = logger.BeginOperation("Creating LLama Model");
-        var model = new LLamaModel(parameters);    //LLamaModel   ResettableLLamaModel
+        var model = new LLamaContext(parameters);    //LLamaContext   ResettableLLamaContext
         op.Complete();
         return model;
     }
@@ -80,10 +78,10 @@ public class LlamaModelFactory : ILlamaModelFactory
     }
 
     /// <inheritdoc />
-    public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(Action<LLamaModel>? model = default, Action<ChatSession>? chatSession = default)
+    public (ChatSession chatSession, LLamaContext model) CreateChatSession<TExecutor>(Action<LLamaContext>? model = default, Action<ChatSession>? chatSession = default)
        where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
-        var lModel = CreateModel();
+        var lModel = CreateContext();
         model?.Invoke(lModel);
         var session = CreateChatSession<TExecutor>(lModel);
         chatSession?.Invoke(session);
@@ -92,10 +90,10 @@ public class LlamaModelFactory : ILlamaModelFactory
 
 
     /// <inheritdoc />
-    public (ChatSession chatSession, LLamaModel model) CreateChatSession<TExecutor>(ModelParams parameters, Action<ChatSession>? chatSession = default)
+    public (ChatSession chatSession, LLamaContext model) CreateChatSession<TExecutor>(ModelParams parameters, Action<ChatSession>? chatSession = default)
         where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
-        var model = CreateModel(parameters);
+        var model = CreateContext(parameters);
         var session = CreateChatSession<TExecutor>(model);
         chatSession?.Invoke(session);
         return (session, model);
@@ -109,7 +107,7 @@ public class LlamaModelFactory : ILlamaModelFactory
     /// <param name="model"></param>
     /// <typeparam name="TExecutor"></typeparam>
     /// <returns></returns>
-    public ChatSession CreateChatSession<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
+    public ChatSession CreateChatSession<TExecutor>(LLamaContext model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
         using var op = logger.BeginOperation("Creating Chat Session");
         ILLamaExecutor executor = CreateStatefulExecutor<TExecutor>(model);
@@ -124,7 +122,7 @@ public class LlamaModelFactory : ILlamaModelFactory
     /// <param name="model"></param>
     /// <typeparam name="TExecutor"></typeparam>
     /// <returns></returns>
-    public StatefulExecutorBase CreateStatefulExecutor<TExecutor>(LLamaModel model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
+    public StatefulExecutorBase CreateStatefulExecutor<TExecutor>(LLamaContext model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
         switch (typeof(TExecutor))
         {
@@ -137,11 +135,11 @@ public class LlamaModelFactory : ILlamaModelFactory
         }
     }
 
-    public InteractiveExecutor CreateInteractiveExecutor(LLamaModel model)
+    public InteractiveExecutor CreateInteractiveExecutor(LLamaContext model)
     {
         return new InteractiveExecutor(model);
     }
-    public InstructExecutor CreateInstructExecutor(LLamaModel model)
+    public InstructExecutor CreateInstructExecutor(LLamaContext model)
     {
         return new InstructExecutor(model);
     }
@@ -152,7 +150,7 @@ public class LlamaModelFactory : ILlamaModelFactory
     /// <param name="model"></param>
     /// <typeparam name="TExecutor"></typeparam>
     /// <returns></returns>
-    public StatelessExecutor CreateStateLessExecutor<TExecutor>(LLamaModel model) where TExecutor : StatelessExecutor, ILLamaExecutor
+    public StatelessExecutor CreateStateLessExecutor<TExecutor>(LLamaContext model) where TExecutor : StatelessExecutor, ILLamaExecutor
     {
         return new StatelessExecutor(model);
     }

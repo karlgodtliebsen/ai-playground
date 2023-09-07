@@ -13,7 +13,7 @@ public sealed class LLamaSharpTestFixture : TestFixtureBase
     protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddLlamaConfiguration(configuration)
+            .AddLLamaConfiguration(configuration)
             .AddLLamaDomain(configuration)
             .AddInferenceConfiguration(configuration)
             .AddLLamaRepository(configuration)

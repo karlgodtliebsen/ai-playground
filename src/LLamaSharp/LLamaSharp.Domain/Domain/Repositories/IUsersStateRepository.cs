@@ -30,7 +30,7 @@ public interface IUsersStateRepository
     /// <param name="options"></param>
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
-    Task PersistLlamaModelOptions(LlamaModelOptions options, string userId, CancellationToken cancellationToken);
+    Task PersistLlamaModelOptions(LLamaModelOptions options, string userId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Get Inference Options
@@ -46,7 +46,7 @@ public interface IUsersStateRepository
     /// <param name="userId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<OneOf<LlamaModelOptions, None>> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
+    Task<OneOf<LLamaModelOptions, None>> GetLlamaModelOptions(string userId, CancellationToken cancellationToken);
 
 
     /// <summary>

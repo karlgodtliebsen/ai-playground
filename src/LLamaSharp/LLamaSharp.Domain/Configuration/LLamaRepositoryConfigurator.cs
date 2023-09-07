@@ -25,7 +25,7 @@ public static class LLamaRepositoryConfigurator
         VerifyOptions(modelOptions);
         services.AddSingleton<IOptions<LlamaRepositoryOptions>>(new OptionsWrapper<LlamaRepositoryOptions>(modelOptions));
         services
-            .AddTransient<IModelStateRepository, ModelStateFileRepository>()
+            .AddTransient<IContextStateRepository, ContextStateFileRepository>()
             .AddTransient<IUsersStateRepository, UsersStateFileRepository>();
         return services;
     }
@@ -60,7 +60,7 @@ public static class LLamaRepositoryConfigurator
     /// <returns></returns>
     public static IServiceCollection AddLLamaRepository(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
-        sectionName ??= LlamaModelOptions.SectionName;
+        sectionName ??= LLamaModelOptions.SectionName;
         var modelOptions = configuration.GetSection(sectionName).Get<LlamaRepositoryOptions>() ?? new LlamaRepositoryOptions();
         return services.AddLLamaRepository(modelOptions);
     }

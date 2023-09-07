@@ -17,7 +17,7 @@ public partial class OptionsMapper
     /// </summary>
     /// <param name="options"></param>
     /// <returns></returns>
-    public partial LlamaModelRequestResponse Map(LlamaModelOptions options);
+    public partial LlamaModelRequestResponse Map(LLamaModelOptions options);
 
 
     /// <summary>
@@ -25,7 +25,7 @@ public partial class OptionsMapper
     /// </summary>
     /// <param name="options"></param>
     /// <returns></returns>
-    public LlamaModelRequestResponse MapProtectSensitiveData(LlamaModelOptions options)
+    public LlamaModelRequestResponse MapProtectSensitiveData(LLamaModelOptions options)
     {
         var response = Map(options);
         response.ModelName = options.GetSanitizeSensitiveData();
@@ -38,7 +38,7 @@ public partial class OptionsMapper
     /// <param name="request"></param>
     /// <param name="defaultOptions"></param>
     /// <returns></returns>
-    public LlamaModelOptions MapRestoreSensitiveData(LlamaModelRequestResponse? request, LlamaModelOptions defaultOptions)
+    public LLamaModelOptions MapRestoreSensitiveData(LlamaModelRequestResponse? request, LLamaModelOptions defaultOptions)
     {
         if (request is null)
         {
@@ -56,7 +56,7 @@ public partial class OptionsMapper
     /// </summary>
     /// <param name="options"></param>
     /// <returns></returns>
-    public partial LlamaModelOptions Map(LlamaModelRequestResponse options);
+    public partial LLamaModelOptions Map(LlamaModelRequestResponse options);
 
     /// <summary>
     /// Maps the InferenceOptions to the InferenceRequestResponse

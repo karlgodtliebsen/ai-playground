@@ -33,7 +33,7 @@ if (!env.IsEnvironment(HostingEnvironments.UsingReverseProxy))
 }
 services
     .AddWebApiConfiguration(configuration)
-    .AddLlamaConfiguration(configuration)
+    .AddLLamaConfiguration(configuration)
     .AddInferenceConfiguration(configuration)
     .AddCors(Origins)
     .AddControllers(

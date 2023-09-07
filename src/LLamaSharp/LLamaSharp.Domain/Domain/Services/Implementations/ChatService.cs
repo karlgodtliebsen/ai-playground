@@ -13,8 +13,8 @@ namespace LLamaSharp.Domain.Domain.Services.Implementations;
 /// </summary>
 public class ChatService : IChatService
 {
-    private readonly ILlamaModelFactory factory;
-    private readonly IModelStateRepository modelStateRepository;
+    private readonly ILLamaFactory factory;
+    private readonly IContextStateRepository contextStateRepository;
     private readonly IOptionsService optionsService;
     private readonly ILogger logger;
 
@@ -25,13 +25,13 @@ public class ChatService : IChatService
     /// Constructor for Chat Service
     /// </summary>
     /// <param name="factory"></param>
-    /// <param name="modelStateRepository"></param>
+    /// <param name="contextStateRepository"></param>
     /// <param name="optionsService"></param>
     /// <param name="logger"></param>
-    public ChatService(ILlamaModelFactory factory, IModelStateRepository modelStateRepository, IOptionsService optionsService, ILogger logger)
+    public ChatService(ILLamaFactory factory, IContextStateRepository contextStateRepository, IOptionsService optionsService, ILogger logger)
     {
         this.factory = factory;
-        this.modelStateRepository = modelStateRepository;
+        this.contextStateRepository = contextStateRepository;
         this.optionsService = optionsService;
         this.logger = logger;
     }
@@ -48,12 +48,12 @@ public class ChatService : IChatService
         var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
         AlignModelParameters(input, inferenceOptions, modelOptions);
         var (chatSession, model) = factory.CreateChatSession<InteractiveExecutor>(modelOptions);
-        modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
+        contextStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var userInput = CreateUserInput(input);
         var outputs = chatSession.Chat(userInput, inferenceOptions, cancellationToken);
         var result = string.Join("", outputs);
 
-        modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
+        contextStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
         model.Dispose();        //TODO: check if this is needed - ResettableLLamaModel
         return result;
     }
@@ -65,7 +65,7 @@ public class ChatService : IChatService
         var inferenceOptions = await optionsService.GetInferenceOptions(input.UserId, cancellationToken);
         AlignModelParameters(input, inferenceOptions, modelOptions);
         var (chatSession, model) = factory.CreateChatSession<InteractiveExecutor>(modelOptions);    //InstructExecutor
-        modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
+        contextStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
         var userInput = CreateUserInput(input);
         var results = chatSession.ChatAsync(userInput, inferenceOptions, cancellationToken);
         await foreach (var result in results.WithCancellation(cancellationToken))
@@ -76,7 +76,7 @@ public class ChatService : IChatService
     }
 
 
-    private void AlignModelParameters(ChatMessage input, InferenceOptions inferenceOptions, LlamaModelOptions modelOptions)
+    private void AlignModelParameters(ChatMessage input, InferenceOptions inferenceOptions, LLamaModelOptions modelOptions)
     {
         if (input.UseDefaultAntiPrompt && input.AntiPrompts is not null)
         {

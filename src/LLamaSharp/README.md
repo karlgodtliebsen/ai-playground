@@ -23,6 +23,14 @@ Download a model from huggingface/TheBloke: llama-2-7b.ggmlv3.q8_0.bin
 ### Llamasharp (Models version 1 and 2):
 A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. 
 
+Currently working with these models:
+```
+- codellama-7b.ggmlv3.Q8_0.bin
+- codellama-7b-instruct.ggmlv3.Q8_0.bin
+- codellama-13b-instruct.ggmlv3.Q3_K_M.bin
+- codellama-7b-instruct.ggmlv3.Q5_0.bin
+
+```
 
 These models has been testet:
 ```

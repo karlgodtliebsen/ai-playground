@@ -37,18 +37,18 @@ public sealed class TestOfConfiguration : IClassFixture<FinancialAgentsTestFixtu
         services.GetService<ILoggerFactory>().Should().NotBeNull();
         services.GetService<ILogger<object>>().Should().NotBeNull();
 
-        services.GetService<ILlamaModelFactory>().Should().NotBeNull();
+        services.GetService<ILLamaFactory>().Should().NotBeNull();
         services.GetService<IOptionsService>().Should().NotBeNull();
         services.GetService<IChatService>().Should().NotBeNull();
         services.GetService<IEmbeddingsService>().Should().NotBeNull();
         services.GetService<IInteractiveExecutorService>().Should().NotBeNull();
         services.GetService<ICompositeService>().Should().NotBeNull();
-        services.GetService<IModelStateRepository>().Should().NotBeNull();
+        services.GetService<IContextStateRepository>().Should().NotBeNull();
         services.GetService<IUsersStateRepository>().Should().NotBeNull();
 
         //Options
         services.GetService<IOptions<LlamaRepositoryOptions>>().Should().NotBeNull();
-        services.GetService<IOptions<LlamaModelOptions>>().Should().NotBeNull();
+        services.GetService<IOptions<LLamaModelOptions>>().Should().NotBeNull();
         services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
 
     }

@@ -4,7 +4,7 @@ namespace LLamaSharp.Domain.Configuration;
 /// <summary>
 /// Holds the user applicable settings for the LLamaSharpApp.WebAPI
 /// </summary>
-public class LlamaModelOptions : ModelParams
+public record LLamaModelOptions : ModelParams
 {
     /// <summary>
     /// Configuration SectionName
@@ -14,7 +14,7 @@ public class LlamaModelOptions : ModelParams
     /// <summary>
     /// Constructor for LlamaModelOptions with default ModelPath
     /// </summary>
-    public LlamaModelOptions() : base("./LlamaModels") { }
+    public LLamaModelOptions() : base("./LlamaModels") { }
 
     public string GetSanitizeSensitiveData()
     {

@@ -18,14 +18,16 @@
 
   <ItemGroup>
 
+    <PackageReference Include="LLamaSharp.semantic-kernel" Version="0.5.1" />
+
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.10" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
     <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
 
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.OpenApi" Version="1.6.6" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.6.8" />
 
     <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.6" />
 
@@ -40,7 +42,7 @@
     <PackageReference Include="SerilogTimings" Version="3.0.1" />
 
     <PackageReference Include="NSubstitute" Version="5.0.0" />
-    <PackageReference Include="OneOf" Version="3.0.255" />
+    <PackageReference Include="OneOf" Version="3.0.263" />
 
 
     <PackageReference Include="FluentAssertions" Version="6.12.0" />

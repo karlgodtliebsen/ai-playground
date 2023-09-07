@@ -25,7 +25,7 @@ public class TestOfUberFilings
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly string testFilesPath;
-    private readonly ILlamaModelFactory llamaModelFactory;
+    private readonly ILLamaFactory ilLamaFactory;
     private readonly IEmbeddingsService embeddingService;
     private readonly IServiceProvider services;
     private const string CollectionName = "SemanticKernel-uber-test-collection";
@@ -36,7 +36,7 @@ public class TestOfUberFilings
         this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.llamaModelFactory = services.GetRequiredService<ILlamaModelFactory>();
+        this.ilLamaFactory = services.GetRequiredService<ILLamaFactory>();
         this.testFilesPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files"));
         this.embeddingService = hostApplicationFactory.Services.GetRequiredService<IEmbeddingsService>();
     }
@@ -230,8 +230,8 @@ public class TestOfUberFilings
 
     private async IAsyncEnumerable<PointStruct> CreateUberFilesPoints(IAsyncEnumerable<UberFile> files)
     {
-        var modelParams = llamaModelFactory.CreateModelParams();
-        var embedder = llamaModelFactory.CreateEmbedder(modelParams);
+        var modelParams = ilLamaFactory.CreateModelParams();
+        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
 
         await foreach (var file in files)
         {
@@ -271,8 +271,8 @@ public class TestOfUberFilings
 
     private BatchRequestStruct CreateUberFilesBatch(IEnumerable<UberFile> files)
     {
-        var modelParams = llamaModelFactory.CreateModelParams();
-        var embedder = llamaModelFactory.CreateEmbedder(modelParams);
+        var modelParams = ilLamaFactory.CreateModelParams();
+        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
         var numberOfFiles = files.Count();
         var ids = new List<string>(numberOfFiles);
         var payloads = new List<Dictionary<string, object>>(numberOfFiles);

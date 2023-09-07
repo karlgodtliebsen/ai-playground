@@ -17,14 +17,14 @@ public static class LlamaConfigurator
     ///  <param name="services"></param>
     ///  <param name="modelOptions"></param>
     ///  <returns></returns>
-    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, LlamaModelOptions modelOptions)
+    public static IServiceCollection AddLLamaConfiguration(this IServiceCollection services, LLamaModelOptions modelOptions)
     {
         VerifyOptions(modelOptions);
-        services.AddSingleton<IOptions<LlamaModelOptions>>(new OptionsWrapper<LlamaModelOptions>(modelOptions));
+        services.AddSingleton<IOptions<LLamaModelOptions>>(new OptionsWrapper<LLamaModelOptions>(modelOptions));
         return services;
     }
 
-    private static void VerifyOptions(LlamaModelOptions modelOptions)
+    private static void VerifyOptions(LLamaModelOptions modelOptions)
     {
         ArgumentNullException.ThrowIfNull(modelOptions);
         ArgumentNullException.ThrowIfNull(modelOptions.ModelPath);
@@ -36,11 +36,11 @@ public static class LlamaConfigurator
     /// <param name="services"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, Action<LlamaModelOptions>? options = null)
+    public static IServiceCollection AddLLamaConfiguration(this IServiceCollection services, Action<LLamaModelOptions>? options = null)
     {
-        var modelOptions = new LlamaModelOptions();
+        var modelOptions = new LLamaModelOptions();
         options?.Invoke(modelOptions);
-        return services.AddLlamaConfiguration(modelOptions);
+        return services.AddLLamaConfiguration(modelOptions);
     }
 
     /// <summary>
@@ -51,15 +51,15 @@ public static class LlamaConfigurator
     /// <param name="configuration"></param>
     /// <param name="sectionName"></param>
     /// <returns></returns>
-    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
+    public static IServiceCollection AddLLamaConfiguration(this IServiceCollection services, IConfiguration configuration, string? sectionName = null)
     {
-        sectionName ??= LlamaModelOptions.SectionName;
-        var modelOptions = configuration.GetSection(sectionName).Get<LlamaModelOptions>();
+        sectionName ??= LLamaModelOptions.SectionName;
+        var modelOptions = configuration.GetSection(sectionName).Get<LLamaModelOptions>();
         if (modelOptions is null)
         {
-            modelOptions = new LlamaModelOptions();
+            modelOptions = new LLamaModelOptions();
         }
-        return services.AddLlamaConfiguration(modelOptions);
+        return services.AddLLamaConfiguration(modelOptions);
     }
 
     /// <summary>
@@ -71,16 +71,16 @@ public static class LlamaConfigurator
     /// <param name="options"></param>
     /// <param name="sectionName"></param>
     /// <returns></returns>
-    public static IServiceCollection AddLlamaConfiguration(this IServiceCollection services, IConfiguration configuration,
-        Action<LlamaModelOptions> options, string? sectionName = null)
+    public static IServiceCollection AddLLamaConfiguration(this IServiceCollection services, IConfiguration configuration,
+        Action<LLamaModelOptions> options, string? sectionName = null)
     {
-        sectionName ??= LlamaModelOptions.SectionName;
-        var modelOptions = configuration.GetSection(sectionName).Get<LlamaModelOptions>();
+        sectionName ??= LLamaModelOptions.SectionName;
+        var modelOptions = configuration.GetSection(sectionName).Get<LLamaModelOptions>();
         if (modelOptions is null)
         {
-            modelOptions = new LlamaModelOptions();
+            modelOptions = new LLamaModelOptions();
         }
         options.Invoke(modelOptions);
-        return services.AddLlamaConfiguration(modelOptions);
+        return services.AddLLamaConfiguration(modelOptions);
     }
 }
