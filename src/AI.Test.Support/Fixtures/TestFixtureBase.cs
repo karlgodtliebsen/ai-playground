@@ -40,10 +40,10 @@ public abstract class TestFixtureBase
     /// Post Build Setup of Logging that depends on ITestOutputHelper
     /// </summary>
     /// <param name="output"></param>
-    private HostApplicationFactory BuildWithLogging(ITestOutputHelper output)
+    private HostApplicationFactory BuildWithLogging(ITestOutputHelper outputHelper)
     {
         var factory = HostApplicationFactory.Build(
-            output,
+            outputHelper,
             environment: AddEnvironment,
             serviceContext: AddServices,
             fixedDateTime: AddTestDateTime);

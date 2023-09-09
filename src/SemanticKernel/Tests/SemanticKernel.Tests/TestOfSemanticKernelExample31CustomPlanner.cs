@@ -2,7 +2,6 @@
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Orchestration;
@@ -21,15 +20,16 @@ using SemanticKernel.Tests.Skills;
 
 using Xunit.Abstractions;
 
+using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 using TimeSkill = SemanticKernel.Tests.Skills.TimeSkill;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel With Docker Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample31CustomPlanner
 {
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
+    private readonly ILoggerFactory loggerFactory;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
@@ -47,7 +47,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
         this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         this.bingOptions = services.GetRequiredService<IOptions<BingOptions>>().Value;
         this.skillsPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Skills"));
@@ -65,7 +65,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
 
         logger.Information("======== Custom Planner - Create and Execute Markup Plan ========");
         IKernel kernel = new KernelBuilder()
-            .WithLogger(msLogger)
+            .WithLoggerFactory(loggerFactory)
             .WithOpenAITextCompletionService(CompletionModel, openAIOptions.ApiKey)
             .WithOpenAITextEmbeddingGenerationService(EmbeddingModel, openAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)
@@ -132,7 +132,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
 
     private async Task RememberFactsAsync(IKernel kernel)
     {
-        kernel.ImportSkill(new TextMemorySkill());
+        kernel.ImportSkill(new TextMemorySkill(kernel.Memory));
 
         List<string> memoriesToSave = new()
         {

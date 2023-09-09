@@ -19,7 +19,9 @@ namespace SemanticKernel.Tests;
 public class TestOfSemanticKernelExample37MultiStreamingCompletion
 {
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
+    private readonly ILoggerFactory loggerFactory;
+
+
     private readonly SemanticKernelTestFixture fixture;
     private readonly HostApplicationFactory hostApplicationFactory;
     private static readonly object s_lockObject = new();
@@ -31,7 +33,7 @@ public class TestOfSemanticKernelExample37MultiStreamingCompletion
         this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
     }
 

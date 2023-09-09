@@ -1,7 +1,6 @@
 ﻿using AI.Test.Support.Fixtures;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
@@ -12,13 +11,15 @@ using SemanticKernel.Tests.Fixtures;
 
 using Xunit.Abstractions;
 
+using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
+
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT
 {
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
+    private readonly ILoggerFactory loggerFactory;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
@@ -28,7 +29,7 @@ public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT
         this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
     }
 
@@ -40,7 +41,7 @@ public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT
         logger.Information("======== Using Chat GPT model for text completion ========");
 
         IKernel kernel = new KernelBuilder()
-            .WithLogger(msLogger)
+            .WithLoggerFactory(loggerFactory)
             .WithOpenAIChatCompletionService(Model, openAIOptions.ApiKey)
             .Build();
 

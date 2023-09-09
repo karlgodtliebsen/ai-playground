@@ -21,7 +21,9 @@ namespace SemanticKernel.Tests;
 public class TestOfSemanticKernelExample14SemanticMemory
 {
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
+    private readonly ILoggerFactory loggerFactory;
+
+
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
@@ -37,7 +39,7 @@ public class TestOfSemanticKernelExample14SemanticMemory
         this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         this.qdrantOptions = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
     }
@@ -62,7 +64,7 @@ public class TestOfSemanticKernelExample14SemanticMemory
          */
 
         var kernelWithCustomDb = Kernel.Builder
-            .WithLogger(msLogger)
+            .WithLoggerFactory(loggerFactory)
             .WithOpenAITextEmbeddingGenerationService(EmbeddingModel, openAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)
             .Build();

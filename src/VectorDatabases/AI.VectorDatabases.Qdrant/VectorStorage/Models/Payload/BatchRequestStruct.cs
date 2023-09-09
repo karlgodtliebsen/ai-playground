@@ -19,6 +19,15 @@ public class BatchRequestStruct
     [JsonPropertyName("vectors")]
     public IList<IEnumerable<double>> Vectors { get; set; } = new List<IEnumerable<double>>();
 
+
+    public void AddToVectors(ReadOnlyMemory<float> vector)
+    {
+        List<double> embeddings = new List<double>();
+        embeddings.AddRange(vector.ToArray().Select(v => (double)v).ToArray());
+        Vectors.Add(embeddings);
+    }
+
+
     /// <summary>
     /// <a href="https://qdrant.tech/documentation/concepts/points/" />
     /// </summary>

@@ -15,11 +15,13 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel Base Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample36MultiCompletion
 {
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
+    private readonly ILoggerFactory loggerFactory;
+
+
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
@@ -29,7 +31,7 @@ public class TestOfSemanticKernelExample36MultiCompletion
         this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
     }
 

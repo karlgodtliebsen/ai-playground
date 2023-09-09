@@ -18,7 +18,7 @@ namespace SemanticKernel.Tests.Skills;
 /// </summary>
 /// <example>
 /// usage :
-/// var kernel = new KernelBuilder().WithLogger(ConsoleLogger.Log).Build();
+/// var kernel = new KernelBuilder().WithLoggerFactory(ConsoleLogger.Log).Build();
 /// var question = "what is the square root of 625";
 /// var calculatorSkill = kernel.ImportSkill(new LanguageCalculatorSkill(kernel));
 /// var summary = await kernel.RunAsync(questions, calculatorSkill["Calculate"]);
@@ -85,7 +85,7 @@ Question: {{ $input }}
 
         if (answer.ErrorOccurred)
         {
-            throw new InvalidOperationException("error in calculator for input " + input + " " + answer.LastErrorDescription);
+            throw new InvalidOperationException("error in calculator for input " + input + " " + answer.LastException.Message);
         }
 
         string pattern = @"```\s*(.*?)\s*```";

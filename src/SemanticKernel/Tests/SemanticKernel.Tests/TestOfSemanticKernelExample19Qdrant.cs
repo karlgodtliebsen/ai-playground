@@ -24,7 +24,9 @@ namespace SemanticKernel.Tests;
 public class TestOfSemanticKernelExample19Qdrant
 {
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
+    private readonly ILoggerFactory loggerFactory;
+
+
     private readonly IServiceProvider services;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly OpenAIOptions openAIOptions;
@@ -35,7 +37,7 @@ public class TestOfSemanticKernelExample19Qdrant
         this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         this.qdrantOptions = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
     }
@@ -57,7 +59,7 @@ public class TestOfSemanticKernelExample19Qdrant
         var memoryStorage = await factory.Create(collectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         IKernel kernel = Kernel.Builder
-            .WithLogger(msLogger)
+            .WithLoggerFactory(loggerFactory)
             .WithOpenAITextCompletionService(completionModel, openAIOptions.ApiKey)
             .WithOpenAITextEmbeddingGenerationService(embeddingModel, openAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)

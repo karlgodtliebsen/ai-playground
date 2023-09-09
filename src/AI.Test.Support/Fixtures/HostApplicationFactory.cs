@@ -4,7 +4,6 @@ using AI.Test.Support.DockerSupport;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
-using Microsoft.Extensions.Logging;
 
 using NSubstitute;
 

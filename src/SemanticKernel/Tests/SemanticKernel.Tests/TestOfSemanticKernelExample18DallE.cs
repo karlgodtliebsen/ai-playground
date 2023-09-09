@@ -19,7 +19,9 @@ namespace SemanticKernel.Tests;
 public class TestOfSemanticKernelExample18DallE
 {
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
+    private readonly ILoggerFactory loggerFactory;
+
+
     private readonly OpenAIOptions openAIOptions;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
@@ -33,7 +35,7 @@ public class TestOfSemanticKernelExample18DallE
         this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
     }
 
@@ -48,7 +50,7 @@ public class TestOfSemanticKernelExample18DallE
         //var memoryStorage = await factory.Create(collectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         IKernel kernel = new KernelBuilder()
-            .WithLogger(msLogger)
+            .WithLoggerFactory(loggerFactory)
             .WithOpenAIImageGenerationService(openAIOptions.ApiKey)
             .WithOpenAIChatCompletionService(Model, openAIOptions.ApiKey)
             //.WithMemoryStorage(memoryStorage)

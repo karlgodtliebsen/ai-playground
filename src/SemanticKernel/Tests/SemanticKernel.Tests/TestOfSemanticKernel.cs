@@ -16,11 +16,13 @@ using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
 
-[Collection("SemanticKernel With Docker Collection")]
+[Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernel
 {
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.ILogger msLogger;
+
+    private readonly ILoggerFactory loggerFactory;
+
 
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
@@ -34,7 +36,7 @@ public class TestOfSemanticKernel
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
-        this.msLogger = services.GetRequiredService<ILogger<TestOfSemanticKernel>>();
+        this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
     }
 
     [Fact]
@@ -45,7 +47,7 @@ public class TestOfSemanticKernel
 
         var builder = new KernelBuilder();
         builder
-            .WithLogger(msLogger)
+            .WithLoggerFactory(loggerFactory)
             .WithOpenAITextCompletionService(completionModel, openAIOptions.ApiKey);
 
         var kernel = builder.Build();
@@ -79,7 +81,7 @@ One line TLDR with the fewest words.";
         var completionModel = "text-davinci-003";
         var builder = new KernelBuilder();
         builder
-            .WithLogger(msLogger)
+            .WithLoggerFactory(loggerFactory)
             .WithOpenAITextCompletionService(completionModel, openAIOptions.ApiKey);
 
         var kernel = builder.Build();
@@ -105,15 +107,6 @@ Give me a TLDR with the fewest words.";
     }
 
 
-    [Fact(Skip = "TODO: Get the uri for Azure Cognitive Search")]
-    public void RunSampleUsingAzureCognitiveSearch()
-    {
-        var kernelWithACS = Kernel.Builder
-            .WithLogger(msLogger)
-            .WithAzureCognitiveSearchMemory("", openAIOptions.ApiKey)
-            .Build();
-    }
-
     [Fact]
     public async Task RunTextSampleUsingSemanticKernel()
     {
@@ -130,7 +123,7 @@ Give me a TLDR with the fewest words.";
         var memoryStorage = await factory.Create(CollectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         IKernel kernel = Kernel.Builder
-            .WithLogger(msLogger)
+            .WithLoggerFactory(loggerFactory)
             .WithOpenAITextCompletionService(completionModel, openAIOptions.ApiKey)
             .WithOpenAITextEmbeddingGenerationService(embeddingModel, openAIOptions.ApiKey)
             .WithMemoryStorage(memoryStorage)

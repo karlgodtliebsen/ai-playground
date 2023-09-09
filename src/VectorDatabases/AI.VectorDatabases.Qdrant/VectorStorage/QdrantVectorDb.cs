@@ -7,6 +7,7 @@ using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 
 using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel.Connectors.Memory.Qdrant;
 
 using OneOf;
 
@@ -446,6 +447,93 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
 
         var result = await Search(collectionName, search, cancellationToken: cancellationToken);
         return result;
+    }
+
+    public async Task<QdrantVectorRecord?> GetVectorByPayloadIdAsync(string collectionName, string metadataId, bool withVector = false, CancellationToken cancellationToken = default)
+    {
+        var search = new SearchRequest()
+                .SimilarToVector(new float[this.vectorSize!.Value])
+                .HavingExternalId(metadataId)
+                .IncludePayLoad()
+                .TakeFirst()
+                .IncludeVectorData(withVector)
+            ;
+
+        var searchResult = await Search(collectionName, search, cancellationToken: cancellationToken);
+
+        var record = searchResult.Match<QdrantVectorRecord?>(
+            points =>
+            {
+                if (points.Length > 0)
+                {
+                    var point = points[0];
+                    var record = new QdrantVectorRecord(
+                        pointId: point.Id,
+                        embedding: new ReadOnlyMemory<float>(point.Vector.ToArray()),
+                        payload: (Dictionary<string, object>)point.Payload,
+                        tags: null);
+                    return record;
+                }
+                else
+                {
+                    return null;
+                }
+            },
+           error => null
+        );
+        this.logger.Debug("Vector found}");
+        return record;
+    }
+
+    public IAsyncEnumerable<QdrantVectorRecord> GetVectorsByIdAsync(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+        //        this._logger.LogDebug("Searching vectors by point ID");
+
+        //        using HttpRequestMessage request = GetVectorsRequest.Create(collectionName)
+        //            .WithPointIDs(pointIds)
+        //            .WithPayloads(true)
+        //            .WithVectors(withVectors)
+        //            .Build();
+
+        //        string? responseContent = null;
+
+        //        try
+        //        {
+        //            (_, responseContent) = await this.ExecuteHttpRequestAsync(request, cancellationToken).ConfigureAwait(false);
+        //        }
+        //        catch (HttpOperationException e)
+        //        {
+        //            this._logger.LogError(e, "Vectors not found {Message}", e.Message);
+        //            throw;
+        //        }
+
+        //        var data = JsonSerializer.Deserialize<GetVectorsResponse>(responseContent);
+
+        //        if (data == null)
+        //        {
+        //            this._logger.LogWarning("Unable to deserialize Get response");
+        //            yield break;
+        //        }
+
+        //        if (!data.Result.Any())
+        //        {
+        //            this._logger.LogWarning("Vectors not found");
+        //            yield break;
+        //        }
+
+        //        var records = data.Result;
+
+        //#pragma warning disable CS8604 // The request specifically asked for a payload to be in the response
+        //        foreach (var record in records)
+        //        {
+        //            yield return new QdrantVectorRecord(
+        //                pointId: record.Id,
+        //                embedding: record.Vector ?? default,
+        //                record.Payload,
+        //                tags: null);
+        //        }
+        //#pragma warning restore CS8604
     }
 
     public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadIds(string collectionName, IEnumerable<string> ids, bool withVectors = false, int limit = 10, int offset = 0, CancellationToken cancellationToken = default)

@@ -23,6 +23,17 @@ public class ScoredPoint
     [JsonPropertyName("vector")]
     public IEnumerable<float>? Vector { get; set; } = default!;
 
+
+    public ReadOnlyMemory<float> ToReadOnlyMemoryVector()
+    {
+        if (Vector is null)
+        {
+            return ReadOnlyMemory<float>.Empty;
+        }
+        return new ReadOnlyMemory<float>(Vector.ToArray());
+    }
+
+
     /// <summary>
     /// The tags used for search.
     /// </summary>
