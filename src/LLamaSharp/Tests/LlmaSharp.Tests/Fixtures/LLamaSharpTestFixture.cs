@@ -18,6 +18,5 @@ public sealed class LLamaSharpTestFixture : TestFixtureBase
             .AddInferenceConfiguration(configuration)
             .AddLLamaRepository(configuration)
             ;
-        //AddDockerSupport(services, configuration);
     }
 }

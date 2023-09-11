@@ -24,7 +24,7 @@ public sealed class TestOfDomainConfiguration : IDisposable
 {
     private readonly HostApplicationFactory factory;
     private readonly IServiceProvider services;
-
+    private const string expectedModel = "llama-2-7b.Q4_0.gguf";
     public TestOfDomainConfiguration(ITestOutputHelper output, LLamaSharpTestFixture fixture)
     {
         this.factory = fixture.WithOutputLogSupport<TestFixtureBase>(output).Build();
@@ -63,6 +63,8 @@ public sealed class TestOfDomainConfiguration : IDisposable
     [Fact]
     public void EnsureThatServiceConfigurationIsValid()
     {
+        string model = $"/projects/AI/LlamaModels/{expectedModel}";
+
         services.GetService<ILLamaFactory>().Should().NotBeNull();
         services.GetService<IOptionsService>().Should().NotBeNull();
         services.GetService<ICompositeService>().Should().NotBeNull();
@@ -78,11 +80,13 @@ public sealed class TestOfDomainConfiguration : IDisposable
         services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
 
         var options = services.GetRequiredService<IOptions<LLamaModelOptions>>().Value;
-        options.ModelPath.Should().Be("/projects/AI/LlamaModels/llama-2-7b.ggmlv3.q8_0.bin");
+        options.ModelPath.Should().Be(model);
+        File.Exists(options.ModelPath).Should().BeTrue();
 
         var iOptions = services.GetRequiredService<IOptions<InferenceOptions>>().Value;
         iOptions.AntiPrompts.Single().Should().Be("User:");
         iOptions.MaxTokens.Should().Be(1024);
     }
+
 
 }

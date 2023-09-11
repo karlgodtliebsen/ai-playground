@@ -21,7 +21,7 @@ Content-Type: application/x-www-form-urlencoded
 
 client_id=db00e4dc-475f-495f-8349-7b93884d6fb5
 &scope=api://db00e4dc-475f-495f-8349-7b93884d6fb5/.default
-&client_secret=<insert client secret here>
+&client_secret=<>
 &grant_type=client_credentials
 
 ###
@@ -63,7 +63,7 @@ Content-Type: application/json
   "batchSize": 512,
   "convertEosToNewLine": false,
   "embeddingMode": false,
-  "modelName": "llama-2-7b.ggmlv3.q8_0.bin",
+  "modelName": "LlamaModels/llama-2-7b.Q4_0.gguf",
   "antiPrompt": null,
   "prompt": null
 }

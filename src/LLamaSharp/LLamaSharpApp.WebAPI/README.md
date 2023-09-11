@@ -8,23 +8,19 @@ Fix by using this:
 > https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-7.0
 
 
-#### How to download the source and build:
-Clone the repository and open the solution in Visual Studio 2022.
 
-Download a Llama model version 1 or version 2 like: 
+### Changes August 2023
+As of August 2023 this is the model recommendation from LlamaSharp
 
-```
-- llama-2-7b.ggmlv3.q8_0.bin
-- wizardLM-7B.ggmlv3.q4_1.bin
-- ggml-vic13b-uncensored-q4_1.bin
-- ggml-vic13b-uncensored-q5_0.bin
-- ggml-vicuna-13B-1.1-q4_0.bin
-- ggml-vicuna-13B-1.1-q8_0.bin
-- wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin (see references)
-```
+Recommentations from LlamaSharp:
+- https://github.com/SciSharp/LLamaSharp
+- v0.5.1	v0.5.1	Llama2 7b GGUF
+
 
 Add the models to a folder and update the appsettings.json files with the path to the folder.
 I use: '/projects/AI/LlamaModels' to store the models.
+
+> Mote recommendation in main readme.md
 
 
 ### Authentication
@@ -34,5 +30,6 @@ Use either Environment variables, Azure Keyvault or UserSecret during developmen
 
 More information at: 
 > https://damienbod.com/
+
 Authentication can be disabled in the Program.cs files, and remember to remove the [Authentication] attributes from the controllers, and Hardcode some User Identity. 
 

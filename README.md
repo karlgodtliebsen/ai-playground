@@ -5,38 +5,58 @@ The purpose of this repository is to provide a playground for learning about usi
 ### OpenAI:
 A dotnet Client 'OpenAI.Client' with a Test project and a WPF application that shows how to use it.
 
-### Llamasharp (Models version 1 and 2):
+### Llamasharp (Model version 2 updated to gguf files):
 A dotnet Web API 'LLamaSharpApp.WebAPI' with a Test project that show how to use it. 
 
-Currently working with these models:
-```
-- codellama-7b.ggmlv3.Q8_0.bin
-- codellama-7b-instruct.ggmlv3.Q8_0.bin
-- codellama-13b-instruct.ggmlv3.Q3_K_M.bin
-- codellama-7b-instruct.ggmlv3.Q5_0.bin
-```
 
-These models has been testet:
-```
-- wizardLM-7B.ggmlv3.q4_1.bin
-- llama-2-7b.ggmlv3.q8_0.bin
-- ggml-vic13b-uncensored-q4_1.bin
-- ggml-vic13b-uncensored-q5_0.bin
-- ggml-vicuna-13B-1.1-q4_0.bin
-- ggml-vicuna-13B-1.1-q8_0.bin
-- wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
-```
+### Changes August 2023
+As of August 2023 this is the model recommendation from LlamaSharp
+
+Recommentations from LlamaSharp:
+- https://github.com/SciSharp/LLamaSharp
+- v0.5.1	v0.5.1	Llama2 7b GGUF
+
+#### Llama2 7B Guanaco QLoRA GGUF
+- https://huggingface.co/TheBloke/llama-2-7B-Guanaco-QLoRA-GGUF
+- llama-2-7b-guanaco-qlora.Q4_K_M.gguf	Q4_K_M	4	4.08 GB	6.58 GB		medium, balanced quality - recommended
+
+### Needs testing
+#### Guanaco-7B-Uncensored-GGUF
+- https://huggingface.co/TheBloke/Guanaco-7B-Uncensored-GGUF
+- guanaco-7b-uncensored.Q4_K_M.gguf	Q4_K_M	4	4.08 GB	6.58 GB	medium, balanced quality - recommended
+	
+
+#### Guanaco-13B-Uncensored-GGUF
+- https://huggingface.co/TheBloke/Guanaco-13B-Uncensored-GGUF
+- guanaco-13b-uncensored.Q4_K_M.gguf	Q4_K_M	4	7.87 GB	10.37 GB	medium, balanced quality - recommended
+
+
+#### Llama-2-13B-Ensemble-v5-GGUF
+- https://huggingface.co/TheBloke/Llama-2-13B-Ensemble-v5-GGUF
+- llama-2-13b-ensemble-v5.Q4_K_M.gguf	Q4_K_M	4	7.87 GB	10.37 GB		medium, balanced quality - recommended
+
+
+#### Llama-2-70B-Ensemble-v5-GGUF
+- https://huggingface.co/TheBloke/Llama-2-70B-Ensemble-v5-GGUF
+- llama-2-70b-ensemble-v5.Q4_K_M.gguf	Q4_K_M	4	41.42 GB	43.92 GB	medium, balanced quality - recommended
+
+
+#### OpenChat v3.2 Super - GGUF
+- https://huggingface.co/TheBloke/openchat_v3.2_super-GGUF
+- https://huggingface.co/openchat/openchat_v3.2_super
+
+
+
 
 ## LlaMa Models - 2
 Download a model like: 
 
-- llama-2-7b.ggmlv3.q8_0.bin (see references)
+- llama-2-7b-guanaco-qlora.Q4_K_M.gguf (see references above)
 
 Add the Models to a folder and update the appsettings.json files with the path to the folder.
 I use: '/projects/AI/LlamaModels' to store the models.
 
 More info in the README.md file in the LlamaSharpApp.WebAPI project.
-
 
 ### Qdrant Vector database:
 A dotnet Web API for Qdrant Vector database. 
@@ -62,6 +82,7 @@ More info in the README.md file in ML.Net.ImageClassification.Tests folder
 
 ### Dependencies:
 The projects uses other Open Source project: 
+
 ```
 - Oneof
 - Serilog
