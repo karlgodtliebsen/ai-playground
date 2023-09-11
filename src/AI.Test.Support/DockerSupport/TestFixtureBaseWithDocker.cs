@@ -50,7 +50,6 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
         {
             AddDockerSupport(services, configuration!);
         }
-
         if (usePostgreSqlDocker)
         {
             AddPostgreSqlSupport(services, configuration!);
@@ -100,7 +99,6 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
         ArgumentNullException.ThrowIfNull(Factory);
         if (useQdrantDocker && QuadrantContainer is not null)
         {
-
             await QuadrantContainer.StartAsync().ConfigureAwait(false);
             Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value.Url = QuadrantContainer.GetConnectionUrl();
         }

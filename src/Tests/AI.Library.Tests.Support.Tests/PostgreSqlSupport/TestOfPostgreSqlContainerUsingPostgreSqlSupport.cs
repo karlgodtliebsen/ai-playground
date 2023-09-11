@@ -43,7 +43,6 @@ public sealed class TestOfPostgreSqlContainerUsingPostgreSqlSupport : IAsyncLife
         return fixture.DisposeAsync();
     }
 
-
     //https://github.com/testcontainers/testcontainers-dotnet/blob/develop/src/Testcontainers.PostgreSql/PostgreSqlConfiguration.cs
     //PostgreSqlConfiguration 
 
