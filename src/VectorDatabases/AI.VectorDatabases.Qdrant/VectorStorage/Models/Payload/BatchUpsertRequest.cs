@@ -16,12 +16,12 @@ public class BatchUpsertRequest
         this.BatchRequest = batchRequest;
     }
 
-    public void UpsertRange(double[][] vectors, string[] ids, IList<Dictionary<string, object>> payloads)
+    public void UpsertRange(ReadOnlyMemory<float>[] vectors, string[] ids, IList<Dictionary<string, object>> payloads)
     {
         BatchRequest.UpsertRange(vectors, ids, payloads);
     }
 
-    public void UpsertRange(IList<double[]> vectors, IList<string> ids, IList<Dictionary<string, object>> payloads)
+    public void UpsertRange(IList<ReadOnlyMemory<float>> vectors, IList<string> ids, IList<Dictionary<string, object>> payloads)
     {
         BatchRequest.UpsertRange(vectors, ids, payloads);
     }
@@ -31,11 +31,11 @@ public class BatchUpsertRequest
     {
         get
         {
-            if (BatchRequest.Vectors.Count == 0)
+            if (BatchRequest.Vectors.Length == 0)
             {
                 return 0;
             }
-            return BatchRequest.Vectors[0].Count();
+            return BatchRequest.Vectors[0].Length;
         }
     }
 }

@@ -47,7 +47,7 @@ public class TestOfVectorDbUsingPoints
 
     private async Task CleanupCollection()
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 
@@ -379,7 +379,7 @@ public class TestOfVectorDbUsingPoints
             new()
             {
                 Id = Guid.NewGuid().ToString(),
-                Vector = new double[] { 0.05f, 0.61f, 0.76f, 0.74f },
+                Vector = new float[] { 0.05f, 0.61f, 0.76f, 0.74f },
                 Payload = new Dictionary<string, object>()
                 {
                     { "city", "Berlin" }
@@ -388,7 +388,7 @@ public class TestOfVectorDbUsingPoints
             new()
             {
                 Id = Guid.NewGuid().ToString(),
-                Vector = new double[] { 0.19f, 0.81f, 0.75f, 0.11f },
+                Vector = new float[] { 0.19f, 0.81f, 0.75f, 0.11f },
                 Payload = new Dictionary<string, object>()
                 {
                     { "city", new string[] { "Berlin", "London" } }
@@ -397,7 +397,7 @@ public class TestOfVectorDbUsingPoints
             new()
             {
                 Id = Guid.NewGuid().ToString(),
-                Vector = new double[] { 0.36f, 0.55f, 0.47f, 0.94f },
+                Vector = new float[] { 0.36f, 0.55f, 0.47f, 0.94f },
                 Payload = new Dictionary<string, object>()
                 {
                     { "city", new string[] { "Berlin", "Rome" } }
@@ -406,7 +406,7 @@ public class TestOfVectorDbUsingPoints
             new ()
             {
                 Id = Guid.NewGuid().ToString(),
-                Vector = new double[] { 0.18f, 0.01f, 0.85f, 0.80f },
+                Vector = new float[] { 0.18f, 0.01f, 0.85f, 0.80f },
                 Payload = new Dictionary<string, object>()
                 {
                     { "city", new string[] { "London", "Rome" } }
@@ -415,7 +415,7 @@ public class TestOfVectorDbUsingPoints
             new ()
             {
                 Id = Guid.NewGuid().ToString(),
-                Vector = new double[] { 0.24f, 0.18f, 0.22f, 0.44f },
+                Vector = new float[] { 0.24f, 0.18f, 0.22f, 0.44f },
                 Payload = new Dictionary<string, object>()
                 {
                     { "count", new int[] { 0 } }
@@ -424,12 +424,12 @@ public class TestOfVectorDbUsingPoints
             new ()
             {
                 Id = Guid.NewGuid().ToString(),
-                Vector = new double[] { 0.35f, 0.08f, 0.11f, 0.44f }
+                Vector = new float[] { 0.35f, 0.08f, 0.11f, 0.44f }
             },
             new ()
             {
                 Id = Guid.NewGuid().ToString(),
-                Vector = new double[] { 0.35f, 0.08f, 0.11f, 0.44f },
+                Vector = new float[] { 0.35f, 0.08f, 0.11f, 0.44f },
                 Payload = new Dictionary<string, object>()
                 {
                     { "city", new string[] { "Berlin", "London" } }

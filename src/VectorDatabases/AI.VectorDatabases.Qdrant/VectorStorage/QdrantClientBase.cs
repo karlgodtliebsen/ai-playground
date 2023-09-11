@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
+using AI.Library.Utils;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
@@ -14,22 +13,17 @@ using SerilogTimings.Extensions;
 
 namespace AI.VectorDatabase.Qdrant.VectorStorage;
 
-public abstract class QdrantVectorDbBase
+public abstract class QdrantClientBase
 {
     private readonly HttpClient httpClient;
     private readonly ILogger logger;
-    protected readonly JsonSerializerOptions serializerOptions;
     private readonly QdrantOptions options;
 
-    protected QdrantVectorDbBase(HttpClient httpClient, QdrantOptions options, ILogger logger)
+    protected QdrantClientBase(HttpClient httpClient, QdrantOptions options, ILogger logger)
     {
         this.httpClient = httpClient;
         this.logger = logger;
         this.options = options;
-        serializerOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
     }
 
     private async Task<OneOf<TR, ErrorResponse>> VerifyResult<TR>(HttpResponseMessage response, string subUri, Operation op, CancellationToken cancellationToken)
@@ -82,7 +76,7 @@ public abstract class QdrantVectorDbBase
         }
         if (response is not null && response.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
-            var result = await response.Content.ReadFromJsonAsync<QdrantVectorDb.HttpStatusResponse>(cancellationToken: cancellationToken);
+            var result = await response.Content.ReadFromJsonAsync<QdrantClient.HttpStatusResponse>(cancellationToken: cancellationToken);
             if (result is null)
             {
                 return new ErrorResponse($"Operation failed.");
@@ -104,7 +98,7 @@ public abstract class QdrantVectorDbBase
         try
         {
             PrepareClient();
-            response = await httpClient.PostAsJsonAsync(subUri, payload, serializerOptions, cancellationToken);
+            response = await httpClient.PostAsJsonAsync(subUri, payload, DefaultJsonSerializerOptions.DefaultOptions, cancellationToken);
             return await VerifyResult<TR>(response, subUri, op, cancellationToken);
         }
         catch (Exception ex)
@@ -120,7 +114,7 @@ public abstract class QdrantVectorDbBase
         try
         {
             PrepareClient();
-            response = await httpClient.PutAsJsonAsync(subUri, payload, serializerOptions, cancellationToken);
+            response = await httpClient.PutAsJsonAsync(subUri, payload, DefaultJsonSerializerOptions.DefaultOptions, cancellationToken);
             return await VerifyResult<TR>(response, subUri, op, cancellationToken);
         }
         catch (Exception ex)
@@ -135,7 +129,7 @@ public abstract class QdrantVectorDbBase
         try
         {
             PrepareClient();
-            response = await httpClient.PutAsJsonAsync(subUri, serializerOptions, cancellationToken);
+            response = await httpClient.PutAsJsonAsync(subUri, DefaultJsonSerializerOptions.DefaultOptions, cancellationToken);
             return await VerifyResult<TR>(response, subUri, op, cancellationToken);
         }
         catch (Exception ex)

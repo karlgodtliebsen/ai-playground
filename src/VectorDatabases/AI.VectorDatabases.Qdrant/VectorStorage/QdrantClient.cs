@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using AI.Library.Utils;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Collections;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
@@ -19,7 +20,7 @@ namespace AI.VectorDatabase.Qdrant.VectorStorage;
 /// <summary>
 /// <a href="https://qdrant.github.io/qdrant/redoc/index.html" >Qdrant</a>
 /// </summary>
-public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
+public class QdrantClient : QdrantClientBase, IQdrantClient
 {
     private readonly ILogger logger;
     private readonly QdrantOptions options;
@@ -58,7 +59,7 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     /// <param name="options"></param>
     /// <param name="httpClient"></param>
     /// <param name="logger"></param>
-    public QdrantVectorDb(IOptions<QdrantOptions> options, HttpClient httpClient, ILogger logger) : base(httpClient, options.Value, logger)
+    public QdrantClient(IOptions<QdrantOptions> options, HttpClient httpClient, ILogger logger) : base(httpClient, options.Value, logger)
     {
         this.logger = logger;
         this.options = options.Value;
@@ -401,7 +402,7 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     /// <returns></returns>
     public async Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, BatchUpsertRequest payLoad, CancellationToken cancellationToken)
     {
-        //  var s = JsonSerializer.Serialize(payLoad, serializerOptions);
+        //var s = JsonSerializer.Serialize(payLoad, DefaultJsonSerializerOptions.DefaultOptions);
         var result = await PutAsync<BatchUpsertRequest, UpdateResult>($"/collections/{collectionName}/points?wait=true", payLoad, cancellationToken);
         return result.Match<OneOf<bool, ErrorResponse>>(
             updateResult => updateResult.Status == UpdateStatus.ACKNOWLEDGED,
@@ -593,7 +594,7 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
                 .SetWithVector(withVectors)
                 .WithScoreThreshold(0)
             ;
-        var s = JsonSerializer.Serialize(search, serializerOptions);
+        var s = JsonSerializer.Serialize(search, DefaultJsonSerializerOptions.DefaultOptions);
         logger.Debug(s);
         var result = await SearchUsingPointId(collectionName, search, cancellationToken: cancellationToken);
         return result;
@@ -622,7 +623,7 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     {
         if (logger.IsEnabled(LogEventLevel.Debug))
         {
-            var s = JsonSerializer.Serialize(query, serializerOptions);
+            var s = JsonSerializer.Serialize(query, DefaultJsonSerializerOptions.DefaultOptions);
             logger.Debug(s);
         }
         var res = await PostAsync<SearchRequest, ScoredPoint[]>($"/collections/{collectionName}/points", query, cancellationToken);
@@ -646,7 +647,7 @@ public class QdrantVectorDb : QdrantVectorDbBase, IQdrantVectorDb
     {
         if (logger.IsEnabled(LogEventLevel.Debug))
         {
-            var s = JsonSerializer.Serialize(query, serializerOptions);
+            var s = JsonSerializer.Serialize(query, DefaultJsonSerializerOptions.DefaultOptions);
             logger.Debug(s);
         }
         var res = await PostAsync<SearchRequest, ScoredPoint[]>($"/collections/{collectionName}/points/search", query, cancellationToken);

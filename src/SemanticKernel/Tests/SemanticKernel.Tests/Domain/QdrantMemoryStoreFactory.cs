@@ -10,11 +10,11 @@ namespace SemanticKernel.Tests.Domain;
 public class QdrantMemoryStoreFactory : IQdrantMemoryStoreFactory
 {
     private readonly IServiceProvider serviceProvider;
-    private readonly IQdrantVectorDb client;
+    private readonly IQdrantClient client;
     private readonly QdrantOptions qdrantOptions;
     private readonly ILogger logger;
 
-    public QdrantMemoryStoreFactory(IServiceProvider serviceProvider, IQdrantVectorDb client, IOptions<QdrantOptions> qdrantOptions, ILogger logger)
+    public QdrantMemoryStoreFactory(IServiceProvider serviceProvider, IQdrantClient client, IOptions<QdrantOptions> qdrantOptions, ILogger logger)
     {
         this.serviceProvider = serviceProvider;
         this.client = client;

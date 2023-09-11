@@ -12,11 +12,11 @@ namespace AI.VectorDatabase.Qdrant.VectorStorage;
 public class QdrantFactory : IQdrantFactory
 {
     private readonly IServiceProvider serviceProvider;
-    private readonly IQdrantVectorDb qdrantClient;
+    private readonly IQdrantClient qdrantClient;
     private readonly QdrantOptions options;
     private readonly ILogger logger;
 
-    public QdrantFactory(IServiceProvider serviceProvider, IQdrantVectorDb qdrantClient, IOptions<QdrantOptions> qdrantOptions, ILogger logger)
+    public QdrantFactory(IServiceProvider serviceProvider, IQdrantClient qdrantClient, IOptions<QdrantOptions> qdrantOptions, ILogger logger)
     {
         this.serviceProvider = serviceProvider;
         this.qdrantClient = qdrantClient;
@@ -43,14 +43,14 @@ public class QdrantFactory : IQdrantFactory
         return p;
     }
 
-    public async Task<IQdrantVectorDb> Create(string collectionName, int vectorSize,
+    public async Task<IQdrantClient> Create(string collectionName, int vectorSize,
         string distance = Distance.COSINE,
         bool recreateCollection = true,
         bool storeOnDisk = false, CancellationToken cancellationToken = default)
     {
         await RecreateIfSpecified(collectionName, vectorSize, distance, recreateCollection, storeOnDisk);
 
-        var memoryStorage = serviceProvider.GetRequiredService<IQdrantVectorDb>();
+        var memoryStorage = serviceProvider.GetRequiredService<IQdrantClient>();
         memoryStorage.SetCollectionName(collectionName);
         memoryStorage.SetVectorSize(vectorSize);
         return memoryStorage;
@@ -76,10 +76,10 @@ public class QdrantFactory : IQdrantFactory
     }
 
 
-    public async Task<IQdrantVectorDb> Create(string collectionName, VectorParams vectorParams, bool recreateCollection = true, bool storeOnDisk = false, CancellationToken cancellationToken = default)
+    public async Task<IQdrantClient> Create(string collectionName, VectorParams vectorParams, bool recreateCollection = true, bool storeOnDisk = false, CancellationToken cancellationToken = default)
     {
         await RecreateIfSpecified(collectionName, vectorParams.Size, vectorParams.Distance, recreateCollection, storeOnDisk);
-        var memoryStorage = serviceProvider.GetRequiredService<IQdrantVectorDb>();
+        var memoryStorage = serviceProvider.GetRequiredService<IQdrantClient>();
         memoryStorage.SetCollectionName(collectionName);
         memoryStorage.SetVectorSize(vectorParams.Size);
         return memoryStorage;

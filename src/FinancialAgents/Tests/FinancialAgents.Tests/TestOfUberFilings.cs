@@ -43,7 +43,7 @@ public class TestOfUberFilings
 
     private async Task CleanupCollection()
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 
@@ -139,7 +139,7 @@ public class TestOfUberFilings
 
     private async Task AddDataToCollection(long index, double[] embeddings)
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var points = CreatePoints(index, embeddings);
         var result = await client.Upsert(CollectionName, points, CancellationToken.None);
         result.Switch(
@@ -253,7 +253,7 @@ public class TestOfUberFilings
                     "year", file.Year
                 }
             };
-            var chunkVector = new List<double>();
+            var chunkVector = new List<float>();
             foreach (var chunk in file.ChunkedContent)
             {
                 //double[] vector = embedder.GetEmbeddings(chunk).Select(x => (double)x).ToArray();
@@ -276,7 +276,7 @@ public class TestOfUberFilings
         var numberOfFiles = files.Count();
         var ids = new List<string>(numberOfFiles);
         var payloads = new List<Dictionary<string, object>>(numberOfFiles);
-        double[][] vectors = new double[numberOfFiles][];
+        ReadOnlyMemory<float>[] vectors = new ReadOnlyMemory<float>[numberOfFiles];
 
         int fileIndex = 0;
 
@@ -302,10 +302,10 @@ public class TestOfUberFilings
                 }
             };
             payloads.Add(payload);
-            var chunkVector = new List<double>();
+            var chunkVector = new List<float>();
             foreach (var chunk in file.ChunkedContent)
             {
-                double[] vector = embedder.GetEmbeddings(chunk).Select(x => (double)x).ToArray();
+                var vector = embedder.GetEmbeddings(chunk).Select(x => x).ToArray();
                 chunkVector.AddRange(vector);
             }
             vectors[fileIndex++] = chunkVector.ToArray();

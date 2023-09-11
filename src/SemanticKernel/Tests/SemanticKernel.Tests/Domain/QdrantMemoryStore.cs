@@ -15,14 +15,14 @@ internal class QdrantMemoryStore : IQdrantMemoryStore
     /// The Qdrant Vector Database memory store logger.
     /// </summary>
     private readonly ILogger logger;
-    private IQdrantVectorDb? qdrantClient = null;
+    private IQdrantClient? qdrantClient = null;
 
     public QdrantMemoryStore(ILogger logger)
     {
         this.logger = logger;
     }
 
-    public void SetClient(IQdrantVectorDb qdrantVectorDb)
+    public void SetClient(IQdrantClient qdrantVectorDb)
     {
         qdrantClient = qdrantVectorDb;
     }
@@ -56,7 +56,7 @@ internal class QdrantMemoryStore : IQdrantMemoryStore
     }
     public async IAsyncEnumerable<string> GetCollectionsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var result = await qdrantClient.GetCollections(cancellationToken).ConfigureAwait(false);
+        var result = await qdrantClient!.GetCollections(cancellationToken).ConfigureAwait(false);
         var collectionResult = result.Match(
              c => c.Collections.Select(x => x.Name).ToList(),
              error => throw new QdrantException(error.Error)

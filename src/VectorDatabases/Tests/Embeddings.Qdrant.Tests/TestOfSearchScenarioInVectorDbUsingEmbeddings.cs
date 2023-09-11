@@ -56,7 +56,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
 
     private async Task CleanupCollection()
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 
@@ -192,7 +192,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings
                     {"year", document.Year.ToString()},
                     {"description", document.Description},
                 },
-                Vector = embedder.GetEmbeddings(document.Description).Select(x => (double)x).ToArray()
+                Vector = new ReadOnlyMemory<float>(embedder.GetEmbeddings(document.Description).Select(x => x).ToArray())
             };
             points.Add(point);
         }

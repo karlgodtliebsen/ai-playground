@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json.Serialization;
+
+using AI.Library.Utils;
 
 using Microsoft.Extensions.Options;
 
@@ -18,7 +19,6 @@ public abstract class AIClientBase
 {
     private const string UserAgent = "ai/openai_api";
     protected readonly HttpClient HttpClient;
-    protected readonly JsonSerializerOptions SerializerOptions;
     protected readonly OpenAIOptions Options;
     protected readonly ILogger logger;
 
@@ -31,10 +31,6 @@ public abstract class AIClientBase
         HttpClient = httpClient;
         this.logger = logger;
         Options = options.Value;
-        SerializerOptions = new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
     }
 
     protected async Task<OneOf<TR, ErrorResponse>> PostAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
@@ -44,7 +40,7 @@ public abstract class AIClientBase
         {
             PrepareClient();
 
-            var response = await HttpClient.PostAsJsonAsync(subUri, payload, SerializerOptions, cancellationToken);
+            var response = await HttpClient.PostAsJsonAsync(subUri, payload, DefaultJsonSerializerOptions.DefaultOptions, cancellationToken);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<TR>(cancellationToken: cancellationToken);
             op.Complete();
@@ -117,7 +113,7 @@ public abstract class AIClientBase
         {
             PrepareClient();
 
-            var response = await HttpClient.PostAsJsonAsync(subUri, payload, SerializerOptions, cancellationToken);
+            var response = await HttpClient.PostAsJsonAsync(subUri, payload, DefaultJsonSerializerOptions.DefaultOptions, cancellationToken);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken);
             op.Complete();
@@ -169,7 +165,7 @@ public abstract class AIClientBase
     {
         using var op = logger.BeginOperation($"GetResponseStreamAsync {subUri}");
         PrepareClient();
-        var response = await HttpClient.PostAsJsonAsync(subUri, request, SerializerOptions, cancellationToken);
+        var response = await HttpClient.PostAsJsonAsync(subUri, request, DefaultJsonSerializerOptions.DefaultOptions, cancellationToken);
         response.EnsureSuccessStatusCode();
         await using (var stream = await response.Content.ReadAsStreamAsync(cancellationToken))
         {

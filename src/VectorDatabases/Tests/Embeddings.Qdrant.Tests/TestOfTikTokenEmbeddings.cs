@@ -31,7 +31,7 @@ public class TestOfTikTokenEmbeddings
 
     private async Task CleanupCollection()
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 

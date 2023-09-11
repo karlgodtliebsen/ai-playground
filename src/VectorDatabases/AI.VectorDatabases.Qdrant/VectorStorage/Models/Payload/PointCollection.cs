@@ -26,7 +26,7 @@ public class PointCollection : List<PointStruct>
             {
                 return 0;
             }
-            return this[0].Vector.Length;
+            return this[0].Vector!.Value.Length;
         }
     }
 }

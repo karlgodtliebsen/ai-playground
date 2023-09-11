@@ -40,7 +40,7 @@ public class TestOfQdrantAdministration
     [Fact]
     public async Task VerifyInitialAccessToQdrant()
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var result = await client.GetCollections(CancellationToken.None);
         result.Switch(
             collections => collections.Should().NotBeNull(),
@@ -51,7 +51,7 @@ public class TestOfQdrantAdministration
     [Fact]
     public async Task CleanupCollections()
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
             _ => logger.Information("Succeeded"),
@@ -86,7 +86,7 @@ public class TestOfQdrantAdministration
     [Fact]
     public async Task CleanupCollection()
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
             _ => logger.Information($"{CollectionName} deleted"),

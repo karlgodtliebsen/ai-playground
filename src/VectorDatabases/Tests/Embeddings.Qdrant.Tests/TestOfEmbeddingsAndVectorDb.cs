@@ -43,7 +43,7 @@ public class TestOfEmbeddingsAndVectorDb
 
     private async Task CleanupCollection()
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var result = await client.RemoveCollection(CollectionName, CancellationToken.None);
         result.Switch(
 
@@ -143,7 +143,7 @@ public class TestOfEmbeddingsAndVectorDb
 
     private async Task AddDataToCollection(long index, double[] embeddings)
     {
-        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantVectorDb>();
+        var client = hostApplicationFactory.Services.GetRequiredService<IQdrantClient>();
         var points = CreatePoints(index, embeddings);
         var result = await client.Upsert(CollectionName, points, CancellationToken.None);
         result.Switch(

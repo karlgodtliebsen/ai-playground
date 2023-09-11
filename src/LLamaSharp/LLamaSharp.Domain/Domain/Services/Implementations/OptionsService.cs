@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
 
 using AI.Library.Utils;
 
@@ -155,22 +154,3 @@ public class OptionsService : IOptionsService
     }
 }
 
-internal static class JsonExtensions
-{
-    private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true,
-        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
-    };
-
-    public static InferenceOptions CreateSnapshot(this InferenceOptions inferenceOptions)
-    {
-        return inferenceOptions.ToJson(SerializerOptions).FromJson<InferenceOptions>(SerializerOptions)!;
-    }
-    public static LLamaModelOptions CreateSnapshot(this LLamaModelOptions lLamaModelOptions)
-    {
-        return lLamaModelOptions.ToJson(SerializerOptions).FromJson<LLamaModelOptions>(SerializerOptions)!;
-    }
-}

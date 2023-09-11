@@ -44,7 +44,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
     const string EmbeddingModel = "text-embedding-ada-002";
     public TestOfSemanticKernelExample31CustomPlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
@@ -55,6 +55,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
 
 
     [Fact]
+
     public async Task UseCustomPlanner_Example31()
     {
         bool recreateCollection = true;

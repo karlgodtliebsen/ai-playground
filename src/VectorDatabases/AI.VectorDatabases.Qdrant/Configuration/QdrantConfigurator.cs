@@ -18,7 +18,7 @@ public static class QdrantConfigurator
     {
         services.AddTransient<IQdrantFactory, QdrantFactory>();
         services.AddSingleton<IOptions<QdrantOptions>>(new OptionsWrapper<QdrantOptions>(options));
-        services.AddHttpClient<IQdrantVectorDb, QdrantVectorDb>((_, client) =>
+        services.AddHttpClient<IQdrantClient, QdrantClient>((_, client) =>
             {
                 client.BaseAddress = new Uri(options.Url);
             })

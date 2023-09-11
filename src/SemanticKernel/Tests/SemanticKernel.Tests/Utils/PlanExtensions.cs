@@ -2,6 +2,11 @@
 
 namespace SemanticKernel.Tests.Utils;
 
+
+// .NET 8 and the System.Text.Json v8.0.0 nuget package include built-in support for ReadOnlyMemory.
+// This is a temporary workaround for .NET 6 and the System.Text.Json v6.0.0 nuget package.
+// It should be removed once SK projects upgrade to System.Text.Json v8.0.0.
+
 public static class PlanExtensions
 {
     public static string ToPlanString(this Plan originalPlan, string indent = " ")

@@ -7,10 +7,10 @@ public interface IQdrantFactory
 {
     VectorParams CreateParams(int? dimension = null, string? distance = null, bool? storeOnDisk = null);
 
-    Task<IQdrantVectorDb> Create(string collectionName, int vectorSize,
+    Task<IQdrantClient> Create(string collectionName, int vectorSize,
         string distance = Distance.COSINE, bool recreateCollection = true, bool storeOnDisk = false, CancellationToken cancellationToken = default);
 
-    Task<IQdrantVectorDb> Create(string collectionName, VectorParams vectorParams,
+    Task<IQdrantClient> Create(string collectionName, VectorParams vectorParams,
         bool recreateCollection = true,
         bool storeOnDisk = false, CancellationToken cancellationToken = default);
 

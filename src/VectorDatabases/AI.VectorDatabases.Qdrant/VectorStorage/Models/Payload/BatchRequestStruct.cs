@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
+using AI.Library.Utils;
+
 namespace AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 
 /// <summary>
@@ -16,17 +18,34 @@ public class BatchRequestStruct
     /// <summary>
     /// <a href="https://qdrant.tech/documentation/concepts/points/" />
     /// </summary>
+    //[JsonPropertyName("vectors")]
+    //public IList<IEnumerable<float>> Vectors { get; set; } = new List<IEnumerable<float>>();
+
+    //public void AddToVectors(ReadOnlyMemory<float> vector)
+    //{
+    //    Vectors.Add(vector.ToArray());
+    //}
+
+
     [JsonPropertyName("vectors")]
-    public IList<IEnumerable<double>> Vectors { get; set; } = new List<IEnumerable<double>>();
-
-
-    public void AddToVectors(ReadOnlyMemory<float> vector)
+    [JsonConverter(typeof(ReadOnlyMemoryConverterArray))]
+    public ReadOnlyMemory<float>[] Vectors
     {
-        List<double> embeddings = new List<double>();
-        embeddings.AddRange(vector.ToArray().Select(v => (double)v).ToArray());
-        Vectors.Add(embeddings);
+        get
+        {
+            return embeddings!.ToArray();
+        }
+        set
+        {
+            embeddings = new List<ReadOnlyMemory<float>>(value);
+        }
     }
 
+    private IList<ReadOnlyMemory<float>> embeddings { get; set; } = new List<ReadOnlyMemory<float>>();
+    public void AddToVectors(ReadOnlyMemory<float> vector)
+    {
+        embeddings.Add(vector);
+    }
 
     /// <summary>
     /// <a href="https://qdrant.tech/documentation/concepts/points/" />
@@ -34,11 +53,11 @@ public class BatchRequestStruct
     [JsonPropertyName("payloads")]
     public IList<Dictionary<string, object>> Payloads { get; set; } = new List<Dictionary<string, object>>();
 
-    public BatchRequestStruct(IList<double[]> vectors, IList<string> ids, IList<Dictionary<string, object>> payloads)
+    public BatchRequestStruct(IList<ReadOnlyMemory<float>> vectors, IList<string> ids, IList<Dictionary<string, object>> payloads)
     {
         this.UpsertRange(vectors, ids, payloads);
     }
-    public BatchRequestStruct(double[][] vectors, string[] ids, IList<Dictionary<string, object>> payloads)
+    public BatchRequestStruct(ReadOnlyMemory<float>[] vectors, string[] ids, IList<Dictionary<string, object>> payloads)
     {
         this.UpsertRange(vectors, ids, payloads);
     }
@@ -46,17 +65,33 @@ public class BatchRequestStruct
     {
     }
 
+    ///// <summary>
+    ///// Upsert range
+    ///// </summary>
+    ///// <param name="vectors"></param>
+    ///// <param name="ids"></param>
+    ///// <param name="payloads"></param>
+    //public void UpsertRange(float[][] vectors, string[] ids, IList<Dictionary<string, object>> payloads)
+    //{
+    //    for (int i = 0; i < vectors.Length; i++)
+    //    {
+    //        this.Vectors.Add(new ReadOnlyMemory<float>(vectors[i]));
+    //        this.Ids.Add(ids[i]);
+    //        this.Payloads.Add(payloads[i]);
+    //    }
+    //}
+
     /// <summary>
     /// Upsert range
     /// </summary>
     /// <param name="vectors"></param>
     /// <param name="ids"></param>
     /// <param name="payloads"></param>
-    public void UpsertRange(double[][] vectors, string[] ids, IList<Dictionary<string, object>> payloads)
+    public void UpsertRange(IList<float[]> vectors, IList<string> ids, IList<Dictionary<string, object>> payloads)
     {
-        for (int i = 0; i < vectors.Length; i++)
+        for (int i = 0; i < vectors.Count; i++)
         {
-            this.Vectors.Add(vectors[i]);
+            this.AddToVectors(new ReadOnlyMemory<float>(vectors[i]));
             this.Ids.Add(ids[i]);
             this.Payloads.Add(payloads[i]);
         }
@@ -68,13 +103,14 @@ public class BatchRequestStruct
     /// <param name="vectors"></param>
     /// <param name="ids"></param>
     /// <param name="payloads"></param>
-    public void UpsertRange(IList<double[]> vectors, IList<string> ids, IList<Dictionary<string, object>> payloads)
+    public void UpsertRange(IList<ReadOnlyMemory<float>> vectors, IList<string> ids, IList<Dictionary<string, object>> payloads)
     {
         for (int i = 0; i < vectors.Count; i++)
         {
-            this.Vectors.Add(vectors[i]);
+            this.AddToVectors(vectors[i]);
             this.Ids.Add(ids[i]);
             this.Payloads.Add(payloads[i]);
         }
     }
 }
+

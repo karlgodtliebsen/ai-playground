@@ -7,5 +7,5 @@ namespace SemanticKernel.Tests.Domain;
 public interface IQdrantMemoryStore : IMemoryStore
 {
     Task<MemoryRecord?> GetWithPointIdAsync(string collectionName, string pointId, bool withEmbedding = false, CancellationToken cancellationToken = default);
-    void SetClient(IQdrantVectorDb qdrantVectorDb);
+    void SetClient(IQdrantClient qdrantVectorDb);
 }

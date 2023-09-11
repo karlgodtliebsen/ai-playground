@@ -8,7 +8,7 @@ using OneOf;
 
 namespace AI.VectorDatabase.Qdrant.VectorStorage;
 
-public interface IQdrantVectorDb
+public interface IQdrantClient
 {
     void SetCollectionName(string collectionName);
 
