@@ -2,6 +2,7 @@
 using AI.CaaP.AgentsDomain;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
+using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 
 using FluentAssertions;
@@ -21,7 +22,7 @@ public class TestOfAgentRepository
 
     public TestOfAgentRepository(ITestOutputHelper output, CaapWithDatabaseTestFixture fixture)
     {
-        this.factory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.factory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = factory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.services.DestroyMigration();

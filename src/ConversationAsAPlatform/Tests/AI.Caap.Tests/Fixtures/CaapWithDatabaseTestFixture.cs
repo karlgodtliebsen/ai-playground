@@ -1,6 +1,6 @@
 ﻿using AI.CaaP.Configuration;
 using AI.CaaP.Repository.Configuration;
-using AI.Test.Support.Fixtures;
+using AI.Test.Support.DockerSupport;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +9,7 @@ using OpenAI.Client.Configuration;
 
 namespace AI.Caap.Tests.Fixtures;
 
-public class CaapWithDatabaseTestFixture : TestFixtureBase
+public class CaapWithDatabaseTestFixture : TestFixtureBaseWithDocker
 {
     protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {

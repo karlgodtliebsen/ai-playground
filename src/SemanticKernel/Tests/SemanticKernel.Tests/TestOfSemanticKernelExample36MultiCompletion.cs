@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
-public class TestOfSemanticKernelExample36MultiCompletion
+public class TestOfSemanticKernelExample36MultiCompletion : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly ILoggerFactory loggerFactory;
@@ -25,10 +25,22 @@ public class TestOfSemanticKernelExample36MultiCompletion
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
+    private readonly SemanticKernelTestFixture fixture;
+
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
 
     public TestOfSemanticKernelExample36MultiCompletion(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBase>(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.loggerFactory = services.GetRequiredService<ILoggerFactory>();

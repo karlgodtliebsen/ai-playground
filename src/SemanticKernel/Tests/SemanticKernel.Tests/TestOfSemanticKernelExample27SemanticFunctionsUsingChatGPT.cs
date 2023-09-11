@@ -16,24 +16,37 @@ using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
-public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT
+public class TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly ILoggerFactory loggerFactory;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
+    private readonly SemanticKernelTestFixture fixture;
+
+    const string Model = "gpt-3.5-turbo";
+
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
 
     public TestOfSemanticKernelExample27SemanticFunctionsUsingChatGPT(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBase>(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
     }
 
-    const string Model = "gpt-3.5-turbo";
 
     [Fact]
     public async Task UseSemanticFunction_Example27()

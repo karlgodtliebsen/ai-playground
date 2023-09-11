@@ -1,5 +1,4 @@
-﻿using AI.Test.Support.Fixtures;
-
+﻿using AI.Test.Support.DockerSupport;
 using FinancialAgents.Tests.Configuration;
 
 using LLamaSharp.Domain.Configuration;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FinancialAgents.Tests.Fixtures;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class FinancialAgentsTestFixture : TestFixtureBase
+public class FinancialAgentsTestFixture : TestFixtureBaseWithDocker
 {
 
     protected override void AddServices(IServiceCollection services, IConfiguration configuration)

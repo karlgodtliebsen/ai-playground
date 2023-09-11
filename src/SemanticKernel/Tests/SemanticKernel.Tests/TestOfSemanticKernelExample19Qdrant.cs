@@ -1,4 +1,5 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using AI.Test.Support.DockerSupport;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
@@ -21,34 +22,42 @@ using Xunit.Abstractions;
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
-public class TestOfSemanticKernelExample19Qdrant
+public class TestOfSemanticKernelExample19Qdrant : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly ILoggerFactory loggerFactory;
 
-
     private readonly IServiceProvider services;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly OpenAIOptions openAIOptions;
-    private readonly QdrantOptions qdrantOptions;
+    private readonly SemanticKernelTestFixture fixture;
+    private const string collectionName = "SemanticKernel-19-test-collection";
 
     public TestOfSemanticKernelExample19Qdrant(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
-        this.qdrantOptions = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
     }
 
-    private const string collectionName = "SemanticKernel-19-test-collection";
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
 
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
 
     [Fact]
     public async Task UseQdrantMemoryCollection_Example19()
     {
-        var url = this.qdrantOptions.Url;
+        var qdrantOptions = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
+        var url = qdrantOptions.Url;
         var completionModel = "text-davinci-003";
         var embeddingModel = "text-embedding-ada-002";
         const int openAiVectorSize = 1536;

@@ -27,7 +27,7 @@ public sealed class TestOfDomainConfiguration : IDisposable
 
     public TestOfDomainConfiguration(ITestOutputHelper output, LLamaSharpTestFixture fixture)
     {
-        this.factory = fixture.WithOutputLogSupport(output)/*.WithDockerSupport()*/.Build();
+        this.factory = fixture.WithOutputLogSupport<TestFixtureBase>(output).Build();
         this.services = factory.Services;
     }
     public void Dispose()

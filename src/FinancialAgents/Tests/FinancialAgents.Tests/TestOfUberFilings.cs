@@ -33,7 +33,7 @@ public class TestOfUberFilings
 
     public TestOfUberFilings(FinancialAgentsTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBase>(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.ilLamaFactory = services.GetRequiredService<ILLamaFactory>();

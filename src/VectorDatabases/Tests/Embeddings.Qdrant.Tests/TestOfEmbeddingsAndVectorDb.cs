@@ -1,4 +1,5 @@
 ﻿using AI.Library.Utils;
+using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
@@ -22,19 +23,31 @@ using Xunit.Abstractions;
 namespace Embeddings.Qdrant.Tests;
 
 [Collection("EmbeddingsAndVectorDb Collection")]
-public class TestOfEmbeddingsAndVectorDb
+public class TestOfEmbeddingsAndVectorDb : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IModelRequestFactory requestFactory;
     private readonly string testFilesPath;
     private readonly IServiceProvider services;
+    private readonly EmbeddingsVectorDbTestFixture fixture;
     private const string CollectionName = "embeddings-test-collection";
     private const int VectorSize = 4;
 
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
+
     public TestOfEmbeddingsAndVectorDb(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.requestFactory = services.GetRequiredService<IModelRequestFactory>(); ;

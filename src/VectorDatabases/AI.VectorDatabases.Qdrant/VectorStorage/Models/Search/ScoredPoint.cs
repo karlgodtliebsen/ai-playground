@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using AI.Library.Utils;
+
 namespace AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 
 public class ScoredPoint
@@ -20,19 +22,10 @@ public class ScoredPoint
     [JsonPropertyName("score")]
     public float Score { get; set; }
 
+
     [JsonPropertyName("vector")]
-    public IEnumerable<float>? Vector { get; set; } = default!;
-
-
-    public ReadOnlyMemory<float> ToReadOnlyMemoryVector()
-    {
-        if (Vector is null)
-        {
-            return ReadOnlyMemory<float>.Empty;
-        }
-        return new ReadOnlyMemory<float>(Vector.ToArray());
-    }
-
+    [JsonConverter(typeof(ReadOnlyMemoryConverter))]
+    public ReadOnlyMemory<float> Vector { get; init; } = Array.Empty<float>();
 
     /// <summary>
     /// The tags used for search.
@@ -54,13 +47,5 @@ public class ScoredPoint
     public string GetSerializedPayload()
     {
         return JsonSerializer.Serialize(this.Payload);
-    }
-
-    public void InitializeVectors()
-    {
-        if (Vector is null)
-        {
-            this.Vector = Array.Empty<float>();
-        }
     }
 }

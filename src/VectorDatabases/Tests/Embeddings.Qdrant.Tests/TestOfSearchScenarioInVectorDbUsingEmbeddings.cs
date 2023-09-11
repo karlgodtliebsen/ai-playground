@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 using AI.Library.Utils;
+using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
@@ -28,25 +29,35 @@ namespace Embeddings.Qdrant.Tests;
 /// <a href="https://qdrant.tech/documentation/tutorials/search-beginners">Search for beginners</a>
 /// </summary>
 [Collection("EmbeddingsAndVectorDb Collection")]
-public class TestOfSearchScenarioInVectorDbUsingEmbeddings
+public class TestOfSearchScenarioInVectorDbUsingEmbeddings : IAsyncLifetime
 {
     private readonly ILogger logger;
-
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly JsonSerializerOptions serializerOptions = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
+
     private readonly ILLamaFactory ilLamaFactory;
     private string modelFilesPath;
     private readonly IServiceProvider services;
+    private readonly EmbeddingsVectorDbTestFixture fixture;
     private const string CollectionName = "books-search-collection";
-
     private const int VectorSize = 3; // vey small vector size for testing
 
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
     public TestOfSearchScenarioInVectorDbUsingEmbeddings(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         var options = services.GetRequiredService<IOptions<LLamaModelOptions>>().Value;
         this.modelFilesPath = Path.GetFullPath(options.ModelPath);

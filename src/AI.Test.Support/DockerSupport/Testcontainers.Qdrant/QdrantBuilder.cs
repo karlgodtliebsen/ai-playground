@@ -4,11 +4,11 @@
 //[PublicAPI]
 public sealed class QdrantBuilder : ContainerBuilder<QdrantBuilder, QdrantContainer, QdrantConfiguration>
 {
-    public const string QdrantImage = "qdrant/qdrant:latest";
+    public const string Image = "qdrant/qdrant:latest";
 
-    public const ushort QdrantPort = 6333;
+    public const ushort DefaultPort = 6333;
 
-    public const string QdrantContainerName = "qdrant";
+    public const string ContainerName = "qdrant";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QdrantBuilder" /> class.
@@ -69,8 +69,8 @@ public sealed class QdrantBuilder : ContainerBuilder<QdrantBuilder, QdrantContai
     protected override QdrantBuilder Init()
     {
         var containerBuilder = base.Init()
-            .WithImage(QdrantImage)
-            .WithPortBinding(QdrantPort, true)
+            .WithImage(Image)
+            .WithPortBinding(DefaultPort, true)
             .BuildWithContainerName(DockerResourceConfiguration.ContainerName)
             .BuildWithVolume(DockerResourceConfiguration.HostPath, DockerResourceConfiguration.ContainerPath, DockerResourceConfiguration.AccessMode);
         containerBuilder = containerBuilder.WithWaitStrategy(Wait.ForUnixContainer().AddCustomWaitStrategy(new WaitUntil()));
@@ -101,7 +101,7 @@ public sealed class QdrantBuilder : ContainerBuilder<QdrantBuilder, QdrantContai
         /// <inheritdoc />
         public async Task<bool> UntilAsync(IContainer container)
         {
-            var (stdout, stderr) = await container.GetLogsAsync(timestampsEnabled: false)
+            var (stdout, _) = await container.GetLogsAsync(timestampsEnabled: false)
                 .ConfigureAwait(false);
 
             return stdout.Contains("Access web UI at http:");

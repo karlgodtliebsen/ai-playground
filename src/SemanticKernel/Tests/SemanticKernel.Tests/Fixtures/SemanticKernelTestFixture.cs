@@ -1,4 +1,4 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using AI.Test.Support.DockerSupport;
 using AI.VectorDatabase.Qdrant.Configuration;
 
 using Microsoft.Extensions.Configuration;
@@ -11,7 +11,7 @@ using SemanticKernel.Tests.Configuration;
 namespace SemanticKernel.Tests.Fixtures;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class SemanticKernelTestFixture : TestFixtureBase
+public class SemanticKernelTestFixture : TestFixtureBaseWithDocker
 {
     protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {

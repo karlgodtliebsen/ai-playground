@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
 using AI.Library.Utils;
+using AI.Test.Support.DockerSupport;
+using AI.Test.Support.DockerSupport.Testcontainers.Qdrant;
 using AI.Test.Support.Fixtures;
-using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Collections;
@@ -12,7 +13,6 @@ using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 using Qdrant.Tests.Fixtures;
 
@@ -21,29 +21,36 @@ using Xunit.Abstractions;
 namespace Qdrant.Tests;
 
 [Collection("VectorDb Collection")]
-public class TestOfVectorDbUsingPoints
+public class TestOfVectorDbUsingPoints : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
-    private readonly QdrantOptions options;
     private readonly JsonSerializerOptions serializerOptions = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
     private readonly IServiceProvider services;
-
-    public TestOfVectorDbUsingPoints(VectorDbTestFixture fixture, ITestOutputHelper output)
-    {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
-        this.services = hostApplicationFactory.Services;
-        this.logger = services.GetRequiredService<ILogger>();
-        this.options = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
-        this.logger = services.GetRequiredService<ILogger>();
-    }
-
+    private readonly QdrantContainer quadrantContainer;
+    private readonly VectorDbTestFixture fixture;
     private const int VectorSize = 4;
     private const string CollectionName = "vector-test-collection";
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
 
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
+    public TestOfVectorDbUsingPoints(VectorDbTestFixture fixture, ITestOutputHelper output)
+    {
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
+        this.services = hostApplicationFactory.Services;
+        this.logger = services.GetRequiredService<ILogger>();
+        this.logger = services.GetRequiredService<ILogger>();
+    }
 
     private async Task CleanupCollection()
     {

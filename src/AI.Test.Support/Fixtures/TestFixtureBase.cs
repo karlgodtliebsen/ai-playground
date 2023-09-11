@@ -1,6 +1,4 @@
-﻿using AI.Test.Support.DockerSupport;
-
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Xunit.Abstractions;
@@ -9,16 +7,11 @@ namespace AI.Test.Support.Fixtures;
 
 public abstract class TestFixtureBase
 {
-    private string Environment { get; set; } = "IntegrationTests";
-    private bool useLogging = false;
-    private bool useDocker = false;
-    private ITestOutputHelper? output;
+    protected string Environment { get; set; } = "IntegrationTests";
+    protected bool useLogging = false;
+    protected ITestOutputHelper? output;
 
     public DateTimeOffset DateTimeOffset { get; set; } = DateTimeOffset.UtcNow;
-
-    public TestContainerDockerLauncher? Launcher { get; set; } = default!;
-    private Action<TestContainerDockerLauncher> action;
-
 
     /// <summary>
     /// abstract constructor
@@ -35,12 +28,11 @@ public abstract class TestFixtureBase
     }
 
 
-
     /// <summary>
     /// Post Build Setup of Logging that depends on ITestOutputHelper
     /// </summary>
-    /// <param name="output"></param>
-    private HostApplicationFactory BuildWithLogging(ITestOutputHelper outputHelper)
+    /// <param name="outputHelper"></param>
+    protected HostApplicationFactory BuildWithLogging(ITestOutputHelper outputHelper)
     {
         var factory = HostApplicationFactory.Build(
             outputHelper,
@@ -50,13 +42,16 @@ public abstract class TestFixtureBase
         return factory;
     }
 
-    private HostApplicationFactory BuildWithoutLogging()
+    protected HostApplicationFactory BuildWithoutLogging()
     {
         var factory = HostApplicationFactory.Build(
             environment: AddEnvironment,
             serviceContext: AddServices,
             fixedDateTime: AddTestDateTime);
         return factory;
+    }
+    protected virtual void AddServices(IServiceCollection services, IConfiguration configuration)
+    {
     }
 
     protected virtual string AddEnvironment()
@@ -68,23 +63,9 @@ public abstract class TestFixtureBase
     {
         return DateTimeOffset;
     }
-    protected void AddDockerSupport(IServiceCollection services, IConfiguration cfg)
-    {
-        services.AddSingleton<TestContainerDockerLauncher>();
-        var section = cfg.GetSection(DockerLaunchOptions.SectionName);
-        services.AddOptions<DockerLaunchOptions>().Bind(section);
-    }
-
-    protected virtual void AddServices(IServiceCollection services, IConfiguration configuration)
-    {
-        if (useDocker)
-        {
-            AddDockerSupport(services, configuration!);
-        }
-    }
 
     //support for builder pattern
-    private HostApplicationFactory BuildFactory()
+    protected virtual HostApplicationFactory BuildFactory()
     {
         if (useLogging && output is not null)
         {
@@ -93,39 +74,16 @@ public abstract class TestFixtureBase
         return BuildWithoutLogging();
     }
 
-    public TestFixtureBase WithDockerSupport()
-    {
-        useDocker = true;
-        return this;
-    }
-
-
-    public virtual TestFixtureBase WithOutputLogSupport(ITestOutputHelper outputHelper)
+    public virtual T WithOutputLogSupport<T>(ITestOutputHelper outputHelper) where T : TestFixtureBase
     {
         useLogging = true;
         this.output = outputHelper;
-        return this;
+        return (T)this;
     }
 
-    public HostApplicationFactory Build()
+    public virtual HostApplicationFactory Build()
     {
         var factory = BuildFactory();
-        if (useDocker)
-        {
-            factory = factory.WithDockerSupport();
-        }
-        return factory;
-    }
-
-    public HostApplicationFactory Build(out TestContainerDockerLauncher? launcher)
-    {
-        launcher = default;
-        var factory = BuildFactory();
-        if (useDocker)
-        {
-            factory = factory.WithDockerSupport(out var launch);
-            Launcher = launch!;
-        }
         return factory;
     }
 }

@@ -28,7 +28,7 @@ public class TestOfOpenAIClients
 
     public TestOfOpenAIClients(ITestOutputHelper output, OpenAITestFixture fixture)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBase>(output).Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");

@@ -15,7 +15,6 @@ namespace AI.Test.Support.Fixtures;
 
 public sealed class HostApplicationFactory
 {
-    private TestContainerDockerLauncher? launch = default!;
 
     public IServiceProvider Services { get; private set; }
     public ISystemClock DateTimeProvider { get; private set; } = default!;
@@ -99,24 +98,11 @@ public sealed class HostApplicationFactory
         return dpMock;
     }
 
-    internal HostApplicationFactory WithDockerSupport()
-    {
-        launch = Services.GetRequiredService<TestContainerDockerLauncher>();
-        launch.Start();
-        return this;
-    }
-
     internal HostApplicationFactory WithDockerSupport(out TestContainerDockerLauncher? launcher)
     {
         launcher = Services.GetRequiredService<TestContainerDockerLauncher>();
         return this;
     }
-
-    //public void Dispose()
-    //{
-    //    launcher?.Stop();
-    //    launcher = default;
-    //}
 
 }
 

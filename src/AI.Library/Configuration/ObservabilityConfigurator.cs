@@ -49,7 +49,6 @@ public static class ObservabilityConfigurator
                                             Action<AppLoggingOptions>? options = null, string? sectionName = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
-
         builder.ConfigureServices((ctx, services) =>
         {
             var configuredOptions = GetLoggingOptions(ctx.Configuration, options, sectionName);

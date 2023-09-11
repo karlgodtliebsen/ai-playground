@@ -95,8 +95,8 @@ public interface IQdrantClient
 
     Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, float[] vector, int limit = 10, int offset = 0, CancellationToken cancellationToken = default);
 
-    Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadIds(string collectionName, IEnumerable<string> ids, bool withEmbeddings = false, int limit = 10, int offset = 0, CancellationToken cancellationToken = default);
-    Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string colName, string id, bool withEmbeddings = false, CancellationToken cancellationToken = default);
+    Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadIds(string collectionName, IEnumerable<string> ids, bool withVectors = false, int limit = 10, int offset = 0, CancellationToken cancellationToken = default);
+    Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string colName, string id, bool withVectors = false, CancellationToken cancellationToken = default);
 
     Task<OneOf<ScoredPoint[], ErrorResponse>> Search(string collectionName, SearchRequest query, CancellationToken cancellationToken);
     Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPointIds(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, CancellationToken cancellationToken = default);
@@ -122,22 +122,21 @@ public interface IQdrantClient
     /// Get a specific vector by a unique identifier in the metadata (Qdrant payload).
     /// </summary>
     /// <param name="collectionName">The name assigned to a collection of vectors.</param>
-    /// <param name="metadataId">The unique ID stored in a Qdrant vector entry's metadata.</param>
+    /// <param name="pointId">The unique ID stored in a Qdrant vector entry's metadata.</param>
     /// <param name="withVector">Whether to include the vector data in the returned result.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
     /// <returns>The Qdrant vector record associated with the given ID if found, null if not.</returns>
-    public Task<QdrantVectorRecord?> GetVectorByPayloadIdAsync(string collectionName, string metadataId, bool withVector = false, CancellationToken cancellationToken = default);
+    public Task<QdrantVectorRecord?> GetVectorByIdAsync(string collectionName, string pointId, bool withVector = false, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Get vectors by their unique Qdrant IDs.
+    /// Get vectors by their unique Qdrant pointIds.
     /// </summary>
     /// <param name="collectionName">The name assigned to the collection of vectors.</param>
     /// <param name="pointIds">The unique IDs used to index Qdrant vector entries.</param>
     /// <param name="withVectors">Whether to include the vector data in the returned results.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
     /// <returns>An asynchronous list of Qdrant vectors records associated with the given IDs</returns>
-    public IAsyncEnumerable<QdrantVectorRecord> GetVectorsByIdAsync(string collectionName, IEnumerable<string> pointIds, bool withVectors = false,
-        CancellationToken cancellationToken = default);
+    public IAsyncEnumerable<QdrantVectorRecord> GetVectorsByIdAsync(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, CancellationToken cancellationToken = default);
 
 }
 

@@ -3,6 +3,7 @@ using AI.CaaP.Domain;
 using AI.CaaP.Repositories;
 using AI.CaaP.Repository.Configuration;
 using AI.Library.Utils;
+using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 
 using FluentAssertions;
@@ -28,7 +29,7 @@ public class TestOfConversation
 
     public TestOfConversation(ITestOutputHelper output, CaapWithInMemoryDatabaseTestFixture fixture)
     {
-        this.factory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.factory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = factory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.requestFactory = factory.Services.GetRequiredService<IModelRequestFactory>();

@@ -1,4 +1,5 @@
 ﻿using AI.Library.Utils;
+using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 
 using FluentAssertions;
@@ -18,7 +19,7 @@ using Xunit.Abstractions;
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
-public class TestOfSemanticKernelExample20HuggingFace
+public class TestOfSemanticKernelExample20HuggingFace : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly ILoggerFactory loggerFactory;
@@ -28,15 +29,28 @@ public class TestOfSemanticKernelExample20HuggingFace
     private readonly IServiceProvider services;
     private readonly HuggingFaceOptions huggingFaceOptions;
 
+    private readonly SemanticKernelTestFixture fixture;
+
     //"https://api-inference.huggingface.co/models
     const string endPoint = "https://api-inference.huggingface.co/models";
     const string Model = "gpt2-large";
 
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
+
     public TestOfSemanticKernelExample20HuggingFace(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
+        this.fixture = fixture;
         this.hostApplicationFactory = fixture
-            .WithOutputLogSupport(output)
-            .WithDockerSupport()
+            .WithOutputLogSupport<TestFixtureBaseWithDocker>(output)
+            .WithQdrantSupport()
             .Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();

@@ -1,4 +1,5 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using AI.Test.Support.DockerSupport;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
@@ -18,7 +19,7 @@ using Xunit.Abstractions;
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
-public class TestOfSemanticKernelExample14SemanticMemory
+public class TestOfSemanticKernelExample14SemanticMemory : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly ILoggerFactory loggerFactory;
@@ -28,22 +29,31 @@ public class TestOfSemanticKernelExample14SemanticMemory
     private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
     private readonly QdrantOptions qdrantOptions;
+    private readonly SemanticKernelTestFixture fixture;
 
-    //private readonly SemanticKernelWithDockerTestFixture fixture;
     private const string CollectionName = "SemanticKernel-14-test-collection";
     private const string EmbeddingModel = "text-embedding-ada-002";
     private const int VectorSize = 1536;
 
     public TestOfSemanticKernelExample14SemanticMemory(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         this.qdrantOptions = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
     }
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
 
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
 
     [Fact]
     public async Task RunSemanticMemory()

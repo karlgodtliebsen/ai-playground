@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 
+using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +26,7 @@ using TimeSkill = SemanticKernel.Tests.Skills.TimeSkill;
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
-public class TestOfSemanticKernelExample51StepwisePlanner
+public class TestOfSemanticKernelExample51StepwisePlanner : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly ILoggerFactory loggerFactory;
@@ -45,16 +46,27 @@ public class TestOfSemanticKernelExample51StepwisePlanner
     private int? TextMaxTokens = null;
 
     // Used to quickly modify the chat model used by the planner
-    private string? ChatModelOverride = null; //"gpt-35-turbo";
-    private string? TextModelOverride = null; //"text-davinci-003";
+    private readonly string? chatModelOverride = null; //"gpt-35-turbo";
+    private readonly string? textModelOverride = null; //"text-davinci-003";
+    private readonly List<ExecutionResult> executionResults = new();
+    private readonly SemanticKernelTestFixture fixture;
 
     private string? Suffix = null;
 
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
 
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
 
     public TestOfSemanticKernelExample51StepwisePlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
@@ -108,7 +120,6 @@ public class TestOfSemanticKernelExample51StepwisePlanner
         public string? timeTaken;
     }
 
-    private List<ExecutionResult> ExecutionResults = new();
 
     private async Task RunTextCompletion(string question)
     {
@@ -217,7 +228,7 @@ public class TestOfSemanticKernelExample51StepwisePlanner
 
         logger.Information("Time Taken: " + sw.Elapsed);
         currentExecutionResult.timeTaken = sw.Elapsed.ToString();
-        ExecutionResults.Add(currentExecutionResult);
+        executionResults.Add(currentExecutionResult);
         logger.Information("*****************************************************");
     }
 
@@ -228,24 +239,24 @@ public class TestOfSemanticKernelExample51StepwisePlanner
         if (useChat)
         {
             builder.WithAzureChatCompletionService(
-                model ?? ChatModelOverride ?? azureOpenAIOptions.ChatDeploymentName,
+                model ?? chatModelOverride ?? azureOpenAIOptions.ChatDeploymentName,
             azureOpenAIOptions.Endpoint,
             azureOpenAIOptions.ApiKey,
                 alsoAsTextCompletion: true,
                 setAsDefault: true);
 
             maxTokens = ChatMaxTokens ?? (new Microsoft.SemanticKernel.Planning.Stepwise.StepwisePlannerConfig()).MaxTokens;
-            result.model = model ?? ChatModelOverride ?? azureOpenAIOptions.ChatDeploymentName;
+            result.model = model ?? chatModelOverride ?? azureOpenAIOptions.ChatDeploymentName;
         }
         else
         {
             builder.WithAzureTextCompletionService(
-                model ?? TextModelOverride ?? azureOpenAIOptions.DeploymentName,
+                model ?? textModelOverride ?? azureOpenAIOptions.DeploymentName,
                 azureOpenAIOptions.Endpoint,
                 azureOpenAIOptions.ApiKey);
 
             maxTokens = TextMaxTokens ?? (new Microsoft.SemanticKernel.Planning.Stepwise.StepwisePlannerConfig()).MaxTokens;
-            result.model = model ?? TextModelOverride ?? azureOpenAIOptions.DeploymentName;
+            result.model = model ?? textModelOverride ?? azureOpenAIOptions.DeploymentName;
         }
 
         logger.Information($"Model: {result.model} ({maxTokens})");

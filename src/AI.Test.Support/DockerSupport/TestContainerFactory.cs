@@ -1,7 +1,4 @@
-﻿using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Containers;
-
-namespace AI.Test.Support.DockerSupport;
+﻿namespace AI.Test.Support.DockerSupport;
 
 public static class TestContainerFactory
 {
@@ -13,12 +10,9 @@ public static class TestContainerFactory
     /// <param name="option"></param>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IContainer Build(DockerLaunchOption option,
-
-        //string imageName, int hostPort, int containerPort, ushort waitForPort, IDictionary<string, string>? environment = null,
-
-        Func<ContainerBuilder, ContainerBuilder>? builder = null)
+    public static IContainer Build(DockerLaunchOption option, Func<ContainerBuilder, ContainerBuilder>? builder = null)
     {
+        //string imageName, int hostPort, int containerPort, ushort waitForPort, IDictionary<string, string>? environment = null,
         var containerBuilder = new ContainerBuilder()
             // Set the image for the container to, sample: "testcontainers/helloworld:1.1.0".
             .WithImage(option.ImageName)
@@ -64,13 +58,12 @@ public static class TestContainerFactory
     public static async Task<IContainer> BuildAsync(DockerLaunchOption option, CancellationToken cancellationToken, Func<ContainerBuilder, ContainerBuilder>? builder = null)
     {
         var containerBuilder = new ContainerBuilder()
-            // Set the image for the container to, sample: "testcontainers/helloworld:1.1.0".
             .WithImage(option.ImageName)
             .WithName(option.ContainerName)
-            // Bind port 'hostPort' of the container to a 'containerPort' port on the host.
             .WithPortBinding(option.HostPort, option.ContainerPort)
-            // Wait until the HTTP endpoint of the container is available.
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(option.WaitForPort)));
+            //.WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(option.WaitForPort)))
+            .WithWaitStrategy(Wait.ForUnixContainer().AddCustomWaitStrategy(new WaitUntil()));
+        ;
 
         if (option.EnvironmentVars is not null)
         {
@@ -94,5 +87,16 @@ public static class TestContainerFactory
         //To allow call from non-async methods
         await container.StartAsync(ct: cancellationToken);
         return container;
+    }
+    private sealed class WaitUntil : IWaitUntil
+    {
+        /// <inheritdoc />
+        public async Task<bool> UntilAsync(IContainer container)
+        {
+            var (stdout, stderr) = await container.GetLogsAsync(timestampsEnabled: false)
+                .ConfigureAwait(false);
+
+            return stdout.Contains("Access web UI at http:");
+        }
     }
 }

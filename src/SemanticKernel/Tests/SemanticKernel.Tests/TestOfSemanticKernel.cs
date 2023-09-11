@@ -1,4 +1,5 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using AI.Test.Support.DockerSupport;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -17,23 +18,32 @@ using Xunit.Abstractions;
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
-public class TestOfSemanticKernel
+public class TestOfSemanticKernel : IAsyncLifetime
 {
     private readonly ILogger logger;
 
     private readonly ILoggerFactory loggerFactory;
-
-
     private readonly HostApplicationFactory hostApplicationFactory;
-    private readonly IServiceProvider services;
+    //private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
+    private readonly SemanticKernelTestFixture fixture;
 
     private const string CollectionName = "SemanticKernel-test-collection";
 
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
     public TestOfSemanticKernel(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
-        this.services = hostApplicationFactory.Services;
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
+        var services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
         this.loggerFactory = services.GetRequiredService<ILoggerFactory>();

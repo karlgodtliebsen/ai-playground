@@ -1,4 +1,5 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using AI.Test.Support.DockerSupport;
+using AI.Test.Support.Fixtures;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,7 @@ using Xunit.Abstractions;
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
-public class TestOfSemanticKernelExample18DallE
+public class TestOfSemanticKernelExample18DallE : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly ILoggerFactory loggerFactory;
@@ -25,20 +26,29 @@ public class TestOfSemanticKernelExample18DallE
     private readonly OpenAIOptions openAIOptions;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly IServiceProvider services;
+    private readonly SemanticKernelTestFixture fixture;
 
     const string Model = "gpt-3.5-turbo";
-    //const int openAiVectorSize = 1536;
 
 
     public TestOfSemanticKernelExample18DallE(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.loggerFactory = services.GetRequiredService<ILoggerFactory>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
     }
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
 
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
     [Fact]
     public async Task UseDallEQdrantMemoryCollectionc_Example18()
     {

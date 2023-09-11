@@ -4,7 +4,7 @@ using Npgsql;
 
 using Testcontainers.PostgreSql;
 
-namespace AI.Library.Tests.Support.Tests;
+namespace AI.Library.Tests.Support.Tests.PostgreSqlSupport;
 
 
 /// <summary>
@@ -38,4 +38,3 @@ public sealed class PostgreSqlContainerTest : IAsyncLifetime
         command.CommandText = "SELECT 1";
     }
 }
-

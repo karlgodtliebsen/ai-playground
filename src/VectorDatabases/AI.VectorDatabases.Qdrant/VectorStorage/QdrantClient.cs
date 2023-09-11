@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using AI.Library.Utils;
@@ -450,11 +451,13 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
         return result;
     }
 
-    public async Task<QdrantVectorRecord?> GetVectorByPayloadIdAsync(string collectionName, string metadataId, bool withVector = false, CancellationToken cancellationToken = default)
+    public async Task<QdrantVectorRecord?> GetVectorByIdAsync(string collectionName, string pointId, bool withVector = false, CancellationToken cancellationToken = default)
     {
+        this.logger.Debug("Searching vector by point ID");
+
         var search = new SearchRequest()
                 .SimilarToVector(new float[this.vectorSize!.Value])
-                .HavingExternalId(metadataId)
+                .HavingExternalId(pointId)
                 .IncludePayLoad()
                 .TakeFirst()
                 .IncludeVectorData(withVector)
@@ -486,64 +489,75 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
         return record;
     }
 
-    public IAsyncEnumerable<QdrantVectorRecord> GetVectorsByIdAsync(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, CancellationToken cancellationToken = default)
+
+    public async IAsyncEnumerable<QdrantVectorRecord> GetVectorsByIdAsync(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
-        //        this._logger.LogDebug("Searching vectors by point ID");
+        this.logger.Debug("Searching vectors by point ID's");
+        var search = new SearchRequest()
+                .SimilarToVector(new float[this.vectorSize!.Value])
+                .HavingExternalId(pointIds)
+                .IncludePayLoad()
+                .TakeFirst()
+                .IncludeVectorData(withVectors)
+            ;
 
-        //        using HttpRequestMessage request = GetVectorsRequest.Create(collectionName)
-        //            .WithPointIDs(pointIds)
-        //            .WithPayloads(true)
-        //            .WithVectors(withVectors)
-        //            .Build();
-
-        //        string? responseContent = null;
-
-        //        try
-        //        {
-        //            (_, responseContent) = await this.ExecuteHttpRequestAsync(request, cancellationToken).ConfigureAwait(false);
-        //        }
-        //        catch (HttpOperationException e)
-        //        {
-        //            this._logger.LogError(e, "Vectors not found {Message}", e.Message);
-        //            throw;
-        //        }
-
-        //        var data = JsonSerializer.Deserialize<GetVectorsResponse>(responseContent);
-
-        //        if (data == null)
-        //        {
-        //            this._logger.LogWarning("Unable to deserialize Get response");
-        //            yield break;
-        //        }
-
-        //        if (!data.Result.Any())
-        //        {
-        //            this._logger.LogWarning("Vectors not found");
-        //            yield break;
-        //        }
-
-        //        var records = data.Result;
-
-        //#pragma warning disable CS8604 // The request specifically asked for a payload to be in the response
-        //        foreach (var record in records)
-        //        {
-        //            yield return new QdrantVectorRecord(
-        //                pointId: record.Id,
-        //                embedding: record.Vector ?? default,
-        //                record.Payload,
-        //                tags: null);
-        //        }
-        //#pragma warning restore CS8604
+        var searchResult = await Search(collectionName, search, cancellationToken: cancellationToken);
+        foreach (var r in searchResult.Match(
+                     ProcessRecords,
+                     error =>
+                     {
+                         logger.Warning($"Vectors from {collectionName} not found");
+                         return Enumerable.Empty<QdrantVectorRecord?>();
+                     }))
+        {
+            yield return r!;
+        }
     }
 
-    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadIds(string collectionName, IEnumerable<string> ids, bool withVectors = false, int limit = 10, int offset = 0, CancellationToken cancellationToken = default)
+    private IEnumerable<QdrantVectorRecord> ProcessRecords(ScoredPoint[]? records)
     {
+        if (records is null)
+        {
+            yield break;
+        }
+        foreach (var record in records)
+        {
+            var rg = new QdrantVectorRecord(pointId: record.Id, embedding: record.Vector, (Dictionary<string, object>)record.Payload!, tags: null);
+            yield return rg;
+        }
+    }
+
+
+    /// <summary>
+    /// Similar to GetVectorsByIdAsync
+    /// </summary>
+    /// <param name="colName"></param>
+    /// <param name="id"></param>
+    /// <param name="withVectors"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string colName, string id, bool withVectors = false, CancellationToken cancellationToken = default)
+    {
+        var search = new SearchRequest()
+                .SimilarToVector(new float[this.vectorSize!.Value])
+                .HavingExternalId(id)
+                .IncludePayLoad()
+                .TakeFirst()
+                .IncludeVectorData(withVectors)
+                .WithScoreThreshold(-1)
+            ;
+        var result = await Search(colName, search, cancellationToken: cancellationToken);
+        return result;
+    }
+
+    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadIds(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, int limit = 10, int offset = 0, CancellationToken cancellationToken = default)
+    {
+        var ids = pointIds.ToList();
         var search = new SearchRequest()
             .SimilarToVector(new float[this.vectorSize!.Value])
             .HavingExternalId(ids)
             .IncludePayLoad()
-            .Take(ids.Count())
+            .Take(ids.Count)
             .IncludeVectorData(withVectors)
             .WithScoreThreshold(-1)
             ;
@@ -552,20 +566,6 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
         return result;
     }
 
-
-    public async Task<OneOf<ScoredPoint[], ErrorResponse>> SearchByPayloadId(string colName, string id, bool withEmbeddings = false, CancellationToken cancellationToken = default)
-    {
-        var search = new SearchRequest()
-                .SimilarToVector(new float[this.vectorSize!.Value])
-                .HavingExternalId(id)
-                .IncludePayLoad()
-                .TakeFirst()
-                .IncludeVectorData(withEmbeddings)
-                .WithScoreThreshold(-1)
-            ;
-        var result = await Search(colName, search, cancellationToken: cancellationToken);
-        return result;
-    }
 
     public async Task<OneOf<ScoredPoint, NullResult, ErrorResponse>> SearchSingleByPayloadId(string collectionName, string id, bool withVectors = false, CancellationToken cancellationToken = default)
     {
@@ -627,17 +627,6 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
             logger.Debug(s);
         }
         var res = await PostAsync<SearchRequest, ScoredPoint[]>($"/collections/{collectionName}/points", query, cancellationToken);
-        res.Switch(
-            points =>
-            {
-                foreach (var p in points)
-                {
-                    p.InitializeVectors();
-                }
-            },
-            _ => { }
-        );
-
         return res;
     }
 
@@ -651,17 +640,6 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
             logger.Debug(s);
         }
         var res = await PostAsync<SearchRequest, ScoredPoint[]>($"/collections/{collectionName}/points/search", query, cancellationToken);
-        res.Switch(
-            points =>
-            {
-                foreach (var p in points)
-                {
-                    p.InitializeVectors();
-                }
-            },
-            _ => { }
-            );
-
         return res;
     }
 

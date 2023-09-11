@@ -1,4 +1,5 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using AI.Test.Support.DockerSupport;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,7 @@ using TimeSkill = SemanticKernel.Tests.Skills.TimeSkill;
 namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
-public class TestOfSemanticKernelExample31CustomPlanner
+public class TestOfSemanticKernelExample31CustomPlanner : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly ILoggerFactory loggerFactory;
@@ -35,6 +36,7 @@ public class TestOfSemanticKernelExample31CustomPlanner
     private readonly OpenAIOptions openAIOptions;
     private readonly BingOptions bingOptions;
     private readonly string skillsPath;
+    private readonly SemanticKernelTestFixture fixture;
 
     private const string CollectionName = "SemanticKernel-customplanner-test-collection";
     private const int VectorSize = 1536;
@@ -42,9 +44,20 @@ public class TestOfSemanticKernelExample31CustomPlanner
     const string Model = "gpt-3.5-turbo";
     const string CompletionModel = "text-davinci-003";
     const string EmbeddingModel = "text-embedding-ada-002";
+
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
     public TestOfSemanticKernelExample31CustomPlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.loggerFactory = services.GetRequiredService<ILoggerFactory>();

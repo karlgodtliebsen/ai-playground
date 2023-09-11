@@ -1,4 +1,5 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using AI.Test.Support.DockerSupport;
+using AI.Test.Support.Fixtures;
 
 using FinancialAgents.Tests.Fixtures;
 
@@ -25,7 +26,7 @@ public sealed class TestOfConfiguration : IClassFixture<FinancialAgentsTestFixtu
 
     public TestOfConfiguration(ITestOutputHelper output, FinancialAgentsTestFixture fixture)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).Build();
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).Build();
         this.services = hostApplicationFactory.Services;
     }
 

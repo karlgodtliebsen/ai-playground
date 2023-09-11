@@ -1,7 +1,4 @@
-﻿using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Containers;
-
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
 namespace AI.Test.Support.DockerSupport;
 
@@ -38,7 +35,7 @@ public class TestContainerDockerLauncher
         {
             try
             {
-                //logger.Information("Stating Docker Container Image:\n {image} {name}", option.ImageName, option.ContainerName);
+                logger.Information("Stating Docker Container Image:\n {image} {name}", option.ImageName, option.ContainerName);
                 if (option.HostPath is not null)
                 {
                     var sourcePath = Path.GetFullPath(option.HostPath);
@@ -74,7 +71,7 @@ public class TestContainerDockerLauncher
         {
             try
             {
-                //logger.Information("Stating Docker Container Image:\n {image} {name}", option.ImageName, option.ContainerName);
+                logger.Information("Stating Docker Container Image:\n {image} {name}", option.ImageName, option.ContainerName);
                 if (option.HostPath is not null)
                 {
                     var sourcePath = Path.GetFullPath(option.HostPath);
@@ -102,6 +99,7 @@ public class TestContainerDockerLauncher
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
+        if (!isLaunched) return;
         logger.Information("Stopping Docker Containers...");
         foreach (var container in containers)
         {
@@ -114,10 +112,12 @@ public class TestContainerDockerLauncher
                 logger.Error(ex, "Error Stopping Docker Container for\n{@options}", options);
             }
         }
+        isLaunched = false;
     }
 
     public void Stop()
     {
+        if (!isLaunched) return;
         logger.Information("Stopping Docker Containers...");
         foreach (var container in containers)
         {
@@ -130,5 +130,6 @@ public class TestContainerDockerLauncher
                 logger.Error(ex, "Error Stopping Docker Container for\n{@options}", options);
             }
         }
+        isLaunched = false;
     }
 }

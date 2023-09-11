@@ -1,4 +1,5 @@
 ﻿using AI.Library.Utils;
+using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
@@ -15,22 +16,31 @@ using Qdrant.Tests.Fixtures;
 
 using Xunit.Abstractions;
 
-
 namespace Qdrant.Tests;
 
 [Collection("VectorDb Collection")]
-public class TestOfQdrantAdministration
+public class TestOfQdrantAdministration : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly QdrantOptions options;
     private readonly IServiceProvider services;
+    private readonly VectorDbTestFixture fixture;
     private const string CollectionName = "qdrant-test-collection";
     private const int VectorSize = 4;
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
 
     public TestOfQdrantAdministration(VectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.options = services.GetRequiredService<IOptions<QdrantOptions>>().Value;

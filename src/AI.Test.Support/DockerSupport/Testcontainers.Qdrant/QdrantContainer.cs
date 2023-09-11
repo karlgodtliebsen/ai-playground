@@ -4,7 +4,7 @@
 //[PublicAPI]
 public sealed class QdrantContainer : DockerContainer
 {
-    private readonly QdrantConfiguration _configuration;
+    private readonly QdrantConfiguration configuration;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QdrantContainer" /> class.
@@ -14,7 +14,7 @@ public sealed class QdrantContainer : DockerContainer
     public QdrantContainer(QdrantConfiguration configuration, Microsoft.Extensions.Logging.ILogger logger)
         : base(configuration, logger)
     {
-        _configuration = configuration;
+        this.configuration = configuration;
     }
 
     /// <summary>
@@ -23,6 +23,6 @@ public sealed class QdrantContainer : DockerContainer
     /// <returns>The Qdrant connection url.</returns>
     public string GetConnectionUrl()
     {
-        return $"http://{Hostname}:{GetMappedPublicPort(QdrantBuilder.QdrantPort)}";
+        return $"http://{Hostname}:{GetMappedPublicPort(QdrantBuilder.DefaultPort)}";
     }
 }

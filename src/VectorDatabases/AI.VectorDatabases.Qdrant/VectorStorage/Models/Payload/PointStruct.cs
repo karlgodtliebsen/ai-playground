@@ -18,9 +18,6 @@ public class PointStruct
     /// <summary>
     /// <a href="https://qdrant.tech/documentation/concepts/points/" />
     /// </summary>
-    //[JsonPropertyName("vector")]
-    //public double[] Vector { get; set; } = Array.Empty<double>();
-
     [JsonPropertyName("vector")]
     [JsonConverter(typeof(ReadOnlyMemoryConverter))]
     public ReadOnlyMemory<float>? Vector { get; init; } = default;

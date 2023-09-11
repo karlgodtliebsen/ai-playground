@@ -1,4 +1,5 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using AI.Test.Support.DockerSupport;
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 
@@ -13,21 +14,32 @@ using Xunit.Abstractions;
 namespace Embeddings.Qdrant.Tests;
 
 [Collection("EmbeddingsAndVectorDb Collection")]
-public class TestOfTikTokenEmbeddings
+public class TestOfTikTokenEmbeddings : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly string testFilesPath;
     private readonly IServiceProvider services;
+    private readonly EmbeddingsVectorDbTestFixture fixture;
+    private const string CollectionName = "tiktoken-embeddings-test-collection";
+
+    public Task InitializeAsync()
+    {
+        return fixture.InitializeAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return fixture.DisposeAsync();
+    }
 
     public TestOfTikTokenEmbeddings(EmbeddingsVectorDbTestFixture fixture, ITestOutputHelper output)
     {
-        this.hostApplicationFactory = fixture.WithOutputLogSupport(output).WithDockerSupport().Build();
+        this.fixture = fixture;
+        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
     }
-
-    private const string CollectionName = "tiktoken-embeddings-test-collection";
 
     private async Task CleanupCollection()
     {

@@ -41,12 +41,16 @@
 
 
     <PackageReference Include="Testcontainers" Version="3.5.0" />
+
+
+    <PackageReference Include="Testcontainers.PostgreSql" Version="3.5.0" />
     <PackageReference Include="xunit" Version="2.5.1-pre.20" />
     <PackageReference Include="xunit.abstractions" Version="2.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\AI.Library\AI.Library.csproj" />
+	  <ProjectReference Include="..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
 	</ItemGroup>
 
 </Project>

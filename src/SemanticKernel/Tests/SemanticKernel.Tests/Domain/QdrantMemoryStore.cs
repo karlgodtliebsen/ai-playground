@@ -2,10 +2,13 @@
 
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
+using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 
 using Microsoft.SemanticKernel.Connectors.Memory.Qdrant;
 using Microsoft.SemanticKernel.Diagnostics;
 using Microsoft.SemanticKernel.Memory;
+
+using OneOf;
 
 namespace SemanticKernel.Tests.Domain;
 
@@ -143,12 +146,9 @@ internal class QdrantMemoryStore : IQdrantMemoryStore
     /// <inheritdoc/>
     public async Task<MemoryRecord?> GetAsync(string collectionName, string key, bool withEmbedding = false, CancellationToken cancellationToken = default)
     {
+        OneOf<ScoredPoint[], ErrorResponse> vectorDataList = await qdrantClient!.SearchByPayloadId(collectionName, key, withEmbedding, cancellationToken: cancellationToken).ConfigureAwait(false);
         try
         {
-            var vectorData = await qdrantClient!.GetVectorByPayloadIdAsync(collectionName, key, withEmbedding, cancellationToken).ConfigureAwait(false);
-
-
-            var vectorDataList = await qdrantClient.SearchByPayloadId(collectionName, key, withEmbedding, cancellationToken: cancellationToken).ConfigureAwait(false);
             var memoryRecord = vectorDataList.Match(
                 points =>
                 {
@@ -156,7 +156,7 @@ internal class QdrantMemoryStore : IQdrantMemoryStore
                     if (vectorData is null) { return null; }
                     return MemoryRecord.FromJsonMetadata(
                         json: vectorData.GetSerializedPayload(),
-                        embedding: vectorData.ToReadOnlyMemoryVector(),
+                        embedding: vectorData.Vector,
                         key: vectorData.PointId);
                 },
                 error => throw new QdrantException("GetWithPointIdAsync", error.Error)
@@ -170,9 +170,30 @@ internal class QdrantMemoryStore : IQdrantMemoryStore
         }
     }
 
+    public async Task<MemoryRecord?> GetAsync2(string collectionName, string key, bool withEmbedding = false, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var vectorData = await qdrantClient!.GetVectorByIdAsync(collectionName, key, withEmbedding, cancellationToken).ConfigureAwait(false);
+            if (vectorData == null) { return null; }
+
+            return MemoryRecord.FromJsonMetadata(
+                json: vectorData.GetSerializedPayload(),
+                embedding: vectorData.Embedding,
+                key: vectorData.PointId);
+        }
+        catch (HttpOperationException ex)
+        {
+            this.logger.Error(ex, "Failed to get vector data: {Message}", ex.Message);
+            throw;
+        }
+    }
+
+
     /// <inheritdoc/>
     public async IAsyncEnumerable<MemoryRecord> GetBatchAsync(string collectionName, IEnumerable<string> keys, bool withEmbeddings = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        //TODO: needs converting to proper batch
         foreach (var key in keys)
         {
             var record = await GetAsync(collectionName, key, withEmbeddings, cancellationToken).ConfigureAwait(false);
@@ -198,7 +219,7 @@ internal class QdrantMemoryStore : IQdrantMemoryStore
         {
             var vectorDataList = await qdrantClient!.SearchSingleByPointId(collectionName, pointId, withEmbedding, cancellationToken: cancellationToken).ConfigureAwait(false);
             var memoryRecord = vectorDataList.Match<MemoryRecord?>(
-                vectorData => MemoryRecord.FromJsonMetadata(json: vectorData.GetSerializedPayload(), embedding: vectorData.ToReadOnlyMemoryVector()),
+                vectorData => MemoryRecord.FromJsonMetadata(json: vectorData.GetSerializedPayload(), embedding: vectorData.Vector),
                 _ => null,
                 error => throw new QdrantException("GetWithPointIdAsync", error.Error)
              );
@@ -232,7 +253,7 @@ internal class QdrantMemoryStore : IQdrantMemoryStore
         {
             yield return MemoryRecord.FromJsonMetadata(
                 json: vectorData.GetSerializedPayload(),
-                embedding: vectorData.ToReadOnlyMemoryVector(),
+                embedding: vectorData.Vector,
                 key: vectorData.Id);
         }
     }
@@ -312,7 +333,7 @@ internal class QdrantMemoryStore : IQdrantMemoryStore
         foreach (var scoredPoint in scoredPoints)
         {
             yield return (MemoryRecord.FromJsonMetadata(json: scoredPoint.GetSerializedPayload(),
-                embedding: scoredPoint.ToReadOnlyMemoryVector(), key: scoredPoint.Id), scoredPoint.Score);
+                embedding: scoredPoint.Vector, key: scoredPoint.Id), scoredPoint.Score);
         }
     }
 
