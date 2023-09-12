@@ -49,7 +49,15 @@ public partial class OptionsMapper
         options.RestoreSanitizedSensitiveData(request.ModelName);
         return options;
     }
-
+    public InferenceOptions MapInferenceOptions(InferenceRequestResponse? request, InferenceOptions defaultOptions)
+    {
+        if (request is null)
+        {
+            return defaultOptions;
+        }
+        var options = Map(request);
+        return options;
+    }
 
     /// <summary>
     /// Maps the LlamaModelRequestResponse to the LlamaModelOptions

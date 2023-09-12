@@ -19,8 +19,8 @@ public interface IChatService
     /// <summary>
     /// Chat Stream
     /// </summary>
-    /// <param name="input"></param>
+    /// <param name="chatMessage"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    IAsyncEnumerable<string> ChatStream(ChatMessage input, CancellationToken cancellationToken);
+    IAsyncEnumerable<string> ChatStream(ChatMessage chatMessage, CancellationToken cancellationToken);
 }

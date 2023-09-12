@@ -120,9 +120,11 @@ public partial class RequestMessagesMapper
     public ChatMessage Map(ChatMessageRequest request, string userId)
     {
         var defaultModelOptions = configurationDomainService.GetDefaultLlamaModelOptions();
+        var inferenceOptions = configurationDomainService.GetDefaultInferenceOptions();
         var model = Map(request);
         model.UserId = userId;
         model.ModelOptions = optionsMapper.MapRestoreSensitiveData(request.ModelOptions!, defaultModelOptions);
+        model.InferenceOptions = optionsMapper.MapInferenceOptions(request.InferenceOptions!, inferenceOptions);
         return model;
     }
 

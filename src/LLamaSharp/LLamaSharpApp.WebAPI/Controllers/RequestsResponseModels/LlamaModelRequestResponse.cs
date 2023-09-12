@@ -1,4 +1,7 @@
-﻿namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
+﻿using System.Text;
+using System.Text.Json.Serialization;
+
+namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 /// <summary>
 /// Holds the user applicable settings for the LLamaSharpApp.WebAPI
 /// </summary>
@@ -6,7 +9,7 @@ public sealed class LlamaModelRequestResponse
 {
 
     /// <summary>Model context size (n_ctx)</summary>
-    public int? ContextSize { get; set; } = 512;
+    public int? ContextSize { get; set; } = 4096;
 
     /// <summary>
     /// Number of layers to run in VRAM / GPU memory (n_gpu_layers)
@@ -59,4 +62,49 @@ public sealed class LlamaModelRequestResponse
     /// </summary>
     public string? ModelName { get; set; } = default!;
 
+    /// <summary>model alias</summary>
+    public string? ModelAlias { get; set; } = "unknown";
+
+
+    /// <summary>the GPU that is used for scratch and small tensors</summary>
+    public int? MainGpu { get; set; } = 0;
+
+    /// <summary>if true, reduce VRAM usage at the cost of performance</summary>
+    public bool? LowVram { get; set; } = false;
+
+    /// <summary>how split tensors should be distributed across GPUs</summary>
+    public float[]? TensorSplits { get; set; }
+
+    /// <summary>RoPE base frequency</summary>
+    public float? RopeFrequencyBase { get; set; } = 10000f;
+
+    /// <summary>RoPE frequency scaling factor</summary>
+    public float? RopeFrequencyScale { get; set; } = 1f;
+
+    /// <summary>Use experimental mul_mat_q kernels</summary>
+    public bool? MulMatQ { get; set; }
+
+    /// <summary>The encoding to use to convert text for the model</summary>
+    //[JsonConverter(typeof(EncodingConverter))]
+    //public Encoding Encoding { get; set; } = Encoding.UTF8;
+}
+
+internal class EncodingConverter : JsonConverter<Encoding>
+{
+    public override Encoding? Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options)
+    {
+        string name = reader.GetString();
+        return name == null ? (Encoding)null : Encoding.GetEncoding(name);
+    }
+
+    public override void Write(
+        Utf8JsonWriter writer,
+        Encoding value,
+        JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value.WebName);
+    }
 }

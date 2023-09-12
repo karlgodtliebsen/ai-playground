@@ -4,7 +4,7 @@ namespace LLamaSharp.Domain.Configuration;
 /// <summary>
 /// Holds the user applicable settings for the LLamaSharpApp.WebAPI
 /// </summary>
-public record LLamaModelOptions : ModelParams
+public sealed record LLamaModelOptions : ModelParams
 {
     /// <summary>
     /// Configuration SectionName

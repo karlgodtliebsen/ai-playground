@@ -3,7 +3,7 @@
 /// <summary>
 /// Request object to hold the text/message to be sent to the chat bot
 /// </summary>
-public class ChatMessageRequest : TextMessageRequest
+public sealed class ChatMessageRequest : TextMessageRequest
 {
     /// <summary>
     /// When true, the models state will be loaded and saved from storage

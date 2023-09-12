@@ -85,6 +85,7 @@ public class CompositeService : ICompositeService
         //model.Dispose();
     }
 
+    //https://replicate.com/blog/how-to-prompt-llama
 
     //TODO: consider https://github.com/SciSharp/LLamaSharp/blob/master/docs/ChatSession/save-load-session.md
     //TODO: use ChatHistory 
@@ -136,6 +137,10 @@ public class CompositeService : ICompositeService
 
     private string CreateUserInput(ExecutorInferMessage input)
     {
+
+        throw new NotImplementedException("Must be changed");
+
+
         string userInput = input.Text;
 
         if (input is { UseDefaultPrompt: false, Prompt: not null })

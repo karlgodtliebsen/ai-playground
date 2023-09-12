@@ -52,6 +52,12 @@ Recommentations from LlamaSharp:
 - https://huggingface.co/openchat/openchat_v3.2_super
 
 
+## Model advice:
+- https://replicate.com/blog/how-to-prompt-llama
+
+- Llama 2 7B is really fast, but dumb. It’s good to use for simple things like summarizing or categorizing things.
+- Llama 2 13B is a middle ground. It is much better at understanding nuance than 7B, and less afraid of being offensive (but still very afraid of being offensive). It does everything 7b does but better (and a bit slower). I think it works well for creative things like writing stories or poems.
+- Llama 2 70B is the smartest Llama 2 variant. It’s also our most popular. We use it by default in our chat app. Use if for dialogue, logic, factual questions, coding, etc.
 
 
 ### Build
@@ -67,7 +73,7 @@ Adjust this section in appsettings.json
 
 ```json
   "LlmaModel": {
-    "modelPath": "/somepath/location/wizardLM-7B.ggmlv3.q4_1.bin",
+    "modelPath": "/somepath/location/llama-2-7B-Guanaco-QLoRA-GGUF",
   }
 
 ```
@@ -107,6 +113,12 @@ WizardLM: Empoweroing Large Pre-Trained Language Models to Follow Complex Instru
 
 ### meta llama 2:
 > https://ai.meta.com/research/publications/llama-2-open-foundation-and-fine-tuned-chat-models/
+
+
+
+### Llama 2 prompting:
+- https://replicate.com/blog/how-to-prompt-llama
+
 
 
 # References

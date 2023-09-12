@@ -11,14 +11,18 @@ public class SimpleTextMessage : BaseMessageModel
     /// <param name="text"></param>
     public SimpleTextMessage(string? text)
     {
-        ArgumentNullException.ThrowIfNull(text);
         Text = text;
     }
 
     /// <summary>
     /// The prompt text
     /// </summary>
-    public string Text { get; }
+    public string? Text { get; }
+
+    /// <summary>
+    /// <a href="https://replicate.com/blog/how-to-prompt-llama/">System Prompts</a>
+    /// </summary>
+    public string? SystemPrompt { get; set; }
 
     /// <summary>
     /// Use Stateful Model

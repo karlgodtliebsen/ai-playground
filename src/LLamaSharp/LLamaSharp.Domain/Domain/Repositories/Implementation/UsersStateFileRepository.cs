@@ -152,8 +152,9 @@ public sealed class UsersStateFileRepository : IUsersStateRepository
     public IEnumerable<string> GetModels()
     {
         var directory = Path.GetFullPath(Path.GetDirectoryName(modelOptions.ModelPath)!);
-        foreach (var file in Directory.EnumerateFiles(directory, "*"))
+        foreach (var file in Directory.EnumerateFiles(directory, "*.gguf"))
         {
+
             yield return Path.GetFileNameWithoutExtension(file);
         }
     }

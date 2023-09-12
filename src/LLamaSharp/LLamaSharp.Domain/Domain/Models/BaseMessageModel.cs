@@ -20,6 +20,13 @@ public class BaseMessageModel
     public LLamaModelOptions? ModelOptions { get; set; } = default!;
 
     /// <summary>
+    /// The request specific InferenceOptions: Optional
+    /// </summary>
+    public InferenceOptions? InferenceOptions { get; set; } = default!;
+
+
+
+    /// <summary>
     /// AntiPrompt
     /// </summary>
     public string[]? AntiPrompts { get; set; } = default!;

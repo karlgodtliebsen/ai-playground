@@ -11,6 +11,12 @@ public class BaseRequest
     public LlamaModelRequestResponse? ModelOptions { get; set; } = default!;
 
     /// <summary>
+    /// Request specific InferenceOptions
+    /// </summary>
+    public InferenceRequestResponse? InferenceOptions { get; set; } = default!;
+
+
+    /// <summary>
     /// AntiPrompt
     /// </summary>
     public string[]? AntiPrompts { get; set; } = default!;

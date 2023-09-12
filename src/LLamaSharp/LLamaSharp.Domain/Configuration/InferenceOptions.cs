@@ -5,7 +5,7 @@ namespace LLamaSharp.Domain.Configuration;
 /// <summary>
 /// InferenceOptions
 /// </summary>
-public class InferenceOptions : InferenceParams
+public sealed class InferenceOptions : InferenceParams
 {
     /// <summary>
     /// Configuration SectionName
