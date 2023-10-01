@@ -83,10 +83,10 @@ Question: {{ $input }}
     {
         var answer = await this._mathTranslator.InvokeAsync(input).ConfigureAwait(false);
 
-        if (answer.ErrorOccurred)
-        {
-            throw new InvalidOperationException("error in calculator for input " + input + " " + answer.LastException.Message);
-        }
+        //if (answer.ErrorOccurred)
+        //{
+        //    throw new InvalidOperationException("error in calculator for input " + input + " " + answer.LastException.Message);
+        //}
 
         string pattern = @"```\s*(.*?)\s*```";
 

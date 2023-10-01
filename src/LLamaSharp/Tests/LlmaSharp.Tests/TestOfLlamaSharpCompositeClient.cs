@@ -21,7 +21,8 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
 {
     private readonly IntegrationTestWebApplicationFactory factory;
     private readonly ILogger logger;
-    const string Model = "llama-2-7b-guanaco-qlora.Q2_K.gguf";
+    //const string Model = "llama-2-7b-guanaco-qlora.Q2_K.gguf";
+    const string Model = "llama-2-7b.Q4_0.gguf";
 
     public TestOfLlamaSharpCompositeClient(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {

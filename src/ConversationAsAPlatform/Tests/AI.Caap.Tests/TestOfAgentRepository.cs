@@ -35,7 +35,6 @@ public class TestOfAgentRepository
         this.services.CleanDatabase();
 
         var repository = factory.Services.GetRequiredService<IAgentRepository>();
-        var conversationId = Guid.NewGuid();
         var userId = Guid.NewGuid();
         var agent = new Agent()
         {

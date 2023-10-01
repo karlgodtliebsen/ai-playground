@@ -22,12 +22,12 @@
 
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.11" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0-preview-23424-02" />
     <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
 
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.OpenApi" Version="1.6.8" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.6.9" />
 
     <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.7" />
 

@@ -172,21 +172,20 @@ Here are some repositories worth checking out:
 > https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/
 
 ### Llama models (llma.cpp/ggml) from Huggingface:
-> https://huggingface.co/TheBloke
+> https://huggingface.co/TheBloke:
 
 ```
-- wizardLM-7B.ggmlv3.q4_1.bin
-- ggml-vic13b-uncensored-q4_1.bin
-- ggml-vic13b-uncensored-q5_0.bin
-- ggml-vicuna-13B-1.1-q4_0.bin
-- ggml-vicuna-13B-1.1-q8_0.bin
-- wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin
+- v0.5.1 v0.5.1 Llama2 7b GGUF
 ```
-
 This model requires MetaAI registration/approval
-```
-- llama-2-7b.ggmlv3.q8_0.bin
-```
+
+
+### Work in progress:
+
+- After August model updates more models must be tested
+- Complete prompting setup for LlamaSharp, for instruction and chat completion modes.
+- Upgrade to Dall-E 3
+- Upgrade TensorFlow.Net
 
 
 ### Youtube:

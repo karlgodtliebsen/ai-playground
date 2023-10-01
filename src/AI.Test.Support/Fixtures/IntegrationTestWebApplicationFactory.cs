@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 using NSubstitute;
 
@@ -32,7 +31,7 @@ public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApp
 
     public ILogger Logger { get; private set; } = default!;
 
-    public string UserId { get; set; } = Guid.NewGuid().ToString("N");
+    public string UserId { get; set; } = "01HBPGFX6ESEK2NMZKJ19KDCAA";//Ulid.NewUlid().ToString();
     public string Environment { get; set; } = "IntegrationTests";
 
 

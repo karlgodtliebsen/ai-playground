@@ -67,8 +67,7 @@ public class TestOfSemanticKernelExample20HuggingFace : IAsyncLifetime
     //vicuna/ggml-vicuna-13b-1.1
     //eachadea/ggml-vicuna-7b-1.1
 
-
-    [Fact(Skip = "This call does not return a answer af upgrade.")]
+    [Fact(Skip = "This call does not return a correct answer after upgrade.")]
     public async Task UseSemanticFunction_Example27()
     {
         logger.Information("======== HuggingFace text completion AI ========");
@@ -84,17 +83,31 @@ public class TestOfSemanticKernelExample20HuggingFace : IAsyncLifetime
         //var func = kernel.CreateSemanticFunction(functionDefinition);
         //var result = await func.InvokeAsync("What is New York?");
 
-        var func = kernel.CreateSemanticFunction("List the two planets closest to '{{$input}}', excluding moons, using bullet points.");
-        var result = await func.InvokeAsync("Jupiter");
+        //var func = kernel.CreateSemanticFunction("List the two planets closest to '{{$input}}', excluding moons, using bullet points.");
+        //var result = await func.InvokeAsync("Jupiter");
+        //result.Result.Should().NotBeNullOrEmpty();
+        //logger.Information(result.Result);
 
-
+        var func = kernel.CreateSemanticFunction("List the planets in our solar system, starting from nearest to the Sun.");
+        var result = await func.InvokeAsync();
         logger.Information(result.Result);
-        result.ErrorOccurred.Should().BeFalse();
+
+        result.Result.Should().Contain("Mercury");
+        result.Result.Should().Contain("Venus");
+        result.Result.Should().Contain("Earth");
+        result.Result.Should().Contain("Mars");
+        result.Result.Should().Contain("Jupiter");
+        result.Result.Should().Contain("Saturn");
+        result.Result.Should().Contain("Uranus");
+        result.Result.Should().Contain("Neptune");
+
+
+        // result.ErrorOccurred.Should().BeFalse();
 
         foreach (var modelResult in result.ModelResults)
         {
             var answer = modelResult.GetHuggingFaceResult().ToJson();
-            //  answer.Should().Contain("Answer: New York is");
+
             logger.Information(answer);
         }
     }

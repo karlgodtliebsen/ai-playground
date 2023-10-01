@@ -52,6 +52,7 @@ public class TestOfSemanticKernelExample18DallE : IAsyncLifetime
     [Fact]
     public async Task UseDallEQdrantMemoryCollectionc_Example18()
     {
+        //TODO: update to 3
         logger.Information("======== OpenAI Dall-E 2 Image Generation ========");
 
         //bool recreateCollection = true;
