@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <AssemblyName>Microsoft.SemanticMemory.Client</AssemblyName>
+        <RootNamespace>Microsoft.SemanticMemory</RootNamespace>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
+
+    <Import Project="../nuget/nuget-package.props" />
+
+    <ItemGroup>
+        <PackageReference Include="System.Memory.Data" />
+        <PackageReference Include="System.Text.Json" />
+    </ItemGroup>
+
+</Project>
