@@ -1,5 +1,7 @@
-# Various usages of Microsoft Semantic Kernel
+# Various usages of Microsoft Semantic Kernel/Memory
 
+- https://github.com/microsoft/semantic-kernel
+ 
 The test project shows many different usages of the Microsoft Semantic Kernel. 
 
 ## Based on the sample material:
@@ -16,5 +18,12 @@ The test project shows many different usages of the Microsoft Semantic Kernel.
 - MultistreamingCompletiom
 
 Not all projects are fully functional. Some are just a proof of concept.
+
+
+
+## Use Semantic Memory
+
+- https://github.com/microsoft/semantic-memory
+
 
 

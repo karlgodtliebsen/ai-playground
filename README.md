@@ -47,7 +47,6 @@ Recommentations from LlamaSharp:
 
 
 
-
 ## LlaMa Models - 2
 Download a model like: 
 
@@ -96,6 +95,7 @@ The projects uses other Open Source project:
 - Llama models from Huggingface
 - Qdrant Vector Db
 - Microsoft Semantic Kerlenl Library (MSKLC)
+- Microsoft Semantic Memory
 - TiktokenSharp
 - TensorFlow.Net
 - TensorFlow.Keras
