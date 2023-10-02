@@ -179,5 +179,85 @@ public class TestOfSemanticMemory : IAsyncLifetime
             logger.Information($"  * {x.SourceName} -- {x.Partitions.First().LastUpdate:D}");
         }
     }
+    [Fact]
+    public async Task RunNasaMemoryWithTwoUsersSample()
+    {
+        var file = CreateNasaFile();
+
+        // Upload file, allow two users to access
+        var docId = await memory.ImportDocumentAsync(new Document()
+            .AddFile(file)
+            .AddTag("user", "USER-333")
+            .AddTag("user", "USER-444"));
+
+        // OK: USER-333 tag matches
+        var answer = await memory.AskAsync(NasaQuestion, MemoryFilters.ByTag("user", "USER-333"));
+        logger.Information(answer.Result + "/n");
+        foreach (var x in answer.RelevantSources)
+        {
+            logger.Information($"  * {x.SourceName} -- {x.Partitions.First().LastUpdate:D}");
+        }
+
+        // OK: USER-444 tag matches
+        answer = await memory.AskAsync(NasaQuestion, MemoryFilters.ByTag("user", "USER-444"));
+        logger.Information(answer.Result + "/n");
+        foreach (var x in answer.RelevantSources)
+        {
+            logger.Information($"  * {x.SourceName} -- {x.Partitions.First().LastUpdate:D}");
+        }
+    }
+
+    [Fact]
+    public async Task RunNasaMemoryWithCategorizedDataUsingTags()
+    {
+        var file = CreateNasaFile();
+
+        // Upload file, allow two users to access, and add a content type tag for extra filtering
+        var docId = await memory.ImportDocumentAsync(new Document()
+            .AddFile(file)
+            .AddTag("user", "USER-333")
+            .AddTag("user", "USER-444")
+            .AddTag("type", "planning"));
+
+        // No information found, the type tag doesn't match
+        var answer = await memory.AskAsync(NasaQuestion, MemoryFilters.ByTag("user", "USER-333").ByTag("type", "email"));
+        logger.Information(answer.Result + "/n");
+        foreach (var x in answer.RelevantSources)
+        {
+            logger.Information($"  * {x.SourceName} -- {x.Partitions.First().LastUpdate:D}");
+        }
+        //Found using the planning tag
+        answer = await memory.AskAsync(NasaQuestion, MemoryFilters.ByTag("user", "USER-333").ByTag("type", "planning"));
+        logger.Information(answer.Result + "/n");
+        foreach (var x in answer.RelevantSources)
+        {
+            logger.Information($"  * {x.SourceName} -- {x.Partitions.First().LastUpdate:D}");
+        }
+    }
+
+    [Fact]
+    public async Task RunNasaMemoryWithCleanup()
+    {
+        var file = CreateNasaFile();
+        string Id = System.IO.Path.GetFileName(file);
+
+        await this.memory.ImportDocumentAsync(
+            file,
+            documentId: Id,
+            steps: Constants.PipelineWithoutSummary);
+
+        while (!await this.memory.IsDocumentReadyAsync(documentId: Id))
+        {
+            logger.Information("Waiting for memory ingestion to complete...");
+            await Task.Delay(TimeSpan.FromSeconds(2));
+        }
+
+        var answer = await this.memory.AskAsync("What is Orion?");
+        logger.Information(answer.Result);
+        Assert.Contains("spacecraft", answer.Result);
+
+        logger.Information("Deleting memories extracted from the document");
+        await this.memory.DeleteDocumentAsync(Id);
+    }
 
 }
