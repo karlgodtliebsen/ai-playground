@@ -58,28 +58,6 @@ public class TestOfSemanticMemory : IAsyncLifetime
         return file;
     }
 
-    //[Fact]
-    //public async Task RunSimpleMemorySample()
-    //{
-
-    //    // Import a file
-    //    await memory.ImportDocumentAsync("Documents\\meeting-transcript.docx", tags: new() { { "user", "Blake" } });
-
-    //    // Import multiple files and apply multiple tags
-    //    await memory.ImportDocumentAsync(new Document("file001")
-    //        .AddFile("business-plan.docx")
-    //        .AddFile("project-timeline.pdf")
-    //        .AddTag("user", "Blake")
-    //        .AddTag("collection", "business")
-    //        .AddTag("collection", "plans")
-    //        .AddTag("fiscalYear", "2023"));
-
-    //    var answer1 = await memory.AskAsync("How many people attended the meeting?");
-    //    //var answer2 = await memory.AskAsync("what's the project timeline?", filter: new MemoryFilter().ByTag("user", "Blake"));
-
-    //    //Use qdrant
-    //}
-
     [Fact]
     public async Task RunNasaMemorySample()
     {

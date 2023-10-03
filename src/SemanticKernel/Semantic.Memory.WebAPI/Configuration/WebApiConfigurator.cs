@@ -32,12 +32,12 @@ public static class WebApiConfigurator
 
     private static IServiceCollection AddUtilities(this IServiceCollection services)
     {
-        //services
-        //    .AddHttpContextAccessor()
+        services
+            .AddHttpContextAccessor()
         //    .AddScoped<IUserIdProvider, UserIdProvider>()
         //    .AddTransient<OptionsMapper>()
         //    .AddTransient<RequestMessagesMapper>()
-        //    ;
+            ;
         return services;
     }
 
@@ -47,10 +47,9 @@ public static class WebApiConfigurator
         DateTimeOffset start = DateTimeOffset.UtcNow;
 
         // Simple ping endpoint
-        app.MapGet("/", () => Results.Ok("Ingestion service is running. " +
-                                         "Uptime: " + (DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-                                                       - start.ToUnixTimeSeconds()) + " secs " +
-                                         $"- Environment: {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}"));
+        app.MapGet("/", () => Results.Ok($"Ingestion service is running. Uptime: {(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - start.ToUnixTimeSeconds())} secs - Environment: {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}"));
+
+
         // File upload endpoint
         app.MapPost(Constants.HttpUploadEndpoint, async Task<IResult> (
                 HttpRequest request,
