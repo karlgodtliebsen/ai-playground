@@ -43,6 +43,9 @@
     <PackageReference Include="Testcontainers" Version="3.5.0" />
 
 
+    <PackageReference Include="Testcontainers.Elasticsearch" Version="3.5.0" />
+
+
     <PackageReference Include="Testcontainers.PostgreSql" Version="3.5.0" />
 
 

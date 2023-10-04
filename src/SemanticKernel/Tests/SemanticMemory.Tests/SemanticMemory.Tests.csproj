@@ -24,6 +24,8 @@
 		<PackageReference Include="OneOf" Version="3.0.263" />
 		<PackageReference Include="OneOf.Extended" Version="3.0.263" />
 		<PackageReference Include="OneOf.Monads" Version="1.21.0" />
+		<PackageReference Include="OpenSearch.Client" Version="1.5.0" />
+		<PackageReference Include="OpenSearch.Client.JsonNetSerializer" Version="1.5.0" />
 		<PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
 		<PackageReference Include="System.Text.Json" Version="7.0.3" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
@@ -36,6 +38,8 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
 
     <PackageReference Include="Testcontainers" Version="3.5.0" />
+
+    <PackageReference Include="Testcontainers.Elasticsearch" Version="3.5.0" />
 
 		<PackageReference Include="xunit" Version="2.5.1" />
 		<PackageReference Include="xunit.abstractions" Version="2.0.3" />

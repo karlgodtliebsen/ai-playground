@@ -1,7 +1,6 @@
 ﻿using System.Data.Common;
 
 using AI.Library.Configuration;
-using AI.Library.Tests.Support.Tests.Fixtures;
 using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 
@@ -19,13 +18,13 @@ namespace AI.Library.Tests.Support.Tests.PostgreSqlSupport;
 /// <a href="https://github.com/testcontainers/testcontainers-dotnet/tree/develop/src">Documentation/src</a>
 /// </summary>
 [Collection("Docker Launch Collection")]
-public sealed class TestOfPostgreSqlContainerUsingPostgreSqlSupport : IAsyncLifetime
+public sealed class TestOfPostgreSqlSupport : IAsyncLifetime
 {
     private readonly ITestOutputHelper output;
     private readonly HostApplicationFactory factory;
-    private readonly DockerLaunchTestFixture fixture;
+    private readonly TestFixtureBaseWithDocker fixture;
 
-    public TestOfPostgreSqlContainerUsingPostgreSqlSupport(ITestOutputHelper output, DockerLaunchTestFixture fixture)
+    public TestOfPostgreSqlSupport(ITestOutputHelper output, TestFixtureBaseWithDocker fixture)
     {
         this.output = output;
         this.fixture = fixture;

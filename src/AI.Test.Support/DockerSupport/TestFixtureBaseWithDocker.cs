@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+using Testcontainers.Elasticsearch;
 using Testcontainers.PostgreSql;
 
 namespace AI.Test.Support.DockerSupport;
@@ -16,6 +17,7 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
     private bool useDocker = false;
     private bool useQdrantDocker = false;
     private bool usePostgreSqlDocker = false;
+    private bool useOpenSearchDocker = false;
 
     public TestContainerDockerLauncher? Launcher { get; private set; } = default!;
     public HostApplicationFactory? Factory { get; private set; } = default!;
@@ -24,14 +26,14 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
 
     protected PostgreSqlContainer? PostgreSqlContainer { get; private set; } = default!;
 
+    protected ElasticsearchContainer? OpenSearchContainer { get; private set; } = default!;
+
     /// <summary>
     /// abstract constructor
     /// </summary>
     protected TestFixtureBaseWithDocker()
     {
-
     }
-
 
     protected void AddDockerSupport(IServiceCollection services, IConfiguration configuration)
     {
@@ -44,6 +46,12 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
     {
         services.AddPostgreSql(configuration);
     }
+
+    protected void AddOpenSearchSupport(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOpenSearch(configuration);
+    }
+
     protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
         if (useDocker)
@@ -54,7 +62,12 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
         {
             AddPostgreSqlSupport(services, configuration!);
         }
+        if (useOpenSearchDocker)
+        {
+            AddOpenSearchSupport(services, configuration!);
+        }
     }
+
 
     public TestFixtureBase WithQdrantSupport()
     {
@@ -65,6 +78,11 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
     public TestFixtureBase WithPostgreSqlSupport()
     {
         usePostgreSqlDocker = true;
+        return this;
+    }
+    public TestFixtureBase WithOpenSearchSupport()
+    {
+        useOpenSearchDocker = true;
         return this;
     }
 
@@ -84,7 +102,10 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
         {
             PostgreSqlContainer = new PostgreSqlBuilder().Build();
         }
-
+        if (useOpenSearchDocker)
+        {
+            OpenSearchContainer = new ElasticsearchBuilder().Build();
+        }
         Factory = BuildFactory();
         if (useDocker)
         {
@@ -108,7 +129,11 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
             await PostgreSqlContainer.StartAsync().ConfigureAwait(false);
             Factory.Services.GetRequiredService<IOptions<PostgreSqlOptions>>().Value.ConnectionString = PostgreSqlContainer.GetConnectionString();
         }
-
+        if (useOpenSearchDocker && OpenSearchContainer is not null)
+        {
+            await OpenSearchContainer.StartAsync().ConfigureAwait(false);
+            Factory.Services.GetRequiredService<IOptions<OpenSearchOptions>>().Value.ConnectionString = OpenSearchContainer.GetConnectionString();
+        }
     }
 
     public async Task DisposeAsync()
@@ -120,6 +145,10 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
         if (usePostgreSqlDocker && PostgreSqlContainer is not null)
         {
             await PostgreSqlContainer.DisposeAsync();
+        }
+        if (useOpenSearchDocker && OpenSearchContainer is not null)
+        {
+            await OpenSearchContainer.DisposeAsync();
         }
     }
 }
