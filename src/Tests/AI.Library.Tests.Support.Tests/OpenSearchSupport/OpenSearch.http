@@ -1,0 +1,38 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+# https://learn.microsoft.com/da-dk/aspnet/core/test/http-files?view=aspnetcore-8.0
+# look into https://learn.microsoft.com/da-dk/aspnet/core/web-api/http-repl/?view=aspnetcore-8.0&tabs=windows
+# https://learn.microsoft.com/da-dk/aspnet/core/test/integration-tests?view=aspnetcore-8.0
+
+
+@hostname=localhost
+@port=9200
+
+#Basic admin:admin  Basic YWRtaW46YWRtaW4=
+
+PUT https://{{hostname}}:{{port}}/students/_doc/4711?pretty=true
+Authorization:  Basic admin:admin
+Content-Type: application/json
+
+{
+"id": 4242,
+"firstName": "Clark",
+"lastName": "Kent",
+"Gpa": 5.0,
+"GradYear": 2000
+}
+
+### 
+
+POST https://{{hostname}}:{{port}}/students/_search  HTTP/1.1
+Authorization:  Basic admin:admin
+Content-Type: application/json
+
+{
+  "query" : {
+    "match": {
+      "lastName": "Kent"
+    }
+  }
+}
+
+###
