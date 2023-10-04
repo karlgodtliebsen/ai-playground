@@ -7,23 +7,20 @@ using Microsoft.SemanticMemory;
 
 using OpenAI.Client.Configuration;
 
-using SemanticMemory.Tests.Fixtures;
+using SemanticMemory.Kafka.StreamingNewsFeed.Tests.Fixtures;
 
 using Xunit.Abstractions;
 
-namespace SemanticMemory.Tests;
+namespace SemanticMemory.Kafka.StreamingNewsFeed.Tests;
 
 [Collection("Semantic Memory Collection")]
-public class TestOfSemanticMemoryWithQdrant : IAsyncLifetime
+public class TestOfWikiMediaFeedWithSemanticMemory : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
     private readonly OpenAIOptions openAIOptions;
     private readonly SemanticMemoryTestFixture fixture;
-    private static readonly string FullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
-
     private readonly ISemanticMemoryClient memory;
-    const string NasaQuestion = "Any news from NASA about Orion?";
 
     public Task InitializeAsync()
     {
@@ -35,11 +32,12 @@ public class TestOfSemanticMemoryWithQdrant : IAsyncLifetime
         return fixture.DisposeAsync();
     }
 
-    public TestOfSemanticMemoryWithQdrant(SemanticMemoryTestFixture fixture, ITestOutputHelper output)
+    public TestOfWikiMediaFeedWithSemanticMemory(SemanticMemoryTestFixture fixture, ITestOutputHelper output)
     {
         this.fixture = fixture;
         this.hostApplicationFactory = fixture
             .WithOutputLogSupport<TestFixtureBaseWithDocker>(output)
+            //.WithKafkaSupport()
             .WithQdrantSupport()
             .Build();
 
@@ -52,32 +50,22 @@ public class TestOfSemanticMemoryWithQdrant : IAsyncLifetime
             .Build();
     }
 
-    private string CreateNasaFile()
-    {
-        var file = Path.Combine(FullPath, "Documents\\NASA-news.pdf");
-        if (!File.Exists(file))
-        {
-            throw new FileNotFoundException(file);
-        }
-        return file;
-    }
 
     [Fact]
-    public async Task RunNasaMemorySampleWithQdrantSupport()
+    public async Task RunWikiMediaStreamWithIndexSample()
     {
+        //var file = CreateNasaFile();
 
-        //TODO: introduce qdrant support
+        //var docId = await memory.ImportDocumentAsync(file, index: "index001");
+        //var answer = await memory.AskAsync(NasaQuestion, index: "index001");
 
-        var file = CreateNasaFile();
+        //logger.Information(answer.Result + "/n");
 
-        await memory.ImportDocumentAsync(file);
-        var answer = await memory.AskAsync(NasaQuestion);
-
-        logger.Information(answer.Result + "/n");
-
-        foreach (var x in answer.RelevantSources)
-        {
-            logger.Information($"  * {x.SourceName} -- {x.Partitions.First().LastUpdate:D}");
-        }
+        //foreach (var x in answer.RelevantSources)
+        //{
+        //    logger.Information($"  * {x.SourceName} -- {x.Partitions.First().LastUpdate:D}");
+        //}
     }
+
+
 }
