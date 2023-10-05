@@ -20,7 +20,7 @@ public static class InferenceConfigurator
     public static IServiceCollection AddInferenceConfiguration(this IServiceCollection services, InferenceOptions inferenceOptions)
     {
         VerifyOptions(inferenceOptions);
-        services.AddSingleton<IOptions<InferenceOptions>>(new OptionsWrapper<InferenceOptions>(inferenceOptions));
+        services.AddSingleton<IOptions<InferenceOptions>>(Options.Create(inferenceOptions));
         return services;
     }
     private static void VerifyOptions(InferenceOptions inferenceOptions)

@@ -2,6 +2,7 @@
 using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
+using AI.VectorDatabases.MemoryStore.QdrantFactory;
 
 using FluentAssertions;
 
@@ -13,7 +14,6 @@ using Microsoft.SemanticKernel.Memory;
 
 using OpenAI.Client.Configuration;
 
-using SemanticKernel.Tests.Domain;
 using SemanticKernel.Tests.Fixtures;
 
 using Xunit.Abstractions;

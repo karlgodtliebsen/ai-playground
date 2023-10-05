@@ -19,7 +19,7 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
         {
             Endpoint = endpointUrl,
         };
-        services.AddSingleton<IOptions<LlamaClientOptions>>(new OptionsWrapper<LlamaClientOptions>(options));
+        services.AddSingleton<IOptions<LlamaClientOptions>>(Options.Create(options));
         LLamaConfigurationClient ConfigClient(HttpClient c, IServiceProvider sp)
         {
             var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();

@@ -1,6 +1,7 @@
 ﻿using ImageClassification.Domain.Predictors;
 using ImageClassification.Domain.Trainers;
 using ImageClassification.Domain.Utils;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -11,7 +12,7 @@ public static class MlNetImageClassificationConfigurator
 {
     public static IServiceCollection AddMlnetImageClassification(this IServiceCollection services, MlImageClassificationOptions options)
     {
-        services.AddSingleton<IOptions<MlImageClassificationOptions>>(new OptionsWrapper<MlImageClassificationOptions>(options));
+        services.AddSingleton<IOptions<MlImageClassificationOptions>>(Options.Create(options));
 
         services
             .AddTransient<IPredictor, MlNetPredictor>()

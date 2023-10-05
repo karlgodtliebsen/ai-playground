@@ -80,8 +80,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\AI.Library\AI.Library.csproj" />
-    <ProjectReference Include="..\..\..\AI.Test.Support\AI.Test.Support.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\AI.Library\AI.Library.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\AI.Test.Support\AI.Test.Support.csproj" />
     <ProjectReference Include="..\..\ImageClassification.Domain\ImageClassification.Domain.csproj" />
     <ProjectReference Include="..\..\TensorFlow.ImageClassification.Domain\TensorFlow.ImageClassification.Domain.csproj" />
   </ItemGroup>

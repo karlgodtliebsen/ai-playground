@@ -1,6 +1,7 @@
 ﻿using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
+using AI.VectorDatabases.MemoryStore.QdrantFactory;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -15,7 +16,6 @@ using Microsoft.SemanticKernel.Skills.Web.Bing;
 using OpenAI.Client.Configuration;
 
 using SemanticKernel.Tests.Configuration;
-using SemanticKernel.Tests.Domain;
 using SemanticKernel.Tests.Fixtures;
 using SemanticKernel.Tests.Skills;
 

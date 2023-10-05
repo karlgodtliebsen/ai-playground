@@ -8,7 +8,7 @@ public static class BingConfigurator
 {
     public static IServiceCollection AddBing(this IServiceCollection services, BingOptions options)
     {
-        services.AddSingleton<IOptions<BingOptions>>(new OptionsWrapper<BingOptions>(options));
+        services.AddSingleton(Options.Create(options));
         return services;
     }
 

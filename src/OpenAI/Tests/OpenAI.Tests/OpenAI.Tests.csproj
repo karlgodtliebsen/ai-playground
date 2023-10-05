@@ -57,7 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\AI.Test.Support\AI.Test.Support.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\AI.Test.Support\AI.Test.Support.csproj" />
     <ProjectReference Include="..\..\OpenAI.Client\OpenAI.Client.csproj" />
   </ItemGroup>
 

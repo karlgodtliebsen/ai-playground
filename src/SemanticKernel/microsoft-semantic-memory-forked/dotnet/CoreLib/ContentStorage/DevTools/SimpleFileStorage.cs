@@ -28,7 +28,7 @@ public class SimpleFileStorage : IContentStorage
     /// <inherit />
     public Task CreateIndexDirectoryAsync(string index, CancellationToken cancellationToken = default)
     {
-        this.CreateDirectory(Path.Join(this._directory, index));
+        this.CreateDirectory(Path.GetFullPath(Path.Join(this._directory, index)));
         return Task.CompletedTask;
     }
 
@@ -52,9 +52,9 @@ public class SimpleFileStorage : IContentStorage
     {
         await this.CreateDocumentDirectoryAsync(index, documentId, cancellationToken).ConfigureAwait(false);
         fileName = Path.GetFileName(fileName);
-        var path = Path.Join(this._directory, index, documentId, fileName);
-        this._log.LogDebug("Writing file {0}", path);
-        await File.WriteAllTextAsync(path, fileContent, cancellationToken).ConfigureAwait(false);
+        var fullFileName = Path.GetFullPath(Path.Join(this._directory, index, documentId, fileName));
+        this._log.LogDebug("Writing file {0}", fullFileName);
+        await File.WriteAllTextAsync(fullFileName, fileContent, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inherit />
@@ -67,13 +67,12 @@ public class SimpleFileStorage : IContentStorage
     {
         fileName = Path.GetFileName(fileName);
         await this.CreateDocumentDirectoryAsync(index, documentId, cancellationToken).ConfigureAwait(false);
-        var path = Path.Join(this._directory, index, documentId, fileName);
-
-        this._log.LogDebug("Creating file {0}", path);
+        var fullFileName = Path.GetFullPath(Path.Join(this._directory, index, documentId, fileName));
+        this._log.LogDebug("Creating file {0}", fullFileName);
         // ReSharper disable once UseAwaitUsing
-        using var outputStream = File.Create(path);
+        using var outputStream = File.Create(fullFileName);
         contentStream.Seek(0, SeekOrigin.Begin);
-        this._log.LogDebug("Writing to file {0}", path);
+        this._log.LogDebug("Writing to file {0}", fullFileName);
         await contentStream.CopyToAsync(outputStream, cancellationToken).ConfigureAwait(false);
         return outputStream.Length;
     }
@@ -87,15 +86,15 @@ public class SimpleFileStorage : IContentStorage
         CancellationToken cancellationToken = default)
     {
         fileName = Path.GetFileName(fileName);
-        var path = Path.Join(this._directory, index, documentId, fileName);
-        if (!File.Exists(path))
+        var fullFileName = Path.GetFullPath(Path.Join(this._directory, index, documentId, fileName));
+        if (!File.Exists(fullFileName))
         {
-            if (errIfNotFound) { this._log.LogError("File not found {0}", path); }
+            if (errIfNotFound) { this._log.LogError("File not found {0}", fullFileName); }
 
             throw new ContentStorageFileNotFoundException("File not found");
         }
 
-        byte[] data = File.ReadAllBytes(path);
+        byte[] data = File.ReadAllBytes(fullFileName);
         return Task.FromResult(new BinaryData(data));
     }
 
@@ -106,6 +105,7 @@ public class SimpleFileStorage : IContentStorage
         CancellationToken cancellationToken = default)
     {
         var path = Path.Join(this._directory, index, documentId);
+        path = Path.GetFullPath(path);
         string[] files = Directory.GetFiles(path);
         foreach (string fileName in files)
         {
@@ -124,7 +124,7 @@ public class SimpleFileStorage : IContentStorage
         {
             return;
         }
-
+        path = Path.GetFullPath(path);
         if (!Directory.Exists(path))
         {
             this._log.LogDebug("Creating directory {0}", path);

@@ -19,7 +19,7 @@ public static class WebApiConfigurator
     public static IServiceCollection AddWebApiConfiguration(this IServiceCollection services, IConfiguration configuration, WebApiOptions options)
     {
         services
-            .AddSingleton<IOptions<WebApiOptions>>(new OptionsWrapper<WebApiOptions>(options))
+            .AddSingleton<IOptions<WebApiOptions>>(Options.Create(options))
             //.AddMlnetImageClassification(configuration)
             .AddTransient<IImageClassifierService, ImageClassifierService>()
             //    .AddHttpContextAccessor()

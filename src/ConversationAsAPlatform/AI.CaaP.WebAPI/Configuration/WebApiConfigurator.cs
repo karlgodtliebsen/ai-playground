@@ -71,7 +71,7 @@ public static class WebApiConfigurator
     private static IServiceCollection VerifyAndAddOptions(this IServiceCollection services, WebApiOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
-        services.AddSingleton<IOptions<WebApiOptions>>(new OptionsWrapper<WebApiOptions>(options));
+        services.AddSingleton<IOptions<WebApiOptions>>(Options.Create(options));
         return services;
     }
 

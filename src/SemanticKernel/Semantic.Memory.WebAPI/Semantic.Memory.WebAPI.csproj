@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
+    <ProjectReference Include="..\..\Libraries\AI.Library\AI.Library.csproj" />
     <ProjectReference Include="..\Tests\SemanticMemory.Tests\SemanticMemory.Tests.csproj" />
   </ItemGroup>
 

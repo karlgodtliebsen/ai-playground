@@ -9,7 +9,7 @@ public static class HuggingFaceConfigurator
 
     public static IServiceCollection AddHuggingFace(this IServiceCollection services, HuggingFaceOptions options)
     {
-        services.AddSingleton<IOptions<HuggingFaceOptions>>(new OptionsWrapper<HuggingFaceOptions>(options));
+        services.AddSingleton<IOptions<HuggingFaceOptions>>(Options.Create(options));
         return services;
     }
 

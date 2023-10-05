@@ -9,7 +9,7 @@ public static class AzureOpenAIConfigurator
 
     public static IServiceCollection AddAzureOpenAI(this IServiceCollection services, AzureOpenAIOptions options)
     {
-        services.AddSingleton<IOptions<AzureOpenAIOptions>>(new OptionsWrapper<AzureOpenAIOptions>(options));
+        services.AddSingleton<IOptions<AzureOpenAIOptions>>(Options.Create(options));
         return services;
     }
 

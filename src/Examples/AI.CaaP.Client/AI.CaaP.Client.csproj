@@ -49,7 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
+		<ProjectReference Include="..\..\Libraries\AI.Library\AI.Library.csproj" />
 		<ProjectReference Include="..\..\ConversationAsAPlatform\AI.CaaP.Repository\AI.CaaP.Repository.csproj" />
 		<ProjectReference Include="..\..\ConversationAsAPlatform\AI.CaaP\AI.CaaP.csproj" />
 		<ProjectReference Include="..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />

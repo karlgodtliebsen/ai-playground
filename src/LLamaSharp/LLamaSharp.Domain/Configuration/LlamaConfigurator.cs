@@ -20,7 +20,7 @@ public static class LlamaConfigurator
     public static IServiceCollection AddLLamaConfiguration(this IServiceCollection services, LLamaModelOptions modelOptions)
     {
         VerifyOptions(modelOptions);
-        services.AddSingleton<IOptions<LLamaModelOptions>>(new OptionsWrapper<LLamaModelOptions>(modelOptions));
+        services.AddSingleton<IOptions<LLamaModelOptions>>(Options.Create(modelOptions));
         return services;
     }
 

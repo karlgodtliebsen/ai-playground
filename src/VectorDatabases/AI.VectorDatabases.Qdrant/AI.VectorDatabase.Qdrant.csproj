@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AI.Library\AI.Library.csproj" />
+    <ProjectReference Include="..\..\Libraries\AI.Library\AI.Library.csproj" />
   </ItemGroup>
 
 </Project>

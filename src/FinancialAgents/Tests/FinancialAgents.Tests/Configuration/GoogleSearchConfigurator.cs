@@ -8,7 +8,7 @@ public static class GoogleSearchConfigurator
 {
     public static IServiceCollection AddGoogleSearch(this IServiceCollection services, GoogleOptions options)
     {
-        services.AddSingleton<IOptions<GoogleOptions>>(new OptionsWrapper<GoogleOptions>(options));
+        services.AddSingleton<IOptions<GoogleOptions>>(Options.Create(options));
         return services;
     }
 

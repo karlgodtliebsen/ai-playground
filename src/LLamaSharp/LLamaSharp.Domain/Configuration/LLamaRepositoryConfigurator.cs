@@ -23,7 +23,7 @@ public static class LLamaRepositoryConfigurator
     public static IServiceCollection AddLLamaRepository(this IServiceCollection services, LlamaRepositoryOptions modelOptions)
     {
         VerifyOptions(modelOptions);
-        services.AddSingleton<IOptions<LlamaRepositoryOptions>>(new OptionsWrapper<LlamaRepositoryOptions>(modelOptions));
+        services.AddSingleton<IOptions<LlamaRepositoryOptions>>(Options.Create(modelOptions));
         services
             .AddTransient<IContextStateRepository, ContextStateFileRepository>()
             .AddTransient<IUsersStateRepository, UsersStateFileRepository>();

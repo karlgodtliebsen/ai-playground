@@ -84,4 +84,11 @@ public class QdrantFactory : IQdrantFactory
         memoryStorage.SetVectorSize(vectorParams.Size);
         return memoryStorage;
     }
+
+    public async Task<IQdrantClient> Create(VectorParams vectorParams, bool recreateCollection = true, bool storeOnDisk = false, CancellationToken cancellationToken = default)
+    {
+        var memoryStorage = serviceProvider.GetRequiredService<IQdrantClient>();
+        memoryStorage.SetVectorSize(vectorParams.Size);
+        return memoryStorage;
+    }
 }

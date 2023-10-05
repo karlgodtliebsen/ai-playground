@@ -15,8 +15,8 @@ public static class CaaPConfigurator
     public static IServiceCollection AddCaaP(this IServiceCollection services, CaaPOptions options, ChunkOptions chunkOptions, OpenAIOptions aiOptions)
     {
         services
-            .AddSingleton<IOptions<CaaPOptions>>(new OptionsWrapper<CaaPOptions>(options))
-            .AddSingleton<IOptions<ChunkOptions>>(new OptionsWrapper<ChunkOptions>(chunkOptions))
+            .AddSingleton<IOptions<CaaPOptions>>(Options.Create(options))
+            .AddSingleton<IOptions<ChunkOptions>>(Options.Create(chunkOptions))
             .AddTransient<IAgentService, AgentService>()
             .AddTransient<ILanguageService, LanguageService>()
             .AddTransient<IConversationService, ConversationService>()

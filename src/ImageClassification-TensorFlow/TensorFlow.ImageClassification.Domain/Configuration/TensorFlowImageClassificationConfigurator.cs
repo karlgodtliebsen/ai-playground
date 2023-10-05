@@ -14,7 +14,7 @@ public static class TensorFlowImageClassificationConfigurator
     public static IServiceCollection AddTensorFlowImageClassification(this IServiceCollection services,
         TensorFlowOptions options)
     {
-        services.AddSingleton<IOptions<TensorFlowOptions>>(new OptionsWrapper<TensorFlowOptions>(options));
+        services.AddSingleton<IOptions<TensorFlowOptions>>(Options.Create(options));
         services
             .AddTransient<IKerasTrainer, KerasImageClassificationTrainer>()
             .AddTransient<ITensorFlowTrainer, TensorFlowInceptionTrainer>()
@@ -24,7 +24,7 @@ public static class TensorFlowImageClassificationConfigurator
             .AddTransient<IImageLoader, ImageLoader>()
             .AddTransient<ModelFactoryExtended>()
             .AddTransient<TransferLearningExtended>()
-            .AddSingleton<IOptions<ExtendedTaskOptions>>(new OptionsWrapper<ExtendedTaskOptions>(new ExtendedTaskOptions()))
+            .AddSingleton<IOptions<ExtendedTaskOptions>>(Options.Create(new ExtendedTaskOptions()))
             ;
         return services;
     }
