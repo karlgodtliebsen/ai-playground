@@ -1,6 +1,6 @@
 ﻿using Confluent.Kafka;
 
-namespace WikiEditStream.Configuration;
+namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
 
 public class KafkaConfiguration : ClientConfig
 {

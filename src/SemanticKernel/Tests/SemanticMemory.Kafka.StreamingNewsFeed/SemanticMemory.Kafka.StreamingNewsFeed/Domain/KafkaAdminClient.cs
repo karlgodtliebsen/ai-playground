@@ -1,11 +1,9 @@
 ﻿using Confluent.Kafka;
 using Confluent.Kafka.Admin;
-
 using Microsoft.Extensions.Options;
+using SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
 
-using WikiEditStream.Configuration;
-
-namespace WikiEditStream.Domain;
+namespace SemanticMemory.Kafka.StreamingNewsFeed.Domain;
 
 public class KafkaAdminClient
 {

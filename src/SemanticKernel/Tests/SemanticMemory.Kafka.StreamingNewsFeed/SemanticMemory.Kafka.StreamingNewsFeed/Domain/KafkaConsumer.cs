@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
-using WikiEditStream.Configuration;
+using SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
 
-namespace WikiEditStream.Domain;
+namespace SemanticMemory.Kafka.StreamingNewsFeed.Domain;
 
 public class KafkaConsumer
 {

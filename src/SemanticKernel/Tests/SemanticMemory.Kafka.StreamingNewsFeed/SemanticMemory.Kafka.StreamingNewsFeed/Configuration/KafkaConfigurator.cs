@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SemanticMemory.Kafka.StreamingNewsFeed.Domain;
+using SemanticMemory.Kafka.StreamingNewsFeed.HostServices;
 
-using WikiEditStream.Domain;
-
-namespace WikiEditStream.Configuration;
+namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
 
 public static class KafkaConfigurator
 {

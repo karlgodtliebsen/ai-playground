@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
+using SemanticMemory.Kafka.StreamingNewsFeed.Domain;
 
-using WikiEditStream.Configuration;
-using WikiEditStream.Domain;
+namespace SemanticMemory.Kafka.StreamingNewsFeed.HostServices;
 
 public class KafkaProducerService : BackgroundService
 {

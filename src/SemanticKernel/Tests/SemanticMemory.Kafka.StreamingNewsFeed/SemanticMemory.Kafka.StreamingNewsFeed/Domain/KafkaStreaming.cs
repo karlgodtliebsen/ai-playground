@@ -2,14 +2,14 @@
 
 using Microsoft.Extensions.Options;
 
+using SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
+
 using Streamiz.Kafka.Net;
 using Streamiz.Kafka.Net.Metrics;
 using Streamiz.Kafka.Net.SerDes;
 using Streamiz.Kafka.Net.Stream;
 
-using WikiEditStream.Configuration;
-
-namespace WikiEditStream.Domain;
+namespace SemanticMemory.Kafka.StreamingNewsFeed.Domain;
 
 /// <summary>
 /// using.Net Streaming library from LGouellec:
