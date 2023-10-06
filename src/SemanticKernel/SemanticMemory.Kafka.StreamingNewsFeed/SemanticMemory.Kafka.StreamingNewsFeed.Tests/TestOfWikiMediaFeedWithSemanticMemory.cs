@@ -2,7 +2,6 @@
 using AI.Test.Support.Fixtures;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.SemanticMemory;
 
 using OpenAI.Client.Configuration;
@@ -38,16 +37,12 @@ public class TestOfWikiMediaFeedWithSemanticMemory : IAsyncLifetime
         this.hostApplicationFactory = fixture
             .WithOutputLogSupport<TestFixtureBaseWithDocker>(output)
             //.WithKafkaSupport()
-            .WithQdrantSupport()
+            //.WithQdrantSupport()
             .Build();
 
         var services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
-
-        memory = new MemoryClientBuilder()
-            .WithOpenAIDefaults(openAIOptions.ApiKey)
-            .Build();
+        this.memory = services.GetRequiredService<ISemanticMemoryClient>();
     }
 
 

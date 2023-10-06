@@ -129,7 +129,7 @@ Give me a TLDR with the fewest words.";
         bool recreateCollection = true;
         bool storeOnDisk = false;
 
-        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
+        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactoryForSemanticKernel>();
         var memoryStorage = await factory.Create(CollectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         IKernel kernel = Kernel.Builder

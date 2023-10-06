@@ -20,7 +20,7 @@ public static class QdrantConfigurator
         services.AddSingleton(Options.Create(options));
         services.AddHttpClient<IQdrantClient, QdrantClient>((_, client) =>
             {
-                client.BaseAddress = new Uri(options.Url);
+                client.BaseAddress = new Uri(options.Endpoint);
             })
         .AddPolicyHandler(HttpClientsPolicies.GetCircuitBreakerPolicyForNotFound())
         .AddPolicyHandler(HttpClientsPolicies.GetRetryPolicy());

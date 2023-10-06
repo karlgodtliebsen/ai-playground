@@ -4,7 +4,7 @@ using Microsoft.SemanticMemory.ContentStorage;
 using Microsoft.SemanticMemory.ContentStorage.DevTools;
 using Microsoft.SemanticMemory.Diagnostics;
 
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
+namespace SemanticMemory.Kafka.StreamingNewsFeed.Domain;
 
 public class CustomContentStorage : IContentStorage
 {
@@ -16,15 +16,15 @@ public class CustomContentStorage : IContentStorage
 
     public CustomContentStorage(SimpleFileStorageConfig config, ILogger<CustomContentStorage>? log = null)
     {
-        this._log = log ?? DefaultLogger<CustomContentStorage>.Instance;
-        this.CreateDirectory(config.Directory);
-        this._directory = config.Directory;
+        _log = log ?? DefaultLogger<CustomContentStorage>.Instance;
+        CreateDirectory(config.Directory);
+        _directory = config.Directory;
     }
 
     /// <inherit />
     public Task CreateIndexDirectoryAsync(string index, CancellationToken cancellationToken = default)
     {
-        this.CreateDirectory(Path.GetFullPath(Path.Join(this._directory, index)));
+        CreateDirectory(Path.GetFullPath(Path.Join(_directory, index)));
         return Task.CompletedTask;
     }
 
@@ -34,8 +34,8 @@ public class CustomContentStorage : IContentStorage
         string documentId,
         CancellationToken cancellationToken = default)
     {
-        await this.CreateIndexDirectoryAsync(index, cancellationToken).ConfigureAwait(false);
-        this.CreateDirectory(Path.Join(this._directory, index, documentId));
+        await CreateIndexDirectoryAsync(index, cancellationToken).ConfigureAwait(false);
+        CreateDirectory(Path.Join(_directory, index, documentId));
     }
 
     /// <inherit />
@@ -46,10 +46,10 @@ public class CustomContentStorage : IContentStorage
         string fileContent,
         CancellationToken cancellationToken = default)
     {
-        await this.CreateDocumentDirectoryAsync(index, documentId, cancellationToken).ConfigureAwait(false);
+        await CreateDocumentDirectoryAsync(index, documentId, cancellationToken).ConfigureAwait(false);
         fileName = Path.GetFileName(fileName);
-        var fullFileName = Path.GetFullPath(Path.Join(this._directory, index, documentId, fileName));
-        this._log.LogDebug("Writing file {0}", fullFileName);
+        var fullFileName = Path.GetFullPath(Path.Join(_directory, index, documentId, fileName));
+        _log.LogDebug("Writing file {0}", fullFileName);
         await File.WriteAllTextAsync(fullFileName, fileContent, cancellationToken).ConfigureAwait(false);
     }
 
@@ -62,13 +62,13 @@ public class CustomContentStorage : IContentStorage
         CancellationToken cancellationToken = default)
     {
         fileName = Path.GetFileName(fileName);
-        await this.CreateDocumentDirectoryAsync(index, documentId, cancellationToken).ConfigureAwait(false);
-        var fullFileName = Path.GetFullPath(Path.Join(this._directory, index, documentId, fileName));
-        this._log.LogDebug("Creating file {0}", fullFileName);
+        await CreateDocumentDirectoryAsync(index, documentId, cancellationToken).ConfigureAwait(false);
+        var fullFileName = Path.GetFullPath(Path.Join(_directory, index, documentId, fileName));
+        _log.LogDebug("Creating file {0}", fullFileName);
         // ReSharper disable once UseAwaitUsing
         using var outputStream = File.Create(fullFileName);
         contentStream.Seek(0, SeekOrigin.Begin);
-        this._log.LogDebug("Writing to file {0}", fullFileName);
+        _log.LogDebug("Writing to file {0}", fullFileName);
         await contentStream.CopyToAsync(outputStream, cancellationToken).ConfigureAwait(false);
         return outputStream.Length;
     }
@@ -82,15 +82,15 @@ public class CustomContentStorage : IContentStorage
         CancellationToken cancellationToken = default)
     {
         fileName = Path.GetFileName(fileName);
-        var fullFileName = Path.GetFullPath(Path.Join(this._directory, index, documentId, fileName));
+        var fullFileName = Path.GetFullPath(Path.Join(_directory, index, documentId, fileName));
         if (!File.Exists(fullFileName))
         {
-            if (errIfNotFound) { this._log.LogError("File not found {0}", fullFileName); }
+            if (errIfNotFound) { _log.LogError("File not found {0}", fullFileName); }
 
             throw new ContentStorageFileNotFoundException("File not found");
         }
 
-        byte[] data = File.ReadAllBytes(fullFileName);
+        var data = File.ReadAllBytes(fullFileName);
         return Task.FromResult(new BinaryData(data));
     }
 
@@ -100,10 +100,10 @@ public class CustomContentStorage : IContentStorage
         string documentId,
         CancellationToken cancellationToken = default)
     {
-        var path = Path.Join(this._directory, index, documentId);
+        var path = Path.Join(_directory, index, documentId);
         path = Path.GetFullPath(path);
-        string[] files = Directory.GetFiles(path);
-        foreach (string fileName in files)
+        var files = Directory.GetFiles(path);
+        foreach (var fileName in files)
         {
             // Don't delete the pipeline status file
             if (fileName == Constants.PipelineStatusFilename) { continue; }
@@ -123,7 +123,7 @@ public class CustomContentStorage : IContentStorage
         path = Path.GetFullPath(path);
         if (!Directory.Exists(path))
         {
-            this._log.LogDebug("Creating directory {0}", path);
+            _log.LogDebug("Creating directory {0}", path);
             Directory.CreateDirectory(path);
         }
     }

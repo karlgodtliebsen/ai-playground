@@ -9,7 +9,6 @@ using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 
 using Microsoft.Extensions.Options;
-using Microsoft.SemanticKernel.Connectors.Memory.Qdrant;
 
 using OneOf;
 
@@ -25,8 +24,9 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
 {
     private readonly ILogger logger;
     private readonly QdrantOptions options;
+    private string? activeCollectionName = default!;
+
     private int? vectorSize = 0;
-    private string activeCollectionName;
 
     public class HttpStatusResponse
     {
@@ -451,7 +451,7 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
         return result;
     }
 
-    public async Task<QdrantVectorRecord?> GetVectorByIdAsync(string collectionName, string pointId, bool withVector = false, CancellationToken cancellationToken = default)
+    public async Task<VectorRecord?> GetVectorByIdAsync(string collectionName, string pointId, bool withVector = false, CancellationToken cancellationToken = default)
     {
         this.logger.Debug("Searching vector by point ID");
 
@@ -465,13 +465,13 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
 
         var searchResult = await Search(collectionName, search, cancellationToken: cancellationToken);
 
-        var record = searchResult.Match<QdrantVectorRecord?>(
+        var record = searchResult.Match<VectorRecord?>(
             points =>
             {
                 if (points.Length > 0)
                 {
                     var point = points[0];
-                    var record = new QdrantVectorRecord(
+                    var record = new VectorRecord(
                         pointId: point.Id,
                         embedding: new ReadOnlyMemory<float>(point.Vector.ToArray()),
                         payload: (Dictionary<string, object>)point.Payload,
@@ -490,7 +490,7 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
     }
 
 
-    public async IAsyncEnumerable<QdrantVectorRecord> GetVectorsByIdAsync(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<VectorRecord> GetVectorsByIdAsync(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         this.logger.Debug("Searching vectors by point ID's");
         var search = new SearchRequest()
@@ -507,14 +507,14 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
                      error =>
                      {
                          logger.Warning($"Vectors from {collectionName} not found");
-                         return Enumerable.Empty<QdrantVectorRecord?>();
+                         return Enumerable.Empty<VectorRecord?>();
                      }))
         {
             yield return r!;
         }
     }
 
-    private IEnumerable<QdrantVectorRecord> ProcessRecords(ScoredPoint[]? records)
+    private IEnumerable<VectorRecord> ProcessRecords(ScoredPoint[]? records)
     {
         if (records is null)
         {
@@ -522,7 +522,7 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
         }
         foreach (var record in records)
         {
-            var rg = new QdrantVectorRecord(pointId: record.Id, embedding: record.Vector, (Dictionary<string, object>)record.Payload!, tags: null);
+            var rg = new VectorRecord(pointId: record.Id, embedding: record.Vector, (Dictionary<string, object>)record.Payload!, tags: null);
             yield return rg;
         }
     }
@@ -589,9 +589,9 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
     {
         var search = new SearchRequest()
                 //.SimilarToVector(new float[this.vectorSize!.Value])
-                .WithPointIDs(pointIds)
-                .UseWithPayload(true)
-                .SetWithVector(withVectors)
+                .WithPointIds(pointIds)
+                .WithPayload(true)
+                .WithVector(withVectors)
                 .WithScoreThreshold(0)
             ;
         var s = JsonSerializer.Serialize(search, DefaultJsonSerializerOptions.DefaultOptions);
@@ -605,9 +605,9 @@ public class QdrantClient : QdrantClientBase, IQdrantClient
         var search = new SearchRequest()
                 //.SimilarToVector(new float[this.vectorSize!.Value])
                 .WithPointId(pointId)
-                .UseWithPayload(true)
+                .WithPayload(true)
                 .TakeFirst()
-                .SetWithVector(withVectors)
+                .WithVector(withVectors)
                 .WithScoreThreshold(0)
                 ;
 

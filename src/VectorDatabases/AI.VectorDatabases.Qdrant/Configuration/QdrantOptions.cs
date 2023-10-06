@@ -8,7 +8,7 @@ public class QdrantOptions
      /// </summary>
     public const string SectionName = "Qdrant";
 
-    public string Url { get; set; }
+    public string Endpoint { get; set; }
 
     public int? Port { get; set; } = default;
 

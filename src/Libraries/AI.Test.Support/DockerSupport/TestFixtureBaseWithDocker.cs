@@ -121,7 +121,7 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
         if (useQdrantDocker && QuadrantContainer is not null)
         {
             await QuadrantContainer.StartAsync().ConfigureAwait(false);
-            Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value.Url = QuadrantContainer.GetConnectionUrl();
+            Factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value.Endpoint = QuadrantContainer.GetConnectionUrl();
         }
 
         if (usePostgreSqlDocker && PostgreSqlContainer is not null)

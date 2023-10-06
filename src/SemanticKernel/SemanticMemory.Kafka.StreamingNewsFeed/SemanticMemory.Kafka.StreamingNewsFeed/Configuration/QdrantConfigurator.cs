@@ -1,7 +1,8 @@
-﻿using AI.VectorDatabases.MemoryStore.QdrantFactory;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.SemanticMemory;
+using Microsoft.SemanticMemory.MemoryStorage;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.SemanticKernel.Memory;
+using SemanticMemory.Kafka.StreamingNewsFeed.Domain.QdrantFactory;
 
 namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
 
@@ -9,10 +10,16 @@ public static class QdrantConfigurator
 {
     public static IServiceCollection AddQdrantVectorStore(this IServiceCollection services)
     {
-        services.AddTransient<IQdrantMemoryStore, QdrantMemoryStore>();
-        services.AddTransient<IMemoryStore, QdrantMemoryStore>();
-        services.AddSingleton<IQdrantMemoryStoreFactory, QdrantMemoryStoreFactory>();
+        services.AddTransient<ISemanticMemoryVectorDb, QdrantMemoryStoreForSemanticMemory>();
+        services.AddSingleton<IQdrantMemoryStoreFactoryForSemanticMemory, QdrantMemoryStoreFactoryForSemanticMemory>();
 
+        var sp = services.BuildServiceProvider();
+        var memory = new MemoryClientBuilder(services)
+                .WithCustomVectorDb(sp.GetRequiredService<ISemanticMemoryVectorDb>())
+                .FromAppSettings()
+                .Build()
+            ;
+        services.AddSingleton(memory);
         return services;
     }
 }

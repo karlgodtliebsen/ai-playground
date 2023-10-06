@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticMemory.Diagnostics;
 using Microsoft.SemanticMemory.MemoryStorage.Qdrant.Client;
@@ -69,9 +70,11 @@ public class QdrantMemory : ISemanticMemoryVectorDb
         else
         {
             qdrantPoint = QdrantPoint<DefaultQdrantPayload>.FromMemoryRecord(record);
+
             QdrantPoint<DefaultQdrantPayload>? existingPoint = await this._qdrantClient
                 .GetVectorByPayloadIdAsync(indexName, record.Id, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
+
             if (existingPoint == null)
             {
                 qdrantPoint.Id = Guid.NewGuid();

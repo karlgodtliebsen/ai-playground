@@ -57,14 +57,14 @@ public class TestOfSemanticKernelExample19Qdrant : IAsyncLifetime
     public async Task UseQdrantMemoryCollection_Example19()
     {
         var qdrantOptions = services.GetRequiredService<IOptions<QdrantOptions>>().Value;
-        var url = qdrantOptions.Url;
+        var url = qdrantOptions.Endpoint;
         var completionModel = "text-davinci-003";
         var embeddingModel = "text-embedding-ada-002";
         const int openAiVectorSize = 1536;
         bool recreateCollection = true;
         bool storeOnDisk = false;
 
-        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
+        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactoryForSemanticKernel>();
         var memoryStorage = await factory.Create(collectionName, openAiVectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         IKernel kernel = Kernel.Builder

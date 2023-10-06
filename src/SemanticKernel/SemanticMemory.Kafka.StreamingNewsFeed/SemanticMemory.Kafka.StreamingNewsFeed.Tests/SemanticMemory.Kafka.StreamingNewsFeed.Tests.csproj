@@ -3,7 +3,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
+    <UserSecretsId>2ce6fdf2-287e-49a3-b7c4-9019d0036f2f</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,8 +20,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0-preview-23424-02" />
 
-
-		<PackageReference Include="NSubstitute" Version="5.1.0" />
+    <PackageReference Include="NSubstitute" Version="5.1.0" />
 		<PackageReference Include="OneOf" Version="3.0.263" />
 		<PackageReference Include="OneOf.Extended" Version="3.0.263" />
 		<PackageReference Include="OneOf.Monads" Version="1.21.0" />
@@ -62,6 +61,7 @@
 	  <ProjectReference Include="..\..\..\Libraries\AI.Test.Support\AI.Test.Support.csproj" />
 	  <ProjectReference Include="..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
 	  <ProjectReference Include="..\..\microsoft-semantic-memory-forked\dotnet\CoreLib\CoreLib.csproj" />
+	  <ProjectReference Include="..\SemanticMemory.Kafka.StreamingNewsFeed\SemanticMemory.Kafka.StreamingNewsFeed.csproj" />
 	</ItemGroup>
 
 </Project>

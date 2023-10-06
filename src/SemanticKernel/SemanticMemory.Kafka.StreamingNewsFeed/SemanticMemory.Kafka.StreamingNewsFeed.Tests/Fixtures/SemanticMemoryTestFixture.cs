@@ -3,7 +3,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using OpenAI.Client.Configuration;
+using SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
 
 namespace SemanticMemory.Kafka.StreamingNewsFeed.Tests.Fixtures;
 
@@ -12,13 +12,9 @@ public class SemanticMemoryTestFixture : TestFixtureBaseWithDocker
 {
     protected override void AddServices(IServiceCollection services, IConfiguration configuration)
     {
+        System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
         services
-            .AddOpenAIConfiguration(configuration)
-            //.AddQdrant(configuration)
-            //.AddQdrantVectorStore()
-            //.AddBing(configuration)
-            //.AddHuggingFace(configuration)
+            .AddDomain(configuration)
             ;
-        //AddDockerSupport(services, configuration);
     }
 }

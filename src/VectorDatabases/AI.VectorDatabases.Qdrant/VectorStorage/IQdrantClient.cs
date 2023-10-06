@@ -2,8 +2,6 @@
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
 
-using Microsoft.SemanticKernel.Connectors.Memory.Qdrant;
-
 using OneOf;
 
 namespace AI.VectorDatabase.Qdrant.VectorStorage;
@@ -82,7 +80,6 @@ public interface IQdrantClient
 
     Task<OneOf<bool, ErrorResponse>> Update(string collectionName, BatchUpsertRequest batch, CancellationToken cancellationToken);
 
-
     Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, IList<PointStruct> points, CancellationToken cancellationToken);
 
     Task<OneOf<bool, ErrorResponse>> Upsert(string collectionName, IList<PointStructWithNamedVector> points, CancellationToken cancellationToken);
@@ -126,7 +123,7 @@ public interface IQdrantClient
     /// <param name="withVector">Whether to include the vector data in the returned result.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
     /// <returns>The Qdrant vector record associated with the given ID if found, null if not.</returns>
-    public Task<QdrantVectorRecord?> GetVectorByIdAsync(string collectionName, string pointId, bool withVector = false, CancellationToken cancellationToken = default);
+    public Task<VectorRecord?> GetVectorByIdAsync(string collectionName, string pointId, bool withVector = false, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get vectors by their unique Qdrant pointIds.
@@ -136,7 +133,7 @@ public interface IQdrantClient
     /// <param name="withVectors">Whether to include the vector data in the returned results.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
     /// <returns>An asynchronous list of Qdrant vectors records associated with the given IDs</returns>
-    public IAsyncEnumerable<QdrantVectorRecord> GetVectorsByIdAsync(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, CancellationToken cancellationToken = default);
+    public IAsyncEnumerable<VectorRecord> GetVectorsByIdAsync(string collectionName, IEnumerable<string> pointIds, bool withVectors = false, CancellationToken cancellationToken = default);
 
 }
 

@@ -61,7 +61,7 @@ public class TestOfSemanticKernelExample14SemanticMemory : IAsyncLifetime
         bool recreateCollection = true;
         bool storeOnDisk = false;
 
-        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
+        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactoryForSemanticKernel>();
         var memoryStorage = await factory.Create(CollectionName, VectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         /* You can build your own semantic memory combining an Embedding Generator

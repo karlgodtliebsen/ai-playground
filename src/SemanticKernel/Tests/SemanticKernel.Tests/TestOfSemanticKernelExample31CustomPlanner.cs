@@ -74,7 +74,7 @@ public class TestOfSemanticKernelExample31CustomPlanner : IAsyncLifetime
         bool recreateCollection = true;
         bool storeOnDisk = false;
 
-        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactory>();
+        var factory = hostApplicationFactory.Services.GetRequiredService<IQdrantMemoryStoreFactoryForSemanticKernel>();
         var memoryStorage = await factory.Create(CollectionName, VectorSize, Distance.COSINE, recreateCollection, storeOnDisk, CancellationToken.None);
 
         logger.Information("======== Custom Planner - Create and Execute Markup Plan ========");

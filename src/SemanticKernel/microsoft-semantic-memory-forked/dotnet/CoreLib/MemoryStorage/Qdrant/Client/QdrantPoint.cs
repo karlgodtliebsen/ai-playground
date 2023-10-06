@@ -11,7 +11,7 @@ namespace Microsoft.SemanticMemory.MemoryStorage.Qdrant.Client;
 /// <summary>
 /// A record structure used by Qdrant that contains an embedding and metadata.
 /// </summary>
-internal class QdrantPoint<T> where T : DefaultQdrantPayload, new()
+public class QdrantPoint<T> where T : DefaultQdrantPayload, new()
 {
     [JsonPropertyName(QdrantConstants.PointIdField)]
     public Guid Id { get; set; } = Guid.Empty;

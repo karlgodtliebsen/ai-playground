@@ -7,7 +7,7 @@ namespace Microsoft.SemanticMemory.MemoryStorage.Qdrant.Client;
 
 #pragma warning disable CA1852 // The class is inherited, it cannot be sealed
 
-internal class DefaultQdrantPayload
+public class DefaultQdrantPayload
 {
     [JsonPropertyName(QdrantConstants.PayloadIdField)]
     public string Id { get; set; } = string.Empty;

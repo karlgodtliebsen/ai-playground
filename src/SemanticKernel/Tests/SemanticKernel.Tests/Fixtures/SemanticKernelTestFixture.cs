@@ -1,5 +1,6 @@
 ﻿using AI.Test.Support.DockerSupport;
 using AI.VectorDatabase.Qdrant.Configuration;
+using AI.VectorDatabases.MemoryStore.Configuration;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

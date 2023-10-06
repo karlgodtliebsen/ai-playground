@@ -46,7 +46,7 @@ public sealed class TestOfQdrantWithDefaultConfigurationAndUsingQdrantSupport : 
     [Fact]
     public async Task CreateCollectionAndFindIt_UsingDefaultOptions()
     {
-        var connectionUrl = factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value.Url!;
+        var connectionUrl = factory.Services.GetRequiredService<IOptions<QdrantOptions>>().Value.Endpoint!;
         var client = new QdrantHttpClient(connectionUrl, string.Empty);
         var response = await client.CreateCollection(CollectionName, new VectorParams(size: VectorSize, distance: Distance.DOT));
         response.Result.Should().BeTrue();

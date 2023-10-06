@@ -2,8 +2,8 @@
 
 namespace AI.VectorDatabases.MemoryStore.QdrantFactory;
 
-public interface IQdrantMemoryStoreFactory
+public interface IQdrantMemoryStoreFactoryForSemanticKernel
 {
-    Task<IQdrantMemoryStore> Create(string collectionName, int vectorSize,
+    Task<IQdrantMemoryStoreForSemanticKernel> Create(string collectionName, int vectorSize,
         string distance = Distance.COSINE, bool recreateCollection = true, bool storeOnDisk = false, CancellationToken cancellationToken = default);
 }

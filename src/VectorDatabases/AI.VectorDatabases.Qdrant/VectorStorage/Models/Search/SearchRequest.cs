@@ -61,7 +61,7 @@ public class SearchRequest
     /// </summary>
     [JsonPropertyName("with_payload")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public object? WithPayload { get; private set; } = default!;
+    public object? QueryWithPayload { get; private set; } = default!;
 
     /// <summary>
     /// (WithVector (WithVector (boolean) or Array of WithVector (strings))) or (any or null)
@@ -70,7 +70,7 @@ public class SearchRequest
     /// </summary>
     [JsonPropertyName("with_vector")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public object? WithVector { get; private set; } = default!;
+    public object? QueryWithVector { get; private set; } = default!;
 
 
     /// <summary>
@@ -103,7 +103,7 @@ public class SearchRequest
         return this;
     }
 
-    public SearchRequest WithPointIDs(IEnumerable<string> pointIds)
+    public SearchRequest WithPointIds(IEnumerable<string> pointIds)
     {
         this.PointIds = pointIds;
         return this;
@@ -149,51 +149,51 @@ public class SearchRequest
         return this;
     }
 
-    public SearchRequest UseWithPayload(bool withPayload)
+    public SearchRequest WithPayload(bool withPayload)
     {
-        WithPayload = withPayload;
-        return this;
-    }
-    public SearchRequest UseWithPayload(string[] withPayload)
-    {
-        WithPayload = withPayload;
+        QueryWithPayload = withPayload;
         return this;
     }
 
-    public SearchRequest IncludePayLoad()
+    public SearchRequest WithPayload(string[] withPayload)
     {
-        this.WithPayload = true;
+        QueryWithPayload = withPayload;
         return this;
     }
-    public SearchRequest FromPosition(int offset)
+    public SearchRequest WithOffset(int offset)
     {
         this.Offset = offset;
+        return this;
+    }
+    public SearchRequest IncludePayLoad()
+    {
+        this.QueryWithPayload = true;
         return this;
     }
 
     public SearchRequest TakeFirst()
     {
-        return this.FromPosition(0).Take(1);
+        return this.WithOffset(0).Take(1);
     }
 
 
-    public SearchRequest UseWithPayloadSelectorInclude(string[] withPayload)
+    public SearchRequest WithPayloadSelectorInclude(string[] withPayload)
     {
         var p = new Dictionary<string, object>();
         var d = new Dictionary<string, object>();
         d.Add("payloadSelectorInclude", withPayload);
         p.Add("payloadSelector", d);
-        WithPayload = p;
+        QueryWithPayload = p;
         return this;
     }
 
-    public SearchRequest UseWithPayloadSelectorExclude(string[] withPayload)
+    public SearchRequest WithPayloadSelectorExclude(string[] withPayload)
     {
         var p = new Dictionary<string, object>();
         var d = new Dictionary<string, object>();
         d.Add("payloadSelectorExclude", withPayload);
         p.Add("payloadSelector", d);
-        WithPayload = p;
+        QueryWithPayload = p;
         return this;
     }
 
@@ -269,9 +269,9 @@ public class SearchRequest
     /// Default: null
     /// Whether to return the point vector with the result?
     /// </summary>
-    public SearchRequest SetWithVector(bool withVector)
+    public SearchRequest WithVector(bool withVector)
     {
-        WithVector = withVector;
+        QueryWithVector = withVector;
         return this;
     }
     /// <summary>
@@ -279,9 +279,9 @@ public class SearchRequest
     /// Default: null
     /// Whether to return the point vector with the result?
     /// </summary>
-    public SearchRequest SetWithVector(string[] withVector)
+    public SearchRequest WithVector(string[] withVector)
     {
-        WithVector = withVector;
+        QueryWithVector = withVector;
         return this;
     }
     /// <summary>
@@ -289,15 +289,15 @@ public class SearchRequest
     /// Default: null
     /// Whether to return the point vector with the result?
     /// </summary>
-    public SearchRequest SetWithVector(object withVector)
+    public SearchRequest WithVector(object withVector)
     {
-        WithVector = withVector;
+        QueryWithVector = withVector;
         return this;
     }
 
     public SearchRequest IncludeVectorData(bool withVector)
     {
-        this.WithVector = withVector;
+        this.QueryWithVector = withVector;
         return this;
     }
 

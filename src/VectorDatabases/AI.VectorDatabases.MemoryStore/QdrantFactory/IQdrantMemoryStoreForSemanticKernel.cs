@@ -4,7 +4,7 @@ using Microsoft.SemanticKernel.Memory;
 
 namespace AI.VectorDatabases.MemoryStore.QdrantFactory;
 
-public interface IQdrantMemoryStore : IMemoryStore
+public interface IQdrantMemoryStoreForSemanticKernel : IMemoryStore
 {
     /// <summary>
     /// Get a MemoryRecord using PointId

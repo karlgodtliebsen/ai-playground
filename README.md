@@ -211,7 +211,7 @@ Add appsettings.json (I recommend using user secrets to avoid having the API key
     "OpenAI": {
     "ApiKey": "<openai api key>",
     "OrganisationKey": "<organisation key>",
-    "OpenAIUri": "https://api.openai.com/v1/"
+    "Endpoint": "https://api.openai.com/v1/"
   }
 }
 ```

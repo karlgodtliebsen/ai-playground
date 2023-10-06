@@ -25,8 +25,8 @@ public static class OpenAIConfigurator
         Log.Logger.Information("Setting up OpenAI Configuration to Applications Configuration");
 
         ArgumentNullException.ThrowIfNull(options);
-        services.AddSingleton<IOptions<OpenAiModelsVerification>>(Options.Create(new OpenAiModelsVerification()));
-        services.AddSingleton<IOptions<OpenAIOptions>>(Options.Create(options));
+        services.AddSingleton(Options.Create(new OpenAiModelsVerification()));
+        services.AddSingleton(Options.Create(options));
 
         services.AddTransient<IModelRequestFactory, ModelRequestFactory>();
         services.AddTransient<IOpenAiChatCompletionService, OpenAiChatCompletionService>();

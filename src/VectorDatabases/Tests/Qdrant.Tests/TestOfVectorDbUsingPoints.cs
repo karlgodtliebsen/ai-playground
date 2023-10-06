@@ -152,7 +152,7 @@ public class TestOfVectorDbUsingPoints : IAsyncLifetime
 
         var search = new SearchRequest();
         search.SimilarToVector(vector);
-        search.UseWithPayload(true);
+        search.WithPayload(true);
 
         var searchResult = await client.Search(CollectionName, search, cancellationToken: CancellationToken.None);
         searchResult.Switch(
@@ -230,7 +230,7 @@ public class TestOfVectorDbUsingPoints : IAsyncLifetime
 
         var search = new SearchRequest();
         search.SimilarToVector(vector);
-        search.UseWithPayload(true);
+        search.WithPayload(true);
 
         search.Filter = new SearchFilter() { };
         search.Filter.AddMustMatch(new ConditionalFilter
@@ -276,7 +276,7 @@ public class TestOfVectorDbUsingPoints : IAsyncLifetime
 
         var search = new SearchRequest()
             .SimilarToVector(vector)
-            .UseWithPayload(true);
+            .WithPayload(true);
 
         search.Filter = new SearchFilter() { };
         search.Filter.AddMustNotMatch(new ConditionalFilter

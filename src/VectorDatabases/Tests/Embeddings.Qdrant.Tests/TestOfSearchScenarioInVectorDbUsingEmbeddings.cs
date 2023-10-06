@@ -146,7 +146,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings : IAsyncLifetime
         var search = new SearchRequest()
             .Take(3)
             .SimilarToVector(vector)
-            .UseWithPayload(true);
+            .WithPayload(true);
 
         var searchResult = await client.Search(CollectionName, search, CancellationToken.None);
         searchResult.Switch(

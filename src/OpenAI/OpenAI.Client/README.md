@@ -29,7 +29,7 @@ Add appsettings.json
     "OpenAI": {
     "ApiKey": "<openai api key>",
     "OrganisationKey": "<organisation key>",
-    "OpenAIUri": "https://api.openai.com/v1/"
+    "Endpoint": "https://api.openai.com/v1/"
   }
 }
 ```
