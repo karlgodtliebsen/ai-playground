@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.SemanticMemory;
 using Microsoft.SemanticMemory.Diagnostics;
 using Microsoft.SemanticMemory.MemoryStorage;
-using Microsoft.SemanticMemory.MemoryStorage.Qdrant.Client;
 
 namespace SemanticMemory.Kafka.StreamingNewsFeed.Domain.QdrantFactory;
 
@@ -164,7 +163,10 @@ public class QdrantMemoryStoreForSemanticMemory : ISemanticMemoryVectorDb
     }
 
     /// <inheritdoc />
-    public async IAsyncEnumerable<MemoryRecord> GetListAsync(string indexName, MemoryFilter? filter = null, int limit = 1, bool withEmbeddings = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+
+    //    IAsyncEnumerable<MemoryRecord> GetListAsync(string indexName, ICollection<MemoryFilter>? filters = null, int limit = 1, bool withEmbeddings = false, CancellationToken cancellationToken = default); 
+
+    public async IAsyncEnumerable<MemoryRecord> GetListAsyncx(string indexName, MemoryFilter? filter = null, int limit = 1, bool withEmbeddings = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         indexName = NormalizeIndexName(indexName);
         if (limit <= 0)

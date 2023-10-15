@@ -1,3 +1,0 @@
-[*.cs]
-dotnet_diagnostic.CA2007.severity = none # ConfigureAwait
-dotnet_diagnostic.CA1303.severity = none # Passing literal strings as values
