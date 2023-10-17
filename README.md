@@ -2,6 +2,19 @@
 # ai-playground
 The purpose of this repository is to provide a playground for learning about using AI API, specifically OpenAI and other language models, using dotnet. It aims to demonstrate how to integrate and use AI products together with dotnet technologies.
 
+
+
+## Update October 2023
+The upcoming tasks are:
+- Rebuild Semantic Kernel and Semantic Memory and KafkaNewsFeed+Semantic Memory
+- Verify the new GGUF models
+- Look into new Wizard, Orca and Dolphin models
+- OpenSource Model for OpenAI (Dolpin ?)
+- Use the integration og Semqntic Kernal and LLamaSharp
+- Better image classification
+
+
+
 ### OpenAI:
 A dotnet Client 'OpenAI.Client' with a Test project and a WPF application that shows how to use it.
 
@@ -67,6 +80,14 @@ A dotnet Web API 'AI.CaaP.WebAPI' + 'AI.CaaP.Repository' + 'AI.CaaP' for working
 
 ### Microsoft.SemanticKernel:
 A dotnet Test Project that uses the Microsoft Semantic Kernel Library (MSKLC) to play around with semantic kernel SDK
+
+### Microsoft.SemanticMemory:
+A dotnet Test Project that uses the early version of Microsoft Semantic Memory
+
+### SemanticMemory + Kafka + Streaming of NewsFeed:
+A dotnet Test Project that combines the early version of Microsoft Semantic Memory with Kafka streaming of NewsFeed
+
+
 
 ### Financial Agents:
 The start of a dotnet Test project that uses inspiration from LucidateFinAgent to build specific knowledge for Planner and Execution Concepts, and Building Tools

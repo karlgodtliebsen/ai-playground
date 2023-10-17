@@ -8,6 +8,13 @@ Fix by using this:
 
 
 
+## Update October 2023
+The next tasks are:
+- Verify the new GGUF models
+- Look into new Wizard, Orca and Dolphin models
+- Use the integration og Semqntic Kernal and LLamaSharp
+
+
 ## How to download the source and build:
 
 ### Select a Llma.cpp/gguf model

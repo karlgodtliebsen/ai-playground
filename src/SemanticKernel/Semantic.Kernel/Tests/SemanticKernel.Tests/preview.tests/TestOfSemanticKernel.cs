@@ -24,7 +24,6 @@ public class TestOfSemanticKernel : IAsyncLifetime
 
     private readonly ILoggerFactory loggerFactory;
     private readonly HostApplicationFactory hostApplicationFactory;
-    //private readonly IServiceProvider services;
     private readonly OpenAIOptions openAIOptions;
     private readonly SemanticKernelTestFixture fixture;
 
@@ -65,7 +64,7 @@ public class TestOfSemanticKernel : IAsyncLifetime
 
 One line TLDR with the fewest words.";
 
-        var summarize = kernel.CreateSemanticFunction(prompt);
+        ISKFunction summarize = kernel.CreateSemanticFunction(prompt);
 
         string text1 = @"
 1st Law of Thermodynamics - Energy cannot be created or destroyed.
@@ -77,8 +76,20 @@ One line TLDR with the fewest words.";
 2. The acceleration of an object depends on the mass of the object and the amount of force applied.
 3. Whenever one object exerts a force on another object, the second object exerts an equal and opposite on the first.";
 
-        var r1 = await summarize.InvokeAsync(text1);
-        var r2 = await summarize.InvokeAsync(text2);
+
+
+        var context1 = kernel.CreateNewContext();
+        context1.Variables.Set("limit", "5");
+        //context1.Variables.Set("limit", "5");
+        context1.Variables.Set("relevance", "0.3");
+
+        var context2 = kernel.CreateNewContext();
+        context2.Variables.Set("limit", "5");
+        context2.Variables.Set("relevance", "0.3");
+
+
+        var r1 = await summarize.InvokeAsync(context1, cancellationToken: CancellationToken.None);
+        var r2 = await summarize.InvokeAsync(context2, cancellationToken: CancellationToken.None);
 
         logger.Information(r1.ToString());
         logger.Information(r2.ToString());

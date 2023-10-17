@@ -5,6 +5,11 @@
 		<Nullable>enable</Nullable>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Skills\**" />
+	  <EmbeddedResource Remove="Skills\**" />
+	  <None Remove="Skills\**" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AngleSharp" Version="1.0.4" />
@@ -13,23 +18,35 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.11" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 		
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta1" />
-		<PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta1" />
-		<PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.HuggingFace" Version="1.0.0-beta1" />
-		<PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="1.0.0-beta1" />
-		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.AzureCognitiveSearch" Version="1.0.0-beta1" />
-		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Qdrant" Version="1.0.0-beta1" />
-		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Sqlite" Version="1.0.0-beta1" />
-		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.0.0-beta1" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.HuggingFace" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.Oobabooga" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.AzureCognitiveSearch" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Chroma" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.DuckDB" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Kusto" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Milvus" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Pinecone" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Postgres" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Qdrant" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Redis" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Sqlite" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Weaviate" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Functions.Grpc" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Functions.OpenAPI" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Planners.Core" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Plugins.Document" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Plugins.MsGraph" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Reliability.Basic" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.Reliability.Polly" Version="1.0.0-beta2" />
+		<PackageReference Include="Microsoft.SemanticKernel.TemplateEngine.Basic" Version="1.0.0-beta2" />
 
-		<PackageReference Include="Microsoft.SemanticKernel.Planning.ActionPlanner" Version="0.24.230918.1-preview" />
-		<PackageReference Include="Microsoft.SemanticKernel.Planning.SequentialPlanner" Version="0.24.230918.1-preview" />
-		<PackageReference Include="Microsoft.SemanticKernel.Planning.StepwisePlanner" Version="0.24.230918.1-preview" />
-		<PackageReference Include="Microsoft.SemanticKernel.Skills.Core" Version="0.24.230918.1-preview" />
-		<PackageReference Include="Microsoft.SemanticKernel.Skills.Document" Version="0.24.230918.1-preview" />
-		<PackageReference Include="Microsoft.SemanticKernel.Skills.Memory.Sqlite" Version="0.10.72.1-preview" />
-		<PackageReference Include="Microsoft.SemanticKernel.Skills.OpenAPI" Version="0.24.230918.1-preview" />
-		<PackageReference Include="Microsoft.SemanticKernel.Skills.Web" Version="0.24.230918.1-preview" />
 
     <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
 		<PackageReference Include="System.Text.Json" Version="7.0.3" />
@@ -56,329 +73,5 @@
 	  <ProjectReference Include="..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
 	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
 	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Skills\LanguageCalculatorSkill.cs">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Compile>
-	  <Compile Update="Skills\MarkupSkill.cs">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Compile>
-	  <Compile Update="Skills\SimpleCalculatorSkill.cs">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Compile>
-	  <Compile Update="Skills\TimeSkill.cs">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="Skills\CalendarSkill\AssistantShowCalendarEvents\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CalendarSkill\AssistantShowCalendarEvents\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\ChatFilter\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\ChatFilter\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\ChatGPT\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\ChatGPT\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\ChatUser\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\ChatUser\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\ChatV2\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\ChatV2\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\Chat\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChatSkill\Chat\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChildrensBookSkill\BookIdeas\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChildrensBookSkill\BookIdeas\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChildrensBookSkill\CreateBook\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ChildrensBookSkill\CreateBook\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ClassificationSkill\Importance\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ClassificationSkill\Importance\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ClassificationSkill\Question\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\ClassificationSkill\Question\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\CodePython\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\CodePython\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\Code\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\Code\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\CommandLinePython\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\CommandLinePython\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\DOSScript\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\DOSScript\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\EmailSearch\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\EmailSearch\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\Entity\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\CodingSkill\Entity\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\FunSkill\Excuses\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\FunSkill\Excuses\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\FunSkill\Joke\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\FunSkill\Joke\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\FunSkill\Limerick\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\FunSkill\Limerick\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\GroundingSkill\ExciseEntities\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\GroundingSkill\ExciseEntities\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\GroundingSkill\ExtractEntities\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\GroundingSkill\ExtractEntities\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\GroundingSkill\ReferenceCheckEntities\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\GroundingSkill\ReferenceCheckEntities\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\IntentDetectionSkill\AssistantIntent\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\IntentDetectionSkill\AssistantIntent\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\MiscSkill\Continue\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\MiscSkill\Continue\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\MiscSkill\ElementAtIndex\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\MiscSkill\ElementAtIndex\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\AssistantResults\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\AssistantResults\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\ContextQuery\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\ContextQuery\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\Form\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\Form\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\GitHubMemoryQuery\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\GitHubMemoryQuery\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\QNA\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\QNA\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\Question\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\QASkill\Question\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\SummarizeSkill\MakeAbstractReadable\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\SummarizeSkill\MakeAbstractReadable\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\SummarizeSkill\Notegen\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\SummarizeSkill\Notegen\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\SummarizeSkill\Summarize\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\SummarizeSkill\Summarize\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\SummarizeSkill\Topics\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\SummarizeSkill\Topics\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\AcronymGenerator\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\AcronymGenerator\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\AcronymReverse\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\AcronymReverse\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\Acronym\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\Acronym\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\Brainstorm\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\Brainstorm\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\EmailGen\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\EmailGen\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\EmailTo\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\EmailTo\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\EnglishImprover\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\EnglishImprover\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\NovelChapterWithNotes\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\NovelChapterWithNotes\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\NovelChapter\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\NovelChapter\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\NovelOutline\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\NovelOutline\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\Rewrite\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\Rewrite\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\ShortPoem\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\ShortPoem\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\StoryGen\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\StoryGen\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\TellMeMore\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\TellMeMore\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\Translate\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\Translate\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\TwoSentenceSummary\config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Skills\WriterSkill\TwoSentenceSummary\skprompt.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 </Project>

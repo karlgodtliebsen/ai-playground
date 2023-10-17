@@ -8,21 +8,16 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Orchestration;
 using Microsoft.SemanticKernel.Planning;
-using Microsoft.SemanticKernel.SkillDefinition;
-using Microsoft.SemanticKernel.Skills.Core;
-using Microsoft.SemanticKernel.Skills.Web;
-using Microsoft.SemanticKernel.Skills.Web.Bing;
+using Microsoft.SemanticKernel.Plugins.Web.Bing;
 
 using OpenAI.Client.Configuration;
 
 using SemanticKernel.Tests.Configuration;
 using SemanticKernel.Tests.Fixtures;
-using SemanticKernel.Tests.Skills;
 
 using Xunit.Abstractions;
 
 using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
-using TimeSkill = SemanticKernel.Tests.Skills.TimeSkill;
 
 namespace SemanticKernel.Tests;
 

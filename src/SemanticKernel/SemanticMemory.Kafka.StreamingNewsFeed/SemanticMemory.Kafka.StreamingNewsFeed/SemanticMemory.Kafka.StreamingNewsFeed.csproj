@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Domain\QdrantFactory\**" />
+    <EmbeddedResource Remove="Domain\QdrantFactory\**" />
+    <None Remove="Domain\QdrantFactory\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

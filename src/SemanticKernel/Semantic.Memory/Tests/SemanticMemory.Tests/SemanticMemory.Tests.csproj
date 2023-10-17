@@ -5,6 +5,9 @@
 		<Nullable>enable</Nullable>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="TestOfSemanticMemory.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Content Include="appsettings.IntegrationTests.json">

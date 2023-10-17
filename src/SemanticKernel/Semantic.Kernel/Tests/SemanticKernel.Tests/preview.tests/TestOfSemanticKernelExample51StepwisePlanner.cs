@@ -9,19 +9,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Orchestration;
-using Microsoft.SemanticKernel.Planning;
-using Microsoft.SemanticKernel.Skills.Web;
-using Microsoft.SemanticKernel.Skills.Web.Bing;
+using Microsoft.SemanticKernel.Planners;
+using Microsoft.SemanticKernel.Plugins.Core;
+using Microsoft.SemanticKernel.Plugins.Web;
+using Microsoft.SemanticKernel.Plugins.Web.Bing;
 
 using OpenAI.Client.Configuration;
 
 using SemanticKernel.Tests.Configuration;
 using SemanticKernel.Tests.Fixtures;
-using SemanticKernel.Tests.Skills;
 
 using Xunit.Abstractions;
-
-using TimeSkill = SemanticKernel.Tests.Skills.TimeSkill;
 
 namespace SemanticKernel.Tests;
 
@@ -91,7 +89,9 @@ public class TestOfSemanticKernelExample51StepwisePlanner : IAsyncLifetime
 
         string[] questions = new string[]
         {
-            "What color is the sky?", "What is the weather in Seattle?", "What is the tallest mountain on Earth? How tall is it divided by 2?",
+            "What color is the sky?",
+            "What is the weather in Seattle?",
+            "What is the tallest mountain on Earth? How tall is it divided by 2?",
             "What is the capital of France? Who is that city's current mayor? What percentage of their life has been in the 21st century as of today?",
             "What is the current day of the calendar year? Using that as an angle in degrees, what is the area of a unit circle with that angle?",
             "If a spacecraft travels at 0.99 the speed of light and embarks on a journey to the nearest star system, Alpha Centauri, which is approximately 4.37 light-years away, how much time would pass on Earth during the spacecraft's voyage?"
@@ -101,8 +101,8 @@ public class TestOfSemanticKernelExample51StepwisePlanner : IAsyncLifetime
         {
             for (int i = 0; i < 1; i++)
             {
-                await RunTextCompletion(question);
-                await RunChatCompletion(question);
+                await RunTextCompletionAsync(question);
+                await RunChatCompletionAsync(question);
                 //    logger.Information("RunChatCompletion");
                 //    await RunWithQuestion(kernel, question);
             }
@@ -121,33 +121,33 @@ public class TestOfSemanticKernelExample51StepwisePlanner : IAsyncLifetime
     }
 
 
-    private async Task RunTextCompletion(string question)
+    private async Task RunTextCompletionAsync(string question)
     {
         logger.Information("RunTextCompletion");
         ExecutionResult currentExecutionResult = default;
         currentExecutionResult.mode = "RunTextCompletion";
         var kernel = GetKernel(ref currentExecutionResult);
-        await RunWithQuestion(kernel, currentExecutionResult, question, TextMaxTokens);
+        await RunWithQuestionAsync(kernel, currentExecutionResult, question, TextMaxTokens);
     }
 
-    private async Task RunChatCompletion(string question, string? model = null)
+    private async Task RunChatCompletionAsync(string question, string? model = null)
     {
         logger.Information("RunChatCompletion");
         ExecutionResult currentExecutionResult = default;
         currentExecutionResult.mode = "RunChatCompletion";
         var kernel = GetKernel(ref currentExecutionResult, true, model);
-        await RunWithQuestion(kernel, currentExecutionResult, question, ChatMaxTokens);
+        await RunWithQuestionAsync(kernel, currentExecutionResult, question, ChatMaxTokens);
     }
 
-    private async Task RunWithQuestion(IKernel kernel, ExecutionResult currentExecutionResult, string question, int? MaxTokens = null)
+    private async Task RunWithQuestionAsync(IKernel kernel, ExecutionResult currentExecutionResult, string question, int? MaxTokens = null)
     {
         currentExecutionResult.question = question;
         var bingConnector = new BingConnector(bingOptions.ApiKey);
-        var webSearchEngineSkill = new WebSearchEngineSkill(bingConnector);
+        var webSearchEngineSkill = new WebSearchEnginePlugin(bingConnector);
 
         kernel.ImportSkill(webSearchEngineSkill, "WebSearch");
-        kernel.ImportSkill(new LanguageCalculatorSkill(kernel), "semanticCalculator");
-        kernel.ImportSkill(new TimeSkill(), "time");
+        kernel.ImportSkill(new LanguageCalculatorPlugin(kernel), "semanticCalculator");
+        kernel.ImportSkill(new TimePlugin(), "time");
 
         // StepwisePlanner is instructed to depend on available functions.
         // We expose this function to increase the flexibility in it's ability to answer
@@ -190,7 +190,7 @@ public class TestOfSemanticKernelExample51StepwisePlanner : IAsyncLifetime
             StepwisePlanner planner = new(kernel: kernel, config: plannerConfig);
             var plan = planner.CreatePlan(question);
 
-            result = await plan.InvokeAsync(kernel.CreateNewContext());
+            result = await kernel.RunAsync(plan);
 
             if (result.Result.Contains("Result not found, review _stepsTaken to see what", StringComparison.OrdinalIgnoreCase))
             {
@@ -223,7 +223,7 @@ public class TestOfSemanticKernelExample51StepwisePlanner : IAsyncLifetime
 #pragma warning disable CA1031
         catch (Exception ex)
         {
-            logger.Information("Exception: " + ex);
+            logger.Information(ex, "Exception: ");
         }
 
         logger.Information("Time Taken: " + sw.Elapsed);

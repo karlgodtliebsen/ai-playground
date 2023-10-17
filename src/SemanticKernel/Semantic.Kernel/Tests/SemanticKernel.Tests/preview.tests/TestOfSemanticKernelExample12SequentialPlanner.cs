@@ -7,7 +7,7 @@ using SemanticKernel.Tests.Fixtures;
 
 using Xunit.Abstractions;
 
-namespace SemanticKernel.Tests;
+namespace SemanticKernel.Tests.preview.tests;
 
 [Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample12SequentialPlanner : IAsyncLifetime
@@ -31,9 +31,9 @@ public class TestOfSemanticKernelExample12SequentialPlanner : IAsyncLifetime
     public TestOfSemanticKernelExample12SequentialPlanner(SemanticKernelTestFixture fixture, ITestOutputHelper output)
     {
         this.fixture = fixture;
-        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
-        this.services = hostApplicationFactory.Services;
-        this.logger = services.GetRequiredService<ILogger>();
+        hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
+        services = hostApplicationFactory.Services;
+        logger = services.GetRequiredService<ILogger>();
     }
 
     [Fact]
