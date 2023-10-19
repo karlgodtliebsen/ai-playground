@@ -20,12 +20,17 @@ public class TestFixtureBaseWithDocker : TestFixtureBase
     private bool useOpenSearchDocker = false;
 
     public TestContainerDockerLauncher? Launcher { get; private set; } = default!;
+
+    // ReSharper disable once MemberCanBePrivate.Global
     public HostApplicationFactory? Factory { get; private set; } = default!;
 
+    // ReSharper disable once MemberCanBePrivate.Global
     protected QdrantContainer? QuadrantContainer { get; private set; } = default!;
 
+    // ReSharper disable once MemberCanBePrivate.Global
     protected PostgreSqlContainer? PostgreSqlContainer { get; private set; } = default!;
 
+    // ReSharper disable once MemberCanBePrivate.Global
     protected ElasticsearchContainer? OpenSearchContainer { get; private set; } = default!;
 
     /// <summary>

@@ -66,4 +66,8 @@
     <ProjectReference Include="..\..\LLamaSharpApp.WebAPI\LLamaSharpApp.WebAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="LlamaSharpmeetSemanticKernel\" />
+  </ItemGroup>
+
 </Project>

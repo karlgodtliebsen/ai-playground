@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>ImageClassification.Domain</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+
+    <PackageReference Include="SciSharp.Models.Core" Version="0.7.1" />
+
+    <PackageReference Include="SciSharp.Models.ImageClassification" Version="0.6.1" />
+
+    <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.11.4" />
+
+    <PackageReference Include="TensorFlow.Keras" Version="0.11.4" />
+    <PackageReference Include="TensorFlow.NET" Version="0.110.4" />
+
+    <PackageReference Include="SerilogTimings" Version="3.0.1" />
+
+    <PackageReference Include="OneOf" Version="3.0.263" />
+    <PackageReference Include="OneOf.Extended" Version="3.0.263" />
+    <PackageReference Include="OneOf.Monads" Version="1.21.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+    <PackageReference Include="System.Text.Json" Version="7.0.3" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.11" />
+    <PackageReference Include="Polly" Version="8.0.0" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\AI.Library\AI.Library.csproj" />
+    <ProjectReference Include="..\..\ImageClassification.Domain\ImageClassification.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+</Project>

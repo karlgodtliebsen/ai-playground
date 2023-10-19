@@ -1,5 +1,4 @@
-﻿using AI.VectorDatabases.MemoryStore.QdrantFactory;
-
+﻿using AI.VectorDatabases.MemoryStore.QdrantSemanticKernelFactory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel.Memory;
 
@@ -9,9 +8,9 @@ public static class QdrantConfigurator
 {
     public static IServiceCollection AddQdrantVectorStore(this IServiceCollection services)
     {
-        services.AddTransient<IQdrantMemoryStoreForSemanticKernel, QdrantMemoryStoreForSemanticKernel>();
-        services.AddTransient<IMemoryStore, QdrantMemoryStoreForSemanticKernel>();
-        services.AddSingleton<IQdrantMemoryStoreFactoryForSemanticKernel, QdrantMemoryStoreFactoryForSemanticKernel>();
+        services.AddTransient<IQdrantSemanticKernelMemoryStore, QdrantSemanticKernelMemoryStore>();
+        services.AddTransient<IMemoryStore, QdrantSemanticKernelMemoryStore>();
+        services.AddSingleton<IQdrantSemanticKernelMemoryStoreFactory, QdrantSemanticKernelMemoryStoreFactory>();
         return services;
     }
 }

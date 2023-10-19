@@ -107,7 +107,7 @@ public class TestOfSemanticMemory : IAsyncLifetime
         }
 
         // OK
-        answer = await memory.AskAsync(NasaQuestion, filters: MemoryFilters.ByTag("user", "USER-333"));
+        answer = await memory.AskAsync(NasaQuestion, filters: new List<MemoryFilter>() { MemoryFilters.ByTag("user", "USER-333") });
 
         logger.Information(answer.Result + "/n");
         foreach (var x in answer.RelevantSources)
@@ -133,7 +133,7 @@ public class TestOfSemanticMemory : IAsyncLifetime
             logger.Information($"  * {x.SourceName} -- {x.Partitions.First().LastUpdate:D}");
         }
         // NO ANSWER: even if the filter is correct, the data is not in the default index
-        answer = await memory.AskAsync(NasaQuestion, MemoryFilters.ByTag("user", "USER-333"));
+        answer = await memory.AskAsync(NasaQuestion, filters: new List<MemoryFilter>() { MemoryFilters.ByTag("user", "USER-333") });
         logger.Information(answer.Result + "/n");
         foreach (var x in answer.RelevantSources)
         {
@@ -169,7 +169,7 @@ public class TestOfSemanticMemory : IAsyncLifetime
             .AddTag("user", "USER-444"));
 
         // OK: USER-333 tag matches
-        var answer = await memory.AskAsync(NasaQuestion, MemoryFilters.ByTag("user", "USER-333"));
+        var answer = await memory.AskAsync(NasaQuestion, filters: new List<MemoryFilter>() { MemoryFilters.ByTag("user", "USER-333") });
         logger.Information(answer.Result + "/n");
         foreach (var x in answer.RelevantSources)
         {
@@ -177,7 +177,7 @@ public class TestOfSemanticMemory : IAsyncLifetime
         }
 
         // OK: USER-444 tag matches
-        answer = await memory.AskAsync(NasaQuestion, MemoryFilters.ByTag("user", "USER-444"));
+        answer = await memory.AskAsync(NasaQuestion, filters: new List<MemoryFilter>() { MemoryFilters.ByTag("user", "USER-444") });
         logger.Information(answer.Result + "/n");
         foreach (var x in answer.RelevantSources)
         {
@@ -198,14 +198,14 @@ public class TestOfSemanticMemory : IAsyncLifetime
             .AddTag("type", "planning"));
 
         // No information found, the type tag doesn't match
-        var answer = await memory.AskAsync(NasaQuestion, MemoryFilters.ByTag("user", "USER-333").ByTag("type", "email"));
+        var answer = await memory.AskAsync(NasaQuestion, filters: new List<MemoryFilter>() { MemoryFilters.ByTag("user", "USER-333"), MemoryFilters.ByTag("type", "email") });
         logger.Information(answer.Result + "/n");
         foreach (var x in answer.RelevantSources)
         {
             logger.Information($"  * {x.SourceName} -- {x.Partitions.First().LastUpdate:D}");
         }
         //Found using the planning tag
-        answer = await memory.AskAsync(NasaQuestion, MemoryFilters.ByTag("user", "USER-333").ByTag("type", "planning"));
+        answer = await memory.AskAsync(NasaQuestion, filters: new List<MemoryFilter>() { MemoryFilters.ByTag("user", "USER-333"), MemoryFilters.ByTag("type", "planning") });
         logger.Information(answer.Result + "/n");
         foreach (var x in answer.RelevantSources)
         {

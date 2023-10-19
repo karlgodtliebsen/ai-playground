@@ -6,11 +6,6 @@
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Compile Remove="semantickernel.tests\**" />
-	  <EmbeddedResource Remove="semantickernel.tests\**" />
-	  <None Remove="semantickernel.tests\**" />
-	</ItemGroup>
-	<ItemGroup>
 	  <Compile Remove="TestOfSemanticKernel.cs" />
 	  <Compile Remove="TestOfSemanticKernelExample14SemanticMemory.cs" />
 	  <Compile Remove="TestOfSemanticKernelExample18DallE.cs" />
@@ -37,8 +32,7 @@
 		<PackageReference Include="FluentAssertions" Version="6.12.0" />
 
     <PackageReference Include="LLamaSharp" Version="0.5.1" />
-		<PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.5.1" />
-
+    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.5.1" />
 
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0-preview-23424-02" />
 		
@@ -110,16 +104,14 @@
   </ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\Libraries\AI.Library\AI.Library.csproj" />
-	  <ProjectReference Include="..\..\..\..\Libraries\AI.Test.Support\AI.Test.Support.csproj" />
-	  <ProjectReference Include="..\..\..\..\LLamaSharp\LLamaSharp.Domain\LLamaSharp.Domain.csproj" />
-	  <ProjectReference Include="..\..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
-	  <ProjectReference Include="..\..\..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
-	  <ProjectReference Include="..\..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
-	  <ProjectReference Include="..\..\SemanticKernel.Domain\SemanticKernel.Domain.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="semantickernel.tests\" />
+	  
+	  <ProjectReference Include="..\..\..\Libraries\AI.Test.Support\AI.Test.Support.csproj" />
+	  <ProjectReference Include="..\..\..\LLamaSharp\LLamaSharp.Domain\LLamaSharp.Domain.csproj" />
+	  <ProjectReference Include="..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
+	  <ProjectReference Include="..\..\..\SemanticKernel\Semantic.Kernel\SemanticKernel.Domain\SemanticKernel.Domain.csproj" />
+	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
+	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
+	  <ProjectReference Include="..\..\..\Libraries\AI.Library\AI.Library.csproj" />
+	  <ProjectReference Include="..\..\LLama.SemanticKernel\LLamaSharp.SemanticKernel.csproj" />
 	</ItemGroup>
 </Project>

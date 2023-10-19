@@ -5,9 +5,6 @@
 		<Nullable>enable</Nullable>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
 	</PropertyGroup>
-	<ItemGroup>
-	  <Compile Remove="TestOfSemanticMemory.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<Content Include="appsettings.IntegrationTests.json">
@@ -63,7 +60,7 @@
 	  <ProjectReference Include="..\..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
 	  <ProjectReference Include="..\..\..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
 	  <ProjectReference Include="..\..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
-	  <ProjectReference Include="..\..\SemanticMemory.Domain\SemanticMemory.Domain.csproj" />
+	  <ProjectReference Include="..\..\Semantic.Memory.Domain\Semantic.Memory.Domain.csproj" />
 	  
 	</ItemGroup>
 
