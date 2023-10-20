@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-    <UserSecretsId>2ce6fdf2-287e-49a3-b7c4-9019d0036f2f</UserSecretsId>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <SonarQubeTestProject>True</SonarQubeTestProject>
+  </PropertyGroup>
 
-	<ItemGroup>
+
+  <ItemGroup>
 		<Content Include="appsettings.IntegrationTests.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -23,7 +24,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    
+
+    <PackageReference Include="Meziantou.Extensions.Logging.Xunit" Version="1.0.6" />
+
     <PackageReference Include="Microsoft.SemanticMemory.Client" Version="0.3.231009.6-preview" />
     <PackageReference Include="Microsoft.SemanticMemory.Core" Version="0.3.231009.6-preview" />
 				

@@ -1,4 +1,4 @@
-﻿namespace AI.Test.Support.Fixtures;
+﻿namespace AI.Test.Support.Logging;
 
 public sealed class XUnitTestMsLoggerScope : IDisposable
 {

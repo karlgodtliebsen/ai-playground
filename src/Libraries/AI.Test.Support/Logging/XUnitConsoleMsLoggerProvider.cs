@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AI.Test.Support.Fixtures;
+using Microsoft.Extensions.Logging;
 
-namespace AI.Test.Support.Fixtures;
+namespace AI.Test.Support.Logging;
 
 public sealed class XUnitConsoleMsLoggerProvider : ILoggerProvider, ISupportExternalScope
 {
@@ -25,6 +26,6 @@ public sealed class XUnitConsoleMsLoggerProvider : ILoggerProvider, ISupportExte
 
     public void SetScopeProvider(IExternalScopeProvider scopeProvider)
     {
-        this.scopes = scopeProvider;
+        scopes = scopeProvider;
     }
 }

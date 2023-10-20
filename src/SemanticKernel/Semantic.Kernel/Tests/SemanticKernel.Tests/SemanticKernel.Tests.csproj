@@ -6,12 +6,8 @@
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Compile Remove="semantickernel.tests\**" />
-	  <EmbeddedResource Remove="semantickernel.tests\**" />
-	  <None Remove="semantickernel.tests\**" />
-	</ItemGroup>
-	<ItemGroup>
 	  <Compile Remove="TestOfSemanticKernel.cs" />
+	  <Compile Remove="TestOfSemanticKernelExample12SequentialPlanner.cs" />
 	  <Compile Remove="TestOfSemanticKernelExample14SemanticMemory.cs" />
 	  <Compile Remove="TestOfSemanticKernelExample18DallE.cs" />
 	  <Compile Remove="TestOfSemanticKernelExample19Qdrant.cs" />
@@ -117,9 +113,5 @@
 	  <ProjectReference Include="..\..\..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
 	  <ProjectReference Include="..\..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
 	  <ProjectReference Include="..\..\SemanticKernel.Domain\SemanticKernel.Domain.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="semantickernel.tests\" />
 	</ItemGroup>
 </Project>

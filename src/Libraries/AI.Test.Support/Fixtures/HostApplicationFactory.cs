@@ -1,6 +1,6 @@
 ﻿using AI.Library.Configuration;
 using AI.Test.Support.DockerSupport;
-
+using AI.Test.Support.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;

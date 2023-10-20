@@ -2,7 +2,7 @@
 
 using Xunit.Abstractions;
 
-namespace AI.Test.Support.Fixtures;
+namespace AI.Test.Support.Logging;
 
 public sealed class XUnitTestMsLoggerProvider : ILoggerProvider, ISupportExternalScope
 {
@@ -39,6 +39,6 @@ public sealed class XUnitTestMsLoggerProvider : ILoggerProvider, ISupportExterna
 
     public void SetScopeProvider(IExternalScopeProvider scopeProvider)
     {
-        this.scopes = scopeProvider;
+        scopes = scopeProvider;
     }
 }

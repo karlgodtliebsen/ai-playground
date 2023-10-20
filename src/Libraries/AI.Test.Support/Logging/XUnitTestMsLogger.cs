@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace AI.Test.Support.Fixtures;
+namespace AI.Test.Support.Logging;
 
 public sealed class XUnitTestMsLogger : Microsoft.Extensions.Logging.ILogger
 {
@@ -99,7 +99,7 @@ public sealed class XUnitTestMsLogger : Microsoft.Extensions.Logging.ILogger
         {
             return isScoped;
         }
-        this.scopes!.ForEachScope((callback, state) =>
+        scopes!.ForEachScope((callback, state) =>
         {
             if (!isScoped)
             {

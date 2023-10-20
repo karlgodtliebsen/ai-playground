@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace AI.Test.Support.Fixtures;
+namespace AI.Test.Support.Logging;
 
 /// <summary>
 /// XUnitTestLoggerFactory

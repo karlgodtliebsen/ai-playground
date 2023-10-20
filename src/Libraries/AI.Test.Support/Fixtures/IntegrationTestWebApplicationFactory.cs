@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 using AI.Library.Configuration;
 using AI.Test.Support.DockerSupport;
-
+using AI.Test.Support.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
