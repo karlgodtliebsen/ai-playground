@@ -38,8 +38,8 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
     Bob is helpful, kind, honest, good at writing, and never fails to answer the User's requests immediately and with precision.
     User: Hello, Bob.
     Bob: Hello. How may I help you today?
-    User: Please tell me the largest city in EU.
-    Bob: Sure. The largest city in EU is Berlin, Germany.
+    User: Please tell me the largest city in the World
+    Bob: Sure. The largest city in the World is Tokyo, Japan.
     User:
 ";
     private static readonly string FullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));

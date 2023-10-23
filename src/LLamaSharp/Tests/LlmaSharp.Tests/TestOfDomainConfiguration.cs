@@ -24,7 +24,6 @@ public sealed class TestOfDomainConfiguration : IDisposable
 {
     private readonly HostApplicationFactory factory;
     private readonly IServiceProvider services;
-    private const string expectedModel = "llama-2-7b.Q4_0.gguf";
     public TestOfDomainConfiguration(ITestOutputHelper output, LLamaSharpTestFixture fixture)
     {
         this.factory = fixture.WithOutputLogSupport<TestFixtureBase>(output).Build();
@@ -55,7 +54,7 @@ public sealed class TestOfDomainConfiguration : IDisposable
     public void VerifyLoggerRegistration()
     {
         services.GetRequiredService<ILogger<TestOfDomainConfiguration>>();
-        services.GetService<Serilog.ILogger>().Should().NotBeNull();
+        services.GetService<ILogger>().Should().NotBeNull();
         services.GetService<ILoggerFactory>().Should().NotBeNull();
         services.GetService<ILogger<object>>().Should().NotBeNull();
     }
