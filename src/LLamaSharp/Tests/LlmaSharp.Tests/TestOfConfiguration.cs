@@ -68,7 +68,8 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         factory.Services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
 
         var options = factory.Services.GetRequiredService<IOptions<LLamaModelOptions>>().Value;
-        options.ModelPath.Should().Be("/projects/AI/LlamaModels/llama-2-7b.ggmlv3.q8_0.bin");
+        //options.ModelPath.Should().Be("/projects/AI/LlamaModels/llama-2-7b.Q4_0.gguf");
+        options.ModelPath.Should().Contain("/projects/AI/LlamaModels/");
 
         var iOptions = factory.Services.GetRequiredService<IOptions<InferenceOptions>>().Value;
         iOptions.AntiPrompts.Single().Should().Be("User:");

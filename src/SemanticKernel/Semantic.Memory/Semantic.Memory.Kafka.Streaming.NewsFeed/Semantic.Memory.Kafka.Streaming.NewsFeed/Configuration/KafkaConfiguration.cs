@@ -1,6 +1,6 @@
 ﻿using Confluent.Kafka;
 
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Configuration;
 
 public class KafkaConfiguration : ClientConfig
 {

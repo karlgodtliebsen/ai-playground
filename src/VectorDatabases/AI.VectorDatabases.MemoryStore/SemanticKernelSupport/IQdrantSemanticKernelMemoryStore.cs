@@ -1,7 +1,8 @@
 ﻿using AI.VectorDatabase.Qdrant.VectorStorage;
+
 using Microsoft.SemanticKernel.Memory;
 
-namespace AI.VectorDatabases.MemoryStore.QdrantSemanticKernelFactory;
+namespace AI.VectorDatabases.MemoryStore.SemanticKernelSupport;
 
 public interface IQdrantSemanticKernelMemoryStore : IMemoryStore
 {

@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Semantic.Memory.Kafka.Streaming.NewsFeed.Domain;
+using Semantic.Memory.Kafka.Streaming.NewsFeed.HostServices;
 
-using SemanticMemory.Kafka.StreamingNewsFeed.Domain;
-using SemanticMemory.Kafka.StreamingNewsFeed.HostServices;
-
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Configuration;
 
 public static class KafkaConfigurator
 {

@@ -1,4 +1,4 @@
-﻿namespace SemanticMemory.Kafka.StreamingNewsFeed.Tests.Fixtures;
+﻿namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Tests.Fixtures;
 
 [CollectionDefinition("Semantic Memory Collection")]
 public class SemanticMemoryCollection : ICollectionFixture<SemanticMemoryTestFixture>

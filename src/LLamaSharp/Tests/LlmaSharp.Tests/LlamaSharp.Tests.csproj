@@ -18,7 +18,6 @@
 
   <ItemGroup>
 
-    <PackageReference Include="LLamaSharp.semantic-kernel" Version="0.5.1" />
 
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.11" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
@@ -64,10 +63,6 @@
     <ProjectReference Include="..\..\..\Libraries\AI.Library\AI.Library.csproj" />
     <ProjectReference Include="..\..\..\Libraries\AI.Test.Support\AI.Test.Support.csproj" />
     <ProjectReference Include="..\..\LLamaSharpApp.WebAPI\LLamaSharpApp.WebAPI.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="LlamaSharpmeetSemanticKernel\" />
   </ItemGroup>
 
 </Project>

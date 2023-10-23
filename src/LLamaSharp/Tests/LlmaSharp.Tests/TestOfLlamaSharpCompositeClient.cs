@@ -21,9 +21,11 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
 {
     private readonly IntegrationTestWebApplicationFactory factory;
     private readonly ILogger logger;
-    //const string Model = "llama-2-7b-guanaco-qlora.Q2_K.gguf";
-    const string Model = "llama-2-7b.Q4_0.gguf";
 
+    //const string Model = "llama-2-7b-guanaco-qlora.Q2_K.gguf";
+    //OBS: Remember to download a model and place it in the models folder. Update appsettings files
+    const string Model = "llama-2-7b.Q4_0.gguf";
+    const int ModelContextSize = 1024;
     public TestOfLlamaSharpCompositeClient(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
         this.factory = factory.WithOutputLogSupport(output).Build<IntegrationTestWebApplicationFactory>();
@@ -32,6 +34,21 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
     public void Dispose()
     {
         Log.CloseAndFlush();
+    }
+
+    private void SetupDefaultRequest(ExecutorInferRequest request)
+    {
+        request.InferenceOptions!.Temperature = 0.6f;
+        //request.InferenceOptions.MaxTokens = 128;
+        request.AntiPrompts = new List<string> { "User:" }.ToArray();
+        request.ModelOptions!.ModelName = Model;
+        request.ModelOptions.ContextSize = ModelContextSize;
+        request.ModelOptions.Seed = 1337;
+        request.ModelOptions.GpuLayerCount = 5;
+    }
+    private void SetupDefaultRequest(EmbeddingsRequest request)
+    {
+        request.ModelOptions!.ModelName = Model;
     }
 
     /// <summary>
@@ -54,12 +71,7 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
             RedundancyLength = 8,
             RemoveAllMatchedTokens = false
         };
-        request.InferenceOptions.Temperature = 0.6f;
-        request.ModelOptions.ModelName = Model;
-        request.ModelOptions.ContextSize = 1024;
-        request.ModelOptions.Seed = 1337;
-        request.ModelOptions.GpuLayerCount = 5;
-
+        SetupDefaultRequest(request);
         var client = factory.Services.GetRequiredService<ILLamaCompositeOperationsClient>();
         var response = await client.InteractiveExecutorWithChatAndNoRoleNames(request, CancellationToken.None);
         response.Should().NotBeNull();
@@ -84,12 +96,7 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
             InferenceType = InferenceType.InteractiveExecutor,
 
         };
-        request.InferenceOptions.Temperature = 0.6f;
-        request.ModelOptions.ModelName = Model;
-        request.ModelOptions.ContextSize = 1024;
-        request.ModelOptions.Seed = 1337;
-        request.ModelOptions.GpuLayerCount = 5;
-
+        SetupDefaultRequest(request);
         var client = factory.Services.GetRequiredService<ILLamaCompositeOperationsClient>();
         var response = await client.InteractiveExecutorWithChatAndRoleNames(request, CancellationToken.None);
         response.Should().NotBeNull();
@@ -112,6 +119,8 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
             ModelOptions = optionsMapper.Map(optionsService.GetDefaultLlamaModelOptions()),
         };
         request.ModelOptions.ModelName = Model;
+        SetupDefaultRequest(request);
+
         var client = factory.Services.GetRequiredService<ILLamaCompositeOperationsClient>();
         var response = await client.GetEmbeddings(request, CancellationToken.None);
         response.Should().NotBeNull();
@@ -136,9 +145,7 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
             InferenceOptions = optionsMapper.Map(optionsService.GetDefaultInferenceOptions()),
             InferenceType = InferenceType.InteractiveExecutor,
         };
-        request.InferenceOptions.Temperature = 0.6f;
-        request.InferenceOptions.MaxTokens = 600;
-        request.ModelOptions.ModelName = Model;
+        SetupDefaultRequest(request);
 
         var client = factory.Services.GetRequiredService<ILLamaCompositeOperationsClient>();
         var response = await client.ExecuteInstructions(request, CancellationToken.None);
@@ -170,11 +177,11 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
             InferenceOptions = optionsMapper.Map(optionsService.GetDefaultInferenceOptions()),
             InferenceType = InferenceType.InteractiveExecutor,
         };
+        SetupDefaultRequest(request);
 
-        request.InferenceOptions.Temperature = 0.6f;
-        request.InferenceOptions.MaxTokens = 128;
-        request.AntiPrompts = new List<string> { "User:" }.ToArray();
-        request.ModelOptions.ModelName = Model;
+        //request.InferenceOptions.Temperature = 0.6f;
+        //request.InferenceOptions.MaxTokens = 128;
+        //request.ModelOptions.ModelName = Model;
 
         var client = factory.Services.GetRequiredService<ILLamaCompositeOperationsClient>();
         var response = await client.InteractiveExecuteInstructions(request, CancellationToken.None);

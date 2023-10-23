@@ -8,6 +8,6 @@
         /// <summary>
         /// The uers id that can be used for session / state persistence
         /// </summary>
-        string UserId { get; set; }
+        string UserId { get; }
     }
 }

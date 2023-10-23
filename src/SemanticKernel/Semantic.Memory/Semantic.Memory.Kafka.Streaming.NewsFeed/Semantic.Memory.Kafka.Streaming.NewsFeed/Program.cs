@@ -1,9 +1,6 @@
 ﻿using AI.Library.Configuration;
-
 using Microsoft.Extensions.Hosting;
-
-using SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
-
+using Semantic.Memory.Kafka.Streaming.NewsFeed.Configuration;
 using Serilog;
 
 //https://github.com/confluentinc/confluent-kafka-dotnet/
@@ -15,7 +12,7 @@ Observability.UseBootstrapLogger(applicationName);
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.WithLogging();
-builder.AddSecrets<Program>();
+builder.AddSecrets<Semantic.Memory.Kafka.Streaming.NewsFeed.Program>();
 builder.Services.AddDomain(builder.Configuration);
 
 Observability.LogFinalizedConfiguration(applicationName);
@@ -31,12 +28,15 @@ using (host)
 
 Observability.StopLogging(applicationName);
 
-/// <summary>
-/// Partial part of Program to support web application factory during test
-/// </summary>
-// ReSharper disable once UnusedType.Global
-public partial class Program
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed
 {
+    /// <summary>
+    /// Partial part of Program to support web application factory during test
+    /// </summary>
+// ReSharper disable once UnusedType.Global
+    public partial class Program
+    {
+    }
 }
 
 

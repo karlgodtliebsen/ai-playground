@@ -13,6 +13,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
 
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Qdrant" Version="0.24.230918.1-preview" />
+
+    <PackageReference Include="Microsoft.SemanticMemory.Core" Version="0.3.231009.6-preview" />
     
     <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
 

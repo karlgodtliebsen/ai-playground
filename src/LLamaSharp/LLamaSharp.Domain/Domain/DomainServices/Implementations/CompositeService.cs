@@ -137,11 +137,9 @@ public class CompositeService : ICompositeService
 
     private string CreateUserInput(ExecutorInferMessage input)
     {
+        //throw new NotImplementedException("Must be changed");
 
-        throw new NotImplementedException("Must be changed");
-
-
-        string userInput = input.Text;
+        string userInput = input!.Text;
 
         if (input is { UseDefaultPrompt: false, Prompt: not null })
         {

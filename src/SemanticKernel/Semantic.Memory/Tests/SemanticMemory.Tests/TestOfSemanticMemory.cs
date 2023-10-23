@@ -38,15 +38,57 @@ public class TestOfSemanticMemory : IAsyncLifetime
     public TestOfSemanticMemory(SemanticMemoryTestFixture fixture, ITestOutputHelper output)
     {
         this.fixture = fixture;
-        this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
+        this.hostApplicationFactory = fixture
+            .WithOutputLogSupport<TestFixtureBaseWithDocker>(output)
+            .WithQdrantSupport()
+            .Build();
         var services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
         this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
 
         memory = new MemoryClientBuilder()
             .WithOpenAIDefaults(openAIOptions.ApiKey)
+            //.WithCustomEmbeddingGeneration()
+            //.WithCustomVectorDb()
+            //.WithCustomTextGeneration
             .Build();
     }
+    /*
+
+    
+    public MemoryClientBuilder WithCustomEmbeddingGeneration(
+      ITextEmbeddingGeneration service,
+      bool useForIngestion = true,
+      bool useForRetrieval = true)
+    {
+      service = service ?? throw new ConfigurationException("The embedding generator instance is NULL");
+      if (useForRetrieval)
+        this.AddSingleton<ITextEmbeddingGeneration>(service);
+      if (useForIngestion)
+        this._embeddingGenerators.Add(service);
+      return this;
+    }
+
+    public MemoryClientBuilder WithCustomVectorDb(
+      ISemanticMemoryVectorDb service,
+      bool useForIngestion = true,
+      bool useForRetrieval = true)
+    {
+      service = service ?? throw new ConfigurationException("The vector DB instance is NULL");
+      if (useForRetrieval)
+        this.AddSingleton<ISemanticMemoryVectorDb>(service);
+      if (useForIngestion)
+        this._vectorDbs.Add(service);
+      return this;
+    }
+
+    public MemoryClientBuilder WithCustomTextGeneration(ITextGeneration service)
+    {
+      service = service ?? throw new ConfigurationException("The text generator instance is NULL");
+      this.AddSingleton<ITextGeneration>(service);
+      return this;
+    }
+    */
 
     private string CreateNasaFile()
     {

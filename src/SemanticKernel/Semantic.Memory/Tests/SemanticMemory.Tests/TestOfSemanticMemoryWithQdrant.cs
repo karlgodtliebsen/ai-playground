@@ -49,6 +49,9 @@ public class TestOfSemanticMemoryWithQdrant : IAsyncLifetime
 
         memory = new MemoryClientBuilder()
             .WithOpenAIDefaults(openAIOptions.ApiKey)
+            //.WithCustomEmbeddingGeneration()
+            //.WithCustomVectorDb()
+            //.WithCustomTextGeneration
             .Build();
     }
 

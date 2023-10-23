@@ -50,14 +50,3 @@ public class ExceptionMiddleware
         return context.Response.WriteAsync(new ErrorDetails { StatusCode = context.Response.StatusCode, Message = message }.ToString());
     }
 }
-
-public class ErrorDetails
-{
-    public required int StatusCode { get; set; }
-    public required string Message { get; set; }
-
-    public override string ToString()
-    {
-        return JsonSerializer.Serialize(this);
-    }
-}

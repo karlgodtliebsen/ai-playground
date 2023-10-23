@@ -1,14 +1,11 @@
 ﻿using AI.VectorDatabase.Qdrant.Configuration;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using SemanticMemory.Kafka.StreamingNewsFeed.Domain;
-
+using Semantic.Memory.Kafka.Streaming.NewsFeed.Domain;
 using Serilog;
 
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Configuration;
 
 public static class DomainConfigurator
 {

@@ -4,7 +4,7 @@ using Microsoft.SemanticMemory.ContentStorage;
 using Microsoft.SemanticMemory.ContentStorage.DevTools;
 using Microsoft.SemanticMemory.Diagnostics;
 
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Domain;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Domain;
 
 public class CustomContentStorage : IContentStorage
 {

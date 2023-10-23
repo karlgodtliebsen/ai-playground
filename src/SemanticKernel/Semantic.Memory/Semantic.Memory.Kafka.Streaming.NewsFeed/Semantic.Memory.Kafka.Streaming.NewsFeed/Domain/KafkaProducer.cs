@@ -1,12 +1,9 @@
 ﻿using System.Text.Json;
-
 using Confluent.Kafka;
-
 using Microsoft.Extensions.Options;
+using Semantic.Memory.Kafka.Streaming.NewsFeed.Configuration;
 
-using SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
-
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Domain;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Domain;
 
 public class KafkaProducer
 {

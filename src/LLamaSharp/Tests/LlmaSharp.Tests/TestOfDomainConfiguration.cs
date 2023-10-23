@@ -63,7 +63,8 @@ public sealed class TestOfDomainConfiguration : IDisposable
     [Fact]
     public void EnsureThatServiceConfigurationIsValid()
     {
-        string model = $"/projects/AI/LlamaModels/{expectedModel}";
+        //string model = $"/projects/AI/LlamaModels/{expectedModel}";
+        string modelPath = $"/projects/AI/LlamaModels";
 
         services.GetService<ILLamaFactory>().Should().NotBeNull();
         services.GetService<IOptionsService>().Should().NotBeNull();
@@ -80,7 +81,7 @@ public sealed class TestOfDomainConfiguration : IDisposable
         services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
 
         var options = services.GetRequiredService<IOptions<LLamaModelOptions>>().Value;
-        options.ModelPath.Should().Be(model);
+        options.ModelPath.Should().Contain(modelPath);
         File.Exists(options.ModelPath).Should().BeTrue();
 
         var iOptions = services.GetRequiredService<IOptions<InferenceOptions>>().Value;

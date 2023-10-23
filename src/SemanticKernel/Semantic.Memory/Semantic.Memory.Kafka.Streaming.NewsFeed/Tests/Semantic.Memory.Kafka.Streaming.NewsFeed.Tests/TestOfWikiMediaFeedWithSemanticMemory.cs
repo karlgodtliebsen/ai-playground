@@ -1,16 +1,12 @@
 ﻿using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticMemory;
-
 using OpenAI.Client.Configuration;
-
-using SemanticMemory.Kafka.StreamingNewsFeed.Tests.Fixtures;
-
+using Semantic.Memory.Kafka.Streaming.NewsFeed.Tests.Fixtures;
 using Xunit.Abstractions;
 
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Tests;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Tests;
 
 [Collection("Semantic Memory Collection")]
 public class TestOfWikiMediaFeedWithSemanticMemory : IAsyncLifetime

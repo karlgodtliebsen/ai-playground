@@ -1,4 +1,4 @@
-﻿using AI.VectorDatabases.MemoryStore.QdrantSemanticKernelFactory;
+﻿using AI.VectorDatabases.MemoryStore.SemanticKernelSupport;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel.Memory;
 

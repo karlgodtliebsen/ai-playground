@@ -93,12 +93,11 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings : IAsyncLifetime
     //NOTE: uses all the downloaded models. This is very time consuming, so...
     //[Theory]
     [Theory(Skip = "Very time consuming. Download the models before running this test")]
-    [InlineData("wizardLM-7B.ggmlv3.q4_1.bin")]
-    [InlineData("ggml-vic13b-uncensored-q4_1.bin")]
-    [InlineData("ggml-vic13b-uncensored-q5_0.bin")]
-    [InlineData("ggml-vicuna-13B-1.1-q4_0.bin")]
-    [InlineData("ggml-vicuna-13B-1.1-q8_0.bin")]
-    [InlineData("wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin")]
+    [InlineData("llama-2-7b.Q4_0.gguf")]
+    [InlineData("guanaco-13b-uncensored.Q4_K_M.gguf")]
+    [InlineData("guanaco-7b-uncensored.Q4_K_M.gguf")]
+    [InlineData("dolphin-2.1-mistral-7b.Q5_K_M.gguf")]
+    [InlineData("mistral-7b-openorca.Q4_K_M.gguf")]
     public async Task UseDifferentModels(string model)
     {
         //fi to point at folder for all the models, outside of this solution

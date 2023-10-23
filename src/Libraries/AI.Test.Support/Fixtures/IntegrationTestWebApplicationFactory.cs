@@ -119,7 +119,6 @@ public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApp
 
     protected virtual void ConfigureTestServices(IServiceCollection services, IConfiguration cfg)
     {
-
     }
 
     private void ConfigureLogging()

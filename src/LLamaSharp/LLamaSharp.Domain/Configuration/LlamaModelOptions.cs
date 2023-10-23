@@ -6,6 +6,7 @@ namespace LLamaSharp.Domain.Configuration;
 /// </summary>
 public sealed record LLamaModelOptions : ModelParams
 {
+    const string DefaultFileExtension = ".gguf";
     /// <summary>
     /// Configuration SectionName
     /// </summary>
@@ -25,9 +26,9 @@ public sealed record LLamaModelOptions : ModelParams
     public void RestoreSanitizedSensitiveData(string? modelName)
     {
         if (modelName is null) return;
-        if (!modelName.EndsWith(".bin"))
+        if (!modelName.EndsWith(DefaultFileExtension))
         {
-            modelName = $"{modelName}.bin";
+            modelName = $"{modelName}{DefaultFileExtension}";
         }
         if (ModelPath!.EndsWith(modelName))
         {

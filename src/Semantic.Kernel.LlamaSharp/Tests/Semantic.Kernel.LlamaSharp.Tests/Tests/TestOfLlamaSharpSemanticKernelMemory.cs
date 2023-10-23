@@ -2,7 +2,7 @@
 using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
-using AI.VectorDatabases.MemoryStore.QdrantSemanticKernelFactory;
+using AI.VectorDatabases.MemoryStore.SemanticKernelSupport;
 
 using LLama;
 using LLama.Common;
