@@ -14,8 +14,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="7.0.0-preview.6.22330.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
-    <PackageReference Include="Microsoft.SemanticMemory.Client" Version="0.3.231009.6-preview" />
-    <PackageReference Include="Microsoft.SemanticMemory.Core" Version="0.3.231009.6-preview" />
+    <PackageReference Include="Microsoft.SemanticMemory.Client" Version="0.4.231023.1-preview" />
+    <PackageReference Include="Microsoft.SemanticMemory.Core" Version="0.4.231023.1-preview" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
 
     <PackageReference Include="Riok.Mapperly" Version="3.2.0" />

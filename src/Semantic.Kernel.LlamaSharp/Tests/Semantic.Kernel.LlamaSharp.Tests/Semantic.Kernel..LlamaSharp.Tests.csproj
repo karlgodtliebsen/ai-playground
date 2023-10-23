@@ -3,6 +3,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
 	</PropertyGroup>
 	<ItemGroup>
@@ -39,34 +40,34 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.12" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.HuggingFace" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.Oobabooga" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.AzureCognitiveSearch" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Chroma" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.DuckDB" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Kusto" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Milvus" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Pinecone" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Postgres" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Qdrant" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Redis" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Sqlite" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Weaviate" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Functions.Grpc" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Functions.OpenAPI" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planners.Core" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Document" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.MsGraph" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Reliability.Basic" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Reliability.Polly" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.TemplateEngine.Basic" Version="1.0.0-beta2" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.HuggingFace" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.Oobabooga" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.AzureCognitiveSearch" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Chroma" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.DuckDB" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Kusto" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Milvus" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Pinecone" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Postgres" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Qdrant" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Redis" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Sqlite" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Weaviate" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Functions.Grpc" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Functions.OpenAPI" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Planners.Core" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Document" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.MsGraph" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Reliability.Basic" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Reliability.Polly" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.TemplateEngine.Basic" Version="1.0.0-beta3" />
 
     <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
 		<PackageReference Include="System.Text.Json" Version="7.0.3" />

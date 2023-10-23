@@ -24,8 +24,8 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     
-    <PackageReference Include="Microsoft.SemanticMemory.Client" Version="0.3.231009.6-preview" />
-    <PackageReference Include="Microsoft.SemanticMemory.Core" Version="0.3.231009.6-preview" />
+    <PackageReference Include="Microsoft.SemanticMemory.Client" Version="0.4.231023.1-preview" />
+    <PackageReference Include="Microsoft.SemanticMemory.Core" Version="0.4.231023.1-preview" />
 				
     <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
     <PackageReference Include="System.Text.Json" Version="7.0.3" />

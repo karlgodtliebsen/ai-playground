@@ -22,22 +22,22 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.12" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23503-02" />
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.HuggingFace" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.Oobabooga" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.AzureCognitiveSearch" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Chroma" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.DuckDB" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Kusto" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Milvus" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Pinecone" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Postgres" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Qdrant" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Redis" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Sqlite" Version="1.0.0-beta2" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Weaviate" Version="1.0.0-beta2" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.HuggingFace" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.Oobabooga" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.AzureCognitiveSearch" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Chroma" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.DuckDB" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Kusto" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Milvus" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Pinecone" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Postgres" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Qdrant" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Redis" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Sqlite" Version="1.0.0-beta3" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Memory.Weaviate" Version="1.0.0-beta3" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
 		<PackageReference Include="OneOf" Version="3.0.263" />
 		<PackageReference Include="OneOf.Extended" Version="3.0.263" />

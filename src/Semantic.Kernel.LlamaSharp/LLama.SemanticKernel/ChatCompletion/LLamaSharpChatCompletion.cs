@@ -1,7 +1,9 @@
-﻿using LLama;
+﻿using System.Runtime.CompilerServices;
+
+using LLama;
+
 using Microsoft.SemanticKernel.AI;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
-using System.Runtime.CompilerServices;
 
 namespace LLamaSharp.SemanticKernel.ChatCompletion;
 
@@ -56,7 +58,7 @@ public sealed class LLamaSharpChatCompletion : IChatCompletion
     /// <inheritdoc/>
     public Task<IReadOnlyList<IChatResult>> GetChatCompletionsAsync(ChatHistory chat, AIRequestSettings? requestSettings = null, CancellationToken cancellationToken = default)
     {
-        var settings = requestSettings != null 
+        var settings = requestSettings != null
             ? (ChatRequestSettings)requestSettings
             : defaultRequestSettings;
 
@@ -78,6 +80,6 @@ public sealed class LLamaSharpChatCompletion : IChatCompletion
         // This call is not awaited because LLamaSharpChatResult accepts an IAsyncEnumerable.
         var result = this.session.ChatAsync(chat.ToLLamaSharpChatHistory(), settings.ToLLamaSharpInferenceParams(), cancellationToken);
 
-        yield return new LLamaSharpChatResult(result);
+        yield return new LLamaSharpChatStreamingResult(result);
     }
 }

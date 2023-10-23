@@ -9,10 +9,10 @@
 
   <ItemGroup>
 
-    <PackageReference Include="Microsoft.ML" Version="3.0.0-preview.23266.6" />
-    <PackageReference Include="Microsoft.ML.DataView" Version="3.0.0-preview.23266.6" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="3.0.0-preview.23266.6" />
-    <PackageReference Include="Microsoft.ML.Vision" Version="3.0.0-preview.23266.6" />
+    <PackageReference Include="Microsoft.ML" Version="3.0.0-preview.23511.1" />
+    <PackageReference Include="Microsoft.ML.DataView" Version="3.0.0-preview.23511.1" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="3.0.0-preview.23511.1" />
+    <PackageReference Include="Microsoft.ML.Vision" Version="3.0.0-preview.23511.1" />
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.11.4" />
 
     <PackageReference Include="SerilogTimings" Version="3.0.1" />

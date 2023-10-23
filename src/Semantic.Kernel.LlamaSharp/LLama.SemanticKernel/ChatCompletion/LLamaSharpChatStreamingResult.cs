@@ -1,12 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text;
-
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.Orchestration;
 
 namespace LLamaSharp.SemanticKernel.ChatCompletion;
 
-internal sealed class LLamaSharpChatResult : IChatResult
+internal sealed class LLamaSharpChatStreamingResult : IChatStreamingResult
 {
     private readonly ModelResult _modelResult;
     private readonly IAsyncEnumerable<string> _stream;
@@ -15,7 +14,7 @@ internal sealed class LLamaSharpChatResult : IChatResult
     /// 
     /// </summary>
     /// <param name="stream"></param>
-    public LLamaSharpChatResult(IAsyncEnumerable<string> stream)
+    public LLamaSharpChatStreamingResult(IAsyncEnumerable<string> stream)
     {
         _stream = stream;
         this._modelResult = new ModelResult(stream);
