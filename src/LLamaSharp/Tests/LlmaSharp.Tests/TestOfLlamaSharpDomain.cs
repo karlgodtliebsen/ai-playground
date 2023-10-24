@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-using LLama;
+﻿using LLama;
 using LLama.Common;
 
 using LlamaSharp.Tests.Fixtures;
@@ -122,17 +120,18 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
 
     private void RunPrompt(ChatSession session, string prompt)
     {
-        var textBuilder = new StringBuilder();
-        output.WriteLine(prompt);
-        foreach (var text in session.Chat(prompt, new InferenceParams()
-        {
-            Temperature = 0.6f,
-            AntiPrompts = new List<string> { "User:" }
-        }))
-        {
-            textBuilder.Append(text);
-        }
-        output.WriteLine(textBuilder.ToString());
+        throw new NotImplementedException();
+        //var textBuilder = new StringBuilder();
+        //output.WriteLine(prompt);
+        //foreach (var text in session.ChatAsync(prompt, new InferenceParams()
+        //{
+        //    Temperature = 0.6f,
+        //    AntiPrompts = new List<string> { "User:" }
+        //}))
+        //{
+        //    textBuilder.Append(text);
+        //}
+        //output.WriteLine(textBuilder.ToString());
     }
 
 

@@ -28,6 +28,11 @@ public class CustomContentStorage : IContentStorage
         return Task.CompletedTask;
     }
 
+    public Task DeleteIndexDirectoryAsync(string index, CancellationToken cancellationToken = new CancellationToken())
+    {
+        throw new NotImplementedException();
+    }
+
     /// <inherit />
     public async Task CreateDocumentDirectoryAsync(
         string index,
@@ -36,6 +41,11 @@ public class CustomContentStorage : IContentStorage
     {
         await CreateIndexDirectoryAsync(index, cancellationToken).ConfigureAwait(false);
         CreateDirectory(Path.Join(_directory, index, documentId));
+    }
+
+    public Task EmptyDocumentDirectoryAsync(string index, string documentId, CancellationToken cancellationToken = new CancellationToken())
+    {
+        throw new NotImplementedException();
     }
 
     /// <inherit />
@@ -71,6 +81,11 @@ public class CustomContentStorage : IContentStorage
         _log.LogDebug("Writing to file {0}", fullFileName);
         await contentStream.CopyToAsync(outputStream, cancellationToken).ConfigureAwait(false);
         return outputStream.Length;
+    }
+
+    public Task WriteFileAsync(string index, string documentId, string fileName, Stream streamContent, CancellationToken cancellationToken = new CancellationToken())
+    {
+        throw new NotImplementedException();
     }
 
     /// <inherit />

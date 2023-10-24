@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using System.Xml.XPath;
 
-namespace SemanticKernel.Tests.Utils;
+namespace SemanticKernel.Domain.Utils;
 
 public static class XmlEx
 {

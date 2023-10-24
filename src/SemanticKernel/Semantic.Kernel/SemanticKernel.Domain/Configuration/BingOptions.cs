@@ -1,4 +1,4 @@
-﻿namespace SemanticKernel.Tests.Configuration;
+﻿namespace SemanticKernel.Domain.Configuration;
 
 public class BingOptions
 {

@@ -21,28 +21,6 @@ public static class LlamaConfigurator
     {
         VerifyOptions(modelOptions);
         services.AddSingleton(Options.Create(modelOptions));
-        //LLamaConfigurationClient ConfigClient(HttpClient c, IServiceProvider sp)
-        //{
-        //    var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
-        //    var client = this.CreateClientWithTestAuth(claimsProvider);
-        //    return new LLamaConfigurationClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
-        //}
-
-        //services.AddHttpClient<ILLamaConfigurationClient, LLamaConfigurationClient>(ConfigClient)
-        //    .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
-        //    ;
-
-        //LLamaCompositeOperationsClient CompositeClient(HttpClient c, IServiceProvider sp)
-        //{
-        //    var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
-        //    var client = this.CreateClientWithTestAuth(claimsProvider);
-        //    return new LLamaCompositeOperationsClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
-        //}
-
-        //services.AddHttpClient<ILLamaCompositeOperationsClient, LLamaCompositeOperationsClient>(CompositeClient)
-        //    .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
-        //    ;
-
         return services;
     }
 

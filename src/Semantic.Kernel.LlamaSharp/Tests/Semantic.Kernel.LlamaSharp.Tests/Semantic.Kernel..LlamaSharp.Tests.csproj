@@ -32,12 +32,12 @@
 		<PackageReference Include="CoreCLR-NCalc" Version="2.2.113" />
 		<PackageReference Include="FluentAssertions" Version="6.12.0" />
 
-    <PackageReference Include="LLamaSharp" Version="0.5.1" />
-    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.5.1" />
+    <PackageReference Include="LLamaSharp" Version="0.6.0" />
+    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.6.0" />
 
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23503-02" />
 		
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.13" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta3" />
@@ -79,7 +79,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
 
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.13" />
 		<PackageReference Include="Polly" Version="8.0.0" />
 
     <PackageReference Include="NSubstitute" Version="5.1.0" />

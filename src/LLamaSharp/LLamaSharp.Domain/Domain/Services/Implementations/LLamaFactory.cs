@@ -14,21 +14,21 @@ namespace LLamaSharp.Domain.Domain.Services.Implementations;
 /// <summary>
 /// Factory for creating LLama models, executors, parameters and embedders
 /// </summary>
-public class IlLamaFactory : ILLamaFactory
+public class LLamaFactory : ILLamaFactory
 {
     private readonly ILogger logger;
-    private readonly LLamaModelOptions LLamaContextOptions;
+    private readonly LLamaModelOptions llamaModelOptions;
 
     /// <summary>
     /// Constructor for LLama Model Factory
     /// </summary>
     /// <param name="options"></param>
     /// <param name="logger"></param>
-    public IlLamaFactory(IOptions<LLamaModelOptions> options, ILogger logger)
+    public LLamaFactory(IOptions<LLamaModelOptions> options, ILogger logger)
     {
         this.logger = logger;
         ArgumentNullException.ThrowIfNull(options.Value);
-        LLamaContextOptions = options.Value;
+        llamaModelOptions = options.Value;
     }
 
     /// <summary>
@@ -37,51 +37,61 @@ public class IlLamaFactory : ILLamaFactory
     /// <returns></returns>
     public ModelParams CreateModelParams()
     {
-        return LLamaContextOptions;
+        return llamaModelOptions;
+    }
+
+    public LLamaWeights CreateLLamaWeights(ModelParams modelParams)
+    {
+        var model = LLamaWeights.LoadFromFile(modelParams);
+        return model;
     }
 
     /// <summary>
     /// Creates a default llama model 
     /// </summary>
     /// <returns></returns>
-    public LLamaContext CreateContext()
+    public LLamaContext CreateContext(Microsoft.Extensions.Logging.ILogger? logger = null)
     {
-        var parameters = CreateModelParams();
-        return CreateContext(parameters);
+        var @params = CreateModelParams();
+        return CreateContext(CreateLLamaWeights(@params), @params, logger);
     }
 
-    /// <summary>
-    /// Creates a llama model with specified parameters (ResettableLLamaContext)
-    /// </summary>
-    /// <param name="parameters"></param>
-    /// <returns></returns>
-    public LLamaContext CreateContext(ModelParams parameters)
+    /// <inheritdoc />
+    public LLamaContext CreateContext(LLamaWeights model, IContextParams @params, Microsoft.Extensions.Logging.ILogger? logger = null)
     {
-        using var op = logger.BeginOperation("Creating LLama Model");
-        var model = new LLamaContext(parameters);    //LLamaContext   ResettableLLamaContext
+        using var op = this.logger.BeginOperation("Creating LLama Model");
+        var ctx = new LLamaContext(model, @params, logger);    //LLamaContext   ResettableLLamaContext
         op.Complete();
-        return model;
+        return ctx;
     }
-
 
     /// <summary>
     /// Creates an embedder with specified parameters 
     /// </summary>
-    /// <param name="parameters"></param>
+    /// <param name="model"></param>
+    /// <param name="params"></param>
+    /// <param name="logger"></param>
     /// <returns></returns>
-    public LLamaEmbedder CreateEmbedder(ModelParams parameters)
+    public LLamaEmbedder CreateEmbedder(LLamaWeights model, IContextParams @params, Microsoft.Extensions.Logging.ILogger? logger = null)
     {
-        using var op = logger.BeginOperation("Creating Embedder");
-        var model = new LLamaEmbedder(parameters);
+        using var op = this.logger.BeginOperation("Creating Embedder");
+        var embedder = new LLamaEmbedder(model, @params, logger);
         op.Complete();
-        return model;
+        return embedder;
+    }
+
+    public (ChatSession chatSession, LLamaContext model) CreateChatSession<TExecutor>(ModelParams parameters, Action<ChatSession>? chatSession = default, Microsoft.Extensions.Logging.ILogger? logger = null) where TExecutor : StatefulExecutorBase, ILLamaExecutor
+    {
+        var lModel = CreateContext(logger);
+        var session = CreateChatSession<TExecutor>(lModel);
+        return (session, lModel);
     }
 
     /// <inheritdoc />
-    public (ChatSession chatSession, LLamaContext model) CreateChatSession<TExecutor>(Action<LLamaContext>? model = default, Action<ChatSession>? chatSession = default)
+    public (ChatSession chatSession, LLamaContext model) CreateChatSession<TExecutor>(Action<LLamaContext>? model = default, Action<ChatSession>? chatSession = default, Microsoft.Extensions.Logging.ILogger? logger = null)
        where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
-        var lModel = CreateContext();
+        var lModel = CreateContext(logger);
         model?.Invoke(lModel);
         var session = CreateChatSession<TExecutor>(lModel);
         chatSession?.Invoke(session);
@@ -90,16 +100,14 @@ public class IlLamaFactory : ILLamaFactory
 
 
     /// <inheritdoc />
-    public (ChatSession chatSession, LLamaContext model) CreateChatSession<TExecutor>(ModelParams parameters, Action<ChatSession>? chatSession = default)
+    public (ChatSession chatSession, LLamaContext model) CreateChatSession<TExecutor>(LLamaWeights model, IContextParams @params, Microsoft.Extensions.Logging.ILogger? logger = null, Action<ChatSession>? chatSession = default)
         where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
-        var model = CreateContext(parameters);
-        var session = CreateChatSession<TExecutor>(model);
+        var ctx = CreateContext(model, @params, logger);
+        var session = CreateChatSession<TExecutor>(ctx);
         chatSession?.Invoke(session);
-        return (session, model);
+        return (session, ctx);
     }
-
-
 
     /// <summary>
     /// Creates a ChatSession with specified model
@@ -107,9 +115,9 @@ public class IlLamaFactory : ILLamaFactory
     /// <param name="model"></param>
     /// <typeparam name="TExecutor"></typeparam>
     /// <returns></returns>
-    public ChatSession CreateChatSession<TExecutor>(LLamaContext model) where TExecutor : StatefulExecutorBase, ILLamaExecutor
+    public ChatSession CreateChatSession<TExecutor>(LLamaContext model, Microsoft.Extensions.Logging.ILogger? logger = null) where TExecutor : StatefulExecutorBase, ILLamaExecutor
     {
-        using var op = logger.BeginOperation("Creating Chat Session");
+        using var op = this.logger.BeginOperation("Creating Chat Session");
         ILLamaExecutor executor = CreateStatefulExecutor<TExecutor>(model);
         var chatSession = new ChatSession(executor);
         op.Complete();
@@ -139,19 +147,24 @@ public class IlLamaFactory : ILLamaFactory
     {
         return new InteractiveExecutor(model);
     }
+
     public InstructExecutor CreateInstructExecutor(LLamaContext model)
     {
         return new InstructExecutor(model);
     }
 
+    /*LLamaContext model*/
+
     /// <summary>
     /// Creates a  StatelessExecutor using specified model
     /// </summary>
     /// <param name="model"></param>
+    /// <param name="params"></param>
+    /// <param name="logger"></param>
     /// <typeparam name="TExecutor"></typeparam>
     /// <returns></returns>
-    public StatelessExecutor CreateStateLessExecutor<TExecutor>(LLamaContext model) where TExecutor : StatelessExecutor, ILLamaExecutor
+    public StatelessExecutor CreateStateLessExecutor<TExecutor>(LLamaWeights model, IContextParams @params, Microsoft.Extensions.Logging.ILogger? logger = null) where TExecutor : StatelessExecutor, ILLamaExecutor
     {
-        return new StatelessExecutor(model);
+        return new StatelessExecutor(model, @params, logger);
     }
 }

@@ -25,7 +25,9 @@ dotnet ef database update
 
 Download and install docker desktop
 
-docker run -d --restart unless-stopped --name seq -e ACCEPT_EULA=Y -v C:\Temp\logs:/Data -p8081:80 datalust/seq:latest
+docker run -d --restart unless-stopped --name seq -e ACCEPT_EULA=Y -v C:\Temp\logs:/Data -p5341:80 datalust/seq:latest
+ 
+{ "Name": "Seq", "Args": { "serverUrl": "http://localhost:5341" } }
 
 dotnet add package Microsoft.EntityFrameworkCore.Sqlite
 

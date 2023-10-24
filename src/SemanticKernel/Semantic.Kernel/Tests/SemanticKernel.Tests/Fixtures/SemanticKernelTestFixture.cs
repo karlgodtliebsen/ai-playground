@@ -6,8 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using OpenAI.Client.Configuration;
-
-using SemanticKernel.Tests.Configuration;
+using SemanticKernel.Domain.Configuration;
 
 namespace SemanticKernel.Tests.Fixtures;
 

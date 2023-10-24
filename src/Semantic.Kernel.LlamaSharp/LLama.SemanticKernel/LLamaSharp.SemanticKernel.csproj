@@ -33,8 +33,8 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta3" />
-    <PackageReference Include="LLamaSharp" Version="0.5.1" />
-    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.5.1" />
+    <PackageReference Include="LLamaSharp" Version="0.6.0" />
+    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.6.0" />
 	</ItemGroup>
 
 

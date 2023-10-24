@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace SemanticKernel.Tests.Configuration;
+namespace SemanticKernel.Domain.Configuration;
 
 public static class HuggingFaceConfigurator
 {

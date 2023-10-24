@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-namespace SemanticKernel.Tests.Utils;
+namespace SemanticKernel.Domain.Utils;
 
 public struct XmlNodeInfo
 {
