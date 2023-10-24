@@ -30,10 +30,12 @@ public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApp
     private bool useDocker = false;
 
     public ILogger Logger { get; private set; } = default!;
+    public Microsoft.Extensions.Logging.ILogger MsLogger { get; private set; } = default!;
 
     public string UserId { get; set; } = "01HBPGFX6ESEK2NMZKJ19KDCAA";//Ulid.NewUlid().ToString();
     public string Environment { get; set; } = "IntegrationTests";
 
+    private TestContainerDockerLauncher? launcher = default!;
 
     /// <inheritdoc />
     public IntegrationTestWebApplicationFactory()
@@ -74,8 +76,6 @@ public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApp
         return (T)this;
     }
 
-    private TestContainerDockerLauncher? launcher = default!;
-
     private void StartDocker()
     {
         launcher = Services.GetRequiredService<TestContainerDockerLauncher>();
@@ -91,7 +91,6 @@ public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApp
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         var path = Path.GetDirectoryName(typeof(TEntryPoint).Assembly.Location);
-        //var path = AppDomain.CurrentDomain.BaseDirectory;
         builder.UseContentRoot(path!);
         builder.UseEnvironment(Environment);
         base.ConfigureWebHost(builder);
@@ -103,7 +102,6 @@ public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApp
         builder.ConfigureTestServices(services =>
          {
              services.AddSingleton(CreateHttpContext());
-             services.AddTransient<ILogger>((_) => Log.Logger);
              SetupLogging(services);
              services.AddScoped(_ => TestClaimsProvider.WithAdministratorClaims());
              if (useDocker && configuration is not null)
@@ -123,17 +121,9 @@ public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApp
 
     private void ConfigureLogging()
     {
-        if (configuration is null)
-        {
-            throw new InvalidOperationException("Configuration is null");
-        }
-        var cfg = Observability.CreateLoggerConfigurationUsingAppSettings(configuration);
-        if (outputHelper is not null)
-        {
-            cfg = cfg.WriteTo.TestOutput(outputHelper);
-        }
-        Log.Logger = cfg.CreateLogger();
         Logger = Services.GetRequiredService<ILogger>();
+        var loggerFactory = Services.GetRequiredService<ILoggerFactory>();
+        MsLogger = loggerFactory.CreateLogger("Test");
     }
 
     private void SetupDockerSupport(IServiceCollection services, IConfiguration cfg)
@@ -149,6 +139,15 @@ public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApp
         {
             services.AddLogging(logging =>
             {
+                if (configuration is null)
+                {
+                    throw new InvalidOperationException("Configuration is null");
+                }
+                var cfg = Observability.CreateLoggerConfigurationUsingAppSettings(configuration);
+                cfg = cfg.WriteTo.TestOutput(outputHelper);
+                Log.Logger = cfg.CreateLogger();
+                services.AddSingleton<Serilog.ILogger>(Log.Logger);
+                services.AddSingleton<Microsoft.Extensions.Logging.ILogger>(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger("test"));
                 var useScopes = logging.UsesScopes();
                 logging.ClearProviders();
                 logging.AddConsole();
@@ -161,6 +160,15 @@ public abstract class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApp
         {
             services.AddLogging(logging =>
             {
+                if (configuration is null)
+                {
+                    throw new InvalidOperationException("Configuration is null");
+                }
+                var cfg = Observability.CreateLoggerConfigurationUsingAppSettings(configuration);
+                cfg = cfg.WriteTo.TestOutput(outputHelper);
+                Log.Logger = cfg.CreateLogger();
+                services.AddSingleton<Serilog.ILogger>(Log.Logger);
+                services.AddSingleton<Microsoft.Extensions.Logging.ILogger>(sp => sp.GetRequiredService<ILoggerFactory>().CreateLogger("test"));
                 var useScopes = logging.UsesScopes();
                 logging.AddConsole();
                 logging.AddDebug();

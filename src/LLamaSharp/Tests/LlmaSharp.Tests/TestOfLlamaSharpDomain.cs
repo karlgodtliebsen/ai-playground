@@ -1,4 +1,6 @@
-﻿using LLama;
+﻿using System.Text;
+
+using LLama;
 using LLama.Common;
 
 using LlamaSharp.Tests.Fixtures;
@@ -44,7 +46,7 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
 
 
     [Fact]
-    public void VerifyThatLLamaCanExecuteInteractiveExecutor()
+    public async Task VerifyThatLLamaCanExecuteInteractiveExecutor()
     {
         string userId = factory.UserId;
         var sessionStateService = factory.Services.GetRequiredService<IContextStateRepository>();
@@ -68,23 +70,23 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
         sessionStateService.LoadSession(session, userId, true);
 
         var prompt = Prompt;
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
 
         prompt = "What is the largest city in North America?";
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
         prompt = "What is the largest city in South America?";
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
         prompt = "What is the largest city in Asia?";
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
 
         prompt = "No thank you";
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
 
         sessionStateService.SaveSession(session, userId, true);
     }
 
     [Fact]
-    public void VerifyThatLLamaExecuteInteractiveExecutorCanHandleSession()
+    public async Task VerifyThatLLamaExecuteInteractiveExecutorCanHandleSession()
     {
         string userId = Ulid.NewUlid().ToString();
         var sessionStateService = factory.Services.GetRequiredService<IContextStateRepository>();
@@ -107,31 +109,35 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
         var session = new ChatSession(ex);
 
         var prompt = Prompt;
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
         sessionStateService.SaveSession(session, userId, true);
 
         session = new ChatSession(ex);
         sessionStateService.LoadSession(session, userId, true);
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
         sessionStateService.SaveSession(session, userId, true);
 
         //sessionStateService.RemoveAllState(userId);
     }
 
-    private void RunPrompt(ChatSession session, string prompt)
+    private async Task RunPrompt(ChatSession session, string prompt)
     {
-        throw new NotImplementedException();
-        //var textBuilder = new StringBuilder();
-        //output.WriteLine(prompt);
-        //foreach (var text in session.ChatAsync(prompt, new InferenceParams()
-        //{
-        //    Temperature = 0.6f,
-        //    AntiPrompts = new List<string> { "User:" }
-        //}))
-        //{
-        //    textBuilder.Append(text);
-        //}
-        //output.WriteLine(textBuilder.ToString());
+        var textBuilder = new StringBuilder();
+        logger.Debug(prompt);
+
+        var texts = session.ChatAsync(prompt, new InferenceParams()
+        {
+            Temperature = 0.6f,
+            AntiPrompts = new List<string>
+            {
+                "User:"
+            }
+        });
+        await foreach (var text in texts)
+        {
+            textBuilder.Append(text);
+        }
+        logger.Debug(textBuilder.ToString());
     }
 
 

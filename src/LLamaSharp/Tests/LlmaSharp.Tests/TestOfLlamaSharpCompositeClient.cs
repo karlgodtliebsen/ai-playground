@@ -23,7 +23,6 @@ public sealed class TestOfLlamaSharpCompositeClient : IClassFixture<IntegrationT
 {
     private readonly IntegrationTestWebApplicationFactory factory;
     private readonly ILogger logger;
-
     private readonly LLamaModelOptions options;
 
     //OBS: Remember to download a model and place it in the models folder. Update appsettings files

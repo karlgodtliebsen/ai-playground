@@ -25,11 +25,15 @@ namespace LlamaSharp.Tests;
 
 public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplicationFactory>, IDisposable
 {
+    private readonly ITestOutputHelper output;
     private readonly IntegrationTestWebApplicationFactory factory;
 
     public TestOfConfiguration(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
-        this.factory = factory.WithOutputLogSupport(output).Build<IntegrationTestWebApplicationFactory>();
+        this.output = output;
+        this.factory = factory
+            .WithOutputLogSupport(output)
+            .Build<IntegrationTestWebApplicationFactory>();
     }
 
     public void Dispose()
@@ -38,11 +42,31 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
     }
 
     [Fact]
+    public void EmitLogEntry()
+    {
+        output.WriteLine("Started log test");
+
+        var seriLogger = factory.Services.GetService<ILogger>();
+        seriLogger.Information("Hello Serilog!");
+
+        factory.Logger.Information("Hello from Factory Serilog!");
+        factory.MsLogger.LogInformation("Hello Factory MsLog!");
+        //var msLogger = factory.Services.GetService<Microsoft.Extensions.Logging.ILogger>();
+        //msLogger.LogInformation("Hello MsLog!");
+
+        var loggerFactory = factory.Services.GetService<ILoggerFactory>();
+        var logger = loggerFactory.CreateLogger("Test");
+        logger.LogInformation("Hello ILogger!");
+        output.WriteLine("Ended log test");
+    }
+
+    [Fact]
     public void EnsureThatServiceConfigurationIsValid()
     {
         factory.Services.GetService<ILogger>().Should().NotBeNull();
 
         factory.Services.GetService<ILoggerFactory>().Should().NotBeNull();
+        factory.Services.GetService<Microsoft.Extensions.Logging.ILogger>().Should().NotBeNull();
         factory.Services.GetService<ILogger<object>>().Should().NotBeNull();
 
         factory.Services.GetService<ILLamaFactory>().Should().NotBeNull();

@@ -1,9 +1,13 @@
 ﻿using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticMemory;
+
 using OpenAI.Client.Configuration;
+
 using Semantic.Memory.Kafka.Streaming.NewsFeed.Tests.Fixtures;
+
 using Xunit.Abstractions;
 
 namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Tests;
