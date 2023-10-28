@@ -49,8 +49,10 @@ public class CompositeService : ICompositeService
         try
         {
             var userInput = CreateUserInput(input);
-            var outputs = interactiveExecutor.ChatUsingInteractiveExecutorWithTransformation(inferenceOptions, modelOptions, executionOptions, userInput);
+            var outputs = interactiveExecutor.ChatUsingInteractiveExecutorWithTransformation(inferenceOptions, modelOptions, executionOptions, userInput, cancellationToken);
             var result = string.Join("", outputs);
+            logger.Information("ChatSessionWithInstructionsExecutorAndNoRoleNames");
+            logger.Information(result);
             return result;
         }
         catch (Exception ex)
@@ -73,8 +75,10 @@ public class CompositeService : ICompositeService
         try
         {
             var userInput = CreateUserInput(input);
-            var outputs = interactiveExecutor.ChatUsingInteractiveExecutor(inferenceOptions, modelOptions, userInput);
+            var outputs = interactiveExecutor.ChatUsingInteractiveExecutor(inferenceOptions, modelOptions, userInput, cancellationToken);
             var result = string.Join("", outputs);
+            logger.Information("ChatSessionWithInstructionsExecutorAndRoleNames");
+            logger.Information(result);
             return result;
         }
         catch (Exception ex)
@@ -84,43 +88,6 @@ public class CompositeService : ICompositeService
         }
         //model.Dispose();
     }
-
-    //https://replicate.com/blog/how-to-prompt-llama
-
-    //TODO: consider https://github.com/SciSharp/LLamaSharp/blob/master/docs/ChatSession/save-load-session.md
-    //TODO: use ChatHistory 
-
-    //public async Task<string> GetEmbeddings(ExecutorInferMessage input, CancellationToken cancellationToken)
-
-
-    //SaveAndLoadSession
-    //InstructModeExecute
-    //InteractiveModeExecute
-    //LoadAndSaveState
-    //QuantizeModel
-    //StatelessModeExecute
-
-    //inferenceOptions.AntiPrompts = modelOptions.AntiPrompt!;
-    //inferenceOptions.AntiPrompts = new List<string> { "User:" }!;
-
-    //logger.Debug("Using Model Options: {@modelOptions}", modelOptions);
-    //logger.Debug("Using Inference Options: {@inferenceOptions}", inferenceOptions);
-    //AlignModelParameters(input, inferenceOptions, modelOptions);
-    //var prompt = File.ReadAllText("Assets/chat-with-bob.txt").Trim();
-    //InteractiveExecutor ex = new(new LLamaModel(new ModelParams(modelPath, contextSize: 1024, seed: 1337, gpuLayerCount: 5)));
-    //ChatSession session = new ChatSession(ex); // The only change is to remove the transform for the output text stream.
-    //var promptTemplate = await optionsService.GetSpecifiedSystemPromptTemplates("instruction", "1", cancellationToken);
-
-    //var (chatSession, model) = factory.CreateChatSession<InteractiveExecutor>(modelOptions,
-    //    (session =>
-    //        session.WithOutputTransform(new LLamaTransforms.KeywordTextOutputStreamTransform(
-    //        new string[] { "User:", "Bob:" },
-    //        redundancyLength: 8))));
-
-    ////modelStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
-    //var outputs = chatSession.Chat(userInput, inferenceOptions, cancellationToken);
-    //modelStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
-
 
     private void AlignModelParameters(ExecutorInferMessage input, InferenceOptions inferenceOptions, LLamaModelOptions modelOptions)
     {
@@ -137,11 +104,9 @@ public class CompositeService : ICompositeService
 
     private string CreateUserInput(ExecutorInferMessage input)
     {
+        //throw new NotImplementedException("Must be changed");
 
-        throw new NotImplementedException("Must be changed");
-
-
-        string userInput = input.Text;
+        string userInput = input!.Text;
 
         if (input is { UseDefaultPrompt: false, Prompt: not null })
         {

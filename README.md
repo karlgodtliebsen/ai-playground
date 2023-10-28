@@ -6,11 +6,11 @@ The purpose of this repository is to provide a playground for learning about usi
 
 ## Update October 2023
 The upcoming tasks are:
-- Rebuild Semantic Kernel and Semantic Memory and KafkaNewsFeed+Semantic Memory
-- Verify the new GGUF models
-- Look into new Wizard, Orca and Dolphin models
+- Rebuild Semantic Kernel and Semantic Memory and KafkaNewsFeed+Semantic Memory: In progress
+- Verify the new GGUF models.    Completed.
+- Look into new Wizard, Orca and Dolphin models. Completed,
 - OpenSource Model for OpenAI (Dolpin ?)
-- Use the integration og Semqntic Kernal and LLamaSharp
+- Use the integration og Semantic Kernal and LLamaSharp. In progress.
 - Better image classification
 
 
@@ -53,30 +53,41 @@ Recommentations from LlamaSharp:
 - https://huggingface.co/TheBloke/Llama-2-70B-Ensemble-v5-GGUF
 - llama-2-70b-ensemble-v5.Q4_K_M.gguf	Q4_K_M	4	41.42 GB	43.92 GB	medium, balanced quality - recommended
 
-
 #### OpenChat v3.2 Super - GGUF
 - https://huggingface.co/TheBloke/openchat_v3.2_super-GGUF
 - https://huggingface.co/openchat/openchat_v3.2_super
 
 
+## October 2023 Models
 
-## LlaMa Models - 2
+### Mistral Dolphin
+- dolphin-2.1-mistral-7b.Q4_K_M.gguf
+- 
+### Mistral OpenOrca
+- mistral-7b-openorca.Q4_K_M.gguf
+
+
+## Projects:
+
+### OpenAI:
+ OpenAI Clients Library with Tests and a Console and Wpf application that shows how to use it.
+
+### LLamaSharp:
+A dotnet Web API 'LLamaSharpApp.WebAPI' with Domain Project and aa Test project that show how to use it.
+
+
 Download a model like: 
-
+- llama-2-7b.Q4_0.gguf
 - llama-2-7b-guanaco-qlora.Q4_K_M.gguf (see references above)
 
 Add the Models to a folder and update the appsettings.json files with the path to the folder.
 I use: '/projects/AI/LlamaModels' to store the models.
 
-More info in the README.md file in the LlamaSharpApp.WebAPI project.
+More info can be found in the README.md file in the LlamaSharpApp.WebAPI project.
 
-### Qdrant Vector database:
-A dotnet Web API for Qdrant Vector database. 
-A replacement implementation of the NuGet package 'Qdrant.Client' can be found in 'AI.VectorDatabase.Qdrant' together with a Test project that show how to use it.
+### Microsoft SemanticKernel and LlamaSharp:
 
-
-### Conversation as a Platform:
-A dotnet Web API 'AI.CaaP.WebAPI' + 'AI.CaaP.Repository' + 'AI.CaaP' for working on a Conversation as a Platform experience, with a Test project that show how to use it.
+A Domain and Test Project for using LlamaSharp in SemanticKernel.
 
 ### Microsoft.SemanticKernel:
 A dotnet Test Project that uses the Microsoft Semantic Kernel Library (MSKLC) to play around with semantic kernel SDK
@@ -88,6 +99,12 @@ A dotnet Test Project that uses the early version of Microsoft Semantic Memory
 A dotnet Test Project that combines the early version of Microsoft Semantic Memory with Kafka streaming of NewsFeed
 
 
+### Qdrant Vector database:
+A dotnet Web API for Qdrant Vector database. 
+A replacement implementation of the NuGet package 'Qdrant.Client' can be found in 'AI.VectorDatabase.Qdrant' together with a Test project that show how to use it.
+
+### Conversation as a Platform:
+A dotnet Web API 'AI.CaaP.WebAPI' + 'AI.CaaP.Repository' + 'AI.CaaP' for working on a Conversation as a Platform experience, with a Test project that show how to use it.
 
 ### Financial Agents:
 The start of a dotnet Test project that uses inspiration from LucidateFinAgent to build specific knowledge for Planner and Execution Concepts, and Building Tools
@@ -112,6 +129,7 @@ The projects uses other Open Source project:
 - NetEscapades.AspNetCore.SecurityHeader
 - Riok.Mapperly
 - LLamaSharp
+- LLamaSharp.SemanticKernel
 - LLamaSharp.Backend.Cpu
 - Llama models from Huggingface
 - Qdrant Vector Db
@@ -125,9 +143,12 @@ The projects uses other Open Source project:
 - Microsoft.ML.ImageAnalytics
 - Microsoft.ML.Vision
 - SciSharp.TensorFlow.Redist
-- Microsoft.SemanticKernel.xxx preview versions
+- Microsoft.SemanticKernel
+- Microsoft Semanticmenory
 - TestContainer
 - NSubstitue
+- Kafka Confluent Client
+- Kafka Streamwiz Client
 ```
 
 The WEB API projects uses Azure AD for Authentication:
@@ -196,7 +217,7 @@ Here are some repositories worth checking out:
 > https://huggingface.co/TheBloke:
 
 ```
-- v0.5.1 v0.5.1 Llama2 7b GGUF
+- llama-2-7b.Q4_0.gguf
 ```
 This model requires MetaAI registration/approval
 
@@ -245,7 +266,7 @@ Add this section into appsettings.json
 
 ```json
   "LlmaModel": {
-     "modelPath": "/projects/AI/LlamaModels/llama-2-7b.ggmlv3.q8_0.bin"
+     "modelPath": "/projects/AI/LlamaModels/llama-2-7b.Q4_0.gguf"
   }
 ```
 

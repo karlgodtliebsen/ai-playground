@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Semantic.Memory.Kafka.Streaming.NewsFeed.Configuration;
+using Semantic.Memory.Kafka.Streaming.NewsFeed.Domain;
 
-using SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
-using SemanticMemory.Kafka.StreamingNewsFeed.Domain;
-
-namespace SemanticMemory.Kafka.StreamingNewsFeed.HostServices;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.HostServices;
 
 public class KafkaConsumerService : BackgroundService
 {

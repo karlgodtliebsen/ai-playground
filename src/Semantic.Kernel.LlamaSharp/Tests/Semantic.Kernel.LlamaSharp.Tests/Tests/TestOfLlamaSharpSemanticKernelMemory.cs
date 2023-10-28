@@ -1,8 +1,10 @@
-﻿using AI.Test.Support.DockerSupport;
+﻿using System.Security.Cryptography;
+
+using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.Configuration;
 using AI.VectorDatabase.Qdrant.VectorStorage;
-using AI.VectorDatabases.MemoryStore.QdrantSemanticKernelFactory;
+using AI.VectorDatabases.MemoryStore.SemanticKernelSupport;
 
 using LLama;
 using LLama.Common;
@@ -91,12 +93,12 @@ public class TestOfLlamaSharpSemanticKernelMemory //: IAsyncLifetime
         var memoryStore = await memoryStoreFactory.Create(MemoryCollectionName, qdrantOptions.DefaultDimension, distance: qdrantOptions.DefaultDistance, cancellationToken: CancellationToken.None);
 
         var modelPath = this.llamaModelOptions.ModelPath;
-        var seed = 1337;
+        uint seed = 1337;
 
         // Load weights into memory
         var parameters = new ModelParams(modelPath)
         {
-            Seed = seed,
+            Seed = (uint)RandomNumberGenerator.GetInt32(int.MaxValue),
             EmbeddingMode = true
         };
 

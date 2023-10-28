@@ -1,6 +1,6 @@
 ﻿using Microsoft.SemanticKernel.Planning;
 
-namespace SemanticKernel.Tests.Utils;
+namespace SemanticKernel.Domain.Utils;
 
 
 // .NET 8 and the System.Text.Json v8.0.0 nuget package include built-in support for ReadOnlyMemory.

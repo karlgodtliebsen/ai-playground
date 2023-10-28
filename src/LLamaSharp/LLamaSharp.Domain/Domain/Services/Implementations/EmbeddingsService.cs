@@ -1,4 +1,7 @@
-﻿using LLamaSharp.Domain.Domain.Models;
+﻿using LLama;
+
+using LLamaSharp.Domain.Domain.Models;
+
 using SerilogTimings.Extensions;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;
@@ -34,9 +37,10 @@ public class EmbeddingsService : IEmbeddingsService
     public async Task<float[]> GetEmbeddings(EmbeddingsMessage input, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("Creating Embeddings");
-        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
-        var embedder = factory.CreateEmbedder(modelOptions);
-        var embeddings = embedder.GetEmbeddings(input.Text);
+        var modelOptions = await optionsService.CoalsceLlamaModelOptions(input.ModelOptions, input.UserId, cancellationToken);
+        using var model = LLamaWeights.LoadFromFile(modelOptions);
+        var embedder = factory.CreateEmbedder(model, modelOptions);
+        var embeddings = embedder.GetEmbeddings(input.Text!);
         op.Complete();
         return embeddings;
     }

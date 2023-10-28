@@ -9,7 +9,7 @@ public sealed class LlamaModelRequestResponse
 {
 
     /// <summary>Model context size (n_ctx)</summary>
-    public int? ContextSize { get; set; } = 4096;
+    public uint? ContextSize { get; set; } = 4096;
 
     /// <summary>
     /// Number of layers to run in VRAM / GPU memory (n_gpu_layers)

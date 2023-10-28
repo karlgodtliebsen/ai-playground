@@ -1,14 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
-
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Search;
-
 using OneOf;
-
 using SKMemoryRecord = Microsoft.SemanticKernel.Memory.MemoryRecord;
 
-namespace AI.VectorDatabases.MemoryStore.QdrantSemanticKernelFactory;
+namespace AI.VectorDatabases.MemoryStore.SemanticKernelSupport;
 
 public class QdrantSemanticKernelMemoryStore : IQdrantSemanticKernelMemoryStore
 {

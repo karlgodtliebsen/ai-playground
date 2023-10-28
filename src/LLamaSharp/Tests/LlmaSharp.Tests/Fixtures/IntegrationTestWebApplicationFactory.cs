@@ -19,24 +19,23 @@ public sealed class IntegrationTestWebApplicationFactory : IntegrationTestWebApp
         {
             Endpoint = endpointUrl,
         };
-        services.AddSingleton<IOptions<LlamaClientOptions>>(Options.Create(options));
+        services.AddSingleton(Options.Create(options));
         LLamaConfigurationClient ConfigClient(HttpClient c, IServiceProvider sp)
         {
             var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
             var client = this.CreateClientWithTestAuth(claimsProvider);
             return new LLamaConfigurationClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
         }
-
-        services.AddHttpClient<ILLamaConfigurationClient, LLamaConfigurationClient>(ConfigClient)
-            .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
-            ;
-
         LLamaCompositeOperationsClient CompositeClient(HttpClient c, IServiceProvider sp)
         {
             var claimsProvider = sp.GetRequiredService<TestClaimsProvider>();
             var client = this.CreateClientWithTestAuth(claimsProvider);
             return new LLamaCompositeOperationsClient(client, sp.GetRequiredService<IOptions<LlamaClientOptions>>(), sp.GetRequiredService<ILogger>());
         }
+
+        services.AddHttpClient<ILLamaConfigurationClient, LLamaConfigurationClient>(ConfigClient)
+            .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())
+            ;
 
         services.AddHttpClient<ILLamaCompositeOperationsClient, LLamaCompositeOperationsClient>(CompositeClient)
             .AddPolicyHandler(GetCircuitBreakerPolicyForCustomerServiceNotFound())

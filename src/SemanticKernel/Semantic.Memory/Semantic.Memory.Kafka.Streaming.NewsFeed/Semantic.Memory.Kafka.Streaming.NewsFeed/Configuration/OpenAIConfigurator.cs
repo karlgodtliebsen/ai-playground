@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
 using Serilog;
 
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Configuration;
 
 public static class OpenAIConfigurator
 {

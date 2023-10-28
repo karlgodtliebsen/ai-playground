@@ -1,9 +1,8 @@
 ﻿using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
-
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AI.VectorDatabases.MemoryStore.QdrantSemanticKernelFactory;
+namespace AI.VectorDatabases.MemoryStore.SemanticKernelSupport;
 
 public class QdrantSemanticKernelMemoryStoreFactory : IQdrantSemanticKernelMemoryStoreFactory
 {

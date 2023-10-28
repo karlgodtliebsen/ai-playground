@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="LLamaSharp" Version="0.6.0" />
+    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.6.0" />
+
+    <PackageReference Include="Riok.Mapperly" Version="3.2.0" />
+    <PackageReference Include="SerilogTimings" Version="3.0.1" />
+    <PackageReference Include="OneOf" Version="3.0.263" />
+    <PackageReference Include="OneOf.Extended" Version="3.0.263" />
+    <PackageReference Include="OneOf.Monads" Version="1.21.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\AI.Library\AI.Library.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+  </ItemGroup>
+
+</Project>

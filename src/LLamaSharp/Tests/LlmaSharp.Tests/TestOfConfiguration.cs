@@ -25,11 +25,15 @@ namespace LlamaSharp.Tests;
 
 public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplicationFactory>, IDisposable
 {
+    private readonly ITestOutputHelper output;
     private readonly IntegrationTestWebApplicationFactory factory;
 
     public TestOfConfiguration(IntegrationTestWebApplicationFactory factory, ITestOutputHelper output)
     {
-        this.factory = factory.WithOutputLogSupport(output).Build<IntegrationTestWebApplicationFactory>();
+        this.output = output;
+        this.factory = factory
+            .WithOutputLogSupport(output)
+            .Build<IntegrationTestWebApplicationFactory>();
     }
 
     public void Dispose()
@@ -38,11 +42,31 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
     }
 
     [Fact]
+    public void EmitLogEntry()
+    {
+        output.WriteLine("Started log test");
+
+        var seriLogger = factory.Services.GetService<ILogger>();
+        seriLogger.Information("Hello Serilog!");
+
+        factory.Logger.Information("Hello from Factory Serilog!");
+        factory.MsLogger.LogInformation("Hello Factory MsLog!");
+        //var msLogger = factory.Services.GetService<Microsoft.Extensions.Logging.ILogger>();
+        //msLogger.LogInformation("Hello MsLog!");
+
+        var loggerFactory = factory.Services.GetService<ILoggerFactory>();
+        var logger = loggerFactory.CreateLogger("Test");
+        logger.LogInformation("Hello ILogger!");
+        output.WriteLine("Ended log test");
+    }
+
+    [Fact]
     public void EnsureThatServiceConfigurationIsValid()
     {
         factory.Services.GetService<ILogger>().Should().NotBeNull();
 
         factory.Services.GetService<ILoggerFactory>().Should().NotBeNull();
+        factory.Services.GetService<Microsoft.Extensions.Logging.ILogger>().Should().NotBeNull();
         factory.Services.GetService<ILogger<object>>().Should().NotBeNull();
 
         factory.Services.GetService<ILLamaFactory>().Should().NotBeNull();
@@ -68,7 +92,9 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         factory.Services.GetService<IOptions<InferenceOptions>>().Should().NotBeNull();
 
         var options = factory.Services.GetRequiredService<IOptions<LLamaModelOptions>>().Value;
-        options.ModelPath.Should().Be("/projects/AI/LlamaModels/llama-2-7b.ggmlv3.q8_0.bin");
+        //options.ModelPath.Should().Be("/projects/AI/LlamaModels/llama-2-7b.Q4_0.gguf");
+        options.ModelPath.Should().Contain("/projects/AI/LlamaModels/");
+        options.ModelPath.Should().EndWith(".gguf");
 
         var iOptions = factory.Services.GetRequiredService<IOptions<InferenceOptions>>().Value;
         iOptions.AntiPrompts.Single().Should().Be("User:");
@@ -79,11 +105,11 @@ public sealed class TestOfConfiguration : IClassFixture<IntegrationTestWebApplic
         openApiOptions.Info.Should().NotBeNull();
         openApiOptions.SecurityScheme.Should().NotBeNull();
         openApiOptions.SecurityRequirement.Should().NotBeNull();
-        openApiOptions.Info.Description.Should().Be("LLamaSharpApp.WebAPI");
+        openApiOptions.Info!.Description.Should().Be("LLamaSharpApp.WebAPI");
         openApiOptions.Info.Title.Should().Be("Generic model requests");
         openApiOptions.Info.Version.Should().Be("v42");
 
-        openApiOptions.SecurityScheme.Description.Should().Be("hello - Enter JWT Bearer token **_only_*");
+        openApiOptions.SecurityScheme!.Description.Should().Be("hello - Enter JWT Bearer token **_only_*");
         openApiOptions.SecurityScheme.Type.Should().Be(SecuritySchemeType.ApiKey);
         openApiOptions.SecurityScheme.In.Should().Be(ParameterLocation.Header);
 

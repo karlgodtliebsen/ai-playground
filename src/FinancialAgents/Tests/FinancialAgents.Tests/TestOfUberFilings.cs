@@ -10,6 +10,8 @@ using FinancialAgents.Tests.Fixtures;
 
 using FluentAssertions;
 
+using LLama;
+
 using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Services;
 
@@ -230,9 +232,9 @@ public class TestOfUberFilings
 
     private async IAsyncEnumerable<PointStruct> CreateUberFilesPoints(IAsyncEnumerable<UberFile> files)
     {
-        var modelParams = ilLamaFactory.CreateModelParams();
-        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
-
+        var modelOptions = ilLamaFactory.CreateModelParams();
+        using var model = LLamaWeights.LoadFromFile(modelOptions);
+        var embedder = ilLamaFactory.CreateEmbedder(model, modelOptions);
         await foreach (var file in files)
         {
             var payload = new Dictionary<string, string>()
@@ -271,8 +273,10 @@ public class TestOfUberFilings
 
     private BatchRequestStruct CreateUberFilesBatch(IEnumerable<UberFile> files)
     {
-        var modelParams = ilLamaFactory.CreateModelParams();
-        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
+        var modelOptions = ilLamaFactory.CreateModelParams();
+        using var model = LLamaWeights.LoadFromFile(modelOptions);
+        var embedder = ilLamaFactory.CreateEmbedder(model, modelOptions);
+
         var numberOfFiles = files.Count();
         var ids = new List<string>(numberOfFiles);
         var payloads = new List<Dictionary<string, object>>(numberOfFiles);

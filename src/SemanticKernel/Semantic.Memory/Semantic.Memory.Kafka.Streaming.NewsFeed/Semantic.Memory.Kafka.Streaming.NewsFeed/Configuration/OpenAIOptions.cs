@@ -1,4 +1,4 @@
-﻿namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
+﻿namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Configuration;
 
 public class OpenAIOptions
 {

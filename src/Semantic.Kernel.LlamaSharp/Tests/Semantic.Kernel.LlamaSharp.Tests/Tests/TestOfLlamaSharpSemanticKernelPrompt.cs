@@ -79,7 +79,7 @@ public class TestOfLlamaSharpSemanticKernelPrompt : IAsyncLifetime
         // Load weights into memory
         var parameters = new ModelParams(modelPath)
         {
-            Seed = RandomNumberGenerator.GetInt32(int.MaxValue),
+            Seed = (uint)RandomNumberGenerator.GetInt32(int.MaxValue),
         };
         using var model = LLamaWeights.LoadFromFile(parameters);
         var ex = new StatelessExecutor(model, parameters);

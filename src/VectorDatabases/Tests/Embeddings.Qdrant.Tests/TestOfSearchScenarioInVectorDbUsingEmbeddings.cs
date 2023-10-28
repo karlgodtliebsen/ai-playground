@@ -60,7 +60,7 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings : IAsyncLifetime
         this.hostApplicationFactory = fixture.WithOutputLogSupport<TestFixtureBaseWithDocker>(output).WithQdrantSupport().Build();
         this.services = hostApplicationFactory.Services;
         var options = services.GetRequiredService<IOptions<LLamaModelOptions>>().Value;
-        this.modelFilesPath = Path.GetFullPath(options.ModelPath);
+        this.modelFilesPath = Path.GetFullPath(options.ModelPath)!;
         this.ilLamaFactory = services.GetRequiredService<ILLamaFactory>();
         this.logger = services.GetRequiredService<ILogger>();
     }
@@ -93,19 +93,19 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings : IAsyncLifetime
     //NOTE: uses all the downloaded models. This is very time consuming, so...
     //[Theory]
     [Theory(Skip = "Very time consuming. Download the models before running this test")]
-    [InlineData("wizardLM-7B.ggmlv3.q4_1.bin")]
-    [InlineData("ggml-vic13b-uncensored-q4_1.bin")]
-    [InlineData("ggml-vic13b-uncensored-q5_0.bin")]
-    [InlineData("ggml-vicuna-13B-1.1-q4_0.bin")]
-    [InlineData("ggml-vicuna-13B-1.1-q8_0.bin")]
-    [InlineData("wizardlm-13b-v1.1-superhot-8k.ggmlv3.q4_1.bin")]
-    public async Task UseDifferentModels(string model)
+    [InlineData("llama-2-7b.Q4_0.gguf")]
+    [InlineData("guanaco-13b-uncensored.Q4_K_M.gguf")]
+    [InlineData("guanaco-7b-uncensored.Q4_K_M.gguf")]
+    [InlineData("dolphin-2.1-mistral-7b.Q5_K_M.gguf")]
+    [InlineData("mistral-7b-openorca.Q4_K_M.gguf")]
+    public async Task UseDifferentModels(string modelName)
     {
         //fi to point at folder for all the models, outside of this solution
-        modelFilesPath = Path.Combine(Path.GetDirectoryName(modelFilesPath), model);
-        var modelParams = ilLamaFactory.CreateModelParams();
-        modelParams.ModelPath = modelFilesPath;
-        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
+        modelFilesPath = Path.Combine(Path.GetDirectoryName(modelFilesPath), modelName);
+        var modelOptions = ilLamaFactory.CreateModelParams();
+        modelOptions.ModelPath = modelFilesPath;
+        using var model = LLamaWeights.LoadFromFile(modelOptions);
+        var embedder = ilLamaFactory.CreateEmbedder(model, modelOptions);
         await RunEmbedding(embedder);
     }
 
@@ -113,8 +113,9 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings : IAsyncLifetime
     [Fact]
     public async Task AddEmbeddingVectorToCollectionAndUseSearchToFindBook()
     {
-        var modelParams = ilLamaFactory.CreateModelParams();
-        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
+        var modelOptions = ilLamaFactory.CreateModelParams();
+        using var model = LLamaWeights.LoadFromFile(modelOptions);
+        var embedder = ilLamaFactory.CreateEmbedder(model, modelOptions);
         await RunEmbedding(embedder);
     }
 
@@ -187,8 +188,9 @@ public class TestOfSearchScenarioInVectorDbUsingEmbeddings : IAsyncLifetime
             new Document { Name = "The Left Hand of Darkness", Description = "A human ambassador is sent to a planet where the inhabitants are genderless and can change gender at will.", Author = "Ursula K. Le Guin", Year = 1969 },
             new Document { Name = "The Three-Body Problem", Description = "Humans encounter an alien civilization that lives in a dying system.", Author = "Liu Cixin", Year = 2008 }
         };
-        var modelParams = ilLamaFactory.CreateModelParams();
-        var embedder = ilLamaFactory.CreateEmbedder(modelParams);
+        var modelOptions = ilLamaFactory.CreateModelParams();
+        using var model = LLamaWeights.LoadFromFile(modelOptions);
+        var embedder = ilLamaFactory.CreateEmbedder(model, modelOptions);
 
         var points = new PointCollection();
         foreach (var document in documents)

@@ -1,13 +1,10 @@
 ﻿using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using SemanticKernel.Tests.Fixtures;
-
 using Xunit.Abstractions;
 
-namespace SemanticKernel.Tests.preview.tests;
+namespace SemanticKernel.Tests;
 
 [Collection("SemanticKernel Collection")]
 public class TestOfSemanticKernelExample12SequentialPlanner : IAsyncLifetime

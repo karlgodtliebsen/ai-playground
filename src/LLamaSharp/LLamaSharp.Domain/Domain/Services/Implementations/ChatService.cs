@@ -53,9 +53,8 @@ public class ChatService : IChatService
         contextStateRepository.LoadState(model, chatMessage.UserId, chatMessage.UsePersistedModelState);
 
         var userInput = BuildUserInput(chatMessage);
-        var outputs = chatSession.Chat(userInput, inferenceOptions, cancellationToken);
+        var outputs = chatSession.ChatAsync(userInput, inferenceOptions, cancellationToken);
         var result = string.Join("", outputs);
-
         contextStateRepository.SaveState(model, chatMessage.UserId, chatMessage.UsePersistedModelState);
         model.Dispose();        //TODO: check if this is needed - ResettableLLamaModel
         return result;

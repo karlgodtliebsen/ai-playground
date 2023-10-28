@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Tests.Configuration;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Tests.Configuration;
 
 public static class BingConfigurator
 {

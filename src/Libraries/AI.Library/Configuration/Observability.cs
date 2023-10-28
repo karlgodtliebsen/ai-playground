@@ -39,6 +39,8 @@ public static class Observability
             .MinimumLevel.Debug()
             .Enrich.FromLogContext()
             .ReadFrom.Configuration(configuration)
+            .WriteTo.Console()
+            .WriteTo.Debug()
             .ConfigureOpenTelemetry(options)
             .Destructure.UsingAttributes();
         return cfg;

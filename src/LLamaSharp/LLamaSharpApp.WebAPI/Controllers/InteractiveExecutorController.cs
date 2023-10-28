@@ -1,5 +1,7 @@
 ﻿using System.Text;
 
+using Asp.Versioning;
+
 using LLamaSharp.Domain.Domain.Services;
 
 using LLamaSharpApp.WebAPI.Controllers.Mappers;

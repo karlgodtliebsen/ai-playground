@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace AI.Library.HttpUtils.LibraryConfiguration;
 
@@ -19,16 +17,16 @@ public static class ApiVersionConfigurator
     /// <returns></returns>
     public static IServiceCollection AddApiVersionRules(this IServiceCollection services, int majorVersion = 1, int minorVersion = 0)
     {
-        services.AddApiVersioning(opt =>
-        {
-            opt.DefaultApiVersion = new ApiVersion(majorVersion, minorVersion);
-            opt.AssumeDefaultVersionWhenUnspecified = true;
-            opt.ReportApiVersions = true;
-            opt.ApiVersionReader = ApiVersionReader.Combine(
-                new UrlSegmentApiVersionReader(),
-                new HeaderApiVersionReader("x-api-version"),
-                new MediaTypeApiVersionReader("x-api-version"));
-        });
+        //services.AddApiVersioning(opt =>
+        //{
+        //    opt.DefaultApiVersion = new ApiVersion(majorVersion, minorVersion);
+        //    opt.AssumeDefaultVersionWhenUnspecified = true;
+        //    opt.ReportApiVersions = true;
+        //    opt.ApiVersionReader = ApiVersionReader.Combine(
+        //        new UrlSegmentApiVersionReader(),
+        //        new HeaderApiVersionReader("x-api-version"),
+        //        new MediaTypeApiVersionReader("x-api-version"));
+        //});
         return services;
     }
 }

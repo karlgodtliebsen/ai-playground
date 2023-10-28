@@ -1,5 +1,8 @@
-﻿using LLamaSharp.Domain.Domain.Models;
+﻿using LLama;
+
+using LLamaSharp.Domain.Domain.Models;
 using LLamaSharp.Domain.Domain.Repositories;
+
 using SerilogTimings.Extensions;
 
 namespace LLamaSharp.Domain.Domain.Services.Implementations;
@@ -36,12 +39,13 @@ public class TokenizationService : ITokenizationService
     public async Task<int[]> Tokenize(TokenizeMessage input, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("Running Tokenize");
-
-        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
-        var model = factory.CreateContext(modelOptions);
-        contextStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
-        var tokens = model.Tokenize(input.Text).ToArray();
-        contextStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
+        //var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
+        var modelOptions = await optionsService.CoalsceLlamaModelOptions(input.ModelOptions, input.UserId, cancellationToken);
+        using var model = LLamaWeights.LoadFromFile(modelOptions);
+        var ctx = factory.CreateContext(model, modelOptions);
+        contextStateRepository.LoadState(ctx, input.UserId, input.UsePersistedModelState);
+        var tokens = ctx.Tokenize(input.Text).ToArray();
+        contextStateRepository.SaveState(ctx, input.UserId, input.UsePersistedModelState);
         op.Complete();
         return tokens;
     }
@@ -55,11 +59,13 @@ public class TokenizationService : ITokenizationService
     public async Task<string> DeTokenize(DeTokenizeMessage input, CancellationToken cancellationToken)
     {
         using var op = logger.BeginOperation("Running DeTokenize");
-        var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
-        var model = factory.CreateContext(modelOptions);
-        contextStateRepository.LoadState(model, input.UserId, input.UsePersistedModelState);
-        var text = model.DeTokenize(input.Tokens);
-        contextStateRepository.SaveState(model, input.UserId, input.UsePersistedModelState);
+        //var modelOptions = await optionsService.GetLlamaModelOptions(input.UserId, cancellationToken);
+        var modelOptions = await optionsService.CoalsceLlamaModelOptions(input.ModelOptions, input.UserId, cancellationToken);
+        using var model = LLamaWeights.LoadFromFile(modelOptions);
+        var ctx = factory.CreateContext(model, modelOptions);
+        contextStateRepository.LoadState(ctx, input.UserId, input.UsePersistedModelState);
+        var text = ctx.DeTokenize(input.Tokens);
+        contextStateRepository.SaveState(ctx, input.UserId, input.UsePersistedModelState);
         op.Complete();
         return text;
     }

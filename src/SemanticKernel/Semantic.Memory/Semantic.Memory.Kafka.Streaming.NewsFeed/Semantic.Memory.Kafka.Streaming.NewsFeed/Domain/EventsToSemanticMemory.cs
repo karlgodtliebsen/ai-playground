@@ -1,8 +1,7 @@
 ﻿using System.Text;
-
 using Microsoft.SemanticMemory;
 
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Domain;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Domain;
 
 public interface IEventsToSemanticMemory
 {

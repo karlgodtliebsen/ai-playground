@@ -9,10 +9,6 @@ namespace LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;
 /// </summary>
 public class ExecutorInferRequest : TextMessageRequest
 {
-    /// <summary>
-    /// Request specific options
-    /// </summary>
-    public InferenceRequestResponse? InferenceOptions { get; set; } = default!;
 
     /// <summary>
     /// Discriminator for the statefull Executor type

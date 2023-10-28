@@ -22,7 +22,7 @@ public class TestClaimsProvider
     public static TestClaimsProvider WithAdministratorClaims()
     {
         var provider = new TestClaimsProvider();
-        provider.Claims.Add(new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()));//Ulid.NewUlid().ToString();
+        provider.Claims.Add(new Claim(ClaimTypes.NameIdentifier, Ulid.NewUlid().ToString()));
         provider.Claims.Add(new Claim(ClaimTypes.Name, "Administrator"));
         provider.Claims.Add(new Claim(ClaimTypes.Role, "Administrator"));
         return provider;

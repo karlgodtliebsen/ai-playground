@@ -1,11 +1,12 @@
-﻿using Microsoft.SemanticKernel.AI.ChatCompletion;
-using Microsoft.SemanticKernel.Orchestration;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Text;
+
+using Microsoft.SemanticKernel.AI.ChatCompletion;
+using Microsoft.SemanticKernel.Orchestration;
 
 namespace LLamaSharp.SemanticKernel.ChatCompletion;
 
-internal sealed class LLamaSharpChatResult : IChatStreamingResult
+internal sealed class LLamaSharpChatResult : IChatResult
 {
     private readonly ModelResult _modelResult;
     private readonly IAsyncEnumerable<string> _stream;

@@ -16,8 +16,6 @@
     <PackageReference Include="OneOf.Extended" Version="3.0.263" />
     <PackageReference Include="OneOf.Monads" Version="1.21.0" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
-
     <PackageReference Include="SerilogTimings" Version="3.0.1" />
 
   </ItemGroup>

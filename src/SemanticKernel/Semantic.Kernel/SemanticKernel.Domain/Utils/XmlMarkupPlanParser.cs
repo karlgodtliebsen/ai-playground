@@ -1,9 +1,8 @@
 ﻿using System.Xml;
-
 using Microsoft.SemanticKernel.Orchestration;
 using Microsoft.SemanticKernel.Planning;
 
-namespace SemanticKernel.Tests.Utils;
+namespace SemanticKernel.Domain.Utils;
 
 public static class XmlMarkupPlanParser
 {

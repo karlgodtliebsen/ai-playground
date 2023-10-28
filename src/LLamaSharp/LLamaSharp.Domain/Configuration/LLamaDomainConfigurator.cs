@@ -30,7 +30,7 @@ public static class LLamaDomainConfigurator
             .AddLLamaRepository(configuration);
 
         services
-            .AddTransient<ILLamaFactory, IlLamaFactory>()
+            .AddTransient<ILLamaFactory, LLamaFactory>()
             .AddTransient<IOptionsService, OptionsService>()
             .AddTransient<IChatService, ChatService>()
             .AddTransient<IEmbeddingsService, EmbeddingsService>()

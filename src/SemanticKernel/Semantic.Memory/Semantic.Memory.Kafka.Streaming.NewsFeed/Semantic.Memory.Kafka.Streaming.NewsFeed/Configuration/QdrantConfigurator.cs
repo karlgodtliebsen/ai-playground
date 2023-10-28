@@ -2,7 +2,7 @@
 using Microsoft.SemanticMemory;
 using Microsoft.SemanticMemory.MemoryStorage;
 
-namespace SemanticMemory.Kafka.StreamingNewsFeed.Configuration;
+namespace Semantic.Memory.Kafka.Streaming.NewsFeed.Configuration;
 
 public static class QdrantConfigurator
 {

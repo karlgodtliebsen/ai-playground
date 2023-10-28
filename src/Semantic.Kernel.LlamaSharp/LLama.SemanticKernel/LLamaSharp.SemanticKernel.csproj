@@ -5,7 +5,7 @@
 		<RootNamespace>LLamaSharp.SemanticKernel</RootNamespace>
 		<Nullable>enable</Nullable>
 		<LangVersion>10</LangVersion>
-		<Platforms>AnyCPU;x64;Arm64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -17,7 +17,6 @@
     <Copyright>MIT, SciSharp STACK $([System.DateTime]::UtcNow.ToString(yyyy))</Copyright>
     <RepositoryUrl>https://github.com/SciSharp/LLamaSharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageIconUrl>https://avatars3.githubusercontent.com/u/44989469?s=200&amp;v=4</PackageIconUrl>
     <PackageTags>LLama, LLM, GPT, ChatGPT, semantic-kernel, SciSharp</PackageTags>
     <Description>
       The integration of LLamaSharp ans semantic-kernel.
@@ -33,9 +32,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta2" />
-    <PackageReference Include="LLamaSharp" Version="0.5.1" />
-    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.5.1" />
+	  <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta3" />
+    <PackageReference Include="LLamaSharp" Version="0.6.0" />
+    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.6.0" />
 	</ItemGroup>
 
 

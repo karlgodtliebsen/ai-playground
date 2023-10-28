@@ -1,11 +1,12 @@
-﻿using Microsoft.SemanticKernel.AI.TextCompletion;
-using Microsoft.SemanticKernel.Orchestration;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Text;
+
+using Microsoft.SemanticKernel.AI.TextCompletion;
+using Microsoft.SemanticKernel.Orchestration;
 
 namespace LLamaSharp.SemanticKernel.TextCompletion;
 
-internal sealed class LLamaTextResult : ITextStreamingResult
+internal sealed class LLamaTextResult : ITextResult
 {
     private readonly IAsyncEnumerable<string> _text;
 

@@ -38,15 +38,15 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
     Bob is helpful, kind, honest, good at writing, and never fails to answer the User's requests immediately and with precision.
     User: Hello, Bob.
     Bob: Hello. How may I help you today?
-    User: Please tell me the largest city in EU.
-    Bob: Sure. The largest city in EU is Berlin, Germany.
+    User: Please tell me the largest city in the World
+    Bob: Sure. The largest city in the World is Tokyo, Japan.
     User:
 ";
     private static readonly string FullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
 
 
     [Fact]
-    public void VerifyThatLLamaCanExecuteInteractiveExecutor()
+    public async Task VerifyThatLLamaCanExecuteInteractiveExecutor()
     {
         string userId = factory.UserId;
         var sessionStateService = factory.Services.GetRequiredService<IContextStateRepository>();
@@ -70,23 +70,23 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
         sessionStateService.LoadSession(session, userId, true);
 
         var prompt = Prompt;
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
 
         prompt = "What is the largest city in North America?";
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
         prompt = "What is the largest city in South America?";
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
         prompt = "What is the largest city in Asia?";
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
 
         prompt = "No thank you";
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
 
         sessionStateService.SaveSession(session, userId, true);
     }
 
     [Fact]
-    public void VerifyThatLLamaExecuteInteractiveExecutorCanHandleSession()
+    public async Task VerifyThatLLamaExecuteInteractiveExecutorCanHandleSession()
     {
         string userId = Ulid.NewUlid().ToString();
         var sessionStateService = factory.Services.GetRequiredService<IContextStateRepository>();
@@ -109,30 +109,35 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
         var session = new ChatSession(ex);
 
         var prompt = Prompt;
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
         sessionStateService.SaveSession(session, userId, true);
 
         session = new ChatSession(ex);
         sessionStateService.LoadSession(session, userId, true);
-        RunPrompt(session, prompt);
+        await RunPrompt(session, prompt);
         sessionStateService.SaveSession(session, userId, true);
 
         //sessionStateService.RemoveAllState(userId);
     }
 
-    private void RunPrompt(ChatSession session, string prompt)
+    private async Task RunPrompt(ChatSession session, string prompt)
     {
         var textBuilder = new StringBuilder();
-        output.WriteLine(prompt);
-        foreach (var text in session.Chat(prompt, new InferenceParams()
+        logger.Debug(prompt);
+
+        var texts = session.ChatAsync(prompt, new InferenceParams()
         {
             Temperature = 0.6f,
-            AntiPrompts = new List<string> { "User:" }
-        }))
+            AntiPrompts = new List<string>
+            {
+                "User:"
+            }
+        });
+        await foreach (var text in texts)
         {
             textBuilder.Append(text);
         }
-        output.WriteLine(textBuilder.ToString());
+        logger.Debug(textBuilder.ToString());
     }
 
 
