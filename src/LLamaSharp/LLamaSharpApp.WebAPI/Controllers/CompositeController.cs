@@ -1,4 +1,6 @@
-﻿using LLamaSharp.Domain.Domain.DomainServices;
+﻿using Asp.Versioning;
+
+using LLamaSharp.Domain.Domain.DomainServices;
 
 using LLamaSharpApp.WebAPI.Controllers.Mappers;
 using LLamaSharpApp.WebAPI.Controllers.RequestsResponseModels;

@@ -1,4 +1,6 @@
-﻿using ImageClassification.Domain.Models;
+﻿using Asp.Versioning;
+
+using ImageClassification.Domain.Models;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
