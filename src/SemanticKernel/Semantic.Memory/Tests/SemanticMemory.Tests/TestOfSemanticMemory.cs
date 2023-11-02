@@ -76,7 +76,7 @@ public class TestOfSemanticMemory : IAsyncLifetime
     {
       service = service ?? throw new ConfigurationException("The vector DB instance is NULL");
       if (useForRetrieval)
-        this.AddSingleton<ISemanticMemoryVectorDb>(service);
+        this.AddSingleton<SemanticMemoryVectorDb>(service);
       if (useForIngestion)
         this._vectorDbs.Add(service);
       return this;

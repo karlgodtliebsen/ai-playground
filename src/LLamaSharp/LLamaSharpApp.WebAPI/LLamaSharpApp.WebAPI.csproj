@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LLamaSharp" Version="0.6.0" />
-    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.6.0" />
+    <PackageReference Include="LLamaSharp" Version="0.7.0" />
+    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="7.0.0-preview.6.22330.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />

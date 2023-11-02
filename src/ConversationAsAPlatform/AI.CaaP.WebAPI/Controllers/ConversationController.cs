@@ -2,6 +2,8 @@
 using AI.CaaP.Domain;
 using AI.CaaP.WebAPI.Controllers.Requests;
 
+using Asp.Versioning;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

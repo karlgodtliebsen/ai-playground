@@ -80,7 +80,7 @@ public sealed class UsersStateFileRepository : IUsersStateRepository
     /// <param name="cancellationToken"></param>
     public async Task PersistLlamaModelOptions(LLamaModelOptions options, string userId, CancellationToken cancellationToken)
     {
-        options.TensorSplits = Array.Empty<float>();
+        //options.TensorSplits = Array.Empty<float>();
         var fileName = GetFileName(userId, LlamaModelFile);
         await PersistObject(options, fileName, cancellationToken);
     }

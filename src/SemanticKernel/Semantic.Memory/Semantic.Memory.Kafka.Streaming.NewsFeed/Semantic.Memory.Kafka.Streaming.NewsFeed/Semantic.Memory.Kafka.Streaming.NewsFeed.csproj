@@ -46,15 +46,15 @@
     <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
 
-		<PackageReference Include="Streamiz.Kafka.Net" Version="1.5.0" />
-		<PackageReference Include="Streamiz.Kafka.Net.Metrics.OpenTelemetry" Version="1.5.0" />
-		<PackageReference Include="Streamiz.Kafka.Net.Metrics.Prometheus" Version="1.5.0" />
+		<PackageReference Include="Streamiz.Kafka.Net" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.Metrics.OpenTelemetry" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.Metrics.Prometheus" Version="1.5.1" />
 		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.Mock" Version="1.1.4" />
-		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes" Version="1.5.0" />
-		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes.Avro" Version="1.5.0" />
-		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes.Json" Version="1.5.0" />
-		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes.Protobuf" Version="1.5.0" />
-		<PackageReference Include="Streamiz.Kafka.Net.SerDes.CloudEvents" Version="1.5.0" />
+		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes.Avro" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes.Json" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes.Protobuf" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.SerDes.CloudEvents" Version="1.5.1" />
 
     <PackageReference Include="OneOf" Version="3.0.263" />
     <PackageReference Include="OneOf.Extended" Version="3.0.263" />
