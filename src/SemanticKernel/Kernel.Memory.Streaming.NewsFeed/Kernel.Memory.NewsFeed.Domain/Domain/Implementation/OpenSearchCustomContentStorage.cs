@@ -1,4 +1,6 @@
-﻿using Microsoft.SemanticMemory.ContentStorage;
+﻿using Kernel.Memory.NewsFeed.Domain.Util;
+
+using Microsoft.SemanticMemory.ContentStorage;
 
 using OpenSearch.Client;
 using OpenSearch.Net;
@@ -21,6 +23,7 @@ public class OpenSearchCustomContentStorage : IContentStorage
         this.openSearchClient = openSearchClient;
         this.openSearchLowLevelClient = openSearchLowLevelClient;
         this.logger = logger;
+
     }
 
     /// <inherit />
@@ -48,11 +51,21 @@ public class OpenSearchCustomContentStorage : IContentStorage
         return Task.CompletedTask;
     }
 
-    public async Task CreateIndexAsync(string index, CancellationToken cancellationToken)
+    private void CheckForErrors(StringResponse? response)
     {
-        PostData body = "";
-        var responseGraph = await openSearchLowLevelClient.Indices.CreateAsync<StringResponse>(index, body, ctx: cancellationToken);
-        CheckForErrors(responseGraph.DebugInformation);
+        if (response is null)
+        {
+            throw new OpenSearchException("Response is null");
+            logger.Debug(response.DebugInformation);
+        }
+
+        if (!response.Success)
+        {
+            throw new OpenSearchException("Request Failed ");
+            logger.Debug(response.DebugInformation);
+        }
+
+        CheckForErrors(response.DebugInformation);
     }
 
     private void CheckForErrors(string response)
@@ -61,6 +74,7 @@ public class OpenSearchCustomContentStorage : IContentStorage
         if (!ok)
         {
             logger.Debug(response);
+            throw new OpenSearchException("Request Failed \n" + response);
         }
     }
 
@@ -88,7 +102,7 @@ public class OpenSearchCustomContentStorage : IContentStorage
         using var reader = new StreamReader(contentStream, leaveOpen: false);
         var fileContent = await reader.ReadToEndAsync(cancellationToken);
         var responseGraph = await openSearchLowLevelClient.IndexAsync<StringResponse>(index, documentId, fileContent, ctx: cancellationToken);
-        CheckForErrors(responseGraph.DebugInformation);
+        CheckForErrors(responseGraph);
         return fileContent.Length;
     }
 
@@ -98,15 +112,15 @@ public class OpenSearchCustomContentStorage : IContentStorage
         using var reader = new StreamReader(contentStream, leaveOpen: false);
         var fileContent = await reader.ReadToEndAsync(cancellationToken);
         var responseGraph = await openSearchLowLevelClient.IndexAsync<StringResponse>(index, documentId, fileContent, ctx: cancellationToken);
-        CheckForErrors(responseGraph.DebugInformation);
+        CheckForErrors(responseGraph);
     }
-
 
     const string SearchTemplate = """{"query": {"match": {"_id": "#id#"}}}""";
     const string PlaceHolder = "#id#";
+
     private string CreateSearchExpression(string id)
     {
-        string pd = SearchTemplate.Replace(PlaceHolder, id);
+        var pd = SearchTemplate.Replace(PlaceHolder, id);
         return pd;
     }
 
@@ -114,8 +128,9 @@ public class OpenSearchCustomContentStorage : IContentStorage
     {
         //https://opensearch.org/docs/2.11/clients/OSC-example
         var parameters = new SearchRequestParameters();
-        string pd = CreateSearchExpression(id);
+        var pd = CreateSearchExpression(id);
         var searchResponse = await openSearchLowLevelClient.SearchAsync<SearchResponse<T>>(index, pd, parameters, cancellationToken);
+
         CheckForErrors(searchResponse.ApiCall.DebugInformation);
         if (searchResponse.Documents.Count == 0) return default;
         return searchResponse.Documents.FirstOrDefault()!;
@@ -129,13 +144,11 @@ public class OpenSearchCustomContentStorage : IContentStorage
         bool errIfNotFound = true,
         CancellationToken cancellationToken = default)
     {
+        var data = await Find<object>(index, documentId, cancellationToken);
+        if (data is null) return default;
 
-        CreateIndex(index);
 
-        var data = await Find<string>(index, documentId, cancellationToken);
-
-        //TODO: check if data is null
-        return new BinaryData(Array.Empty<byte>());
+        return new BinaryData(data);
     }
 
     /// <inherit />

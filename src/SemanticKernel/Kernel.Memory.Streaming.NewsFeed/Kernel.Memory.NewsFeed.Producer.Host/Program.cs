@@ -1,6 +1,5 @@
 ﻿using AI.Library.Configuration;
-
-using Kernel.Memory.NewsFeed.Domain.Domain.Implementation;
+using Kernel.Memory.NewsFeed.Domain.Util.Kafka;
 using Kernel.Memory.NewsFeed.Producer.Host.Configuration;
 
 using Microsoft.Extensions.DependencyInjection;

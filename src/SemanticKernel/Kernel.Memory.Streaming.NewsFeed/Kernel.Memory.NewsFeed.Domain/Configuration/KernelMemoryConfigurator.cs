@@ -1,6 +1,5 @@
 ﻿using Kernel.Memory.NewsFeed.Domain.Domain;
 using Kernel.Memory.NewsFeed.Domain.Domain.Implementation;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel.Connectors.Memory.Qdrant;
 using Microsoft.SemanticKernel.Memory;

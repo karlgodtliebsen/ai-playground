@@ -5,7 +5,7 @@ using Kernel.Memory.NewsFeed.Domain.Configuration;
 
 using Microsoft.Extensions.Options;
 
-namespace Kernel.Memory.NewsFeed.Domain.Domain.Implementation;
+namespace Kernel.Memory.NewsFeed.Domain.Util.Kafka;
 
 public sealed class KafkaAdminClient
 {

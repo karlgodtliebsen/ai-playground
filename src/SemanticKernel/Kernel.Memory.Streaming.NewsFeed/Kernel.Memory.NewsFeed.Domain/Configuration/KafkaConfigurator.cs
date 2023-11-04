@@ -1,5 +1,4 @@
-﻿using Kernel.Memory.NewsFeed.Domain.Domain.Implementation;
-
+﻿using Kernel.Memory.NewsFeed.Domain.Util.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Kernel.Memory.NewsFeed.Domain.Util.OpenSearch;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using OpenSearch.Client;
 using OpenSearch.Net;
 
@@ -18,6 +20,7 @@ public static class OpenSearchConfigurator
     public static IServiceCollection AddOpenSearch(this IServiceCollection services, OpenSearchConfiguration options)
     {
         services.AddSingleton(Options.Create(options));
+        services.AddTransient<IOpenSearchAdminClient, OpenSearchAdminClient>();
         services.AddSingleton(BuildOpenSearchClient(options));
         services.AddSingleton(BuildOpenSearchLowLevelClient(options));
         return services;
@@ -110,8 +113,5 @@ public static class OpenSearchConfigurator
         var client = new OpenSearchLowLevelClient(connectionSettings);
         return client;
     }
-
-
-
 
 }
