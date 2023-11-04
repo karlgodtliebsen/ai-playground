@@ -56,13 +56,12 @@ public class OpenSearchCustomContentStorage : IContentStorage
         if (response is null)
         {
             throw new OpenSearchException("Response is null");
-            logger.Debug(response.DebugInformation);
         }
 
         if (!response.Success)
         {
-            throw new OpenSearchException("Request Failed ");
             logger.Debug(response.DebugInformation);
+            throw new OpenSearchException("Request Failed \n" + response.DebugInformation);
         }
 
         CheckForErrors(response.DebugInformation);

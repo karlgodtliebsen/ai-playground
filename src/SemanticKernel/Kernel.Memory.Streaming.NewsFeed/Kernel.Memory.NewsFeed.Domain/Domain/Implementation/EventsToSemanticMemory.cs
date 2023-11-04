@@ -30,16 +30,15 @@ public sealed class EventsToSemanticMemory : IEventsToSemanticMemory
 
     public async Task AddMessage(string key, string message, CancellationToken cancellationToken)
     {
-        logger.Information($"Adding message to memory: {message}");
-        var tags = new TagCollection() { { "uri", key } };
-        //steps: steps
-        key = Base64Encode(key);
+        //logger.Information($"Adding message to memory: {message}");
+
         try
         {
+            var tags = new TagCollection() { { "uri", key } };
+            key = Base64Encode(key);
             await
             semanticMemoryClient
                 .ImportTextAsync(message, key, index: indexName, tags: tags, cancellationToken: cancellationToken);
-
         }
         catch (Exception ex)
         {
