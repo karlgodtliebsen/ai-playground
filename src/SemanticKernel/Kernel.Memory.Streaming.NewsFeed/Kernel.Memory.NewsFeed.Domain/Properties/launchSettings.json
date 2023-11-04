@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SemanticMemory.Kafka.StreamingNewsFeed": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

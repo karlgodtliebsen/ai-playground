@@ -1,0 +1,30 @@
+cluster.name: opensearch-cluster
+network.host: 0.0.0.0
+
+bootstrap.memory_lock: "true" # along with the memlock settings below, disables swapping
+
+#opensearch.username: "admin"
+#opensearch.password: "admin"
+
+cluster.routing.allocation.disk.threshold_enabled: true
+cluster.routing.allocation.disk.watermark.low: 93%
+cluster.routing.allocation.disk.watermark.high: 95%
+
+#- http.host:0.0.0.0
+#- http.port:9200
+#- http.cors.allow-origin:"http://localhost"
+#- http.cors.enabled:true
+#- http.cors.allow-headers:X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+#- http.cors.allow-credentials:true
+
+#plugins.security.allow_unsafe_democertificates: true
+#plugins.security.ssl.http.enabled: true
+#plugins.security.ssl.http.pemtrustedcas_filepath: certificates/ca/ca.pem
+#plugins.security.ssl.transport.enabled: true
+#plugins.security.ssl.transport.pemtrustedcas_filepath: certificates/ca/ca.pem
+#plugins.security.ssl.transport.enforce_hostname_verification: false
+
+#plugins.security.authcz.admin_dn:
+#  - 'CN=ADMIN,O=OPENSEARCH,L=AARHUS,ST=IDF,C=DK'
+#plugins.security.nodes_dn:
+#  - 'CN=opensearch-node,O=OPENSEARCH,L=AARHUS,ST=IDF,C=DK'

@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>2ce6fdf2-287e-49a3-b7c4-9019d0036f2f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+    
+    <PackageReference Include="Microsoft.SemanticMemory.Client" Version="0.4.231023.1-preview" />
+    <PackageReference Include="Microsoft.SemanticMemory.Core" Version="0.4.231023.1-preview" />
+
+    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+    <PackageReference Include="System.Text.Json" Version="7.0.3" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+
+    <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
+
+    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+    <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+
+		<PackageReference Include="Streamiz.Kafka.Net" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.Metrics.OpenTelemetry" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.Metrics.Prometheus" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.Mock" Version="1.1.4" />
+		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes.Avro" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes.Json" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.SchemaRegistry.SerDes.Protobuf" Version="1.5.1" />
+		<PackageReference Include="Streamiz.Kafka.Net.SerDes.CloudEvents" Version="1.5.1" />
+
+    <PackageReference Include="OpenSearch.Client" Version="1.5.0" />
+    <PackageReference Include="OpenSearch.Client.JsonNetSerializer" Version="1.5.0" />
+    <PackageReference Include="OpenSearch.Net" Version="1.5.0" />
+
+
+    <PackageReference Include="OneOf" Version="3.0.263" />
+    <PackageReference Include="OneOf.Extended" Version="3.0.263" />
+    <PackageReference Include="OneOf.Monads" Version="1.21.0" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Libraries\AI.Library\AI.Library.csproj" />
+	  <ProjectReference Include="..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
+	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
+	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
+	  <ProjectReference Include="..\Kernel.Memory.NewsFeed.Domain\Kernel.Memory.NewsFeed.Domain.csproj" />
+	</ItemGroup>
+
+</Project>

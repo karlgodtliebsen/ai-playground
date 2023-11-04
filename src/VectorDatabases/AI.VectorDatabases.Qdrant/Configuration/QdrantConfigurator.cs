@@ -9,13 +9,14 @@ namespace AI.VectorDatabase.Qdrant.Configuration;
 public static class QdrantConfigurator
 {
     /// <summary>
-    /// Add configuration from app settings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from app settings.json for Qdrant
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
     /// <returns></returns>
     public static IServiceCollection AddQdrant(this IServiceCollection services, QdrantOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
         services.AddTransient<IQdrantFactory, QdrantFactory>();
         services.AddSingleton(Options.Create(options));
         services.AddHttpClient<IQdrantClient, QdrantClient>((_, client) =>
@@ -28,7 +29,7 @@ public static class QdrantConfigurator
     }
 
     /// <summary>
-    /// Add configuration from app settings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from app settings.json for Qdrant
     /// </summary>
     /// <param name="services"></param>
     /// <param name="options"></param>
@@ -41,7 +42,7 @@ public static class QdrantConfigurator
     }
 
     /// <summary>
-    /// Add configuration from app settings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from app settings.json for Qdrant
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
@@ -56,7 +57,7 @@ public static class QdrantConfigurator
     }
 
     /// <summary>
-    /// Add configuration from app settings.json for the Llma parts (ie the llama model parts)
+    /// Add configuration from app settings.json for Qdrant
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
