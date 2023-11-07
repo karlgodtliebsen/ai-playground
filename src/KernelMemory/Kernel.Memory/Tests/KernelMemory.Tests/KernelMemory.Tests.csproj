@@ -60,7 +60,7 @@
 	  <ProjectReference Include="..\..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
 	  <ProjectReference Include="..\..\..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
 	  <ProjectReference Include="..\..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
-	  <ProjectReference Include="..\..\Kernel.Memory.Domain\Kernel.Memory.Domain.csproj" />
+	  <ProjectReference Include="..\..\KernelMemory.Domain\KernelMemory.Domain.csproj" />
 	  
 	</ItemGroup>
 

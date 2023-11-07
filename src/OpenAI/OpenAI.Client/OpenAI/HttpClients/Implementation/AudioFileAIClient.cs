@@ -15,7 +15,7 @@ public class AudioFileAIClient : AIClientBase, IAudioFileAIClient
     public AudioFileAIClient(
         IHttpClientFactory httpClientFactory,
         HttpClient httpClient,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ILogger logger) : base(httpClientFactory, httpClient, options, logger)
     {
     }

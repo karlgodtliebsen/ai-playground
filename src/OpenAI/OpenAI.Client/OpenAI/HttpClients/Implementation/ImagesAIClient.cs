@@ -21,7 +21,7 @@ public class ImagesAIClient : AIClientBase, IImagesAIClient
     public ImagesAIClient(
         IHttpClientFactory httpClientFactory,
         HttpClient httpClient,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ILogger logger) : base(httpClientFactory, httpClient, options, logger)
     {
     }

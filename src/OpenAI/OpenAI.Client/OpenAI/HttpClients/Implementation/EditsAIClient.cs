@@ -13,7 +13,7 @@ public class EditsAIClient : AIClientBase, IEditsAIClient
     public EditsAIClient(
         IHttpClientFactory httpClientFactory,
         HttpClient httpClient,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ILogger logger) : base(httpClientFactory, httpClient, options, logger)
     {
     }

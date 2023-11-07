@@ -13,7 +13,7 @@ public class EmbeddingsAIClient : AIClientBase, IEmbeddingsAIClient
     public EmbeddingsAIClient(
         IHttpClientFactory httpClientFactory,
         HttpClient httpClient,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ILogger logger) : base(httpClientFactory, httpClient, options, logger)
     {
     }

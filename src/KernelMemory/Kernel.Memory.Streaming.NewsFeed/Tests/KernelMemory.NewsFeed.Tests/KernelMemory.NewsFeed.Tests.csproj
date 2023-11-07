@@ -57,7 +57,7 @@
 	  <ProjectReference Include="..\..\..\..\Libraries\AI.Library\AI.Library.csproj" />
 	  <ProjectReference Include="..\..\..\..\Libraries\AI.Test.Support\AI.Test.Support.csproj" />
 	  <ProjectReference Include="..\..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
-	  <ProjectReference Include="..\..\Kernel.Memory.NewsFeed.Domain\Kernel.Memory.NewsFeed.Domain.csproj" />
+	  <ProjectReference Include="..\..\KernelMemory.NewsFeed.Domain\KernelMemory.NewsFeed.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

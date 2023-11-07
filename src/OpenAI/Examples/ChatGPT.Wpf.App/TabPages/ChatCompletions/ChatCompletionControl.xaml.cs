@@ -43,7 +43,7 @@ public partial class ChatCompletionControl : UserControl
     public ChatCompletionControl(
         IChatCompletionAIClient chatCompletionClient,
         IModelRequestFactory requestFactory,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ViewState viewState
     )
     {

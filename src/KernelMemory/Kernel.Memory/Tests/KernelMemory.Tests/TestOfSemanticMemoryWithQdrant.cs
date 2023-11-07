@@ -18,7 +18,7 @@ public class TestOfSemanticMemoryWithQdrant : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
-    private readonly OpenAIOptions openAIOptions;
+    private readonly OpenAIConfiguration openAIConfiguration;
     private readonly SemanticMemoryTestFixture fixture;
     private static readonly string FullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
 
@@ -45,10 +45,10 @@ public class TestOfSemanticMemoryWithQdrant : IAsyncLifetime
 
         var services = hostApplicationFactory.Services;
         this.logger = services.GetRequiredService<ILogger>();
-        this.openAIOptions = services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
+        this.openAIConfiguration = services.GetRequiredService<IOptions<OpenAIConfiguration>>().Value;
 
         memory = new MemoryClientBuilder()
-            .WithOpenAIDefaults(openAIOptions.ApiKey)
+            .WithOpenAIDefaults(openAIConfiguration.ApiKey)
             //.WithCustomEmbeddingGeneration()
             //.WithCustomVectorDb()
             //.WithCustomTextGeneration

@@ -1,6 +1,6 @@
 ﻿namespace Azure.OpenAI.Tests.Configuration;
 
-public class AzureOpenAIOptions
+public class AzureOpenAIConfiguration
 {
     /// <summary>
     /// Configuration SectionName

@@ -30,7 +30,7 @@ IHost host = builder.Build();
 using (host)
 {
     var aiClient = host.Services.GetRequiredService<IChatCompletionAIClient>()!;
-    var options = host.Services.GetRequiredService<IOptions<OpenAIOptions>>()!;
+    var options = host.Services.GetRequiredService<IOptions<OpenAIConfiguration>>()!;
     var requestFactory = host.Services.GetRequiredService<IModelRequestFactory>();
     Debug.Assert(options is not null);
     Debug.Assert(options.Value is not null);

@@ -46,7 +46,7 @@ public partial class CompletionControl : UserControl
     public CompletionControl(
         ICompletionAIClient aiClient,
         IModelRequestFactory requestFactory,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ILogger logger,
         ViewState viewState
     )

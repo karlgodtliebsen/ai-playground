@@ -14,7 +14,7 @@ namespace ChatGPT.Wpf.App;
 public partial class MainWindow : Window
 {
 
-    public MainWindow(IOptions<OpenAIOptions> options)
+    public MainWindow(IOptions<OpenAIConfiguration> options)
     {
         var viewModel = new ViewModel()
         {

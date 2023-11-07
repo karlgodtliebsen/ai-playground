@@ -12,7 +12,7 @@ public class CompletionAIClient : AIClientBase, ICompletionAIClient
     public CompletionAIClient(
         IHttpClientFactory httpClientFactory,
         HttpClient httpClient,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ILogger logger) : base(httpClientFactory, httpClient, options, logger)
     {
     }

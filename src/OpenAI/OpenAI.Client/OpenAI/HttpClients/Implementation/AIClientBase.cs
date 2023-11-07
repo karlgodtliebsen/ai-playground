@@ -19,18 +19,18 @@ public abstract class AIClientBase
 {
     private const string UserAgent = "ai/openai_api";
     protected readonly HttpClient HttpClient;
-    protected readonly OpenAIOptions Options;
+    protected readonly OpenAIConfiguration Configuration;
     protected readonly ILogger logger;
 
     protected AIClientBase(
         IHttpClientFactory httpClientFactory,
         HttpClient httpClient,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ILogger logger)
     {
         HttpClient = httpClient;
         this.logger = logger;
-        Options = options.Value;
+        Configuration = options.Value;
     }
 
     protected async Task<OneOf<TR, ErrorResponse>> PostAsync<T, TR>(string subUri, T payload, CancellationToken cancellationToken) where TR : class
@@ -204,12 +204,12 @@ public abstract class AIClientBase
     protected void PrepareClient()
     {
         HttpClient.DefaultRequestHeaders.Clear();
-        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Options.ApiKey);
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Configuration.ApiKey);
 
         // Further authentication-header used for Azure openAI service
-        HttpClient.DefaultRequestHeaders.Add("api-key", Options.ApiKey);
+        HttpClient.DefaultRequestHeaders.Add("api-key", Configuration.ApiKey);
         HttpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-        HttpClient.DefaultRequestHeaders.Add("OpenAI-Organization", Options.OrganisationKey);
+        HttpClient.DefaultRequestHeaders.Add("OpenAI-Organization", Configuration.OrganisationKey);
     }
 
 

@@ -69,9 +69,9 @@
   </ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Libraries\AI.Library\AI.Library.csproj" />
-	  <ProjectReference Include="..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
-	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
-	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
+	  <ProjectReference Include="..\..\Libraries\AI.Library\AI.Library.csproj" />
+	  <ProjectReference Include="..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
+	  <ProjectReference Include="..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
+	  <ProjectReference Include="..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
 	</ItemGroup>
 </Project>

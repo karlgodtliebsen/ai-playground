@@ -41,7 +41,7 @@ public partial class EditsControl : UserControl
     public EditsControl(
         IEditsAIClient aiClient,
         IModelRequestFactory requestFactory,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ViewState viewState
     )
     {

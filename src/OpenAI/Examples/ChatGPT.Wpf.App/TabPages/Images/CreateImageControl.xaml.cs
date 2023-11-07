@@ -35,7 +35,7 @@ public partial class CreateImageControl : UserControl
     public CreateImageControl(
         IImagesAIClient imagesClient,
         IModelRequestFactory requestFactory,
-        IOptions<OpenAIOptions> options,
+        IOptions<OpenAIConfiguration> options,
         ViewState viewState
     )
     {

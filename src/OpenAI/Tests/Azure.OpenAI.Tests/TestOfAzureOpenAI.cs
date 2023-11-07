@@ -18,7 +18,7 @@ public class TestOfAzureOpenAI
 {
     private readonly OpenAIClient azureOpenAIClient;
     private readonly HostApplicationFactory factory;
-    private readonly OpenAIOptions options;
+    private readonly OpenAIConfiguration configuration;
     private readonly ILogger logger;
 
 
@@ -26,8 +26,8 @@ public class TestOfAzureOpenAI
     {
         this.factory = fixture.WithOutputLogSupport<TestFixtureBase>(output).Build();
         logger = factory.Services.GetRequiredService<ILogger>();
-        options = factory.Services.GetRequiredService<IOptions<OpenAIOptions>>().Value;
-        azureOpenAIClient = new OpenAIClient(options.ApiKey);
+        configuration = factory.Services.GetRequiredService<IOptions<OpenAIConfiguration>>().Value;
+        azureOpenAIClient = new OpenAIClient(configuration.ApiKey);
     }
 
 

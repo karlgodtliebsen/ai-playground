@@ -13,7 +13,7 @@ public class TestOfWikiMediaFeedWithSemanticMemory : IAsyncLifetime
 {
     private readonly ILogger logger;
     private readonly HostApplicationFactory hostApplicationFactory;
-    private readonly OpenAIOptions openAIOptions;
+    private readonly OpenAIConfiguration openAIConfiguration;
     private readonly SemanticMemoryTestFixture fixture;
     private readonly ISemanticMemoryClient memory;
 

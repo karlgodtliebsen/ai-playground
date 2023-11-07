@@ -12,7 +12,7 @@ namespace AI.CaaP.Configuration;
 public static class CaaPConfigurator
 {
 
-    public static IServiceCollection AddCaaP(this IServiceCollection services, CaaPOptions options, ChunkOptions chunkOptions, OpenAIOptions aiOptions)
+    public static IServiceCollection AddCaaP(this IServiceCollection services, CaaPOptions options, ChunkOptions chunkOptions, OpenAIConfiguration aiConfiguration)
     {
         services
             .AddSingleton<IOptions<CaaPOptions>>(Options.Create(options))
@@ -22,14 +22,14 @@ public static class CaaPConfigurator
             .AddTransient<IConversationService, ConversationService>()
             .AddTransient<ITextChopperService, TextChopperService>();
 
-        services.AddOpenAIConfiguration(aiOptions);
+        services.AddOpenAIConfiguration(aiConfiguration);
         return services;
     }
 
     public static IServiceCollection AddCaaP(this IServiceCollection services,
                         Action<CaaPOptions>? options = null,
                         Action<ChunkOptions>? chunkOptions = null,
-                        Action<OpenAIOptions>? aiOptions = null
+                        Action<OpenAIConfiguration>? aiOptions = null
         )
     {
         var configuredOptions = new CaaPOptions();
@@ -38,7 +38,7 @@ public static class CaaPConfigurator
         var configuredChunkOptions = new ChunkOptions();
         chunkOptions?.Invoke(configuredChunkOptions);
 
-        var configuredAiOptions = new OpenAIOptions();
+        var configuredAiOptions = new OpenAIConfiguration();
         aiOptions?.Invoke(configuredAiOptions);
 
         return services.AddCaaP(configuredOptions, configuredChunkOptions, configuredAiOptions);
@@ -61,13 +61,13 @@ public static class CaaPConfigurator
 
         if (aiOptionsSectionName is null)
         {
-            aiOptionsSectionName = OpenAIOptions.ConfigSectionName;
+            aiOptionsSectionName = OpenAIConfiguration.SectionName;
         }
         var configuredOptions = configuration.GetSection(sectionName).Get<CaaPOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
         var configuredChunkOptions = configuration.GetSection(chunkSectionName).Get<ChunkOptions>()!;
         ArgumentNullException.ThrowIfNull(configuredChunkOptions);
-        var configuredAiOptions = configuration.GetSection(aiOptionsSectionName).Get<OpenAIOptions>()!;
+        var configuredAiOptions = configuration.GetSection(aiOptionsSectionName).Get<OpenAIConfiguration>()!;
         ArgumentNullException.ThrowIfNull(configuredAiOptions);
         return services.AddCaaP(configuredOptions, configuredChunkOptions, configuredAiOptions);
     }

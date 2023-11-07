@@ -66,7 +66,7 @@
 	  <ProjectReference Include="..\..\..\OpenAI\OpenAI.Client\OpenAI.Client.csproj" />
 	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.MemoryStore\AI.VectorDatabases.MemoryStore.csproj" />
 	  <ProjectReference Include="..\..\..\VectorDatabases\AI.VectorDatabases.Qdrant\AI.VectorDatabase.Qdrant.csproj" />
-	  <ProjectReference Include="..\Kernel.Memory.NewsFeed.Domain\Kernel.Memory.NewsFeed.Domain.csproj" />
+	  <ProjectReference Include="..\KernelMemory.NewsFeed.Domain\KernelMemory.NewsFeed.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

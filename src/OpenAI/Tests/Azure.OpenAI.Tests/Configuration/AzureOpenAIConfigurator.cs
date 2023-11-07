@@ -7,15 +7,15 @@ namespace Azure.OpenAI.Tests.Configuration;
 public static class AzureOpenAIConfigurator
 {
 
-    public static IServiceCollection AddAzureOpenAI(this IServiceCollection services, AzureOpenAIOptions options)
+    public static IServiceCollection AddAzureOpenAI(this IServiceCollection services, AzureOpenAIConfiguration configuration)
     {
-        services.AddSingleton<IOptions<AzureOpenAIOptions>>(Options.Create(options));
+        services.AddSingleton<IOptions<AzureOpenAIConfiguration>>(Options.Create(configuration));
         return services;
     }
 
-    public static IServiceCollection AddAzureOpenAI(this IServiceCollection services, Action<AzureOpenAIOptions>? options = null)
+    public static IServiceCollection AddAzureOpenAI(this IServiceCollection services, Action<AzureOpenAIConfiguration>? options = null)
     {
-        var configuredOptions = new AzureOpenAIOptions();
+        var configuredOptions = new AzureOpenAIConfiguration();
         options?.Invoke(configuredOptions);
         return services.AddAzureOpenAI(configuredOptions);
     }
@@ -24,9 +24,9 @@ public static class AzureOpenAIConfigurator
     {
         if (sectionName is null)
         {
-            sectionName = AzureOpenAIOptions.SectionName;
+            sectionName = AzureOpenAIConfiguration.SectionName;
         }
-        var configuredOptions = configuration.GetSection(sectionName).Get<AzureOpenAIOptions>()!;
+        var configuredOptions = configuration.GetSection(sectionName).Get<AzureOpenAIConfiguration>()!;
         ArgumentNullException.ThrowIfNull(configuredOptions);
         return services.AddAzureOpenAI(configuredOptions);
     }

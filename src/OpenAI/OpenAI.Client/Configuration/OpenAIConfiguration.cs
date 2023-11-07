@@ -1,11 +1,11 @@
 ﻿namespace OpenAI.Client.Configuration;
 
-public class OpenAIOptions
+public class OpenAIConfiguration
 {
     /// <summary>
     /// Configuration ConfigSectionName
     /// </summary>
-    public const string ConfigSectionName = "OpenAI";
+    public const string SectionName = "OpenAI";
 
     public string OrganisationKey { get; set; } = null!;
     public string ApiKey { get; set; } = null!;
