@@ -130,7 +130,7 @@ The projects uses other Open Source project:
 - Riok.Mapperly
 - LLamaSharp
 - LLamaSharp.SemanticKernel
-- LLamaSharp.Backend.Cpu
+- LLamaSharp.Backend.Cuda12
 - Llama models from Huggingface
 - Qdrant Vector Db
 - Microsoft Semantic Kerlenl Library (MSKLC)

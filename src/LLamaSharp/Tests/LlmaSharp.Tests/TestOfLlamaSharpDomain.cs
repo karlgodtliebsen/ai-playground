@@ -44,6 +44,9 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
 ";
     private static readonly string FullPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory));
 
+    //LLamaSharp.Backend.Cuda1 1
+    //LLamaSharp.Backend.Cuda12
+    //LLamaSharp.Backend.Cpu
 
     [Fact]
     public async Task VerifyThatLLamaCanExecuteInteractiveExecutor()
@@ -104,15 +107,15 @@ public sealed class TestOfLlamaSharpDomain : IClassFixture<IntegrationTestWebApp
 
         // Initialize a chat session
         using var context = model.CreateContext(parameters);
-        var ex = new InteractiveExecutor(context);
+        var interactiveExecutor = new InteractiveExecutor(context);
 
-        var session = new ChatSession(ex);
+        var session = new ChatSession(interactiveExecutor);
 
         var prompt = Prompt;
         await RunPrompt(session, prompt);
         sessionStateService.SaveSession(session, userId, true);
 
-        session = new ChatSession(ex);
+        session = new ChatSession(interactiveExecutor);
         sessionStateService.LoadSession(session, userId, true);
         await RunPrompt(session, prompt);
         sessionStateService.SaveSession(session, userId, true);

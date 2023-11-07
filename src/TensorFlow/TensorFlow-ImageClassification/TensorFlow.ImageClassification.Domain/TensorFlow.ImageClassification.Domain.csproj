@@ -7,17 +7,23 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
 
   <ItemGroup>
 
-    <PackageReference Include="SciSharp.Models.Core" Version="0.7.1" />
+    <PackageReference Include="SciSharp.Models.Core" Version="0.9.0" />
 
-    <PackageReference Include="SciSharp.Models.ImageClassification" Version="0.6.1" />
+    <PackageReference Include="SciSharp.Models.ImageClassification" Version="0.9.0" />
 
-    <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.11.4" />
+    <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />
 
-    <PackageReference Include="TensorFlow.Keras" Version="0.11.4" />
-    <PackageReference Include="TensorFlow.NET" Version="0.110.4" />
+    <PackageReference Include="TensorFlow.Keras" Version="0.15.0" />
+    <PackageReference Include="TensorFlow.NET" Version="0.150.0" />
 
     <PackageReference Include="SerilogTimings" Version="3.0.1" />
 
@@ -44,10 +50,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Libraries\AI.Library\AI.Library.csproj" />
     <ProjectReference Include="..\..\ImageClassification.Domain\ImageClassification.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>
