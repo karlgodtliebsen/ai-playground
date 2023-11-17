@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
@@ -13,18 +13,18 @@
 		<PackageReference Include="OneOf.Monads" Version="1.21.0" />
 		<PackageReference Include="OpenSearch.Client" Version="1.5.0" />
 		<PackageReference Include="OpenSearch.Client.JsonNetSerializer" Version="1.5.0" />
-		<PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
-		<PackageReference Include="System.Text.Json" Version="7.0.3" />
+		<PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
 
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.SemanticMemory.Client" Version="0.4.231023.1-preview" />
     <PackageReference Include="Microsoft.SemanticMemory.Core" Version="0.4.231023.1-preview" />
 
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
 
   </ItemGroup>
 

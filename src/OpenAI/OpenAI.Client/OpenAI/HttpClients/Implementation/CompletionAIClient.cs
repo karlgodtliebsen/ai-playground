@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Runtime.CompilerServices;
+
+using Microsoft.Extensions.Options;
+
 using OneOf;
+
 using OpenAI.Client.Configuration;
 using OpenAI.Client.OpenAI.Models.ChatCompletion;
 using OpenAI.Client.OpenAI.Models.Requests;
@@ -23,7 +27,7 @@ public class CompletionAIClient : AIClientBase, ICompletionAIClient
         return result;
     }
 
-    public async IAsyncEnumerable<OneOf<Completions, ErrorResponse>> GetCompletionsStreamAsync(CompletionRequest request, CancellationToken cancellationToken)
+    public async IAsyncEnumerable<OneOf<Completions, ErrorResponse>> GetCompletionsStreamAsync(CompletionRequest request, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var collection = GetResponseStreamAsync<Completions, CompletionRequest>(request.RequestUri, request, cancellationToken);
         await foreach (var result in collection.WithCancellation(cancellationToken))

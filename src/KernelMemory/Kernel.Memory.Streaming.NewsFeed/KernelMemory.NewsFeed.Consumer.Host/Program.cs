@@ -1,7 +1,8 @@
 ﻿using AI.Library.Configuration;
 
-using Kernel.Memory.NewsFeed.Domain.Util.Kafka;
 using Kernel.Memory.NewsFeed.Host.Configuration;
+
+using KernelMemory.NewsFeed.Domain.Util.Kafka;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,7 +26,7 @@ var host = builder.Build();
 using (host)
 {
     var client = host.Services.GetRequiredService<KafkaAdminClient>();
-    await client.CreateTopic(CancellationToken.None);
+    client.CreateTopic(CancellationToken.None);
 
     Observability.LogFinalizedConfiguration(applicationName);
     Log.Logger.Information("Running...");

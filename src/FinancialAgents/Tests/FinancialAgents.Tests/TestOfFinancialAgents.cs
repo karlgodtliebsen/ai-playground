@@ -23,7 +23,7 @@ public class TestOfFinancialAgents
     }
 
     [Fact]
-    public async Task RunWebSearchSample()
+    public void RunWebSearchSample()
     {
         //https://github.com/microsoft/semantic-kernel/blob/main/dotnet/samples/KernelSyntaxExamples/Example11_WebSearchQueries.cs
         //IKernel kernel = Kernel.Builder
@@ -45,7 +45,7 @@ public class TestOfFinancialAgents
     }
 
     [Fact]
-    public async Task RunBingGoogleWebSearchSample()
+    public void RunBingGoogleWebSearchSample()
     {
         //https://github.com/microsoft/semantic-kernel/blob/main/dotnet/samples/KernelSyntaxExamples/Example11_WebSearchQueries.cs
 

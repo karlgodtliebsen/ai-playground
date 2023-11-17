@@ -24,7 +24,7 @@ public class TestOfOneOfSerialization
     }
 
     [Fact(Skip = "Awaiting solution to json serialize/Deserialize OnfOf")]
-    public async Task VerifyOneOf()
+    public void VerifyOneOf()
     {
 
         var sut1 = new ScoredPointTester()

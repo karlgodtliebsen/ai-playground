@@ -1,6 +1,4 @@
-﻿using LLamaSharp.Domain.Configuration;
-
-namespace LLamaSharp.Domain.Domain.Models;
+﻿namespace LLamaSharp.Domain.Domain.Models;
 
 /// <summary>
 /// Domain Model for ExecutorInferMessage
@@ -18,7 +16,7 @@ public class ExecutorInferMessage : SimpleTextMessage
     /// <summary>
     /// The request specific InferenceOptions: Optional
     /// </summary>
-    public InferenceOptions? InferenceOptions { get; set; } = default!;
+    //public InferenceOptions? InferenceOptions { get; set; } = default!;
 
     /// <summary>
     /// The user id. Obtained from Security Infrastructure

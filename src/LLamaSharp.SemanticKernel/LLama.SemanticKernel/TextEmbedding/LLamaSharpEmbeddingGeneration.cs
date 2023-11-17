@@ -14,8 +14,9 @@ public sealed class LLamaSharpEmbeddingGeneration : ITextEmbeddingGeneration
     }
 
     /// <inheritdoc/>
-    public async Task<IList<ReadOnlyMemory<float>>> GenerateEmbeddingsAsync(IList<string> data, CancellationToken cancellationToken = default)
+    public Task<IList<ReadOnlyMemory<float>>> GenerateEmbeddingsAsync(IList<string> data, CancellationToken cancellationToken = default)
     {
-        return data.Select(text => new ReadOnlyMemory<float>(embedder.GetEmbeddings(text))).ToList();
+        var result = data.Select(text => new ReadOnlyMemory<float>(embedder.GetEmbeddings(text))).ToList();
+        return Task.FromResult<IList<ReadOnlyMemory<float>>>(result);
     }
 }

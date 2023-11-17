@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
     <UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
@@ -15,38 +15,38 @@
 
 	<ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.13" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23503-02" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="OneOf" Version="3.0.263" />
     <PackageReference Include="OneOf.Extended" Version="3.0.263" />
     <PackageReference Include="OneOf.Monads" Version="1.21.0" />
-    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
 
     <PackageReference Include="Asp.Versioning.Mvc" Version="7.1.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.1.0" />
-    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.1" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
     <PackageReference Include="Serilog.Sinks.Trace" Version="3.0.0" />
     <PackageReference Include="Destructurama.Attributed" Version="3.1.0" />
-    <PackageReference Include="Serilog.Extensions.Hosting" Version="7.0.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.XUnit" Version="3.0.5" />
 
 
-    <PackageReference Include="Testcontainers" Version="3.5.0" />
+    <PackageReference Include="Testcontainers" Version="3.6.0" />
 
 
-    <PackageReference Include="Testcontainers.Elasticsearch" Version="3.5.0" />
+    <PackageReference Include="Testcontainers.Elasticsearch" Version="3.6.0" />
 
 
-    <PackageReference Include="Testcontainers.PostgreSql" Version="3.5.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="3.6.0" />
 
 
     <PackageReference Include="Ulid" Version="1.3.3" />

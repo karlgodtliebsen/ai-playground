@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
@@ -17,26 +17,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LLamaSharp" Version="0.7.0" />
-    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.7.0" />
+    <PackageReference Include="LLamaSharp" Version="0.8.0" />
+    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.8.0" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.13" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23503-02" />
-    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
 
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.6.10" />
 
     <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.8" />
 
-    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.1" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.XUnit" Version="3.0.5" />
     <PackageReference Include="Destructurama.Attributed" Version="3.1.0" />
-    <PackageReference Include="Serilog.Extensions.Hosting" Version="7.0.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.Trace" Version="3.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
     <PackageReference Include="SerilogTimings" Version="3.0.1" />

@@ -1,4 +1,6 @@
-﻿using AI.Test.Support.Fixtures;
+﻿using System.Runtime.CompilerServices;
+
+using AI.Test.Support.Fixtures;
 using AI.VectorDatabase.Qdrant.VectorStorage;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models;
 using AI.VectorDatabase.Qdrant.VectorStorage.Models.Payload;
@@ -94,7 +96,7 @@ public class TestOfUberFilings
         //await AddDataToCollection(42, vector);
     }
 
-    private async IAsyncEnumerable<UberFile> LoadUberFiles(CancellationToken cancellationToken)
+    private async IAsyncEnumerable<UberFile> LoadUberFiles([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var files = new List<UberFile>();
         var allFiles = Directory.GetFiles(testFilesPath, "*.html", SearchOption.AllDirectories);
@@ -173,7 +175,7 @@ public class TestOfUberFilings
 
     [Fact(Skip = "To many requests error")]
     //[Fact]
-    public async Task RunUberFilesSampleUsingSemanticKernel()
+    public void RunUberFilesSampleUsingSemanticKernel()
     {
         var files = LoadUberFiles(CancellationToken.None);
         //https://github.com/microsoft/semantic-kernel/tree/main/dotnet/samples/KernelSyntaxExamples

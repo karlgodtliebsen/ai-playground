@@ -5,7 +5,7 @@ using Kernel.Memory.NewsFeed.Domain.Configuration;
 
 using Microsoft.Extensions.Options;
 
-namespace Kernel.Memory.NewsFeed.Domain.Util.Kafka;
+namespace KernelMemory.NewsFeed.Domain.Util.Kafka;
 
 public sealed class KafkaAdminClient
 {
@@ -18,7 +18,7 @@ public sealed class KafkaAdminClient
         config = options.Value;
     }
 
-    public async Task CreateTopic(CancellationToken cancellationToken)
+    public void CreateTopic(CancellationToken cancellationToken)
     {
 
         logger.Information("{name} starting", nameof(CreateTopic));

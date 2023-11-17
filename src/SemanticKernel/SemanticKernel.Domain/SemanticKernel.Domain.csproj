@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
@@ -12,11 +12,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AngleSharp" Version="1.0.5" />
+		<PackageReference Include="AngleSharp" Version="1.0.6" />
 		<PackageReference Include="CoreCLR-NCalc" Version="2.2.113" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.13" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
 		
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.0-beta3" />
 		<PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.0.0-beta3" />
@@ -48,18 +48,18 @@
 		<PackageReference Include="Microsoft.SemanticKernel.TemplateEngine.Basic" Version="1.0.0-beta3" />
 
 
-    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
-		<PackageReference Include="System.Text.Json" Version="7.0.3" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
 
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
 
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.13" />
-		<PackageReference Include="Polly" Version="8.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.0" />
+		<PackageReference Include="Polly" Version="8.2.0" />
 
     <PackageReference Include="OneOf" Version="3.0.263" />
     <PackageReference Include="OneOf.Extended" Version="3.0.263" />

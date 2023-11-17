@@ -1,7 +1,10 @@
 ﻿using AI.Test.Support.DockerSupport;
 using AI.Test.Support.Fixtures;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SemanticKernel.Tests.Fixtures;
+
 using Xunit.Abstractions;
 
 namespace SemanticKernel.Tests;
@@ -34,9 +37,8 @@ public class TestOfSemanticKernelExample12SequentialPlanner : IAsyncLifetime
     }
 
     [Fact]
-    public async Task UseStepwisePlanner_Example51()
+    public void UseStepwisePlanner_Example51()
     {
         logger.Information("======== Sequential Planner - Create and Execute Poetry Plan ========");
-
     }
 }

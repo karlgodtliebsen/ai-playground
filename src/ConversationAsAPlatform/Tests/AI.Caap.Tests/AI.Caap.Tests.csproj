@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<UserSecretsId>6642f3b0-7973-4722-af0d-3cae3a241225</UserSecretsId>
@@ -23,16 +23,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" Version="6.12.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23503-02" />
 		<PackageReference Include="NSubstitute" Version="5.1.0" />
 		<PackageReference Include="OneOf" Version="3.0.263" />
 		<PackageReference Include="OneOf.Extended" Version="3.0.263" />
 		<PackageReference Include="OneOf.Monads" Version="1.21.0" />
-		<PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
-
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+		<PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
 
 		<PackageReference Include="xunit" Version="2.6.1" />
 		<PackageReference Include="xunit.abstractions" Version="2.0.3" />

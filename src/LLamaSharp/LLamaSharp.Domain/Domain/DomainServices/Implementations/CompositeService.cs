@@ -1,4 +1,6 @@
-﻿using AI.Library.HttpUtils;
+﻿using System.Text;
+
+using AI.Library.HttpUtils;
 
 using LLamaSharp.Domain.Configuration;
 using LLamaSharp.Domain.Domain.Models;
@@ -50,10 +52,17 @@ public class CompositeService : ICompositeService
         {
             var userInput = CreateUserInput(input);
             var outputs = interactiveExecutor.ChatUsingInteractiveExecutorWithTransformation(inferenceOptions, modelOptions, executionOptions, userInput, cancellationToken);
-            var result = string.Join("", outputs);
+            var result = new StringBuilder();
+            await foreach (string o in outputs.WithCancellation(cancellationToken))
+            {
+                if (!string.IsNullOrEmpty(o))
+                {
+                    result.Append(o);
+                }
+            }
             logger.Information("ChatSessionWithInstructionsExecutorAndNoRoleNames");
-            logger.Information(result);
-            return result;
+            logger.Information(result.ToString());
+            return result.ToString();
         }
         catch (Exception ex)
         {
@@ -76,10 +85,17 @@ public class CompositeService : ICompositeService
         {
             var userInput = CreateUserInput(input);
             var outputs = interactiveExecutor.ChatUsingInteractiveExecutor(inferenceOptions, modelOptions, userInput, cancellationToken);
-            var result = string.Join("", outputs);
+            var result = new StringBuilder();
+            await foreach (string o in outputs.WithCancellation(cancellationToken))
+            {
+                if (!string.IsNullOrEmpty(o))
+                {
+                    result.Append(o);
+                }
+            }
             logger.Information("ChatSessionWithInstructionsExecutorAndRoleNames");
-            logger.Information(result);
-            return result;
+            logger.Information(result.ToString());
+            return result.ToString();
         }
         catch (Exception ex)
         {
